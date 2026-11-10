@@ -126,9 +126,6 @@ namespace Ink_Canvas
             {
             }
 
-            // 配置TLS协议以支持Windows 7
-            ConfigureTlsForWindows7();
-
             // 如果是看门狗子进程，直接进入看门狗主循环并终止主流程
             var args = Environment.GetCommandLineArgs();
             if (args.Length >= 2 && args[1] == "--watchdog")
@@ -232,36 +229,6 @@ namespace Ink_Canvas
             }
         }
 
-        // 配置TLS协议以支持Windows 7
-        private void ConfigureTlsForWindows7()
-        {
-            try
-            {
-                // 检测操作系统版本
-                var osVersion = Environment.OSVersion;
-                bool isWindows7 = osVersion.Version.Major == 6 && osVersion.Version.Minor == 1;
-
-                if (isWindows7)
-                {
-
-                    // 启用所有TLS版本以支持Windows 7
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-                    // 配置ServicePointManager以支持Windows 7
-                    ServicePointManager.DefaultConnectionLimit = 10;
-                    ServicePointManager.Expect100Continue = false;
-                    ServicePointManager.UseNagleAlgorithm = false;
-
-                }
-                else
-                {
-                    // 对于更新的Windows版本，不进行任何TLS配置，使用系统默认设置
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
 
         // 初始化崩溃监听器
         private void InitializeCrashListeners()
