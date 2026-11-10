@@ -47,6 +47,9 @@ namespace Ink_Canvas.Helpers
         }
         public bool IsInSlideShow => _cachedIsInSlideShow;
         public bool IsSupportWPS { get; set; } = false;
+
+        /// <summary>上一次 PptComBridge 失败的原因，用于抑制重复日志。</summary>
+        private PptComBridge.FailureReason _lastBridgeFailureReason = PptComBridge.FailureReason.None;
         public bool SkipAnimationsWhenNavigating { get; set; } = false;
 
         #endregion
@@ -275,17 +278,46 @@ namespace Ink_Canvas.Helpers
             }
         }
 
+        /// <summary>
+        /// 取 PowerPoint Application。走 <see cref="PptComBridge"/> 的三级降级：
+        /// ROT（按 .pptx 路径匹配，能绕开权限隔离）→ GetActiveObject → 失败。
+        ///
+        /// 这里不再直接用 OleActiveObject：GetActiveObject 要求调用方与 PowerPoint
+        /// 处于同一完整性级别，批注软件以管理员运行、课件以普通权限双击打开时它必然失败，
+        /// 而这是学校里最常见的组合。ROT 不受这个限制。
+        /// </summary>
         private Microsoft.Office.Interop.PowerPoint.Application TryConnectToPowerPoint()
         {
             try
             {
-                var pptApp = (Microsoft.Office.Interop.PowerPoint.Application)OleActiveObject.GetActiveObject("PowerPoint.Application");
+                object raw = PptComBridge.TryAcquireApplication();
+                if (raw == null)
+                {
+                    var reason = PptComBridge.LastFailureReason;
+                    // 只在原因变化时写日志，避免 2 秒轮询把日志刷爆。
+                    if (reason != _lastBridgeFailureReason)
+                    {
+                        _lastBridgeFailureReason = reason;
+                        if (reason != PptComBridge.FailureReason.NoPresentationInRot)
+                        {
+                            LogHelper.WriteLogToFile($"PPT 连接失败：{PptComBridge.DescribeFailure()}", LogHelper.LogType.Trace);
+                        }
+                    }
+                    return null;
+                }
 
+                _lastBridgeFailureReason = PptComBridge.FailureReason.None;
+
+                var pptApp = raw as Microsoft.Office.Interop.PowerPoint.Application;
                 if (pptApp != null && Marshal.IsComObject(pptApp))
                 {
                     var _ = pptApp.Name;
                     return pptApp;
                 }
+
+                // ROT 拿到的 RCW 在 WPS/Office 混装时未必能转成 Interop 类型。
+                // 这种情况把对象还回去，交由 WPS 分支或下一轮重试。
+                SafeReleaseComObject(raw);
                 return null;
             }
             catch (COMException)
