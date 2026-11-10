@@ -45,20 +45,8 @@
   <data name="ActionsTitle" xml:space="preserve">
     <value>Actions</value>
   </data>
-  <data name="AnimationMode" xml:space="preserve">
-    <value>Animation mode</value>
-  </data>
-  <data name="AnimationModeHint" xml:space="preserve">
-    <value>Control animation intensity for notification enter, expand, and exit.</value>
-  </data>
   <data name="AnimationOff" xml:space="preserve">
     <value>Off</value>
-  </data>
-  <data name="AnimationSimple" xml:space="preserve">
-    <value>Simple</value>
-  </data>
-  <data name="AnimationStandard" xml:space="preserve">
-    <value>Standard</value>
   </data>
   <data name="BehaviorTitle" xml:space="preserve">
     <value>Display behavior</value>

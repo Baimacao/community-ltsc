@@ -42,15 +42,7 @@ namespace Ink_Canvas.Properties
 
         public static string ActionsTitle => ResourceManager.GetString(nameof(ActionsTitle), _resourceCulture);
 
-        public static string AnimationMode => ResourceManager.GetString(nameof(AnimationMode), _resourceCulture);
-
-        public static string AnimationModeHint => ResourceManager.GetString(nameof(AnimationModeHint), _resourceCulture);
-
         public static string AnimationOff => ResourceManager.GetString(nameof(AnimationOff), _resourceCulture);
-
-        public static string AnimationSimple => ResourceManager.GetString(nameof(AnimationSimple), _resourceCulture);
-
-        public static string AnimationStandard => ResourceManager.GetString(nameof(AnimationStandard), _resourceCulture);
 
         public static string BehaviorTitle => ResourceManager.GetString(nameof(BehaviorTitle), _resourceCulture);
 

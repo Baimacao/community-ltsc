@@ -45,20 +45,8 @@
   <data name="ActionsTitle" xml:space="preserve">
     <value>操作</value>
   </data>
-  <data name="AnimationMode" xml:space="preserve">
-    <value>动画效果</value>
-  </data>
-  <data name="AnimationModeHint" xml:space="preserve">
-    <value>控制灵动通知进出场和展开时的动画强度，整活程度你说了算~</value>
-  </data>
   <data name="AnimationOff" xml:space="preserve">
     <value>关闭</value>
-  </data>
-  <data name="AnimationSimple" xml:space="preserve">
-    <value>简洁</value>
-  </data>
-  <data name="AnimationStandard" xml:space="preserve">
-    <value>标准</value>
   </data>
   <data name="BehaviorTitle" xml:space="preserve">
     <value>展示行为</value>

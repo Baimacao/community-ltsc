@@ -643,11 +643,7 @@ namespace Ink_Canvas.Properties
             dict["Nav_Theme_Settings"] = ("NavStrings", "Nav_Theme_Settings");
             dict["No"] = ("CommonStrings", "No");
             dict["Notification_ActionsTitle"] = ("NotificationStrings", "ActionsTitle");
-            dict["Notification_AnimationMode"] = ("NotificationStrings", "AnimationMode");
-            dict["Notification_AnimationModeHint"] = ("NotificationStrings", "AnimationModeHint");
             dict["Notification_AnimationOff"] = ("NotificationStrings", "AnimationOff");
-            dict["Notification_AnimationSimple"] = ("NotificationStrings", "AnimationSimple");
-            dict["Notification_AnimationStandard"] = ("NotificationStrings", "AnimationStandard");
             dict["Notification_BehaviorTitle"] = ("NotificationStrings", "BehaviorTitle");
             dict["Notification_Close"] = ("NotificationStrings", "Close");
             dict["Notification_DefaultTitle"] = ("NotificationStrings", "DefaultTitle");
