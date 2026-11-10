@@ -1323,6 +1323,14 @@ namespace Ink_Canvas
                 });
             }
 
+            if (e.Args.Contains("--smoke-test"))
+            {
+                try { Ink_Canvas.Helpers.LtscProbe.SmokeTest(); }
+                catch (Exception ex) { LogHelper.WriteLogToFile("冒烟自测异常: " + ex, LogHelper.LogType.Error); }
+                Shutdown();
+                return;
+            }
+
             if (e.Args.Contains("--dump-settings-pages"))
             {
                 _ = Task.Delay(4000).ContinueWith(_ =>

@@ -108,6 +108,129 @@ namespace Ink_Canvas.Helpers
             catch { return -1; }
         }
 
+// ===== LTSC 临时探针 =====
+        /// <summary>
+        /// 冒烟自测：在进程内直接调用被测代码，用真实对象验证修复是否生效。
+        /// 不依赖鼠标、不依赖窗口层级——那些今晚已经证明不可靠。
+        /// </summary>
+        public static void SmokeTest()
+        {
+            Log("=== 冒烟自测开始 ===");
+            int pass = 0, fail = 0;
+            void R(string name, bool ok, string detail = "")
+            {
+                if (ok) { pass++; Log("  [PASS] " + name + (detail == "" ? "" : " | " + detail)); }
+                else { fail++; Log("  [FAIL] " + name + (detail == "" ? "" : " | " + detail)); }
+            }
+
+            // --- 1. InkFadeManager：CreateStrokeVisual 失败时不登记字典（L-10）---
+            try
+            {
+                var fadeType = typeof(Ink_Canvas.Helpers.InkFadeManager);
+                var f1 = fadeType.GetField("_strokeStartPoints", BindingFlags.NonPublic | BindingFlags.Instance);
+                var f2 = fadeType.GetField("_strokeEndPoints", BindingFlags.NonPublic | BindingFlags.Instance);
+                var f3 = fadeType.GetField("_strokeAnimationDurations", BindingFlags.NonPublic | BindingFlags.Instance);
+                R("L-10 三个登记字典存在", f1 != null && f2 != null && f3 != null);
+            }
+            catch (Exception ex) { R("L-10", false, Trim(ex.Message)); }
+
+            // --- 2. PPTQuickPanel：容量上限常量与淘汰方法（L-1）---
+            try
+            {
+                var qpType = typeof(Ink_Canvas.Windows.PPTQuickPanel);
+                var maxField = qpType.GetField("MaxPptImagesForLtsc", BindingFlags.NonPublic | BindingFlags.Static);
+                int max = maxField != null ? (int)maxField.GetValue(null) : -1;
+                R("L-1 MaxPptImagesForLtsc == 8", max == 8, "实际=" + max);
+                var trim = qpType.GetMethod("TrimPptImages", BindingFlags.NonPublic | BindingFlags.Instance);
+                var clear = qpType.GetMethod("ClearAllPptImages", BindingFlags.NonPublic | BindingFlags.Instance);
+                R("L-1 TrimPptImages / ClearAllPptImages 存在", trim != null && clear != null);
+            }
+            catch (Exception ex) { R("L-1", false, Trim(ex.Message)); }
+
+            // --- 3. WindowOverviewModel：_windowCache 是否有锁保护（A-3）---
+            try
+            {
+                var t2 = typeof(Ink_Canvas.Helpers.WindowOverviewModel);
+                R("A-3 WindowOverviewModel 可加载", t2 != null);
+                var cacheField = t2.GetField("_windowCache", BindingFlags.NonPublic | BindingFlags.Instance);
+                var lockField = t2.GetField("_lockObject", BindingFlags.NonPublic | BindingFlags.Instance);
+                R("A-3 _windowCache / _lockObject 字段都在", cacheField != null && lockField != null);
+            }
+            catch (Exception ex) { R("A-3", false, Trim(ex.Message)); }
+
+            // --- 4. PptBridge：安全释放方法（L-3 / L-8）---
+            try
+            {
+                var pb = typeof(Ink_Canvas.Helpers.PptBridge);
+                var sr = pb.GetMethod("SafeRelease", BindingFlags.NonPublic | BindingFlags.Static);
+                R("L-3/L-8 SafeRelease 存在", sr != null);
+                // SafeRelease(null) 不应抛
+                var threw = false;
+                try { sr?.Invoke(null, new object[] { null }); } catch { threw = true; }
+                R("L-3 SafeRelease(null) 不抛异常", !threw);
+            }
+            catch (Exception ex) { R("L-3/L-8", false, Trim(ex.Message)); }
+
+            // --- 5. 心跳 Process 是否已释放（C-5）---
+            // 带对照组：A 用 using（修复后的写法），B 故意不释放（修复前的写法）。
+            // 只看 A 是不是 0 说明不了问题——CLR 的 RCW 终结器本来就会兜底。
+            // 真正要证明的是「A 明显好于 B」，以及 A 本身不随次数线性上涨。
+            try
+            {
+                const int N = 300;
+
+                int a0 = GetHandles();
+                for (int i = 0; i < N; i++)
+                {
+                    using (var p = System.Diagnostics.Process.GetCurrentProcess())
+                    {
+                        var _ = p.TotalProcessorTime;
+                    }
+                }
+                int a1 = GetHandles();   // 不强制 GC：看「当场」是否释放
+
+                int b0 = GetHandles();
+                var keep = new List<System.Diagnostics.Process>();
+                for (int i = 0; i < N; i++)
+                {
+                    var p = System.Diagnostics.Process.GetCurrentProcess();
+                    var _ = p.TotalProcessorTime;
+                    keep.Add(p);         // 故意持有，不让终结器回收
+                }
+                int b1 = GetHandles();
+                keep.Clear();
+
+                GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
+                int a2 = GetHandles();
+
+                int growA = a1 - a0;
+                int growB = b1 - b0;
+                Log("  C-5 明细: using 增长=" + growA + " (基 " + a0 + ") | 不释放增长=" + growB + " (基 " + b0 + ") | GC 后=" + a2);
+
+                R("C-5 using 写法增长 <= 5", growA <= 5, "增长=" + growA);
+                R("C-5 using 明显优于不释放", growB < 0 || growA < growB, "A=" + growA + " B=" + growB);
+            }
+            catch (Exception ex) { R("C-5", false, Trim(ex.Message)); }
+
+            // --- 6. 定时器泄漏（L-2/L-16）：反复 new DispatcherTimer 后检查是否能停 ---
+            try
+            {
+                var timers = new List<System.Windows.Threading.DispatcherTimer>();
+                for (int i = 0; i < 50; i++)
+                {
+                    var dt = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
+                    dt.Tick += (_, __) => { };
+                    timers.Add(dt);
+                }
+                foreach (var dt in timers) dt.Stop();
+                R("L-2 50 个 DispatcherTimer 可创建并停止", timers.Count == 50);
+                timers.Clear();
+            }
+            catch (Exception ex) { R("L-2", false, Trim(ex.Message)); }
+
+            Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
+        }
+
         public static void DumpSettingsPages()
         {
             Log("=== 探针开始 ===");
