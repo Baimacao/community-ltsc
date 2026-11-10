@@ -159,22 +159,8 @@
                         </ikw:SimpleStackPanel>
                     </ui:SettingsCard>
 
-                    <!-- 进程保护 -->
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:SecurityStrings.Security_ProcessProtection}" />
-
-                    <ui:InfoBar IsClosable="False"
-                                IsOpen="True"
-                                Severity="Informational"
-                                Title="{x:Static props:SecurityStrings.Security_InfoBarTitle}"
-                                Message="{x:Static props:SecurityStrings.Security_ProcessProtectionInfoBarMessage}" />
-
-                    <controls:LabeledSettingsCard x:Name="CardEnableProcessProtection"
-                            Header="{x:Static props:SecurityStrings.Security_ProcessProtection}"
-                            Description="{x:Static props:SecurityStrings.SecurityPanel_Hint_4}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Shield}"
-                            SwitchName="ToggleSwitchEnableProcessProtection"
-                            Toggled="ToggleSwitchEnableProcessProtection_Toggled" />
+                    <!-- 进程保护：LTSC 已移除（决策 D-04）。
+                         原实现长期锁住程序目录并在每次写入前强制 GC，见 REMOVED.md。 -->
 
                     <Rectangle Height="48" />
 

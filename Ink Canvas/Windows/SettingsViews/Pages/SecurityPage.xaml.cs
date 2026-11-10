@@ -47,7 +47,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 CardRequirePasswordOnModifyOrClearNameList.IsOn = sec.RequirePasswordOnModifyOrClearNameList;
                 CardTotpEnabled.IsOn = sec.TotpEnabled;
                 TextBoxTotpSecret.Text = sec.TotpSecret ?? "";
-                CardEnableProcessProtection.IsOn = sec.EnableProcessProtection;
+                // LTSC D-04: 进程保护已移除，设置项不再绑定 UI。
 
                 // Load U-disk settings
                 CardUsbVerificationEnabled.IsOn = sec.UsbVerificationEnabled;
@@ -190,15 +190,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             if (!_isLoaded) return;
             SettingsManager.Settings.Security.RequirePasswordOnModifyOrClearNameList = CardRequirePasswordOnModifyOrClearNameList.IsOn;
             SettingsManager.SaveSettingsToFile();
-        }
-
-        private void ToggleSwitchEnableProcessProtection_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!_isLoaded) return;
-            bool newState = CardEnableProcessProtection.IsOn;
-            SettingsManager.Settings.Security.EnableProcessProtection = newState;
-            SettingsManager.SaveSettingsToFile();
-            ProcessProtectionManager.SetEnabled(newState);
         }
 
         private void ToggleSwitchTotpEnabled_Toggled(object sender, RoutedEventArgs e)
