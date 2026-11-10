@@ -1386,6 +1386,22 @@ namespace Ink_Canvas
                 _ = Task.Run(() => Dispatcher.Invoke(() => _taskbar?.ForceCreate()));
             }
 
+            // LTSC D-03 自测入口：--test-crash 启动后延迟触发一次真实的 UI 线程未处理异常，
+            // 用来验证 CrashAction 三档（静默重启 / 不处理 / 弹窗）是否按用户设置执行。
+            // 这是可重复的回归测试开关，不是给老师用的功能；不带这个参数时完全不生效。
+            if (e.Args.Contains("--test-crash"))
+            {
+                LogHelper.WriteLogToFile("[D-03自测] 收到 --test-crash，3 秒后触发模拟崩溃", LogHelper.LogType.Warning);
+                _ = Task.Delay(3000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        LogHelper.WriteLogToFile("[D-03自测] 现在抛出 UI 线程未处理异常", LogHelper.LogType.Warning);
+                        throw new InvalidOperationException("[D-03自测] --test-crash 触发的模拟崩溃");
+                    }));
+                });
+            }
+
             // 处理启动时的URI参数
             string startupUriArg = e.Args.FirstOrDefault(a => a.StartsWith("icc:", StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrEmpty(startupUriArg))
