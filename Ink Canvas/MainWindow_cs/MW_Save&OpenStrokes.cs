@@ -536,9 +536,12 @@ namespace Ink_Canvas
                         else
                         {
                             // 保存为二进制格式
-                            var fs = new FileStream(savePathWithName, FileMode.Create);
-                            inkCanvas.Strokes.Save(fs);
-                            fs.Close();
+                            // LTSC L-4：原来是 new FileStream + Save + Close()。
+                            // Close 在异常路径上执行不到，句柄就漏了；同文件另外 6 处都用了 using。
+                            using (var fs = new FileStream(savePathWithName, FileMode.Create))
+                            {
+                                inkCanvas.Strokes.Save(fs);
+                            }
                             if (newNotice)
                             {
                                 Task.Delay(100).ContinueWith(t =>
@@ -928,9 +931,12 @@ namespace Ink_Canvas
                             bitmap.Save(imagePathWithName, ImageFormat.Png);
 
                             // 仍然保存墨迹文件以兼容旧版本
-                            var fs = new FileStream(savePathWithName, FileMode.Create);
-                            inkCanvas.Strokes.Save(fs);
-                            fs.Close();
+                            // LTSC L-4：原来是 new FileStream + Save + Close()。
+                            // Close 在异常路径上执行不到，句柄就漏了；同文件另外 6 处都用了 using。
+                            using (var fs = new FileStream(savePathWithName, FileMode.Create))
+                            {
+                                inkCanvas.Strokes.Save(fs);
+                            }
 
                             _ = Task.Run(async () =>
                             {

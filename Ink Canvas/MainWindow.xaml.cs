@@ -1894,6 +1894,9 @@ namespace Ink_Canvas
         private void Window_Closed(object sender, EventArgs e)
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
+            // LTSC L-12：UserPreferenceChanged 是静态事件，订阅了不退订，
+            // 主窗口的闭包会被 SystemEvents 静态持有到进程结束。
+            SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
 
             try
             {

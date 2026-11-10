@@ -220,8 +220,11 @@ namespace Ink_Canvas
                 (typeof(Plugins.IHotkeyService),          new Plugins.HotkeyService(mainWindow.GlobalHotkeyManagerInstance)),
                 (typeof(Plugins.INotificationService),    new Plugins.NotificationService(mainWindow)),
                 (typeof(Plugins.IFileAssociationService),      new Plugins.FileAssociationService()),
-                (typeof(Plugins.IWindowOverviewService),        new Plugins.WindowOverviewService(mainWindow.WindowOverviewModel)),
-                (typeof(Plugins.IWindowOverviewService),         new Plugins.WindowOverviewService(mainWindow.WindowOverviewModel)),
+                // LTSC L-5：原来是逐字重复的两行 IWindowOverviewService 注册。
+                // 第一个实例被字典覆盖，但它已经订阅了长寿命 WindowOverviewModel 的
+                // WindowsUpdated 事件，1Hz 回调永不停、Dispose 永不调用。
+                // 只保留一份。
+                (typeof(Plugins.IWindowOverviewService),  new Plugins.WindowOverviewService(mainWindow.WindowOverviewModel)),
             };
 
             foreach (var (iface, impl) in services)

@@ -186,10 +186,19 @@ namespace Ink_Canvas.Windows
                     inkCanvas = inkCanvasProperty?.GetValue(_mainWindow) as System.Windows.Controls.InkCanvas;
                 }
 
-                if (inkCanvas != null && inkCanvas.Children is INotifyCollectionChanged notifyCollection)
-                {
-                    notifyCollection.CollectionChanged += InkCanvasChildren_CollectionChanged;
-                }
+                // LTSC L-1：这里原来写的是
+                //     if (inkCanvas.Children is INotifyCollectionChanged nc) nc.CollectionChanged += ...
+                // 但 UIElementCollection 只实现 IList / ICollection / IEnumerable
+                // （已用反射实测确认，不实现 INotifyCollectionChanged），
+                // 所以这个判断恒为 false，InkCanvasChildren_CollectionChanged 一次都不会被调用。
+                // 结果是 _pptImages 只有添加、没有任何「用户删掉墨迹时同步移除」的路径。
+                //
+                // 靠事件这条路走不通，改成主动清理：每次插图前按容量淘汰最老的，
+                // 并在切换演示文稿 / 退出放映时整批释放（见 TrimPptImages / ClearAllPptImages）。
+                LogHelper.WriteLogToFile(
+                    "PPTQuickPanel | inkCanvas.Children 不支持变更通知，图片清理改走容量淘汰",
+                    LogHelper.LogType.Trace);
+                _ = inkCanvas;
             }
             catch (Exception ex)
             {
@@ -215,6 +224,73 @@ namespace Ink_Canvas.Windows
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"处理inkCanvas.Children变化失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// LTSC L-1：_pptImages 里保存的是完整的 Image 控件，
+        /// 每个都挂着全分辨率 BitmapSource。原实现没有容量上限也没有确切的清理路径，
+        /// 老师在 PPT 放映中连续插图时内存只增不减（20 张 1080p 约 160MB）。
+        /// 这里给一个硬上限：超过就淘汰最早插入的那几张。
+        /// </summary>
+        private const int MaxPptImagesForLtsc = 8;
+
+        private void TrimPptImages()
+        {
+            try
+            {
+                while (_pptImages.Count > MaxPptImagesForLtsc)
+                {
+                    FrameworkElement oldest = null;
+                    int oldestSlide = int.MaxValue;
+                    foreach (var kvp in _pptImages)
+                    {
+                        if (kvp.Value < oldestSlide)
+                        {
+                            oldestSlide = kvp.Value;
+                            oldest = kvp.Key;
+                        }
+                    }
+                    if (oldest == null) break;
+
+                    LogHelper.WriteLogToFile(
+                        $"PPTQuickPanel | 图片数超过 {MaxPptImagesForLtsc}，淘汰第 {oldestSlide} 页的一张",
+                        LogHelper.LogType.Trace);
+                    RemoveImageFromPPT(oldest);
+
+                    if (oldest.Parent is Panel p) p.Children.Remove(oldest);
+                    else if (_mainWindow?.inkCanvas != null && _mainWindow.inkCanvas.Children.Contains(oldest))
+                        _mainWindow.inkCanvas.Children.Remove(oldest);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PPTQuickPanel | 淘汰旧图片失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
+        /// LTSC L-1：切演示文稿 / 退出放映时整批释放，避免跨课累积。
+        /// </summary>
+        private void ClearAllPptImages()
+        {
+            try
+            {
+                if (_pptImages.Count == 0) return;
+
+                var all = new List<FrameworkElement>(_pptImages.Keys);
+                foreach (var fe in all)
+                {
+                    if (fe.Parent is Panel p) p.Children.Remove(fe);
+                    else if (_mainWindow?.inkCanvas != null && _mainWindow.inkCanvas.Children.Contains(fe))
+                        _mainWindow.inkCanvas.Children.Remove(fe);
+                }
+                _pptImages.Clear();
+                LogHelper.WriteLogToFile($"PPTQuickPanel | 已释放 {all.Count} 张 PPT 图片", LogHelper.LogType.Trace);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PPTQuickPanel | 释放 PPT 图片失败: {ex.Message}", LogHelper.LogType.Warning);
             }
         }
 
@@ -1239,6 +1315,7 @@ namespace Ink_Canvas.Windows
                     if (currentSlideNumber > 0 && !string.IsNullOrEmpty(filePath))
                     {
                         _pptImages[image] = currentSlideNumber;
+                TrimPptImages();
 
                         if (!_pptImagePaths.ContainsKey(currentSlideNumber))
                         {
@@ -1252,6 +1329,7 @@ namespace Ink_Canvas.Windows
                     else if (currentSlideNumber > 0)
                     {
                         _pptImages[image] = currentSlideNumber;
+                TrimPptImages();
                     }
                 }
                 catch (Exception ex)
@@ -1351,6 +1429,7 @@ namespace Ink_Canvas.Windows
                     if (currentSlideNumber > 0 && !string.IsNullOrEmpty(originalFilePath) && saveToJson)
                     {
                         _pptImages[element] = currentSlideNumber;
+                TrimPptImages();
 
                         // 添加到页面图片路径列表
                         if (!_pptImagePaths.ContainsKey(currentSlideNumber))
@@ -1366,6 +1445,7 @@ namespace Ink_Canvas.Windows
                     {
                         // 即使不保存到JSON，也要记录图片和页面编号的关联（用于翻页显示/隐藏）
                         _pptImages[element] = currentSlideNumber;
+                TrimPptImages();
                     }
 
                     // 先添加到画布（与MainWindow的实现保持一致）

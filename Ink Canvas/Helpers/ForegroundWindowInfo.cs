@@ -99,8 +99,12 @@ namespace Ink_Canvas.Helpers
 
             try
             {
-                Process process = Process.GetProcessById((int)processId);
-                return process.ProcessName;
+                // LTSC L-9：Process 是 IDisposable，GetProcessById 会开内核句柄。
+                // 这个方法由 500ms 计时器驱动，每秒 2-4 次，不释放就一路涨。
+                using (Process process = Process.GetProcessById((int)processId))
+                {
+                    return process.ProcessName;
+                }
             }
             catch (ArgumentException)
             {
@@ -117,8 +121,10 @@ namespace Ink_Canvas.Helpers
 
             try
             {
-                Process process = Process.GetProcessById((int)processId);
-                return process.MainModule.FileName;
+                using (Process process = Process.GetProcessById((int)processId))
+                {
+                    return process.MainModule.FileName;
+                }
             }
             catch
             {

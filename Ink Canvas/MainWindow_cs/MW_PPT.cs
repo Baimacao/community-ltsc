@@ -2898,6 +2898,13 @@ namespace Ink_Canvas
                         PPTLoadingRing.Data = Geometry.Empty;
                         PPTLoadingArcRotate.Angle = 0;
                         PPTEnhancedPreviewLoadingOverlay.Visibility = Visibility.Visible;
+                        // LTSC L-2：这里是 new 一个 16ms(62.5Hz) 的 DispatcherTimer，
+                        // 而 finally 里的 _pptLoadingTimer?.Stop() 停的是「字段当前指向的那个」。
+                        // 并发预载时（上一次还没跑完又打开一个演示文稿），第二次进来直接把字段
+                        // 覆盖成新实例，第一个实例既没被 Stop 也没被引用，Tick 却继续每 16ms 跑——
+                        // 匿名 lambda 无法解绑，永久泄漏一个 62.5Hz 回调，越多越卡。
+                        // 先停旧的再建新的。
+                        _pptLoadingTimer?.Stop();
                         _pptLoadingTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
                         _pptLoadingTimer.Tick += (_, _) =>
                         {

@@ -1086,6 +1086,14 @@ namespace Ink_Canvas.Helpers
                 {
                     LogHelper.WriteLogToFile($"Presentation 事件处理异常: {ex.Message}", LogHelper.LogType.Warning);
                 }
+                finally
+                {
+                    // LTSC L-3：649642f3 给每个订阅者造了独立 RCW，解决它们拿到已释放对象的问题，
+                    // 但没有收尾——每订阅一次 PPT 侧引用净 +1，开几次演示文稿 PowerPoint 就退不出去。
+                    // 谁持有谁负责：这里就是那个「持有者」，用完必须还。
+                    // 只在确实是新建的 RCW 时释放（owned != pres 说明上面 get/GetObject 成功过）。
+                    if (!ReferenceEquals(owned, pres)) SafeRelease(owned);
+                }
             }
         }
 
