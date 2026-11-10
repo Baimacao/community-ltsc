@@ -192,8 +192,6 @@ namespace Ink_Canvas.Properties
 
         public static string Theme_Upload => ResourceManager.GetString(nameof(Theme_Upload), _resourceCulture);
 
-        public static string Theme_UseLegacyFloatingBarUI => ResourceManager.GetString(nameof(Theme_UseLegacyFloatingBarUI), _resourceCulture);
-
         public static string Theme_ShowPenColorOnFloatingBarIcon => ResourceManager.GetString(nameof(Theme_ShowPenColorOnFloatingBarIcon), _resourceCulture);
 
         public static string Theme_CompactFloatingBar => ResourceManager.GetString(nameof(Theme_CompactFloatingBar), _resourceCulture);

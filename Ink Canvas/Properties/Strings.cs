@@ -1088,7 +1088,6 @@ namespace Ink_Canvas.Properties
             dict["Theme_AutoCollapseQuickPanel"] = ("ThemeStrings", "Theme_AutoCollapseQuickPanel");
             dict["Theme_AutoCollapseQuickPanelDelay"] = ("ThemeStrings", "Theme_AutoCollapseQuickPanelDelay");
             dict["Theme_Upload"] = ("ThemeStrings", "Theme_Upload");
-            dict["Theme_UseLegacyFloatingBarUI"] = ("ThemeStrings", "Theme_UseLegacyFloatingBarUI");
             dict["Theme_WindowBackdrop"] = ("ThemeStrings", "Theme_WindowBackdrop");
             dict["Theme_WindowBackdrop_Acrylic"] = ("ThemeStrings", "Theme_WindowBackdrop_Acrylic");
             dict["Theme_WindowBackdrop_Acrylic10"] = ("ThemeStrings", "Theme_WindowBackdrop_Acrylic10");

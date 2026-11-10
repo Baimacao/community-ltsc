@@ -2344,13 +2344,11 @@ namespace Ink_Canvas
             await ExitPPTPresentation();
         }
 
-        private void HistoryRollbackButton_Click(object sender, RoutedEventArgs e)
-        {
-            var settingsWindow = new Windows.SettingsViews.SettingsWindow();
-            settingsWindow.Owner = this;
-            settingsWindow.Show();
-            settingsWindow.NavigateToPage("UpdatePage");
-        }
+        // 原 HistoryRollbackButton_Click 已删除（TECH-02）。
+        // 它没有任何 XAML 绑定（全项目 0 处引用），且方法名说"历史回滚"、
+        // 内容却是打开设置窗跳更新页——名实不符。
+        // D-01 删除 UpdatePage 后，那个 NavigateToPage("UpdatePage") 变成悬空键：
+        // 打开一个设置窗，然后什么都不发生。整段一起清掉。
 
         private DispatcherTimer autoSaveStrokesTimer;
 
