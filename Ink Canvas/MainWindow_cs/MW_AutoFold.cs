@@ -523,6 +523,16 @@ namespace Ink_Canvas
         {
             int thisVersion = ++_sidePanelAnimVersion;
 
+            // LTSC C-4：isFloatingBarChangingHideMode 在这里、Fold/UnFold 里被置 true，
+            // 但整条路径上只有一个复位点（本方法末尾）。两处会跳过它：
+            //   ① :570 的 if (_sidePanelAnimVersion != thisVersion) return;  —— 动画被更新版本顶掉
+            //   ② 两处 await Dispatcher.InvokeAsync 抛异常 → async void 把异常甩到
+            //      DispatcherUnhandledException，末尾那句永远不执行
+            // 结果是这个标志永久 true，MW_AutoFold:108 / :416 和 MW_Timer:1218 全部短路，
+            // 浮动栏再也折不起来——只能重启软件。
+            // 现在把复位放进 finally，两个出口都能落回来。
+            try
+            {
             await Dispatcher.InvokeAsync(() =>
             {
                 if (MarginFromEdge == -10)
@@ -578,7 +588,11 @@ namespace Ink_Canvas
 
                 if (MarginFromEdge == -50) LeftSidePanel.Visibility = Visibility.Collapsed;
             });
-            isFloatingBarChangingHideMode = false;
+            }
+            finally
+            {
+                isFloatingBarChangingHideMode = false;
+            }
         }
 
         /// <summary>

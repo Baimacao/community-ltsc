@@ -237,8 +237,11 @@ namespace Ink_Canvas.Helpers
                     ipcEvent.Set();
                 }
 
-                // 等待一段时间让已运行实例处理文件
-                Thread.Sleep(1000);
+                // LTSC UI-1：原来是 Thread.Sleep(1000) 硬等 1 秒「让已运行实例处理文件」。
+                // 这条调用链是 App_Startup → TrySendFileToExistingInstance，跑在 UI 线程上，
+                // 冷启动时白白冻住一秒。对方消费文件本来就是异步的，这一秒没有任何保证作用。
+                // 改成短暂等待 + 后续由对方的 IPC 事件驱动，最多 120ms。
+                Thread.Sleep(120);
 
                 // 清理IPC文件
                 try

@@ -192,6 +192,17 @@ namespace Ink_Canvas.Helpers
             CurrentAvgCpu = 0;
             CurrentMemoryMb = 0;
             SampleCount = 0;
+
+            // LTSC M-3：原来只把 SampleCount 置 0，两个采样列表里的 double 一直留着
+            // （一节课 45 分钟约 540 次 × 2 个 double ≈ 8.6 KB）。
+            // 量不大，但形状是「静态列表 + 只增 + 只在 Start 里 Clear」，
+            // 和真泄漏一模一样，以后每次审计都会重新怀疑它一次。
+            // 顺手清掉，让这条从可疑名单上消失。
+            lock (_lock)
+            {
+                _cpuSamples.Clear();
+                _memorySamples.Clear();
+            }
         }
 
         private static void OnSample(object state)

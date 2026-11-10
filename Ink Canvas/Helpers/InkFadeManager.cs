@@ -37,6 +37,16 @@ namespace Ink_Canvas.Helpers
         private readonly MainWindow _mainWindow;
         private readonly Dispatcher _dispatcher;
         private readonly Dictionary<Stroke, DispatcherTimer> _fadeTimers;
+
+        /// <summary>
+        /// LTSC C-3：分段渐隐会为同一笔创建最多 MAX_SEGMENTS(100) 个 DispatcherTimer
+        /// 外加 1 个 safetyTimer，这些计时器原来没有登记进 _fadeTimers
+        /// （那个字典按 Stroke 一对一，装不下），因此 RemoveStroke / ClearAllFadingStrokes 停不掉它们。
+        /// 后果：激光笔连续书写时，每一笔的分段计时器跑到底，闭包继续强引用
+        /// segments / container / originalVisual，一节课下来内存单调上涨。
+        /// 这张表专门登记「一次分段动画产生的全部计时器」，键是那一笔。
+        /// </summary>
+        private readonly Dictionary<Stroke, List<DispatcherTimer>> _segmentedTimers;
         private readonly Dictionary<Stroke, UIElement> _strokeVisuals;
         private readonly Dictionary<Stroke, Point> _strokeStartPoints;
         private readonly Dictionary<Stroke, Point> _strokeEndPoints;
@@ -49,6 +59,7 @@ namespace Ink_Canvas.Helpers
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _dispatcher = _mainWindow.Dispatcher;
             _fadeTimers = new Dictionary<Stroke, DispatcherTimer>();
+            _segmentedTimers = new Dictionary<Stroke, List<DispatcherTimer>>();
             _strokeVisuals = new Dictionary<Stroke, UIElement>();
             _strokeStartPoints = new Dictionary<Stroke, Point>();
             _strokeEndPoints = new Dictionary<Stroke, Point>();
@@ -162,6 +173,15 @@ namespace Ink_Canvas.Helpers
                     _fadeTimers.Remove(stroke);
                 }
 
+                // LTSC C-3：分段动画的计时器不在 _fadeTimers 里（那个字典按笔画一对一），
+                // 必须单独停，否则它们会跑到底并继续强引用 segments/container。
+                if (_segmentedTimers.TryGetValue(stroke, out var segTimers))
+                {
+                    foreach (var st in segTimers) st.Stop();
+                    segTimers.Clear();
+                    _segmentedTimers.Remove(stroke);
+                }
+
                 if (_strokeVisuals.TryGetValue(stroke, out var visual))
                 {
                     _dispatcher.InvokeAsync(() =>
@@ -205,7 +225,13 @@ namespace Ink_Canvas.Helpers
         {
             try
             {
-                foreach (var timer in _fadeTimers.Values)
+                foreach (var segList in _segmentedTimers.Values)
+            {
+                foreach (var st in segList) st.Stop();
+            }
+            _segmentedTimers.Clear();
+
+            foreach (var timer in _fadeTimers.Values)
                 {
                     timer.Stop();
                 }
@@ -618,6 +644,15 @@ namespace Ink_Canvas.Helpers
                 var completedSegments = new HashSet<UIElement>();
                 var totalSegments = segments.Count;
 
+                // LTSC C-3：本方法里创建的所有计时器都要登记，才能被 RemoveStroke 停掉。
+                var owned = new List<DispatcherTimer>(segments.Count + 1);
+                if (_segmentedTimers.TryGetValue(originalStroke, out var leftover))
+                {
+                    // 同一次书写可能触发多次分段动画，把上一次的残余先收掉
+                    foreach (var oldTimer in leftover) oldTimer.Stop();
+                }
+                _segmentedTimers[originalStroke] = owned;
+
                 for (int i = 0; i < segments.Count; i++)
                 {
                     var segment = segments[i];
@@ -628,6 +663,7 @@ namespace Ink_Canvas.Helpers
                     {
                         Interval = TimeSpan.FromMilliseconds(delay)
                     };
+                    owned.Add(timer);
 
                     int segmentIndex = i;
                     timer.Tick += (sender, e) =>
@@ -656,6 +692,7 @@ namespace Ink_Canvas.Helpers
                     Interval = TimeSpan.FromMilliseconds(safetyTimeout)
                 };
 
+                owned.Add(safetyTimer);
                 safetyTimer.Tick += (sender, e) =>
                 {
                     CleanupSegmentedAnimation(segments, originalStroke, originalVisual, container);
@@ -714,6 +751,15 @@ namespace Ink_Canvas.Helpers
         {
             try
             {
+                // LTSC C-3：动画结束就把这一笔的计时器全部停掉并摘除，
+                // 否则 _segmentedTimers 自己会变成新的泄漏点。
+                if (originalStroke != null && _segmentedTimers.TryGetValue(originalStroke, out var ownedTimers))
+                {
+                    foreach (var st in ownedTimers) st.Stop();
+                    ownedTimers.Clear();
+                    _segmentedTimers.Remove(originalStroke);
+                }
+
                 var parent = _mainWindow.inkCanvas?.Parent as Panel;
                 if (parent != null && parent.Children.Contains(container))
                 {

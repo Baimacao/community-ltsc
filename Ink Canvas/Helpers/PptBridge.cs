@@ -89,6 +89,8 @@ namespace Ink_Canvas.Helpers
         const int StableTicksRequired = 3;
         volatile bool _running;
         volatile bool _pollBusy;
+        /// <summary>LTSC UI-1：轮询进行中时登记「等它收尾再释放 COM」，由 Poll 的 finally 落实。</summary>
+        volatile bool _releasePending;
         readonly object _gate = new object();
         /// <summary>保护 _timer 字段的创建与销毁。和 _gate 分开，避免等待轮询时持锁太久。</summary>
         readonly object _timerGate = new object();
@@ -168,14 +170,16 @@ namespace Ink_Canvas.Helpers
             // 轮询函数有 try/finally 保证 _pollBusy 一定复位，所以这里等它是安全的。
             // 上限 3 秒：单轮轮询正常在毫秒级，等不到说明 COM 调用卡死，
             // 那也不能无限期阻塞 UI 线程——宁可带着一次异常退出也不冻结界面。
-            var waitStart = Environment.TickCount;
-            while (_pollBusy && Environment.TickCount - waitStart < 3000)
-            {
-                Thread.Sleep(10);
-            }
-
-            UnhookComEvents();
-            ReleaseCom();
+            // LTSC UI-1：这里原来是 while (_pollBusy && ... < 3000) Thread.Sleep(10);
+            // 一个最长 3 秒的忙等，而调用方里就有 UI 线程（InitializePPTManagers 走 Loaded、
+            // DisposePPTManagers 走设置页、BtnCheckPPT_Click 走按钮点击）。
+            // 点一下「检查 PPT」最坏卡 3 秒，课上一按就僵住。
+            //
+            // 改成：不在这里等，改为「拿到锁的人负责收尾」。
+            // 具体是让 ReleaseCom 先置一个 pending 标志，轮询循环退出时自己释放；
+            // 如果轮询此刻没在跑（_pollBusy == false），则当场释放。
+            // 两条路都不阻塞调用线程。
+            ReleaseComAfterPollDrains();
             // 直接改字段而不走 SetInSlideShow：状态要归零（否则 Dispose 后
             // IsInSlideShow 还停在 true，外部会以为仍在放映），但不能发事件——
             // 调用方此时可能正在 Dispose UI，收到 false 反而会去碰已释放的控件。
@@ -191,20 +195,78 @@ namespace Ink_Canvas.Helpers
             }
         }
 
-        public void ReloadConnection()
+        /// <summary>
+        /// LTSC UI-1：把「等轮询收尾再释放 COM」从调用线程上摘下来。
+        ///
+        /// 原实现是 while (_pollBusy && ... &lt; 3000) Thread.Sleep(10);，
+        /// 调用方里有 UI 线程（Loaded / 设置页 / 「检查 PPT」按钮），
+        /// 最坏一次点按卡 3 秒。
+        ///
+        /// 现在：轮询没在跑就当场释放；在跑就置一个待释放标志，
+        /// 由轮询函数自己的 finally 在退出时调用 <see cref="DrainPendingRelease"/>。
+        /// 调用方立即返回，永远不阻塞。
+        /// </summary>
+        private void ReleaseComAfterPollDrains()
         {
-            // 和 StopMonitoring 同样的理由：先让正在跑的轮询收尾，再动 COM。
-            var waitStart = Environment.TickCount;
-            while (_pollBusy && Environment.TickCount - waitStart < 3000)
+            if (!_pollBusy)
             {
-                Thread.Sleep(10);
+                // 没有并发的轮询，可以安全地立刻动 COM
+                try
+                {
+                    UnhookComEvents();
+                    ReleaseCom();
+                    _inSlideShow = false;
+                    _pendingInShow = false;
+                    _pendingInShowTicks = 0;
+                    _currentSlide = -1;
+                    SlideShowBounds = System.Drawing.Rectangle.Empty;
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"PptBridge 释放 COM 异常: {ex.Message}", LogHelper.LogType.Warning);
+                }
+                return;
             }
+
+            // 轮询正在跑：标记由它收尾，本线程直接返回
+            _releasePending = true;
+            LogHelper.WriteLogToFile("PptBridge 轮询仍在进行，已登记延迟释放", LogHelper.LogType.Trace);
+        }
+
+        /// <summary>
+        /// LTSC UI-1：由轮询循环在退出时调用，落实 <see cref="ReleaseComAfterPollDrains"/> 登记的释放。
+        /// 带锁，防止和 ReloadConnection 等路径并发。
+        /// </summary>
+        private void DrainPendingRelease()
+        {
+            if (!_releasePending) return;
+            _releasePending = false;
 
             lock (_gate)
             {
-                UnhookComEvents();
-                ReleaseCom();
+                try
+                {
+                    UnhookComEvents();
+                    ReleaseCom();
+                    _inSlideShow = false;
+                    _pendingInShow = false;
+                    _pendingInShowTicks = 0;
+                    _currentSlide = -1;
+                    SlideShowBounds = System.Drawing.Rectangle.Empty;
+                    LogHelper.WriteLogToFile("PptBridge 轮询已收尾，延迟释放完成", LogHelper.LogType.Trace);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"PptBridge 延迟释放异常: {ex.Message}", LogHelper.LogType.Warning);
+                }
             }
+        }
+
+        public void ReloadConnection()
+        {
+            // 和 StopMonitoring 同样的理由：先让正在跑的轮询收尾，再动 COM。
+            // LTSC UI-1：同样去掉 3 秒忙等，改成交给轮询线程在退出时释放。
+            ReleaseComAfterPollDrains();
             _lastConnectCheck = DateTime.MinValue;
             // 刻意不发 SlideShowStateChanged=false。
             // 上一版在这里复位，下一轮轮询又把状态推回 true，导致
@@ -261,7 +323,21 @@ namespace Ink_Canvas.Helpers
             }
             finally
             {
+                // 先清 busy 再落实延迟释放：DrainPendingRelease 里会动 COM，
+                // 如果反过来，它执行期间 _pollBusy 仍是 true，别的线程就可能
+                // 又登记一次释放，或者误以为还有轮询在跑。
                 _pollBusy = false;
+
+                // LTSC UI-1：StopMonitoring / ReloadConnection 在轮询进行中调用时，
+                // 只是登记了 _releasePending 就返回了，真正的 COM 释放由这里完成。
+                try
+                {
+                    DrainPendingRelease();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"PptBridge 收尾释放异常: {ex.Message}", LogHelper.LogType.Warning);
+                }
             }
         }
 

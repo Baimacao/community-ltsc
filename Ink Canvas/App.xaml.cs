@@ -627,7 +627,14 @@ namespace Ink_Canvas
                 ulong currentIdleTime = ToUInt64(idleTime);
                 ulong currentKernelTime = ToUInt64(kernelTime);
                 ulong currentUserTime = ToUInt64(userTime);
-                TimeSpan currentProcessCpuTime = Process.GetCurrentProcess().TotalProcessorTime;
+                // LTSC C-5：Process 实现了 IDisposable，GetCurrentProcess() 每次都会开一个内核句柄。
+                // 这一句由 heartbeat 定时器每秒执行一次，45 分钟约 2700 次，从不释放。
+                // 实测里观察到的「句柄只涨不落」有一部分就是它。
+                TimeSpan currentProcessCpuTime;
+                using (var selfProcess = Process.GetCurrentProcess())
+                {
+                    currentProcessCpuTime = selfProcess.TotalProcessorTime;
+                }
 
                 lock (cpuUsageLock)
                 {
@@ -1037,14 +1044,18 @@ namespace Ink_Canvas
                 return;
             }
 
-            // 检查是否存在更新标记文件
+            // LTSC UI-2：这里原来是整块「等待更新进程结束」的逻辑——
+            // 读 update_in_progress.tmp → 找进程 → while(...) Thread.Sleep(500) 最长 5 秒。
+            // 它跑在 App_Startup 里、主窗口 Show() 之前，也就是老师双击图标后
+            // 那几秒空白。
+            //
+            // D-01 把更新功能整个移除之后，update_in_progress.tmp 在全库范围内
+            // 只被读、没有任何地方写（已全量搜索确认），这个分支永远不会进入。
+            // 留着它只是让人以为「还有更新流程」，所以连判断一起删掉，
+            // 只保留「顺手清理旧版残留文件」这一件仍然有意义的事。
             string updateMarkerFile = Path.Combine(RootPath, "update_in_progress.tmp");
             bool isUpdateInProgress = false;
 
-            // 检查是否以更新模式启动
-            isUpdateMode = e.Args.Contains("--update-mode");
-
-            // 如果是最终应用启动，立即清理更新标记文件
             if (isFinalApp)
             {
                 try
@@ -1052,12 +1063,12 @@ namespace Ink_Canvas
                     if (File.Exists(updateMarkerFile))
                     {
                         File.Delete(updateMarkerFile);
-                        LogHelper.WriteLogToFile("App | 最终应用启动，清理更新标记文件");
+                        LogHelper.WriteLogToFile("App | 最终应用启动，清理旧版更新标记文件");
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.WriteLogToFile($"App | 清理更新标记文件失败: {ex.Message}", LogHelper.LogType.Warning);
+                    LogHelper.WriteLogToFile($"App | 清理旧版更新标记文件失败: {ex.Message}", LogHelper.LogType.Warning);
                 }
 
                 _ = Task.Run(async () =>
@@ -1065,108 +1076,15 @@ namespace Ink_Canvas
                     try
                     {
                         await Task.Delay(3000);
-                        LogHelper.WriteLogToFile("App | 最终应用启动，删除AutoUpdate文件夹");
                         AutoUpdateHelper.DeleteUpdatesFolder();
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.WriteLogToFile($"App | 删除AutoUpdate文件夹失败: {ex.Message}", LogHelper.LogType.Warning);
+                        LogHelper.WriteLogToFile($"App | 删除旧版 AutoUpdate 文件夹失败: {ex.Message}", LogHelper.LogType.Warning);
                     }
                 });
             }
 
-            // 如果不是最终应用启动，才检查更新标记文件
-            if (!isFinalApp && File.Exists(updateMarkerFile))
-            {
-                try
-                {
-                    string updateProcessIdStr = File.ReadAllText(updateMarkerFile).Trim();
-                    if (int.TryParse(updateProcessIdStr, out int updateProcessId))
-                    {
-                        LogHelper.WriteLogToFile($"App | 检测到更新标记文件，更新进程ID: {updateProcessId}");
-
-                        // 检查更新进程是否还在运行
-                        try
-                        {
-                            Process updateProcess = Process.GetProcessById(updateProcessId);
-                            if (!updateProcess.HasExited)
-                            {
-                                LogHelper.WriteLogToFile("App | 更新进程仍在运行，等待更新完成");
-                                isUpdateInProgress = true;
-
-                                // 等待更新进程完成
-                                int waitCount = 0;
-                                const int maxWaitCount = 10; // 减少等待时间到10秒
-
-                                while (waitCount < maxWaitCount && !updateProcess.HasExited)
-                                {
-                                    Thread.Sleep(500); // 减少等待间隔到500ms
-                                    waitCount++;
-                                    LogHelper.WriteLogToFile($"App | 等待更新进程完成... ({waitCount}/{maxWaitCount})");
-                                }
-
-                                if (updateProcess.HasExited)
-                                {
-                                    LogHelper.WriteLogToFile("App | 更新进程已结束");
-                                }
-                                else
-                                {
-                                    LogHelper.WriteLogToFile("App | 等待更新进程超时，强制清理", LogHelper.LogType.Warning);
-                                    // 超时后强制清理标记文件
-                                    try
-                                    {
-                                        if (File.Exists(updateMarkerFile))
-                                        {
-                                            File.Delete(updateMarkerFile);
-                                            LogHelper.WriteLogToFile("App | 强制清理更新标记文件");
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        LogHelper.WriteLogToFile($"App | 强制清理更新标记文件失败: {ex.Message}", LogHelper.LogType.Warning);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                LogHelper.WriteLogToFile("App | 更新进程已结束");
-                            }
-                        }
-                        catch (ArgumentException)
-                        {
-                            LogHelper.WriteLogToFile("App | 更新进程已不存在");
-                        }
-
-                        // 无论更新进程是否还在运行，都清理标记文件
-                        try
-                        {
-                            if (File.Exists(updateMarkerFile))
-                            {
-                                File.Delete(updateMarkerFile);
-                                LogHelper.WriteLogToFile("App | 清理更新标记文件");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"App | 清理更新标记文件失败: {ex.Message}", LogHelper.LogType.Warning);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"App | 读取更新标记文件失败: {ex.Message}", LogHelper.LogType.Warning);
-                    // 如果读取失败，也尝试删除标记文件
-                    try
-                    {
-                        if (File.Exists(updateMarkerFile))
-                        {
-                            File.Delete(updateMarkerFile);
-                            LogHelper.WriteLogToFile("App | 清理损坏的更新标记文件");
-                        }
-                    }
-                    catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
-                }
-            }
 
             // 如果是更新过程、更新模式、最终应用或跳过Mutex检查，跳过Mutex检查
             if (!isUpdateInProgress && !isUpdateMode && !isFinalApp && !skipMutexCheck)

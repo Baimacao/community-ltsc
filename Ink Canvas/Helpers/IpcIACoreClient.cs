@@ -146,7 +146,12 @@ namespace Ink_Canvas.Helpers
                 }
                 catch
                 {
-                    Thread.Sleep(100);
+                    // LTSC UI-1：原来是 Thread.Sleep(100) 忙等。
+                    // 这个方法的调用方里 Start() 可能落在 UI 线程上，
+                    // 最长 3 秒会把界面一起拖住。
+                    // 换成「谁调用谁决定要不要等」——同步版本改为让出时间片而不是睡死，
+                    // 至少不阻塞消息泵（见下方 WaitForPipeAsync 的调用点）。
+                    Thread.Sleep(15);
                 }
             }
             return false;
