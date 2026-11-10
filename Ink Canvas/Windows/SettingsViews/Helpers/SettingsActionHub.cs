@@ -300,12 +300,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
             }
         }
 
-        public static void OnUseLegacyFloatingBarUIChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null) mw.UpdateFloatingBarIcons();
-        }
-
         public static void OnFloatingBarScaleChanged(double actualScale)
         {
             var mw = GetMainWindow();

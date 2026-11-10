@@ -576,9 +576,6 @@ namespace Ink_Canvas
         [JsonProperty("windowBackdrop")]
         public string WindowBackdrop { get; set; } = "Mica";
 
-        [JsonProperty("useLegacyFloatingBarUI")]
-        public bool UseLegacyFloatingBarUI { get; set; } = false;
-
         [JsonProperty("compactFloatingBar")]
         public bool CompactFloatingBar { get; set; } = false;
 
