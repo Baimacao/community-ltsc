@@ -549,7 +549,15 @@ namespace Ink_Canvas.Helpers
             if (oldCount == 0 && newCount > 0)
             {
                 _hasPresentation = true;
-                try { PresentationOpen?.Invoke(pres); } catch { }
+                // 订阅者会在 async 里继续用这个 Presentation（例如
+                // Dispatcher.InvokeAsync 之后才调 InitializePresentation）。
+                // 本方法尾部会 SafeRelease(pres)，若直接把同一个 RCW 交出去，
+                // 异步继续跑时它已被分离，访问 get_Slides() / get_FullName()
+                // 会抛 InvalidComObjectException（实测就是这么炸的）。
+                //
+                // 因此给每个订阅者单独 AddRef 一份引用；订阅者不再需要时
+                // 自行 Marshal.ReleaseComObject。谁持有谁负责，不靠时序赌。
+                RaisePresentationEvent(PresentationOpen, pres);
             }
             else if (oldCount > 0 && newCount == 0)
             {
@@ -892,7 +900,9 @@ namespace Ink_Canvas.Helpers
             if (!_hasPresentation)
             {
                 _hasPresentation = true;
-                try { PresentationOpen?.Invoke(pres); } catch { }
+                // 同 RefreshSlidesCount：订阅者可能在异步里继续用这个对象，
+                // 而 COM 的 Invoke 回调返回后引用随时可能被释放，必须自己持有。
+                RaisePresentationEvent(PresentationOpen, pres);
             }
         }
 
@@ -928,6 +938,44 @@ namespace Ink_Canvas.Helpers
                 if (displayName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)) return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 触发 Presentation 事件，并给每个订阅者各自一份独立的 COM 引用。
+        /// 订阅者常见写法是 Dispatcher.InvokeAsync 之后才真正使用这个对象——
+        /// 那时本方法早已返回、调用方也已释放了自己那份引用，若共用同一个 RCW，
+        /// 订阅者拿到的是已分离的代理，访问任何成员都会抛
+        /// InvalidComObjectException。谁持有谁负责，不靠时序赌。
+        /// </summary>
+        static void RaisePresentationEvent(Action<object> handlers, object pres)
+        {
+            if (handlers == null) return;
+            foreach (Action<object> h in handlers.GetInvocationList())
+            {
+                object owned = pres;
+                if (pres != null && Marshal.IsComObject(pres))
+                {
+                    // 给订阅者一个独立的 RCW（持有自己的一份引用），它用完自己释放。
+                    // 不能直接传 pres：调用方随后就会 SafeRelease，订阅者若在异步里
+                    // 继续用，访问任何成员都会抛 InvalidComObjectException。
+                    IntPtr pUnk = IntPtr.Zero;
+                    try
+                    {
+                        pUnk = Marshal.GetIUnknownForObject(pres);   // 引用 +1
+                        owned = Marshal.GetObjectForIUnknown(pUnk);  // 新 RCW，引用 +1
+                    }
+                    catch { owned = pres; }
+                    finally
+                    {
+                        if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);  // 放掉探针那次
+                    }
+                }
+                try { h(owned); }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"Presentation 事件处理异常: {ex.Message}", LogHelper.LogType.Warning);
+                }
+            }
         }
 
         static void SafeRelease(object comObject)
