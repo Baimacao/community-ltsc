@@ -1369,6 +1369,47 @@ namespace Ink_Canvas
                 });
             }
 
+            // ===== LTSC 临时探针（验证完毕后整块删除）=====
+            // 用途：ICC 的设置窗是 WPF 自绘，外部 UI Automation 读不到控件树，
+            //   --test-crash 之外还需要一条能验证「页面能否真实构造」的路径。
+            //   --dump-settings-pages 会把 36 个设置页逐个 new 出来并调用 Loaded，
+            //   任何构造期异常（XAML 绑定失败、找不到资源键、控件类型不匹配）
+            //   都会被捕获并写进日志。
+            // 删除方式：搜 "LTSC 临时探针" 把整段和下面那个方法一起删掉即可。
+            // 暴力测试：--stress-settings <轮数>，默认 5 轮 × 36 页 = 180 次构造
+            if (e.Args.Any(a => a.StartsWith("--stress-settings")))
+            {
+                int rounds = 5;
+                var idx = Array.FindIndex(e.Args, a => a.StartsWith("--stress-settings"));
+                if (idx >= 0 && idx + 1 < e.Args.Length) int.TryParse(e.Args[idx + 1], out rounds);
+                if (rounds <= 0) rounds = 5;
+                var rr = rounds;
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.StressSettingsPages(rr); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 压力测试失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
+            if (e.Args.Contains("--dump-settings-pages"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.DumpSettingsPages(); }
+                        catch (Exception probeEx)
+                        {
+                            LogHelper.WriteLogToFile("[探针] 整体失败: " + probeEx, LogHelper.LogType.Error);
+                        }
+                    }));
+                });
+            }
+            // ===== LTSC 临时探针结束 =====
+
             // 处理启动时的URI参数
             string startupUriArg = e.Args.FirstOrDefault(a => a.StartsWith("icc:", StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrEmpty(startupUriArg))
@@ -1770,10 +1811,14 @@ namespace Ink_Canvas
 
                     if (sinceHeartbeat.TotalSeconds > 10)
                     {
-                        string restartReason = $"检测到主线程无响应，自动重启。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。";
+                        // 文案要与实际行为一致：原来一律写「自动重启」，
+                        // 但只有 SilentRestart 档才会真的重启，另外两档只记录。
+                        SyncCrashActionFromSettings();
+                        string restartReason = CrashAction == CrashActionType.SilentRestart
+                            ? $"检测到主线程无响应，即将自动重启。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。"
+                            : $"检测到主线程无响应（处置方式={CrashAction}，按当前设置不重启）。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。";
                         LogHelper.NewLog(restartReason);
                         WriteCrashLog(restartReason);
-                        SyncCrashActionFromSettings();
                         if (CrashAction == CrashActionType.SilentRestart)
                         {
                             TryRestartWithBreaker(restartReason);
