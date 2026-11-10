@@ -408,6 +408,15 @@ namespace Ink_Canvas
             if (isViewboxFloatingBarMarginAnimationRunning)
             {
                 ViewboxFloatingBar.BeginAnimation(MarginProperty, null);
+                // LTSC D-05：位移动画现在跑在 RenderTransform 上，中断时也要一并归零，
+                // 否则残留的 TranslateTransform 会和拖动叠加，出现偏移。
+                if (ViewboxFloatingBar.RenderTransform is TranslateTransform dragTranslate)
+                {
+                    dragTranslate.BeginAnimation(TranslateTransform.XProperty, null);
+                    dragTranslate.BeginAnimation(TranslateTransform.YProperty, null);
+                    dragTranslate.X = 0;
+                    dragTranslate.Y = 0;
+                }
                 isViewboxFloatingBarMarginAnimationRunning = false;
             }
 
@@ -2618,8 +2627,8 @@ namespace Ink_Canvas
 
             await Dispatcher.InvokeAsync(() =>
             {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, null);
+                AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar,
+                    new Thickness(pos.X, pos.Y, -2000, -200));
                 isViewboxFloatingBarMarginAnimationRunning = false;
                 if (!Topmost) ViewboxFloatingBar.Visibility = Visibility.Hidden;
 
@@ -2857,18 +2866,28 @@ namespace Ink_Canvas
 
             if (animate)
             {
-                var marginAnimation = new ThicknessAnimation
+                // LTSC D-05：改走合成层。ViewboxFloatingBar 的缩放在 LayoutTransform 上，
+                // RenderTransform 是空位，这里用 TranslateTransform 做位移不会影响缩放。
+                var targetMargin = new Thickness(pos.X, pos.Y, 0, -20);
+                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        ViewboxFloatingBar, targetMargin, 0.35, new CircleEase()))
                 {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20),
-                    EasingFunction = new CircleEase()
-                };
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                    var marginAnimation = new ThicknessAnimation
+                    {
+                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35)),
+                        From = ViewboxFloatingBar.Margin,
+                        To = targetMargin,
+                        EasingFunction = new CircleEase()
+                    };
+                    ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                }
             }
             else
             {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, 0, -20);
+                // LTSC D-05：直接定位时也要清掉可能残留的合成层位移，
+                // 否则上一次动画没跑完就走到这里，translate 会和 Margin 叠加导致偏移。
+                AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar,
+                    new Thickness(pos.X, pos.Y, 0, -20));
             }
 
             if (!animate) isViewboxFloatingBarMarginAnimationRunning = false;
@@ -2988,21 +3007,28 @@ namespace Ink_Canvas
                         pointDesktop = pos;
                 }
 
-                var marginAnimation = new ThicknessAnimation
+                // LTSC D-05：改走合成层（缩放在 LayoutTransform 上，不会受影响）
+                var targetMargin = new Thickness(pos.X, pos.Y, 0, -20);
+                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        ViewboxFloatingBar, targetMargin, 0.35, new CircleEase()))
                 {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20),
-                    EasingFunction = new CircleEase()
-                };
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                    var marginAnimation = new ThicknessAnimation
+                    {
+                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35)),
+                        From = ViewboxFloatingBar.Margin,
+                        To = targetMargin,
+                        EasingFunction = new CircleEase()
+                    };
+                    ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                }
             });
 
             await Task.Delay(349);
 
             await Dispatcher.InvokeAsync(() =>
             {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
+                AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar,
+                    new Thickness(pos.X, pos.Y, -2000, -200));
 
                 if (!string.IsNullOrEmpty(_currentToolMode))
                 {
@@ -3104,21 +3130,28 @@ namespace Ink_Canvas
                         pointPPT = pos;
                 }
 
-                var marginAnimation = new ThicknessAnimation
+                // LTSC D-05：改走合成层（缩放在 LayoutTransform 上，不会受影响）
+                var targetMargin = new Thickness(pos.X, pos.Y, 0, -20);
+                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        ViewboxFloatingBar, targetMargin, 0.35, new CircleEase()))
                 {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20),
-                    EasingFunction = new CircleEase()
-                };
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                    var marginAnimation = new ThicknessAnimation
+                    {
+                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35)),
+                        From = ViewboxFloatingBar.Margin,
+                        To = targetMargin,
+                        EasingFunction = new CircleEase()
+                    };
+                    ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                }
             });
 
             await Task.Delay(349);
 
             await Dispatcher.InvokeAsync(() =>
             {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
+                AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar,
+                    new Thickness(pos.X, pos.Y, -2000, -200));
 
                 if (!string.IsNullOrEmpty(_currentToolMode))
                 {

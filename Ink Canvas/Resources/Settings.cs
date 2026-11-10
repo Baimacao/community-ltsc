@@ -635,6 +635,13 @@ namespace Ink_Canvas
 
         [JsonProperty("disableToolbarAnimation")]
         public bool DisableToolbarAnimation { get; set; } = false;
+
+        /// <summary>
+        /// LTSC D-05：全局动效开关。为 true 时全仓所有动画退化为瞬时完成。
+        /// 默认 false，保持与旧版一致的视觉表现。
+        /// </summary>
+        [JsonProperty("disableAllAnimations")]
+        public bool DisableAllAnimations { get; set; } = false;
     }
 
     public enum PPTLinkMode

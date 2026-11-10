@@ -9,6 +9,29 @@ namespace Ink_Canvas.Helpers
 {
     internal class AnimationsHelper
     {
+        /// <summary>LTSC D-05: 全局动效抑制。为 true 时所有动画退化为瞬时完成。</summary>
+        internal static bool AnimationsDisabled
+        {
+            get
+            {
+                try { return Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.Settings?.Appearance?.DisableAllAnimations ?? false; }
+                catch { return false; }
+            }
+        }
+
+        /// <summary>
+        /// 把动画时长归零（当全局动效被禁用时），否则原样返回。
+        /// </summary>
+        /// <remarks>
+        /// 关于 TimeSpan.Zero 的安全性：WPF 的 Storyboard 在 Duration 为 Zero 时不会挂起，
+        /// 而是立即把属性推到 From 值并同步完成、触发 Completed，随后 Clock 自然结束并解绑一次。
+        /// 因此动画退化为"瞬时完成"，属性终值与原来的动画一致，
+        /// 不会出现"动画卡住导致工具栏永远展不开"的情况。
+        /// 另外 From/To 仍然显式给出，所以即使归零也一定落在正确的终值上，不会残留起始值。
+        /// </remarks>
+        internal static TimeSpan EffectiveDuration(TimeSpan duration)
+            => AnimationsDisabled ? TimeSpan.Zero : duration;
+
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
 
         /// <summary>
@@ -162,7 +185,7 @@ namespace Ink_Canvas.Helpers
             {
                 From = 0.5,
                 To = 1,
-                Duration = TimeSpan.FromSeconds(duration)
+                Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
             };
             Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
 
@@ -197,7 +220,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 fadeInAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTarget(fadeInAnimation, target);
@@ -207,7 +230,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 20,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 slideAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTarget(slideAnimation, target);
@@ -237,7 +260,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0.5,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
 
@@ -246,7 +269,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = element.RenderTransform.Value.OffsetX - 20, // 滑动距离
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
 
@@ -277,7 +300,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
 
@@ -286,7 +309,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 scaleYAnimation.EasingFunction = new CubicEase();
                 scaleXAnimation.EasingFunction = new CubicEase();
@@ -320,7 +343,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
 
@@ -329,7 +352,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
 
@@ -365,7 +388,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 1,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 fadeOutAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
@@ -374,7 +397,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 10,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 slideAnimation.EasingFunction = new CubicEase();
 
@@ -407,7 +430,7 @@ namespace Ink_Canvas.Helpers
             {
                 From = 1,
                 To = 0,
-                Duration = TimeSpan.FromSeconds(duration)
+                Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
             };
             Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
 
@@ -455,7 +478,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = targetOpacity * 0.5,
                     To = targetOpacity,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 fadeInAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
@@ -464,7 +487,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 10,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 slideAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
@@ -501,7 +524,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = targetOpacity,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 fadeOutAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
@@ -510,7 +533,7 @@ namespace Ink_Canvas.Helpers
                 {
                     From = 0,
                     To = 10,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
                 };
                 slideAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
@@ -562,6 +585,159 @@ namespace Ink_Canvas.Helpers
             // 其他 Popup 默认不透明
             return 1.0;
         }
+
+        #region LTSC D-05：布局动画改走合成层（RenderTransform）
+
+        /// <summary>
+        /// 取（或创建）目标控件上的 <see cref="TranslateTransform"/>，用于把位移动画放到合成层。
+        /// </summary>
+        /// <remarks>
+        /// 只有当 RenderTransform 为空 / 恒等变换、或已经是 TranslateTransform 时才会写入。
+        /// 若控件已经挂着别的变换（ScaleTransform / TransformGroup 等），直接返回 null，
+        /// 由调用方回退到原来的 Margin 动画 —— 绝不允许覆盖别人已有的变换链。
+        /// 注意：WPF 的 UIElement.RenderTransform 默认值是 Transform.Identity 而**不是** null
+        /// （仓库里 MW_ElementsControls / MW_ImageInsert 也是按 Identity 判空的），
+        /// 所以这里必须把 Identity 当成"空位"处理，否则所有控件都会被误判为已占用。
+        /// 特别注意：ViewboxFloatingBar 的缩放挂在 LayoutTransform 上（ViewboxFloatingBarScaleTransform），
+        /// 与 RenderTransform 是两条独立的链，所以这里不会把浮动栏缩放弄丢。
+        /// </remarks>
+        internal static TranslateTransform TryEnsureTranslateTransform(FrameworkElement target)
+        {
+            if (target == null) return null;
+
+            if (target.RenderTransform is TranslateTransform existing) return existing;
+
+            // Transform.Identity 是默认值，等价于"没有设置过"，可以安全接管。
+            var current = target.RenderTransform;
+            if (current != null && !current.Value.IsIdentity) return null;
+
+            var tt = new TranslateTransform();
+            target.RenderTransform = tt;
+            return tt;
+        }
+
+        /// <summary>
+        /// 取 Margin 变化在某个对齐方式下对应的"视觉位移量"。
+        /// Left/Top 对齐时位移量与 Margin 同向；Right/Bottom 对齐时反向；Center 时取一半。
+        /// </summary>
+        private static double MarginShiftX(Thickness from, Thickness to, HorizontalAlignment align)
+        {
+            switch (align)
+            {
+                case HorizontalAlignment.Right: return from.Right - to.Right;
+                case HorizontalAlignment.Center: return (to.Left - from.Left - (to.Right - from.Right)) * 0.5;
+                default: return to.Left - from.Left;
+            }
+        }
+
+        private static double MarginShiftY(Thickness from, Thickness to, VerticalAlignment align)
+        {
+            switch (align)
+            {
+                case VerticalAlignment.Bottom: return from.Bottom - to.Bottom;
+                case VerticalAlignment.Center: return (to.Top - from.Top - (to.Bottom - from.Bottom)) * 0.5;
+                default: return to.Top - from.Top;
+            }
+        }
+
+        /// <summary>
+        /// 用 RenderTransform.TranslateTransform 完成一次 Margin 位移动画。
+        /// 动画期间 Margin 保持不变（也就不会触发任何布局传递），
+        /// 结束后调用方必须调用 <see cref="LandMarginOnCompositionLayer"/> 落地到真实 Margin。
+        /// </summary>
+        /// <returns>true 表示已经改走合成层；false 表示控件不适合，调用方应回退到 ThicknessAnimation。</returns>
+        internal static bool TryAnimateMarginOnCompositionLayer(
+            FrameworkElement target, Thickness to, double seconds, IEasingFunction easing = null)
+        {
+            try
+            {
+                if (target == null) return false;
+
+                var from = target.Margin;
+
+                var tt = TryEnsureTranslateTransform(target);
+                if (tt == null) return false;
+
+                // 动画期间 Margin 保持在旧值，真正的画面位置 = Margin 位置 + 当前位移。
+                // 读 tt.X / tt.Y 拿到的是**动画中的当前值**（WPF 中动画值会体现在属性读取上），
+                // 这样即使用户快速连点、上一次动画还没跑完，也能从当前画面位置继续，不会跳变。
+                double currentX = tt.X;
+                double currentY = tt.Y;
+
+                // 目标相对"Margin 起点"的总位移
+                double targetDx = MarginShiftX(from, to, target.HorizontalAlignment);
+                double targetDy = MarginShiftY(from, to, target.VerticalAlignment);
+
+                // 还剩多少要走（用于判断是否值得起一个动画）
+                double remainingX = targetDx - currentX;
+                double remainingY = targetDy - currentY;
+
+                if (Math.Abs(remainingX) <= 0.01 && Math.Abs(remainingY) <= 0.01) return true;
+
+                var duration = EffectiveDuration(TimeSpan.FromSeconds(seconds));
+                var sb = new Storyboard();
+
+                // 用与 ShowWithSlideFromBottomAndFade / HideWithSlideAndFade 一致的元素属性路径写法，
+                // 这是本仓库已经在大量使用的成熟模式。
+                // From 取当前位移而不是 0：动画被打断时能从画面当前位置平滑接上，不会先跳回起点。
+                if (Math.Abs(remainingX) > 0.01)
+                {
+                    var ax = new DoubleAnimation { From = currentX, To = targetDx, Duration = duration };
+                    if (easing != null) ax.EasingFunction = easing;
+                    Storyboard.SetTarget(ax, target);
+                    Storyboard.SetTargetProperty(ax, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
+                    sb.Children.Add(ax);
+                }
+
+                if (Math.Abs(remainingY) > 0.01)
+                {
+                    var ay = new DoubleAnimation { From = currentY, To = targetDy, Duration = duration };
+                    if (easing != null) ay.EasingFunction = easing;
+                    Storyboard.SetTarget(ay, target);
+                    Storyboard.SetTargetProperty(ay, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
+                    sb.Children.Add(ay);
+                }
+
+                sb.Begin(target);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 把位移动画落地：先解绑并归零 TranslateTransform，再硬设最终 Margin。
+        /// 顺序很重要 —— 这样布局只在最后一帧算一次，而不是每一帧都算。
+        /// </summary>
+        internal static void LandMarginOnCompositionLayer(FrameworkElement target, Thickness finalMargin)
+        {
+            try
+            {
+                if (target == null) return;
+
+                // 1) 先解绑并归零位移，让控件回到"旧 Margin"的基准位置
+                if (target.RenderTransform is TranslateTransform tt)
+                {
+                    tt.BeginAnimation(TranslateTransform.XProperty, null);
+                    tt.BeginAnimation(TranslateTransform.YProperty, null);
+                    tt.X = 0;
+                    tt.Y = 0;
+                }
+
+                // 2) 再写入最终 Margin（此时若仍有 Margin 动画在跑，动画值优先级更高，
+                //    不会立即触发布局；解绑后本地值直接生效，整个落地只算一次布局）
+                target.Margin = finalMargin;
+
+                // 3) 最后解绑 Margin 动画（回退到 ThicknessAnimation 的分支需要这一步）
+                target.BeginAnimation(FrameworkElement.MarginProperty, null);
+            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+        }
+
+        #endregion
 
     }
 }

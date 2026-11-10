@@ -179,20 +179,27 @@ namespace Ink_Canvas
                 LeftUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    var marginAnimation = new ThicknessAnimation
+                    // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                    var targetMargin = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
+                    if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                            LeftUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
                     {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
-                        To = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                        var marginAnimation = new ThicknessAnimation
+                        {
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            From = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
+                            To = targetMargin
+                        };
+                        marginAnimation.EasingFunction = new CubicEase();
+                        LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                    }
                 });
                 await Task.Delay(100);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LeftUnFoldButtonQuickPanel.Margin = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
+                    AnimationsHelper.LandMarginOnCompositionLayer(LeftUnFoldButtonQuickPanel,
+                        new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset));
                 });
 
                 StartAutoCollapseQuickPanelTimer();
@@ -224,20 +231,27 @@ namespace Ink_Canvas
                 RightUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    var marginAnimation = new ThicknessAnimation
+                    // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                    var targetMargin = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
+                    if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                            RightUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
                     {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
-                        To = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                        var marginAnimation = new ThicknessAnimation
+                        {
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            From = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
+                            To = targetMargin
+                        };
+                        marginAnimation.EasingFunction = new CubicEase();
+                        RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                    }
                 });
                 await Task.Delay(100);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    RightUnFoldButtonQuickPanel.Margin = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
+                    AnimationsHelper.LandMarginOnCompositionLayer(RightUnFoldButtonQuickPanel,
+                        new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset));
                 });
 
                 StartAutoCollapseQuickPanelTimer();
@@ -264,20 +278,27 @@ namespace Ink_Canvas
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    var marginAnimation = new ThicknessAnimation
+                    // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                    var targetMargin = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
+                    if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                            LeftUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
                     {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
-                        To = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                        var marginAnimation = new ThicknessAnimation
+                        {
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            From = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
+                            To = targetMargin
+                        };
+                        marginAnimation.EasingFunction = new CubicEase();
+                        LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                    }
                 });
                 await Task.Delay(100);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    LeftUnFoldButtonQuickPanel.Margin = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
+                    AnimationsHelper.LandMarginOnCompositionLayer(LeftUnFoldButtonQuickPanel,
+                        new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset));
                     LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
                 });
             }
@@ -298,20 +319,27 @@ namespace Ink_Canvas
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    var marginAnimation = new ThicknessAnimation
+                    // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                    var targetMargin = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
+                    if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                            RightUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
                     {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
-                        To = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                        var marginAnimation = new ThicknessAnimation
+                        {
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            From = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
+                            To = targetMargin
+                        };
+                        marginAnimation.EasingFunction = new CubicEase();
+                        RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
+                    }
                 });
                 await Task.Delay(100);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    RightUnFoldButtonQuickPanel.Margin = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
+                    AnimationsHelper.LandMarginOnCompositionLayer(RightUnFoldButtonQuickPanel,
+                        new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset));
                     RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
                 });
             }
@@ -505,22 +533,36 @@ namespace Ink_Canvas
                         LeftSidePanel.Visibility = Visibility.Collapsed;
                 }
 
-                var LeftSidePanelmarginAnimation = new ThicknessAnimation
+                // LTSC D-05：左右侧栏改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                var leftTarget = new Thickness(MarginFromEdge, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
+                var rightTarget = new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset);
+                double sidePanelSeconds = isNoAnimation ? 0 : 0.175;
+
+                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        LeftSidePanel, leftTarget, sidePanelSeconds, new CubicEase()))
                 {
-                    Duration = isNoAnimation ? TimeSpan.FromSeconds(0) : TimeSpan.FromSeconds(0.175),
-                    From = LeftSidePanel.Margin,
-                    To = new Thickness(MarginFromEdge, 0, 0, Settings.Appearance.QuickPanelBottomOffset)
-                };
-                LeftSidePanelmarginAnimation.EasingFunction = new CubicEase();
-                var RightSidePanelmarginAnimation = new ThicknessAnimation
+                    var leftAnimation = new ThicknessAnimation
+                    {
+                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(sidePanelSeconds)),
+                        From = LeftSidePanel.Margin,
+                        To = leftTarget
+                    };
+                    leftAnimation.EasingFunction = new CubicEase();
+                    LeftSidePanel.BeginAnimation(MarginProperty, leftAnimation);
+                }
+
+                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        RightSidePanel, rightTarget, sidePanelSeconds, new CubicEase()))
                 {
-                    Duration = isNoAnimation ? TimeSpan.FromSeconds(0) : TimeSpan.FromSeconds(0.175),
-                    From = RightSidePanel.Margin,
-                    To = new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset)
-                };
-                RightSidePanelmarginAnimation.EasingFunction = new CubicEase();
-                LeftSidePanel.BeginAnimation(MarginProperty, LeftSidePanelmarginAnimation);
-                RightSidePanel.BeginAnimation(MarginProperty, RightSidePanelmarginAnimation);
+                    var rightAnimation = new ThicknessAnimation
+                    {
+                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(sidePanelSeconds)),
+                        From = RightSidePanel.Margin,
+                        To = rightTarget
+                    };
+                    rightAnimation.EasingFunction = new CubicEase();
+                    RightSidePanel.BeginAnimation(MarginProperty, rightAnimation);
+                }
             });
 
             await Task.Delay(600);
@@ -529,8 +571,10 @@ namespace Ink_Canvas
 
             await Dispatcher.InvokeAsync(() =>
             {
-                LeftSidePanel.Margin = new Thickness(MarginFromEdge, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
-                RightSidePanel.Margin = new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset);
+                AnimationsHelper.LandMarginOnCompositionLayer(LeftSidePanel,
+                    new Thickness(MarginFromEdge, 0, 0, Settings.Appearance.QuickPanelBottomOffset));
+                AnimationsHelper.LandMarginOnCompositionLayer(RightSidePanel,
+                    new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset));
 
                 if (MarginFromEdge == -50) LeftSidePanel.Visibility = Visibility.Collapsed;
             });
