@@ -133,21 +133,6 @@
                     </ComboBox>
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Header="{x:Static props:NotificationStrings.AnimationMode}"
-                                 Description="{x:Static props:NotificationStrings.AnimationModeHint}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}"
-                                     FontSize="16" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ComboBox x:Name="ComboBoxAnimationMode"
-                              MinWidth="180"
-                              SelectionChanged="ComboBoxAnimationMode_SelectionChanged">
-                        <ComboBoxItem Content="{x:Static props:NotificationStrings.AnimationOff}" Tag="Off" />
-                        <ComboBoxItem Content="{x:Static props:NotificationStrings.AnimationSimple}" Tag="Simple" />
-                        <ComboBoxItem Content="{x:Static props:NotificationStrings.AnimationStandard}" Tag="Standard" />
-                    </ComboBox>
-                </ui:SettingsCard>
-
                 <ui:SettingsCard Header="{x:Static props:NotificationStrings.UpdateDuration}"
                                  Description="{x:Static props:NotificationStrings.UpdateDurationHint}">
                     <ui:SettingsCard.HeaderIcon>

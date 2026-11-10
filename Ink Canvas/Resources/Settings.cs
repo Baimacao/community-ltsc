@@ -170,9 +170,6 @@ namespace Ink_Canvas
         [JsonProperty("placement")]
         public string Placement { get; set; } = "TopCenter";
 
-        [JsonProperty("animationMode")]
-        public string AnimationMode { get; set; } = "Standard";
-
         [JsonProperty("updateDurationSeconds")]
         public int UpdateDurationSeconds { get; set; } = 3;
 
@@ -608,12 +605,6 @@ namespace Ink_Canvas
 
         [JsonProperty("quickPanelBottomOffset")]
         public double QuickPanelBottomOffset { get; set; } = -150;
-
-        [JsonProperty("useMinimalistGrabHandle")]
-        public bool UseMinimalistGrabHandle { get; set; } = true;
-
-        [JsonProperty("showGrabHandleChevron")]
-        public bool ShowGrabHandleChevron { get; set; } = false;
 
         [JsonProperty("useFloatingQuickPanel")]
         public bool UseFloatingQuickPanel { get; set; } = true;

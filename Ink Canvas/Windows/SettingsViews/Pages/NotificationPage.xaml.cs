@@ -47,7 +47,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             CheckBoxDictationDoNotDisturbWhiteboard.IsChecked = notification.IsDictationDoNotDisturbInWhiteboardEnabled;
 
             SelectComboBoxItemByTag(ComboBoxPlacement, notification.Placement, "TopCenter");
-            SelectComboBoxItemByTag(ComboBoxAnimationMode, notification.AnimationMode, "Standard");
+            // LTSC C-01: animationMode 设置项已移除（全仓零读取方）。
 
             UpdateDurationSlider.Value = Math.Max(UpdateDurationSlider.Minimum, Math.Min(UpdateDurationSlider.Maximum, notification.UpdateDurationSeconds));
             UrgentDurationSlider.Value = Math.Max(UrgentDurationSlider.Minimum, Math.Min(UrgentDurationSlider.Maximum, notification.UrgentDurationSeconds));
@@ -190,13 +190,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             if (!_isLoaded || ComboBoxPlacement.SelectedItem is not ComboBoxItem item) return;
             SettingsManager.Settings.Notification.Placement = item.Tag?.ToString() ?? "TopCenter";
-            SaveSettings();
-        }
-
-        private void ComboBoxAnimationMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_isLoaded || ComboBoxAnimationMode.SelectedItem is not ComboBoxItem item) return;
-            SettingsManager.Settings.Notification.AnimationMode = item.Tag?.ToString() ?? "Standard";
             SaveSettings();
         }
 
