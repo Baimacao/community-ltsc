@@ -34,7 +34,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "BoardAppearancePage", typeof(BoardAppearancePage) },
             { "BoardMenuPage", typeof(BoardMenuPage) },
             { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
-            { "UpdatePage", typeof(UpdatePage) },
             { "NotificationPage", typeof(NotificationPage) },
             { "ExperimentalPage", typeof(ExperimentalPage) },
             { "AdvancedPage", typeof(AdvancedPage) },
@@ -69,7 +68,6 @@ namespace Ink_Canvas.Windows.SettingsViews
         private bool _wasMaximized = false;
 
         private bool _isNavigating = false;
-        private bool _updateBadgeDismissed = false;
 
         public SettingsWindow()
         {
@@ -97,7 +95,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                 { "BoardAppearancePage", typeof(BoardAppearancePage) },
                 { "BoardMenuPage", typeof(BoardMenuPage) },
                 { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
-                { "UpdatePage", typeof(UpdatePage) },
                 { "NotificationPage", typeof(NotificationPage) },
                 { "ExperimentalPage", typeof(ExperimentalPage) },
                 { "AdvancedPage", typeof(AdvancedPage) },
@@ -370,11 +367,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                     }
                     NavigationViewControl.Header = selectedItem.Content;
 
-                    if (tag == "UpdatePage")
-                    {
-                        _updateBadgeDismissed = true;
-                        UpdateUpdateBadgeVisibility();
-                    }
                 }
             }
         }
@@ -868,20 +860,12 @@ namespace Ink_Canvas.Windows.SettingsViews
             }
         }
 
+        /// <summary>
+        /// LTSC D-01: 自动更新已移除，更新角标没有存在的意义。保留空方法是因为
+        /// 调用点散布在窗口初始化与导航里，删调用比留空实现风险大。
+        /// </summary>
         public void UpdateUpdateBadgeVisibility()
         {
-            try
-            {
-                var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                bool hasUpdate = mainWindow != null && !string.IsNullOrEmpty(mainWindow.AvailableLatestVersion);
-                var item = FindNavigationViewItemByTag("UpdatePage");
-                var badge = item?.InfoBadge;
-                if (badge != null)
-                {
-                    badge.Visibility = (hasUpdate && !_updateBadgeDismissed) ? Visibility.Visible : Visibility.Collapsed;
-                }
-            }
-            catch { }
         }
 
     }

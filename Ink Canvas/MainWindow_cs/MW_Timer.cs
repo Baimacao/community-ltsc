@@ -221,10 +221,8 @@ namespace Ink_Canvas
             _unifiedMainWindowTimer = new Timer(500);
             _unifiedMainWindowTimer.Elapsed += OnUnifiedMainWindowTimerElapsed;
             _unifiedMainWindowTimer.AutoReset = true;
-            timerCheckAutoUpdateWithSilence.Elapsed += timerCheckAutoUpdateWithSilence_Elapsed;
-            timerCheckAutoUpdateWithSilence.Interval = 1000 * 60 * 10;
-            timerCheckAutoUpdateRetry.Elapsed += timerCheckAutoUpdateRetry_Elapsed;
-            timerCheckAutoUpdateRetry.Interval = 1000 * 60 * 10;
+            // LTSC D-01: 自动更新已移除，两个更新定时器不再启动（保留字段与 Stop/Dispose
+            // 逻辑不动，避免影响清理路径）。
             WaterMarkTime.DataContext = nowTimeVM;
             WaterMarkDate.DataContext = nowTimeVM;
             timerDisplayDate.Elapsed += TimerDisplayDate_Elapsed;
@@ -1385,7 +1383,7 @@ namespace Ink_Canvas
                 }
 
                 // 检查是否在静默更新时间段内
-                bool isInSilencePeriod = AutoUpdateWithSilenceTimeComboBox.CheckIsInSilencePeriod(
+                bool isInSilencePeriod = AutoUpdateHelper.CheckIsInSilencePeriod(
                     Settings.Startup.AutoUpdateWithSilenceStartTime,
                     Settings.Startup.AutoUpdateWithSilenceEndTime);
 
