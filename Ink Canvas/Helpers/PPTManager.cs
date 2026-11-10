@@ -50,6 +50,59 @@ namespace Ink_Canvas.Helpers
 
         /// <summary>上一次 PptComBridge 失败的原因，用于抑制重复日志。</summary>
         private PptComBridge.FailureReason _lastBridgeFailureReason = PptComBridge.FailureReason.None;
+
+        /// <summary>
+        /// 上一次"PowerPoint/WPS 进程是否存在"的检查结果，以及检查时间。
+        /// 用途：进程根本不在时跳过 ROT 枚举。枚举 ROT 要走 20+ 次跨进程 COM 调用，
+        /// 而 2 秒一次的轮询里绝大多数时候 PPT 都没开——这一步省掉的是纯浪费。
+        /// 缓存 2 秒，和轮询间隔对齐，不会因为缓存而错过启动。
+        /// </summary>
+        private bool _pptProcessAlive;
+        private DateTime _pptProcessCheckTime = DateTime.MinValue;
+        private static readonly TimeSpan PptProcessCacheDuration = TimeSpan.FromSeconds(2);
+
+        /// <summary>PowerPoint / WPS 的进程名（不带扩展名，小写）。</summary>
+        private static readonly string[] s_pptFamilyProcessNames =
+        {
+            "powerpnt",   // Microsoft PowerPoint
+            "wpp",        // WPS 演示
+            "wps",        // WPS 文字（WPS 有时用主进程承载演示）
+            "wpsoffice",
+        };
+
+        /// <summary>
+        /// 快速判断 Office/WPS 家族进程是否存在。用 GetProcessesByName 而不是
+        /// Process.GetProcesses()——前者由内核按名字过滤，后者要遍历全系统几百个进程。
+        /// </summary>
+        private bool IsPptFamilyProcessAlive()
+        {
+            var now = DateTime.UtcNow;
+            if (now - _pptProcessCheckTime < PptProcessCacheDuration)
+                return _pptProcessAlive;
+
+            _pptProcessCheckTime = now;
+            _pptProcessAlive = false;
+
+            foreach (var name in s_pptFamilyProcessNames)
+            {
+                try
+                {
+                    var found = Process.GetProcessesByName(name);
+                    if (found != null && found.Length > 0)
+                    {
+                        foreach (var proc in found) { try { proc.Dispose(); } catch { } }
+                        _pptProcessAlive = true;
+                        break;
+                    }
+                }
+                catch
+                {
+                    // 单个名字查失败不影响其它名字
+                }
+            }
+
+            return _pptProcessAlive;
+        }
         public bool SkipAnimationsWhenNavigating { get; set; } = false;
 
         #endregion
@@ -166,6 +219,23 @@ namespace Ink_Canvas.Helpers
                 try
                 {
                     if (_isModuleUnloading) return;
+
+                    // 先看一眼 PPT/WPS 进程在不在。不在就直接按"未连接"处理，
+                    // 不去碰 COM：枚举 ROT 要走 20+ 次跨进程调用，而 2 秒一轮的
+                    // 轮询里绝大多数时候用户根本没开 PowerPoint。
+                    // 进程检查由内核按名字过滤，几十微秒；ROT 枚举是毫秒级。
+                    if (!IsPptFamilyProcessAlive())
+                    {
+                        if (IsConnected)
+                        {
+                            DisconnectFromPPT();
+                        }
+                        else if (PPTApplication != null)
+                        {
+                            DisconnectFromPPT();
+                        }
+                        return;
+                    }
 
                     // 尝试连接到PowerPoint
                     var pptApp = TryConnectToPowerPoint();
