@@ -102,6 +102,13 @@ namespace Ink_Canvas.Windows
         private double _collapsedOffset = 200; // 折叠时的偏移量（隐藏内容区域）
         private MainWindow _mainWindow;
 
+        // LTSC D-08: 反射订阅的 4 个 PPT 事件处理器必须保存为字段，
+        // 否则 Unloaded 时无法退订（原先用局部变量，退订无从下手）。
+        private Action<object> _pptPresentationOpenHandler;
+        private Action<object> _pptSlideShowBeginHandler;
+        private Action<object> _pptSlideShowNextSlideHandler;
+        private Action<object> _pptSlideShowEndHandler;
+
         private Dictionary<FrameworkElement, int> _pptImages = new Dictionary<FrameworkElement, int>();
 
         private Dictionary<int, List<string>> _pptImagePaths = new Dictionary<int, List<string>>();
@@ -290,38 +297,88 @@ namespace Ink_Canvas.Windows
                     var presentationOpenEvent = pptManager.GetType().GetEvent("PresentationOpen");
                     if (presentationOpenEvent != null)
                     {
-                        var openHandler = new Action<object>(OnPPTPresentationOpen);
-                        presentationOpenEvent.AddEventHandler(pptManager, openHandler);
+                        _pptPresentationOpenHandler = OnPPTPresentationOpen;
+                        presentationOpenEvent.AddEventHandler(pptManager, _pptPresentationOpenHandler);
                     }
 
                     // 订阅PPT开始事件
                     var slideShowBeginEvent = pptManager.GetType().GetEvent("SlideShowBegin");
                     if (slideShowBeginEvent != null)
                     {
-                        var beginHandler = new Action<object>(OnPPTSlideShowBegin);
-                        slideShowBeginEvent.AddEventHandler(pptManager, beginHandler);
+                        _pptSlideShowBeginHandler = OnPPTSlideShowBegin;
+                        slideShowBeginEvent.AddEventHandler(pptManager, _pptSlideShowBeginHandler);
                     }
 
                     // 订阅PPT翻页事件
                     var slideShowNextSlideEvent = pptManager.GetType().GetEvent("SlideShowNextSlide");
                     if (slideShowNextSlideEvent != null)
                     {
-                        var handler = new Action<object>(OnPPTSlideChanged);
-                        slideShowNextSlideEvent.AddEventHandler(pptManager, handler);
+                        _pptSlideShowNextSlideHandler = OnPPTSlideChanged;
+                        slideShowNextSlideEvent.AddEventHandler(pptManager, _pptSlideShowNextSlideHandler);
                     }
 
                     // 订阅PPT结束事件
                     var slideShowEndEvent = pptManager.GetType().GetEvent("SlideShowEnd");
                     if (slideShowEndEvent != null)
                     {
-                        var handler = new Action<object>(OnPPTSlideShowEnd);
-                        slideShowEndEvent.AddEventHandler(pptManager, handler);
+                        _pptSlideShowEndHandler = OnPPTSlideShowEnd;
+                        slideShowEndEvent.AddEventHandler(pptManager, _pptSlideShowEndHandler);
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"订阅PPT事件失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// LTSC D-08: 退订由 <see cref="SubscribeToPPTEvents"/> 通过反射挂上的 4 个 PPT 事件。
+        /// 原实现没有这个方法，导致主窗口关闭时面板仍持有 PPTManager 的事件引用。
+        /// 安全前提：PPTManager 可能已被 Dispose（MW_PPT.cs:711-722 先于面板 Unloaded），
+        /// 因此所有退订操作各自 try 包裹，失败只记日志不抛出。
+        /// </summary>
+        private void UnsubscribeFromPPTEvents()
+        {
+            try
+            {
+                if (_mainWindow == null) return;
+
+                var pptManagerProperty = _mainWindow.GetType().GetProperty("PPTManager",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                var pptManager = pptManagerProperty?.GetValue(_mainWindow);
+                if (pptManager == null) return;
+
+                TryRemoveEventHandler(pptManager, "PresentationOpen", _pptPresentationOpenHandler);
+                TryRemoveEventHandler(pptManager, "SlideShowBegin", _pptSlideShowBeginHandler);
+                TryRemoveEventHandler(pptManager, "SlideShowNextSlide", _pptSlideShowNextSlideHandler);
+                TryRemoveEventHandler(pptManager, "SlideShowEnd", _pptSlideShowEndHandler);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"退订PPT事件失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                _pptPresentationOpenHandler = null;
+                _pptSlideShowBeginHandler = null;
+                _pptSlideShowNextSlideHandler = null;
+                _pptSlideShowEndHandler = null;
+            }
+        }
+
+        private static void TryRemoveEventHandler(object target, string eventName, Delegate handler)
+        {
+            if (target == null || handler == null) return;
+            try
+            {
+                var evt = target.GetType().GetEvent(eventName);
+                if (evt == null) return;
+                evt.RemoveEventHandler(target, handler);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"移除PPT事件 {eventName} 失败: {ex.Message}", LogHelper.LogType.Warning);
             }
         }
 
@@ -489,6 +546,8 @@ namespace Ink_Canvas.Windows
         {
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             UnsubscribeFromInkCanvasChildrenChanges();
+            // LTSC D-08: 补上此前缺失的 PPT 事件退订
+            UnsubscribeFromPPTEvents();
         }
 
         private void UnsubscribeFromInkCanvasChildrenChanges()
