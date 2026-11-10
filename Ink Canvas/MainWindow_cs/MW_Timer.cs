@@ -92,6 +92,22 @@ namespace Ink_Canvas
         /// 统一的主窗口定时器
         /// </summary>
         private Timer _unifiedMainWindowTimer;
+
+        // LTSC A-1：500ms 统一计时器跑在 System.Timers 线程上，里面既做跨进程 UIA 全窗口枚举
+        // （WinTabWindowsChecker.IsWindowExisted 对每个顶层窗口读 Current.Name），
+        // 又从非 UI 线程 Dispatcher.Invoke 同步封送。
+        // 两个后果：
+        //   ① 没有重入门闩 —— UI 线程忙 2 秒，排队的 Tick 会一个个接着跑，
+        //      每个都再排一次 Invoke，堆积越来越深。这正是「一节课越来越慢」的形状。
+        //   ② UIA 枚举本身要跨进程，一节课 5400 次。
+        // 处理：加重入标志（跳过而不是排队），并让「查幻灯片放映窗口」这一步有缓存、
+        // 不必每个 Tick 都全量枚举。
+        private volatile bool _autoFoldTickBusy;
+
+        /// <summary>幻灯片放映窗口检测结果的缓存时间。UIA 全量枚举很贵，10 秒一次足够。</summary>
+        private static readonly TimeSpan SlideShowProbeInterval = TimeSpan.FromSeconds(10);
+        private DateTime _lastSlideShowProbeUtc = DateTime.MinValue;
+        private bool _lastSlideShowWindowExisted;
         /// <summary>
         /// 可用的最新版本号
         /// </summary>
@@ -269,7 +285,53 @@ namespace Ink_Canvas
         /// </remarks>
         private void OnUnifiedMainWindowTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            timerCheckAutoFold_Elapsed(sender, e);
+            // LTSC A-1：重入就直接跳过。上一次还没跑完说明 UI 线程正忙，
+            // 这时候排队只会把积压越堆越深；自动收纳晚一个 500ms 完全没有影响。
+            if (_autoFoldTickBusy) return;
+            _autoFoldTickBusy = true;
+            try
+            {
+                timerCheckAutoFold_Elapsed(sender, e);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"统一计时器 Tick 异常: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                _autoFoldTickBusy = false;
+            }
+        }
+
+        /// <summary>
+        /// LTSC A-1：带缓存的「是否存在幻灯片放映窗口」探测。
+        /// 原实现每个 500ms Tick 都做一次 UIA 跨进程全窗口枚举，一节课 5400 次。
+        /// 放映窗口从出现到消失不可能在 10 秒内反复，缓存足够。
+        /// </summary>
+        private bool IsSlideShowWindowExistedCached()
+        {
+            DateTime now = DateTime.UtcNow;
+            if (now - _lastSlideShowProbeUtc < SlideShowProbeInterval)
+            {
+                return _lastSlideShowWindowExisted;
+            }
+
+            try
+            {
+                _lastSlideShowWindowExisted = WinTabWindowsChecker.IsWindowExisted("幻灯片放映", false);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"探测幻灯片放映窗口失败: {ex.Message}", LogHelper.LogType.Warning);
+                // 探测失败时保持上一次的结论，不要把异常当成「不存在」
+                // （那会导致误展开浮动栏，比晚展开更烦）
+                if (_lastSlideShowProbeUtc == DateTime.MinValue) _lastSlideShowWindowExisted = false;
+            }
+            finally
+            {
+                _lastSlideShowProbeUtc = now;
+            }
+            return _lastSlideShowWindowExisted;
         }
 
         /// <summary>
@@ -1254,7 +1316,7 @@ namespace Ink_Canvas
                     return;
                 }
 
-                if (!WinTabWindowsChecker.IsWindowExisted("幻灯片放映", false))
+                if (!IsSlideShowWindowExistedCached())
                 {
                     // 当前台为对应软件窗口时，应保持收纳而不是展开
                     if (IsForegroundAutoFoldApp())

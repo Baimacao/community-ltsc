@@ -673,114 +673,124 @@ namespace Ink_Canvas
         /// </remarks>
         private async void CheckPenTypeUIState()
         {
-            if (penType == 0)
+            // LTSC A-5：这是 async void。async void 里没被 catch 的异常
+            // 会直接进 DispatcherUnhandledException —— 也就是整个进程的崩溃路径。
+            // 这个方法只是刷新面板可见性和滑块值，出任何意外都不该拖垮软件。
+            try
             {
-                CommonPropsPanel.Visibility = Visibility.Visible;
-                LaserPenFadePanel.Visibility = Visibility.Collapsed;
-                LaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
-                InkToShapePanel.Visibility = Visibility.Visible;
-                HighlighterOverlapPanel.Visibility = Visibility.Collapsed;
-                DefaultPenColorsPanel.Visibility = Visibility.Visible;
-                HighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                LaserPenColorsPanel.Visibility = Visibility.Collapsed;
-                PenSelectedTabIndex = 0;
-
-                BoardCommonPropsPanel.Visibility = Visibility.Visible;
-                BoardLaserPenFadePanel.Visibility = Visibility.Collapsed;
-                BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
-                BoardInkToShapePanel.Visibility = Visibility.Visible;
-                BoardHighlighterOverlapPanel.Visibility = Visibility.Collapsed;
-                BoardDefaultPenColorsPanel.Visibility = Visibility.Visible;
-                BoardHighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardLaserPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardPenSelectedTabIndex = 0;
-
-                _isUpdatingSliders = true;
-                if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.InkWidth * 2;
-                if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.InkAlpha;
-                if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.InkWidth * 2;
-                if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.InkAlpha;
-                _isUpdatingSliders = false;
-                if (HighlighterOverlapToggle != null) HighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
-                if (BoardHighlighterOverlapToggle != null) BoardHighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
-
-                await Dispatcher.InvokeAsync(() =>
+                if (penType == 0)
                 {
-                    PenPalette.VerticalOffset = 0;
-                    UpdatePenPalettePosition();
-                });
+                    CommonPropsPanel.Visibility = Visibility.Visible;
+                    LaserPenFadePanel.Visibility = Visibility.Collapsed;
+                    LaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
+                    InkToShapePanel.Visibility = Visibility.Visible;
+                    HighlighterOverlapPanel.Visibility = Visibility.Collapsed;
+                    DefaultPenColorsPanel.Visibility = Visibility.Visible;
+                    HighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
+                    LaserPenColorsPanel.Visibility = Visibility.Collapsed;
+                    PenSelectedTabIndex = 0;
+
+                    BoardCommonPropsPanel.Visibility = Visibility.Visible;
+                    BoardLaserPenFadePanel.Visibility = Visibility.Collapsed;
+                    BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
+                    BoardInkToShapePanel.Visibility = Visibility.Visible;
+                    BoardHighlighterOverlapPanel.Visibility = Visibility.Collapsed;
+                    BoardDefaultPenColorsPanel.Visibility = Visibility.Visible;
+                    BoardHighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardLaserPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardPenSelectedTabIndex = 0;
+
+                    _isUpdatingSliders = true;
+                    if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.InkWidth * 2;
+                    if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.InkAlpha;
+                    if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.InkWidth * 2;
+                    if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.InkAlpha;
+                    _isUpdatingSliders = false;
+                    if (HighlighterOverlapToggle != null) HighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
+                    if (BoardHighlighterOverlapToggle != null) BoardHighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
+
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        PenPalette.VerticalOffset = 0;
+                        UpdatePenPalettePosition();
+                    });
+                }
+                else if (penType == 1)
+                {
+                    CommonPropsPanel.Visibility = Visibility.Visible;
+                    LaserPenFadePanel.Visibility = Visibility.Collapsed;
+                    LaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
+                    InkToShapePanel.Visibility = Visibility.Visible;
+                    HighlighterOverlapPanel.Visibility = Visibility.Visible;
+                    DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
+                    HighlighterPenColorsPanel.Visibility = Visibility.Visible;
+                    LaserPenColorsPanel.Visibility = Visibility.Collapsed;
+                    PenSelectedTabIndex = 1;
+
+                    BoardCommonPropsPanel.Visibility = Visibility.Visible;
+                    BoardLaserPenFadePanel.Visibility = Visibility.Collapsed;
+                    BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
+                    BoardInkToShapePanel.Visibility = Visibility.Visible;
+                    BoardHighlighterOverlapPanel.Visibility = Visibility.Visible;
+                    BoardDefaultPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardHighlighterPenColorsPanel.Visibility = Visibility.Visible;
+                    BoardLaserPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardPenSelectedTabIndex = 1;
+
+                    _isUpdatingSliders = true;
+                    if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.HighlighterWidth;
+                    if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.HighlighterAlpha;
+                    if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.HighlighterWidth;
+                    if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.HighlighterAlpha;
+                    _isUpdatingSliders = false;
+                    if (HighlighterOverlapToggle != null) HighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
+                    if (BoardHighlighterOverlapToggle != null) BoardHighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
+
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        PenPalette.VerticalOffset = 0;
+                        UpdatePenPalettePosition();
+                    });
+                }
+                else if (penType == 2)
+                {
+                    CommonPropsPanel.Visibility = Visibility.Visible;
+                    LaserPenFadePanel.Visibility = Visibility.Visible;
+                    LaserPenFadeSpeedPanel.Visibility = Visibility.Visible;
+                    InkToShapePanel.Visibility = Visibility.Collapsed;
+                    HighlighterOverlapPanel.Visibility = Visibility.Collapsed;
+                    DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
+                    HighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
+                    LaserPenColorsPanel.Visibility = Visibility.Visible;
+                    PenSelectedTabIndex = 2;
+
+                    BoardCommonPropsPanel.Visibility = Visibility.Visible;
+                    BoardLaserPenFadePanel.Visibility = Visibility.Visible;
+                    BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Visible;
+                    BoardInkToShapePanel.Visibility = Visibility.Collapsed;
+                    BoardHighlighterOverlapPanel.Visibility = Visibility.Collapsed;
+                    BoardDefaultPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardHighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
+                    BoardLaserPenColorsPanel.Visibility = Visibility.Visible;
+                    BoardPenSelectedTabIndex = 2;
+
+                    _isUpdatingSliders = true;
+                    if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.LaserPenWidth;
+                    if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.LaserPenAlpha;
+                    if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.LaserPenWidth;
+                    if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.LaserPenAlpha;
+                    _isUpdatingSliders = false;
+
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        PenPalette.VerticalOffset = 0;
+                        UpdatePenPalettePosition();
+                    });
+                }
             }
-            else if (penType == 1)
+            catch (Exception ex)
             {
-                CommonPropsPanel.Visibility = Visibility.Visible;
-                LaserPenFadePanel.Visibility = Visibility.Collapsed;
-                LaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
-                InkToShapePanel.Visibility = Visibility.Visible;
-                HighlighterOverlapPanel.Visibility = Visibility.Visible;
-                DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                HighlighterPenColorsPanel.Visibility = Visibility.Visible;
-                LaserPenColorsPanel.Visibility = Visibility.Collapsed;
-                PenSelectedTabIndex = 1;
-
-                BoardCommonPropsPanel.Visibility = Visibility.Visible;
-                BoardLaserPenFadePanel.Visibility = Visibility.Collapsed;
-                BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Collapsed;
-                BoardInkToShapePanel.Visibility = Visibility.Visible;
-                BoardHighlighterOverlapPanel.Visibility = Visibility.Visible;
-                BoardDefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardHighlighterPenColorsPanel.Visibility = Visibility.Visible;
-                BoardLaserPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardPenSelectedTabIndex = 1;
-
-                _isUpdatingSliders = true;
-                if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.HighlighterWidth;
-                if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.HighlighterAlpha;
-                if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.HighlighterWidth;
-                if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.HighlighterAlpha;
-                _isUpdatingSliders = false;
-                if (HighlighterOverlapToggle != null) HighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
-                if (BoardHighlighterOverlapToggle != null) BoardHighlighterOverlapToggle.IsOn = Settings.Canvas.HighlighterOverlapEnabled;
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    PenPalette.VerticalOffset = 0;
-                    UpdatePenPalettePosition();
-                });
-            }
-            else if (penType == 2)
-            {
-                CommonPropsPanel.Visibility = Visibility.Visible;
-                LaserPenFadePanel.Visibility = Visibility.Visible;
-                LaserPenFadeSpeedPanel.Visibility = Visibility.Visible;
-                InkToShapePanel.Visibility = Visibility.Collapsed;
-                HighlighterOverlapPanel.Visibility = Visibility.Collapsed;
-                DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                HighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                LaserPenColorsPanel.Visibility = Visibility.Visible;
-                PenSelectedTabIndex = 2;
-
-                BoardCommonPropsPanel.Visibility = Visibility.Visible;
-                BoardLaserPenFadePanel.Visibility = Visibility.Visible;
-                BoardLaserPenFadeSpeedPanel.Visibility = Visibility.Visible;
-                BoardInkToShapePanel.Visibility = Visibility.Collapsed;
-                BoardHighlighterOverlapPanel.Visibility = Visibility.Collapsed;
-                BoardDefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardHighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardLaserPenColorsPanel.Visibility = Visibility.Visible;
-                BoardPenSelectedTabIndex = 2;
-
-                _isUpdatingSliders = true;
-                if (PenWidthSlider != null) PenWidthSlider.Value = Settings.Canvas.LaserPenWidth;
-                if (PenAlphaSlider != null) PenAlphaSlider.Value = Settings.Canvas.LaserPenAlpha;
-                if (BoardPenWidthSlider != null) BoardPenWidthSlider.Value = Settings.Canvas.LaserPenWidth;
-                if (BoardPenAlphaSlider != null) BoardPenAlphaSlider.Value = Settings.Canvas.LaserPenAlpha;
-                _isUpdatingSliders = false;
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    PenPalette.VerticalOffset = 0;
-                    UpdatePenPalettePosition();
-                });
+                LogHelper.WriteLogToFile($"刷新笔型面板异常: {ex.Message}", LogHelper.LogType.Warning);
             }
         }
 

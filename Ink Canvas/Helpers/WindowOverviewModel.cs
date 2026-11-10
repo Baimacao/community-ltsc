@@ -142,6 +142,11 @@ namespace Ink_Canvas.Helpers
         private const int PROCESS_CACHE_CLEANUP_INTERVAL_MS = 30000;
 
         // 窗口缓存，用于增量更新
+        // LTSC A-3：这个字典由 1Hz 的 Timer 回调（线程池线程）读写，
+        // 而 Windows / GetWindowInfos 等属性由 UI 线程读。原来完全没有加锁，
+        // 枚举过程中被另一个线程改就是 InvalidOperationException。
+        // 统一用 _lockObject —— 它本来就是这份模型的状态锁，不另起一把，
+        // 避免两把锁之间出现顺序问题。
         private readonly Dictionary<IntPtr, WindowInfo> _windowCache = new Dictionary<IntPtr, WindowInfo>();
 
         /// <summary>
@@ -272,7 +277,9 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         private bool HasWindowChanged(IntPtr hWnd, WindowRect rect, bool isMinimized, bool isMaximized, bool isFullScreen)
         {
-            if (!_windowCache.TryGetValue(hWnd, out var cachedWindow))
+            WindowInfo cachedWindow = null;
+            lock (_lockObject) { _windowCache.TryGetValue(hWnd, out cachedWindow); }
+        if (cachedWindow == null)
             {
                 return true; // 新窗口
             }
@@ -351,7 +358,12 @@ namespace Ink_Canvas.Helpers
 
                     // 如果窗口信息未变化且已缓存，尝试重用缓存的数据
                     WindowInfo windowInfo;
-                    if (!windowChanged && _windowCache.TryGetValue(hWnd, out var cachedInfo))
+                    WindowInfo cachedInfo = null;
+                    if (!windowChanged)
+                    {
+                        lock (_lockObject) { _windowCache.TryGetValue(hWnd, out cachedInfo); }
+                    }
+                if (!windowChanged && cachedInfo != null)
                     {
                         // 重用缓存的窗口信息，只更新Z顺序和可能变化的状态
                         windowInfo = new WindowInfo
@@ -371,7 +383,7 @@ namespace Ink_Canvas.Helpers
                         };
 
                         // 更新缓存以保持ZOrder等属性最新
-                        _windowCache[hWnd] = windowInfo;
+                        lock (_lockObject) { _windowCache[hWnd] = windowInfo; }
                     }
                     else
                     {
@@ -404,7 +416,7 @@ namespace Ink_Canvas.Helpers
                         };
 
                         // 更新缓存
-                        _windowCache[hWnd] = windowInfo;
+                        lock (_lockObject) { _windowCache[hWnd] = windowInfo; }
                     }
 
                     windows.Add(windowInfo);
@@ -419,10 +431,11 @@ namespace Ink_Canvas.Helpers
             }, IntPtr.Zero);
 
             // 清理已关闭的窗口缓存
-            var handlesToRemove = _windowCache.Keys.Where(h => !currentWindowHandles.Contains(h)).ToList();
+            List<IntPtr> handlesToRemove;
+            lock (_lockObject) { handlesToRemove = _windowCache.Keys.Where(h => !currentWindowHandles.Contains(h)).ToList(); }
             foreach (var handle in handlesToRemove)
             {
-                _windowCache.Remove(handle);
+                lock (_lockObject) { _windowCache.Remove(handle); }
             }
 
             windows = windows.OrderByDescending(w => w.ZOrder).ToList();
@@ -604,7 +617,7 @@ namespace Ink_Canvas.Helpers
                 _processCache.Clear();
             }
 
-            _windowCache.Clear();
+            lock (_lockObject) { _windowCache.Clear(); }
         }
     }
 }

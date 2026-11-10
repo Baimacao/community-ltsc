@@ -177,7 +177,20 @@ namespace Ink_Canvas
                         return;
                     case "screenshot":
                         ShowNotification(Properties.MainWindowStrings.Main_Uri_Screenshot);
-                        _ = Task.Delay(300).ContinueWith(_ => Dispatcher.Invoke(async () => await CaptureScreenshotAndInsert()));
+                        // LTSC A-6：Dispatcher.Invoke(async () => ...) 传的是 async void lambda，
+                        // Invoke 在 lambda 第一个 await 处就返回了，后面抛的异常没有任何人接，
+                        // 直接进 DispatcherUnhandledException。改成 InvokeAsync 并把 Task 接住。
+                        _ = Task.Delay(300).ContinueWith(_ => Dispatcher.InvokeAsync(async () =>
+                        {
+                            try
+                            {
+                                await CaptureScreenshotAndInsert();
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.WriteLogToFile($"URI 截图失败: {ex.Message}", LogHelper.LogType.Warning);
+                            }
+                        }));
                         return;
                     case "freeze":
                     case "lock":

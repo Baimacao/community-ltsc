@@ -779,6 +779,26 @@ namespace Ink_Canvas
         /// </summary>
         private void InitializeLongPressTimer()
         {
+            // LTSC A-4：这个方法由 InitializePPTManagers 调用，而 InitializePPTManagers
+            // 有 6 个调用点（切换 PPT 模式、重连、设置变更等）。
+            // 原实现每次直接 new 一个 DispatcherTimer 覆盖字段，
+            // 旧实例既没 Stop 也没解绑 Tick，如果它正处于 Start 态，
+            // 就会和新实例一起每 LongPressInterval 触发一次 —— 表现为「长按一下翻两页」。
+            // 先停旧的、解绑、再建新的。
+            if (_longPressTimer != null)
+            {
+                try
+                {
+                    _longPressTimer.Stop();
+                    _longPressTimer.Tick -= OnLongPressTimerTick;
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"释放旧长按定时器异常: {ex.Message}", LogHelper.LogType.Warning);
+                }
+                _longPressTimer = null;
+            }
+
             _longPressTimer = new DispatcherTimer();
             _longPressTimer.Interval = TimeSpan.FromMilliseconds(LongPressDelay);
             _longPressTimer.Tick += OnLongPressTimerTick;
