@@ -365,7 +365,6 @@
                             <TreeViewItem Header="SettingsCard: 测试通知 → Button" />
                         </TreeViewItem>
                     </TreeViewItem>
-                    <TreeViewItem Header="公告中心" Tag="AnnouncementCenterPage" />
                 </TreeViewItem>
                 <TreeViewItem Header="实验性">
                     <TreeViewItem Header='TextBlock "无"'>

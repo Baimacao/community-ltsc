@@ -1342,10 +1342,6 @@
                 Margin="0,50,0,0">
             <Windows:PPTQuickPanel x:Name="PPTQuickPanel"/>
         </Border>
-        <localControls:DynamicNotificationControl x:Name="DynamicNotification"
-                Panel.ZIndex="1100"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top" />
         <!-- PPT 增强预览全屏加载动画 -->
         <Grid x:Name="PPTEnhancedPreviewLoadingOverlay"
                 Panel.ZIndex="1200"

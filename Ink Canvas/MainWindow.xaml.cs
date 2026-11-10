@@ -56,8 +56,6 @@ namespace Ink_Canvas
 
         // 墨迹渐隐管理器
         private InkFadeManager _inkFadeManager;
-        private readonly CancellationTokenSource _notificationProviderCancellation = new CancellationTokenSource();
-        private AnnouncementService _announcementService;
 
         // 悬浮窗拦截管理器
         public FloatingWindowInterceptorManager _floatingWindowInterceptorManager;
@@ -2077,34 +2075,9 @@ namespace Ink_Canvas
                     // 检测到新版本
                     LogHelper.WriteLogToFile($"AutoUpdate | New version available: {AvailableLatestVersion}");
 
-                    var updateMessage = new NotificationMessage
-                    {
-                        Id = "update-" + AvailableLatestVersion,
-                        Type = NotificationMessageType.Update,
-                        Level = NotificationMessageLevel.Normal,
-                        Title = NotificationStrings.UpdateTitle,
-                        Summary = string.Format(NotificationStrings.NewVersion, AvailableLatestVersion),
-                        Content = AvailableLatestReleaseNotes ?? string.Empty,
-                        Icon = "Update",
-                        ActionText = NotificationStrings.ViewDetails,
-                        DisplaySeconds = Settings?.Notification?.UpdateDurationSeconds > 0 ? Settings.Notification.UpdateDurationSeconds : 3,
-                        Source = "update",
-                        Action = () =>
-                        {
-                            try
-                            {
-                                var settingsWindow = new SettingsWindow();
-                                settingsWindow.Show();
-                                settingsWindow.NavigateToPage("UpdatePage");
-                            }
-                            catch (Exception ex)
-                            {
-                                LogHelper.WriteLogToFile($"打开更新设置页失败: {ex.Message}", LogHelper.LogType.Warning);
-                            }
-                        }
-                    };
-
-                    NotificationCenterService.Enqueue(updateMessage);
+                    // LTSC N-01: 动态通知系统已移除，这里改用最朴素的应用内提示。
+                    // 注意 D-01 会把整段自动更新一起删掉，届时这块也会消失。
+                    ShowNewMessage(string.Format(NotificationStrings.NewVersion, AvailableLatestVersion));
 
                     // 检查是否是用户选择跳过的版本
                     if (!string.IsNullOrEmpty(Settings.Startup.SkippedVersion) &&
@@ -2578,7 +2551,7 @@ namespace Ink_Canvas
 
             try
             {
-                InitializeNotificationProviders();
+                // LTSC N-01: 通知提供商注册表已移除。
             }
             catch (Exception ex)
             {

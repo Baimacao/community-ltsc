@@ -1,120 +1,90 @@
 using Ink_Canvas.Helpers;
-using Ink_Canvas.Models;
 using Ink_Canvas.Properties;
-using Ink_Canvas.Windows;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace Ink_Canvas
 {
     public partial class MainWindow : Ink_Canvas.Helpers.PerformanceTransparentWin
     {
+        // LTSC N-01：通知功能精简。
+        // 保留下来的唯一展示路径是「朴素气泡」ShowLegacyNotification（纯 WPF，不联网、无队列、无提供商）。
+        // 已整体移除：公告中心（联网拉取 + WebSocket）、通知提供商注册表、动态通知气泡系统、Windows Toast。
+        // 公共契约 InkCanvas.PluginSdk/INotificationService 仍由静态 ShowNewMessage 承载，签名保持不变。
+
         private int lastNotificationShowTime;
         private int notificationShowTime = 2500;
-        private bool _startupUnreadNotificationShown;
 
+        /// <summary>
+        /// 插件公共契约 INotificationService 的实现入口（静态，可被任意位置调用）。
+        /// 崩溃提示 App.xaml.cs 也走这里，因此除了记录日志外不得抛出。
+        /// </summary>
         public static void ShowNewMessage(string notice, bool isShowImmediately = true)
         {
-            NotificationCenterService.EnqueueText(notice, NotificationMessageLevel.Normal, 3);
+            if (string.IsNullOrEmpty(notice)) return;
+
+            try
+            {
+                var mainWindow = ResolveMainWindow();
+                if (mainWindow == null) return;
+
+                if (!mainWindow.Dispatcher.CheckAccess())
+                {
+                    mainWindow.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { mainWindow.ShowNotification(notice, isShowImmediately); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile($"ShowNewMessage 异常: {ex.Message}", LogHelper.LogType.Warning); }
+                    }));
+                    return;
+                }
+
+                mainWindow.ShowNotification(notice, isShowImmediately);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"ShowNewMessage 异常: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 取当前主窗口。崩溃处置路径上 Application.Current.MainWindow 有可能尚未回填或被别的窗口占位，
+        /// 因此再兜底扫一遍已打开的窗口，保证崩溃提示仍能找到宿主。
+        /// </summary>
+        private static MainWindow ResolveMainWindow()
+        {
+            var app = Application.Current;
+            if (app == null) return null;
+
+            if (app.MainWindow is MainWindow mainWindow) return mainWindow;
+
+            foreach (Window window in app.Windows)
+            {
+                if (window is MainWindow candidate && candidate.IsLoaded) return candidate;
+            }
+
+            return app.MainWindow as MainWindow;
         }
 
         public void ShowNotification(string notice, bool isShowImmediately = true)
         {
-            NotificationCenterService.EnqueueText(notice, NotificationMessageLevel.Normal, Math.Max(1, notificationShowTime / 1000));
+            if (string.IsNullOrEmpty(notice)) return;
+
+            if (IsNotificationSuppressedByDictationDoNotDisturb()) return;
+
+            ShowLegacyNotification(notice, Math.Max(1, notificationShowTime / 1000));
         }
 
+        /// <summary>
+        /// 进入 PPT 放映/联动模式时的批注栏提示。原本经由动态通知队列展示，精简后走同一条朴素气泡路径。
+        /// </summary>
         public void ShowPPTModePromptNotification()
         {
             if (Settings?.PowerPointSettings?.ShowPPTModePrompt != true) return;
 
-            NotificationCenterService.Enqueue(new NotificationMessage
-            {
-                Id = "ppt-mode-prompt-" + Guid.NewGuid().ToString("N"),
-                Type = NotificationMessageType.Reminder,
-                Level = NotificationMessageLevel.Normal,
-                Title = PPTStrings.PPT_ModePrompt_Title,
-                Summary = PPTStrings.PPT_ModePrompt_Message,
-                Icon = "Info",
-                DisplaySeconds = 4,
-                Priority = 20,
-                Source = "ppt-mode-prompt",
-                ProviderId = "local"
-            });
-        }
+            if (IsNotificationSuppressedByDictationDoNotDisturb()) return;
 
-        private void InitializeNotificationProviders()
-        {
-            if (DynamicNotification != null)
-            {
-                DynamicNotification.Closed -= DynamicNotification_Closed;
-                DynamicNotification.Closed += DynamicNotification_Closed;
-            }
-
-            NotificationCenterService.NotificationRequested -= NotificationCenterService_NotificationRequested;
-            NotificationCenterService.NotificationRequested += NotificationCenterService_NotificationRequested;
-
-            if (_announcementService == null && Settings?.Notification?.IsAnnouncementEnabled == true)
-            {
-                _announcementService = new AnnouncementService(Settings);
-
-                AnnouncementService.UnreadCountChanged -= OnAnnouncementUnreadCountChanged;
-                AnnouncementService.UnreadCountChanged += OnAnnouncementUnreadCountChanged;
-
-                Dispatcher.BeginInvoke(new Action(async () =>
-                {
-                    try
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(3), _notificationProviderCancellation.Token);
-                        await _announcementService.StartAsync(_notificationProviderCancellation.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                    }
-                    catch (Exception ex)
-                    {
-                        LogHelper.WriteLogToFile($"公告通知提供商启动失败: {ex.Message}", LogHelper.LogType.Warning);
-                    }
-                }), DispatcherPriority.ContextIdle);
-            }
-        }
-
-        private void NotificationCenterService_NotificationRequested(NotificationMessage message)
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                try
-                {
-                    if (IsNotificationSuppressedByDictationDoNotDisturb())
-                    {
-                        NotificationCenterService.NotifyCurrentClosed();
-                        return;
-                    }
-
-                    if (Settings?.Notification?.IsWindowsToastEnabled == true)
-                    {
-                        WindowsNotificationHelper.ShowToast(message);
-                    }
-
-                    if (Settings?.Notification?.IsDynamicNotificationEnabled == true && DynamicNotification != null)
-                    {
-                        DynamicNotification.RefreshTheme(IsCurrentThemeDark());
-                        ApplyDynamicNotificationPlacement(message);
-                        DynamicNotification.Show(message);
-                    }
-                    else
-                    {
-                        ShowLegacyNotification(message.Title, message.DisplaySeconds);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"灵动通知显示失败: {ex.Message}", LogHelper.LogType.Error);
-                    NotificationCenterService.NotifyCurrentClosed();
-                }
-            }));
+            ShowLegacyNotification(PPTStrings.PPT_ModePrompt_Title, 4);
         }
 
         private bool IsNotificationSuppressedByDictationDoNotDisturb()
@@ -130,132 +100,11 @@ namespace Ink_Canvas
             return notification.IsDictationDoNotDisturbInWhiteboardEnabled && currentMode == 1;
         }
 
-        private void DynamicNotification_Closed(object sender, EventArgs e)
-        {
-            NotificationCenterService.NotifyCurrentClosed();
-        }
-
-        private void ApplyDynamicNotificationPlacement(NotificationMessage message = null)
-        {
-            if (DynamicNotification == null) return;
-
-            DynamicNotification.HorizontalAlignment = HorizontalAlignment.Center;
-            DynamicNotification.VerticalAlignment = VerticalAlignment.Top;
-            DynamicNotification.Margin = new Thickness(0);
-
-            if (message?.Source == "ppt-mode-prompt")
-            {
-                ApplyDynamicNotificationFloatingBarPlacement();
-                return;
-            }
-
-            switch (Settings?.Notification?.Placement)
-            {
-                case "TopLeft":
-                    DynamicNotification.HorizontalAlignment = HorizontalAlignment.Left;
-                    DynamicNotification.Margin = new Thickness(16, 0, 0, 0);
-                    break;
-                case "TopRight":
-                    DynamicNotification.HorizontalAlignment = HorizontalAlignment.Right;
-                    DynamicNotification.Margin = new Thickness(0, 0, 16, 0);
-                    break;
-                case "FloatingBarAbove":
-                    ApplyDynamicNotificationFloatingBarPlacement();
-                    break;
-            }
-        }
-
-        private void ApplyDynamicNotificationFloatingBarPlacement()
-        {
-            if (DynamicNotification == null || ViewboxFloatingBar == null || ViewboxFloatingBar.Visibility != Visibility.Visible)
-            {
-                return;
-            }
-
-            try
-            {
-                var position = ViewboxFloatingBar.TransformToAncestor(this).Transform(new Point(0, 0));
-                double notificationWidth = DynamicNotification.ActualWidth > 0 ? DynamicNotification.ActualWidth : DynamicNotification.Width;
-                double notificationHeight = DynamicNotification.ActualHeight > 0 ? DynamicNotification.ActualHeight : 72;
-                double floatingBarWidth = ViewboxFloatingBar.ActualWidth;
-                double left = position.X + floatingBarWidth / 2 - notificationWidth / 2;
-                double top = position.Y - notificationHeight - 12;
-
-                left = Math.Max(12, Math.Min(ActualWidth - notificationWidth - 12, left));
-                top = Math.Max(12, top);
-
-                DynamicNotification.HorizontalAlignment = HorizontalAlignment.Left;
-                DynamicNotification.VerticalAlignment = VerticalAlignment.Top;
-                DynamicNotification.Margin = new Thickness(left, top, 0, 0);
-            }
-            catch
-            {
-            }
-        }
-
-        private void OnAnnouncementUnreadCountChanged()
-        {
-            if (_startupUnreadNotificationShown) return;
-
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (_startupUnreadNotificationShown) return;
-                ShowStartupUnreadNotification();
-            }));
-        }
-
-        private void ShowStartupUnreadNotification()
-        {
-            try
-            {
-                if (_startupUnreadNotificationShown) return;
-                _startupUnreadNotificationShown = true;
-
-                var count = AnnouncementService.GetUnreadCount(Settings);
-                if (count <= 0) return;
-
-                NotificationCenterService.Enqueue(new NotificationMessage
-                {
-                    Id = "startup-unread-announcements",
-                    Type = NotificationMessageType.Reminder,
-                    Level = NotificationMessageLevel.Normal,
-                    Title = AnnouncementStrings.StartupUnreadTitle,
-                    Summary = string.Format(AnnouncementStrings.StartupUnreadSummary, count),
-                    ActionText = AnnouncementStrings.StartupUnreadAction,
-                    Icon = "Info",
-                    DisplaySeconds = 8,
-                    Priority = 50,
-                    Source = "startup-unread",
-                    ProviderId = "announcement",
-                    Action = () =>
-                    {
-                        try
-                        {
-                            var window = new AnnouncementCenterWindow { Owner = this };
-                            window.Show();
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"打开公告中心失败: {ex.Message}", LogHelper.LogType.Warning);
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"启动未读公告通知失败: {ex.Message}", LogHelper.LogType.Warning);
-            }
-        }
-
         private void ShowLegacyNotification(string notice, int displaySeconds)
         {
             try
             {
-                if (TextBlockNotice == null || GridNotifications == null)
-                {
-                    NotificationCenterService.NotifyCurrentClosed();
-                    return;
-                }
+                if (TextBlockNotice == null || GridNotifications == null) return;
 
                 lastNotificationShowTime = Environment.TickCount;
                 notificationShowTime = Math.Max(1, displaySeconds) * 1000;
@@ -270,7 +119,6 @@ namespace Ink_Canvas
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             AnimationsHelper.HideWithSlideAndFade(GridNotifications);
-                            NotificationCenterService.NotifyCurrentClosed();
                         });
                     }
                 }).Start();
@@ -278,7 +126,6 @@ namespace Ink_Canvas
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"ShowNotification 异常: {ex.Message}", LogHelper.LogType.Error);
-                NotificationCenterService.NotifyCurrentClosed();
             }
         }
     }

@@ -299,40 +299,15 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.InfoBadge>
                 </ui:NavigationViewItem>
 
-                <!-- 通知设置 -->
+                <!-- 通知设置（LTSC N-01：公告中心子项已随公告功能一并移除） -->
                 <ui:NavigationViewItem
                     x:Name="NotificationPageItem"
                     Content="{x:Static props:NotificationStrings.DefaultTitle}"
-                    SelectsOnInvoked="False"
+                    Tag="NotificationPage"
                     ToolTipService.ToolTip="{x:Static props:NotificationStrings.NavTooltip}">
                     <ui:NavigationViewItem.Icon>
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Message}"/>
                     </ui:NavigationViewItem.Icon>
-                    <ui:NavigationViewItem.MenuItems>
-                        <ui:NavigationViewItem
-                            x:Name="NotificationSettingsPageItem"
-                            Content="{x:Static props:NotificationStrings.SettingsTitle}"
-                            Tag="NotificationPage"
-                            ToolTipService.ToolTip="{x:Static props:NotificationStrings.NavTooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Message}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
-                            x:Name="AnnouncementCenterPageItem"
-                            Content="{x:Static props:AnnouncementStrings.CenterTitle}"
-                            Tag="AnnouncementCenterPage"
-                            ToolTipService.ToolTip="{x:Static props:AnnouncementStrings.CenterHint}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.BulletedList}"/>
-                            </ui:NavigationViewItem.Icon>
-                            <ui:NavigationViewItem.InfoBadge>
-                                <ui:InfoBadge x:Name="AnnouncementUnreadInfoBadge"
-                                              Value="0"
-                                              Visibility="Collapsed" />
-                            </ui:NavigationViewItem.InfoBadge>
-                        </ui:NavigationViewItem>
-                    </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
                 <!-- 实验性选项 -->

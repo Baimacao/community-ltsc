@@ -36,7 +36,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
             { "UpdatePage", typeof(UpdatePage) },
             { "NotificationPage", typeof(NotificationPage) },
-            { "AnnouncementCenterPage", typeof(AnnouncementCenterPage) },
             { "ExperimentalPage", typeof(ExperimentalPage) },
             { "AdvancedPage", typeof(AdvancedPage) },
             { "StoragePage", typeof(StoragePage) },
@@ -100,7 +99,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                 { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
                 { "UpdatePage", typeof(UpdatePage) },
                 { "NotificationPage", typeof(NotificationPage) },
-                { "AnnouncementCenterPage", typeof(AnnouncementCenterPage) },
                 { "ExperimentalPage", typeof(ExperimentalPage) },
                 { "AdvancedPage", typeof(AdvancedPage) },
                 { "StoragePage", typeof(StoragePage) },
@@ -147,7 +145,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                     {
                         LoadPluginSettingsPages();
                         UpdateUpdateBadgeVisibility();
-                        UpdateAnnouncementUnreadBadge();
                         // 绑定设置窗口中的 ToggleSwitch 本地化文本
                         Ink_Canvas.Helpers.LocalizationHelper.BindToggleSwitchesInWindow(this);
                     }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -156,11 +153,8 @@ namespace Ink_Canvas.Windows.SettingsViews
                 _ = PreloadAllPagesAsync();
             };
 
-            AnnouncementService.UnreadCountChanged += UpdateAnnouncementUnreadBadge;
-
             this.Closed += (sender, e) =>
             {
-                AnnouncementService.UnreadCountChanged -= UpdateAnnouncementUnreadBadge;
                 UnregisterDpiChangedListener();
                 _pages.Clear();
                 _pageTypes.Clear();
@@ -890,21 +884,5 @@ namespace Ink_Canvas.Windows.SettingsViews
             catch { }
         }
 
-        public void UpdateAnnouncementUnreadBadge()
-        {
-            Dispatcher.InvokeAsync(() =>
-            {
-                try
-                {
-                    var count = AnnouncementService.GetUnreadCount(Helpers.SettingsManager.Settings);
-                    if (AnnouncementUnreadInfoBadge != null)
-                    {
-                        AnnouncementUnreadInfoBadge.Value = count;
-                        AnnouncementUnreadInfoBadge.Visibility = count > 0 ? Visibility.Visible : Visibility.Collapsed;
-                    }
-                }
-                catch { }
-            });
-        }
     }
 }
