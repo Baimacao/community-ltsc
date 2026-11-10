@@ -49,13 +49,17 @@ namespace Ink_Canvas.Plugins
                     var info = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
                     if (info != null && !string.IsNullOrWhiteSpace(info.InformationalVersion))
                     {
-                        // NB.GV 会追加上 "+<sha>" 或 "+<sha>.<date>"，只取版本部分
-                        string v = info.InformationalVersion;
-                        int plus = v.IndexOf('+');
-                        if (plus > 0) v = v.Substring(0, plus);
+                        // 只取纯数字的版本部分，丢掉构建元数据。
+                        // 实测 NB.GV 3.9.50 产出的是 "1.7.19.7.fce51b1"（点号），
+                        // 而老写法只按 '+' 截断，遇到点号就完全没生效，
+                        // 于是 hostVersion 里一直带着 sha。这里两种都覆盖：
+                        //   "1.7.19.7.fce51b1"  → "1.7.19.7"
+                        //   "1.7.19.7+fce51b1"  → "1.7.19.7"
+                        //   "1.7.19.7"          → "1.7.19.7"
+                        string v = ExtractNumericVersion(info.InformationalVersion);
                         if (!string.IsNullOrWhiteSpace(v))
                         {
-                            _hostVersion = v.Trim();
+                            _hostVersion = v;
                             return _hostVersion;
                         }
                     }
@@ -75,6 +79,42 @@ namespace Ink_Canvas.Plugins
                 _hostVersion = "unknown";
                 return _hostVersion;
             }
+        }
+
+
+        /// <summary>
+        /// 从 InformationalVersion 里取出纯数字的版本段，遇到第一个非纯数字的段就停。
+        /// 保证 "1.7.19.7.fce51b1" / "1.7.19.7+fce51b1" / "1.7.19.7" 都得到 "1.7.19.7"。
+        /// 一个纯数字段都取不到时返回 null，交由调用方回退到 AssemblyVersion。
+        /// </summary>
+        static string ExtractNumericVersion(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return null;
+
+            // 先砍掉 '+' 之后的构建元数据（SemVer 规范里的 build metadata）
+            string s = raw.Trim();
+            int plus = s.IndexOf('+');
+            if (plus > 0) s = s.Substring(0, plus);
+
+            // 兼容 "v1.7.19.7" 这种前缀写法（PluginCompatibility.NormalizeVersion 也认它）
+            s = s.TrimStart('v', 'V');
+
+            var parts = s.Split('.');
+            var kept = new System.Collections.Generic.List<string>();
+            foreach (var p in parts)
+            {
+                // 纯数字才算版本段；"-beta" 这种预发布标记也会在这里被截掉
+                if (p.Length == 0 || !char.IsDigit(p[0])) break;
+                bool allDigits = true;
+                for (int i = 0; i < p.Length; i++)
+                {
+                    if (!char.IsDigit(p[i])) { allDigits = false; break; }
+                }
+                if (!allDigits) break;
+                kept.Add(p);
+            }
+
+            return kept.Count > 0 ? string.Join(".", kept) : null;
         }
 
         static string _hostVersion;
