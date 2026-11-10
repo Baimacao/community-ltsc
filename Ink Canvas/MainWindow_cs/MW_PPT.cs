@@ -278,18 +278,16 @@ namespace Ink_Canvas
                     LogHelper.WriteLogToFile($"清理 Interop 状态异常: {ex}", LogHelper.LogType.Warning);
                 }
 
-                // LTSC D-02: 只保留 COM 与 ROT 两套架构，Agent（VSTO/管道）已移除。
-                // PPTLinkMode.Agent 枚举值保留，老配置反序列化得到 Agent 时落到 COM，
-                // 不会因为枚举缺失而反序列化失败或变成 0 以外的未知值。
-                switch (Settings.PowerPointSettings.PPTLinkMode)
-                {
-                    case PPTLinkMode.Rot:
-                        _pptManager = new ROTPPTManager();
-                        break;
-                    default:
-                        _pptManager = new ComPPTLinkManager();
-                        break;
-                }
+                // LTSC D-02c: PPT 联动统一到 PptBridge 一套实现。
+                //
+                // 旧的三套（PPTManager 2434 行 / ROTPPTManager 3070 行 / ComPPTLinkManager 112 行）
+                // 并行实现同一件事，且全部依赖 COM——在「CC 提权 + PPT 普通权限」时一起失效。
+                // PptBridge 用 ROT 按 .pptx 路径匹配取对象、Win32 兜底拿放映窗口，
+                // 跨权限时至少还能把白板贴到放映窗口上。
+                //
+                // PPTLinkMode 枚举保留但不再分支：老配置反序列化得到任何值都走同一条路。
+                // 这是刻意的——三套实现已经证明没有一套比另一套更强。
+                _pptManager = new PptBridge();
 
                 _pptManager.IsSupportWPS = Settings.PowerPointSettings.IsSupportWPS;
                 _pptManager.SkipAnimationsWhenNavigating = Settings.PowerPointSettings.SkipAnimationsWhenGoNext;

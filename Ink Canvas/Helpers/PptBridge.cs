@@ -1,0 +1,878 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+using System.Threading;
+using Timer = System.Timers.Timer;
+using System.Timers;
+
+namespace Ink_Canvas.Helpers
+{
+    /// <summary>
+    /// PowerPoint 联动的唯一实现。取代 PPTManager(2434) + ROTPPTManager(3070) + ComPPTLinkManager(112)。
+    ///
+    /// <para><b>设计依据（全部为本机实测，不是推测，2026-11-10）：</b></para>
+    /// <list type="bullet">
+    /// <item>ROT 里 PowerPoint 注册的是<b>演示文稿完整路径</b>（形如 E:\x\deck.pptx），不是
+    /// "PowerPoint.Application"。按 ProgID 去 ROT 里找永远找不到。</item>
+    /// <item>Win32 窗口枚举<b>不受 UIPI 限制</b>：提权进程能拿到普通权限 PPT 的放映窗口
+    /// （实测 hwnd/class=screenClass/pid/rect 全部可读）。COM 则被完全阻断。</item>
+    /// <item>放映窗口里<b>没有任何暴露页码的 Win32 文本</b>：标题是
+    /// "PowerPoint 幻灯片放映  - 文件名"，7 个子窗口 title 全空。页码只在 COM 里。</item>
+    /// </list>
+    ///
+    /// <para><b>因此本类做三件事，并按可用性逐级降级：</b></para>
+    /// <list type="number">
+    /// <item>COM：取 Application 用 ROT(按.pptx匹配) → GetActiveObject 两级；拿到就全功能。</item>
+    /// <item>Win32：拿不到 COM 时，用窗口枚举定位放映窗口，仍然能"贴上去"（知道在放映、
+    /// 窗口在哪、多大），只是没有页码、不能翻页。</item>
+    /// <item>两者都失败：报告未连接，不做任何事。</item>
+    /// </list>
+    ///
+    /// <para><b>明确的能力边界：</b>跨权限（CC 提权 + PPT 普通权限）时，
+    /// COM 被 UIPI 阻断，本类只能做到第 2 级——粘贴可用、翻页不可用。
+    /// 要跨权限拿到页码需要独立进程走 IPC，不在本类范围内。</para>
+    /// </summary>
+    internal sealed class PptBridge : IPPTLinkManager
+    {
+        const int MK_E_UNAVAILABLE = unchecked((int)0x800401E3);
+        const int CO_E_SERVER_EXEC_FAILURE = unchecked((int)0x80080005);
+        const int RPC_E_DISCONNECTED = unchecked((int)0x80010108);
+
+        /// <summary>轮询间隔。事件模式可用时仍然保留轮询作为兜底：COM 事件在异常退出时会静默丢失。</summary>
+        static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(500);
+        /// <summary>连接检查间隔（进程都不在时不必每次都枚举 ROT）。</summary>
+        static readonly TimeSpan ConnectCheckInterval = TimeSpan.FromMilliseconds(2000);
+
+        // ---------- 事件 ----------
+        public event Action<object> SlideShowBegin;
+        public event Action<object> SlideShowNextSlide;
+        public event Action<object> SlideShowEnd;
+        public event Action<object> PresentationOpen;
+        public event Action<object> PresentationClose;
+        public event Action<bool> PPTConnectionChanged;
+        public event Action<bool> SlideShowStateChanged;
+
+        // ---------- 属性 ----------
+        public bool IsConnected => _comApplication != null;
+        public bool IsInSlideShow => _inSlideShow;
+        public bool IsSupportWPS { get; set; }
+        public bool SkipAnimationsWhenNavigating { get; set; }
+        public int SlidesCount { get; private set; }
+
+        /// <summary>COM Application。跨权限时恒为 null——调用方必须判空。</summary>
+        public object PPTApplication => _comApplication;
+
+        /// <summary>
+        /// 当前放映窗口的屏幕矩形。跨权限时这个仍然有效（来自 Win32），
+        /// 这是白板"贴上去"所需要的唯一信息。无效时为 Rectangle.Empty。
+        /// </summary>
+        public System.Drawing.Rectangle SlideShowBounds { get; private set; } = System.Drawing.Rectangle.Empty;
+
+        /// <summary>上一次连接失败的原因，用于把"为什么连不上"写进日志而不是留个空。</summary>
+        public string LastFailureReason { get; private set; }
+
+        // ---------- 状态 ----------
+        object _comApplication;
+        object _comSlideShowWindow;
+        int _currentSlide = -1;
+        bool _inSlideShow;
+        volatile bool _running;
+        volatile bool _pollBusy;
+        readonly object _gate = new object();
+        Timer _timer;
+        DateTime _lastConnectCheck = DateTime.MinValue;
+        DateTime _lastProcessCheck = DateTime.MinValue;
+        bool _pptProcessAlive;
+        bool _disposed;
+        bool _comEventsHooked;
+
+        // ---------- 进程检测 ----------
+        static readonly string[] PptProcessNames = { "powerpnt", "wpp", "wps", "wpsoffice" };
+
+        #region 启动 / 停止
+
+        public void StartMonitoring()
+        {
+            lock (_gate)
+            {
+                if (_disposed) return;
+                if (_running) return;
+                _running = true;
+            }
+
+            _timer?.Dispose();
+            _timer = new Timer(PollInterval.TotalMilliseconds) { AutoReset = true };
+            _timer.Elapsed += (s, e) => Poll();
+            _timer.Start();
+
+            LogHelper.WriteLogToFile("PptBridge 监控已启动", LogHelper.LogType.Trace);
+        }
+
+        public void StopMonitoring(bool isShutdown = false)
+        {
+            lock (_gate)
+            {
+                if (!_running) return;
+                _running = false;
+            }
+
+            try { _timer?.Stop(); _timer?.Dispose(); } catch { }
+            _timer = null;
+
+            UnhookComEvents();
+            ReleaseCom();
+            SetInSlideShow(false);
+
+            if (!isShutdown)
+            {
+                LogHelper.WriteLogToFile("PptBridge 监控已停止", LogHelper.LogType.Trace);
+            }
+        }
+
+        public void ReloadConnection()
+        {
+            lock (_gate)
+            {
+                UnhookComEvents();
+                ReleaseCom();
+            }
+            _lastConnectCheck = DateTime.MinValue;
+            SetInSlideShow(false);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            StopMonitoring(true);
+        }
+
+        #endregion
+
+        #region 轮询主循环
+
+        void Poll()
+        {
+            if (_disposed || !_running || _pollBusy) return;
+            _pollBusy = true;
+            try
+            {
+                var now = DateTime.UtcNow;
+
+                // 连接：只在需要时检查
+                if (_comApplication == null &&
+                    (now - _lastConnectCheck) >= ConnectCheckInterval)
+                {
+                    _lastConnectCheck = now;
+                    TryConnect();
+                }
+
+                // 放映状态：每次轮询都更新，因为它决定白板要不要贴上去
+                RefreshSlideShowState();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 轮询异常: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                _pollBusy = false;
+            }
+        }
+
+        #endregion
+
+        #region 连接
+
+        void TryConnect()
+        {
+            // 进程都不在就别碰 COM：枚举 ROT 是 20+ 次跨进程调用
+            if (!IsPptProcessAlive())
+            {
+                if (_comApplication != null) Disconnect("PowerPoint 进程已退出");
+                LastFailureReason = "PowerPoint/WPS 进程未运行";
+                return;
+            }
+
+            object app = TryAcquireFromRot();
+            if (app == null) app = TryAcquireFromActiveObject();
+
+            if (app == null)
+            {
+                // 拿不到 COM 不代表不能用：Win32 仍然能看到放映窗口
+                if (_comApplication != null) Disconnect("COM 连接丢失");
+                return;
+            }
+
+            lock (_gate)
+            {
+                ReleaseCom();
+                _comApplication = app;
+                LastFailureReason = null;
+                HookComEvents(app);
+                RefreshSlidesCount();
+            }
+
+            LogHelper.WriteLogToFile("PptBridge 已连接 PowerPoint", LogHelper.LogType.Trace);
+            try { PPTConnectionChanged?.Invoke(true); } catch { }
+        }
+
+        void Disconnect(string reason)
+        {
+            lock (_gate)
+            {
+                UnhookComEvents();
+                ReleaseCom();
+            }
+            LastFailureReason = reason;
+            LogHelper.WriteLogToFile($"PptBridge 断开连接：{reason}", LogHelper.LogType.Trace);
+            try { PPTConnectionChanged?.Invoke(false); } catch { }
+        }
+
+        bool IsPptProcessAlive()
+        {
+            var now = DateTime.UtcNow;
+            if ((now - _lastProcessCheck) < ConnectCheckInterval) return _pptProcessAlive;
+            _lastProcessCheck = now;
+            _pptProcessAlive = false;
+
+            foreach (var name in PptProcessNames)
+            {
+                try
+                {
+                    var list = Process.GetProcessesByName(name);
+                    if (list != null && list.Length > 0)
+                    {
+                        foreach (var p in list) { try { p.Dispose(); } catch { } }
+                        _pptProcessAlive = true;
+                        break;
+                    }
+                }
+                catch { }
+            }
+            return _pptProcessAlive;
+        }
+
+        /// <summary>
+        /// ROT 取 Application。按演示文稿扩展名匹配——实测 ROT 里注册的是完整文件路径，
+        /// 不是 "PowerPoint.Application"。
+        /// </summary>
+        object TryAcquireFromRot()
+        {
+            IRunningObjectTable rot = null;
+            IBindCtx bindCtx = null;
+            IEnumMoniker enumMoniker = null;
+
+            try
+            {
+                if (GetRunningObjectTable(0, out rot) != 0 || rot == null) return null;
+                if (CreateBindCtx(0, out bindCtx) != 0 || bindCtx == null) return null;
+
+                rot.EnumRunning(out enumMoniker);
+                if (enumMoniker == null) return null;
+                enumMoniker.Reset();
+
+                var monikers = new IMoniker[1];
+                IntPtr fetched = IntPtr.Zero;
+
+                while (enumMoniker.Next(1, monikers, fetched) == 0)
+                {
+                    var moniker = monikers[0];
+                    if (moniker == null) continue;
+
+                    string displayName = null;
+                    try { moniker.GetDisplayName(bindCtx, null, out displayName); }
+                    catch { }
+
+                    if (!LooksLikePresentation(displayName)) continue;
+
+                    object comObject = null;
+                    try { rot.GetObject(moniker, out comObject); }
+                    catch { continue; }
+                    if (comObject == null) continue;
+
+                    var app = TryGetApplicationFrom(comObject);
+                    if (app != null) return app;
+
+                    SafeRelease(comObject);
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+            finally
+            {
+                SafeRelease(enumMoniker);
+                SafeRelease(bindCtx);
+                SafeRelease(rot);
+            }
+        }
+
+        /// <summary>从 Presentation 或 Application 上取 Application（late-bound，兼容 WPS 类型不匹配）。</summary>
+        static object TryGetApplicationFrom(object comObject)
+        {
+            try
+            {
+                dynamic d = comObject;
+                try { object app = d.Application; if (app != null) return app; } catch { }
+                try { var pres = d.Presentations; if (pres != null) return comObject; } catch { }
+                return null;
+            }
+            catch { return null; }
+        }
+
+        object TryAcquireFromActiveObject()
+        {
+            try
+            {
+                int hr = CLSIDFromProgID("PowerPoint.Application", out Guid clsid);
+                if (hr != 0) return null;
+
+                hr = GetActiveObject(ref clsid, IntPtr.Zero, out object obj);
+                if (hr != 0 || obj == null) return null;
+
+                dynamic probe = obj;
+                var _ = probe.Name;
+                return obj;
+            }
+            catch (COMException ex)
+            {
+                LastFailureReason = ExplainHResult(ex.HResult);
+                return null;
+            }
+            catch { return null; }
+        }
+
+        static string ExplainHResult(int hr)
+        {
+            switch (hr)
+            {
+                case MK_E_UNAVAILABLE:
+                    return "GetActiveObject 返回 MK_E_UNAVAILABLE——" +
+                           "本程序与 PowerPoint 的权限级别可能不同（一方以管理员运行），" +
+                           "Windows 的 UIPI 会阻断跨完整性级别的 COM。";
+                case CO_E_SERVER_EXEC_FAILURE:
+                    return "PowerPoint COM 服务器无法启动（CO_E_SERVER_EXEC_FAILURE）——" +
+                           "通常是 Office 首次运行向导未完成或安装损坏。";
+                case RPC_E_DISCONNECTED:
+                    return "PowerPoint COM 对象已断开连接。";
+                default:
+                    return "COM 调用失败，HRESULT=0x" + hr.ToString("X8");
+            }
+        }
+
+        #endregion
+
+        #region 放映状态：COM 优先，Win32 兜底
+
+        void RefreshSlideShowState()
+        {
+            // 一级：COM。能拿到页码时用 COM，最准。
+            bool comInShow = false;
+            int comSlide = -1;
+            if (_comApplication != null)
+            {
+                try
+                {
+                    dynamic app = _comApplication;
+                    dynamic windows = app.SlideShowWindows;
+                    int count = (int)windows.Count;
+                    if (count > 0)
+                    {
+                        dynamic window = windows[1];
+                        try
+                        {
+                            dynamic view = window.View;
+                            comSlide = (int)view.CurrentShowPosition;
+                            comInShow = true;
+                        }
+                        catch
+                        {
+                            // View 拿不到但放映窗口存在，仍算在放映
+                            comInShow = true;
+                        }
+                    }
+                }
+                catch (COMException ex)
+                {
+                    if (ex.HResult == RPC_E_DISCONNECTED) Disconnect("COM 对象已断开");
+                }
+                catch { }
+            }
+
+            // 二级：Win32。COM 不可用时靠窗口类名判断，并对齐窗口矩形。
+            var bounds = FindSlideShowWindowBounds(out bool win32InShow);
+
+            if (comInShow || (!IsConnected && win32InShow))
+            {
+                SlideShowBounds = bounds;
+            }
+            else
+            {
+                SlideShowBounds = System.Drawing.Rectangle.Empty;
+            }
+
+            bool nowInShow = comInShow || win32InShow;
+
+            if (nowInShow && !_inSlideShow)
+            {
+                SetInSlideShow(true);
+                try { SlideShowBegin?.Invoke(_comSlideShowWindow); } catch { }
+            }
+            else if (!nowInShow && _inSlideShow)
+            {
+                SetInSlideShow(false);
+                _currentSlide = -1;
+                try { SlideShowEnd?.Invoke(null); } catch { }
+            }
+
+            if (nowInShow && comSlide > 0 && comSlide != _currentSlide)
+            {
+                _currentSlide = comSlide;
+                try { SlideShowNextSlide?.Invoke(_comSlideShowWindow); } catch { }
+            }
+        }
+
+        void SetInSlideShow(bool value)
+        {
+            if (_inSlideShow == value) return;
+            _inSlideShow = value;
+            try { SlideShowStateChanged?.Invoke(value); } catch { }
+        }
+
+        void RefreshSlidesCount()
+        {
+            int newCount = 0;
+            object pres = null;
+            try
+            {
+                if (_comApplication != null)
+                {
+                    dynamic app = _comApplication;
+                    pres = app.ActivePresentation;
+                    if (pres != null) newCount = (int)((dynamic)pres).Slides.Count;
+                }
+            }
+            catch { newCount = 0; }
+
+            int oldCount = SlidesCount;
+            SlidesCount = newCount;
+
+            // PresentationOpen / PresentationClose 的判据：有没有活动演示文稿。
+            // 用 SlidesCount 的 0 ↔ 非0 变化来识别，而不是依赖 COM 事件——
+            // 事件在异常退出时会静默丢失，这两个事件本来也没有调用方依赖精确时机。
+            if (oldCount == 0 && newCount > 0)
+            {
+                _hasPresentation = true;
+                try { PresentationOpen?.Invoke(pres); } catch { }
+            }
+            else if (oldCount > 0 && newCount == 0)
+            {
+                _hasPresentation = false;
+                try { PresentationClose?.Invoke(null); } catch { }
+            }
+
+            SafeRelease(pres);
+        }
+
+        bool _hasPresentation;
+
+        #endregion
+
+
+        #region Win32 放映窗口
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct RECT { public int Left, Top, Right, Bottom; }
+
+        delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")] static extern bool EnumWindows(EnumWindowsProc cb, IntPtr p);
+        [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr h);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetClassNameW(IntPtr h, StringBuilder s, int n);
+        [DllImport("user32.dll")] static extern bool GetWindowRect(IntPtr h, out RECT r);
+
+        /// <summary>PowerPoint 放映窗口类名。实测为 "screenClass"。</summary>
+        const string SlideShowWindowClass = "screenClass";
+
+        /// <summary>
+        /// 用 Win32 查找放映窗口。不依赖 COM，因此跨权限仍然有效——
+        /// 这是本类在提权场景下唯一还能提供的能力：知道"在放映"以及窗口在哪。
+        /// </summary>
+        System.Drawing.Rectangle FindSlideShowWindowBounds(out bool found)
+        {
+            found = false;
+            var result = System.Drawing.Rectangle.Empty;
+            IntPtr best = IntPtr.Zero;
+            int bestArea = 0;
+
+            try
+            {
+                EnumWindows((h, p) =>
+                {
+                    try
+                    {
+                        if (!IsWindowVisible(h)) return true;
+
+                        var cls = new StringBuilder(128);
+                        if (GetClassNameW(h, cls, 256) <= 0) return true;
+                        if (!string.Equals(cls.ToString(), SlideShowWindowClass, StringComparison.OrdinalIgnoreCase))
+                            return true;
+
+                        if (!GetWindowRect(h, out RECT rc)) return true;
+                        int w = rc.Right - rc.Left;
+                        int hgt = rc.Bottom - rc.Top;
+                        if (w <= 0 || hgt <= 0) return true;
+
+                        // 多个候选时取面积最大的那个（多显示器 / 预览窗口同时存在时更可靠）
+                        int area = w * hgt;
+                        if (area > bestArea)
+                        {
+                            bestArea = area;
+                            best = h;
+                            result = new System.Drawing.Rectangle(rc.Left, rc.Top, w, hgt);
+                        }
+                    }
+                    catch { }
+                    return true;
+                }, IntPtr.Zero);
+            }
+            catch { }
+
+            found = best != IntPtr.Zero;
+            return result;
+        }
+
+        #endregion
+
+        #region 导航 / 查询
+
+        public bool TryNavigateToSlide(int slideNumber)
+        {
+            if (!TryGetView(out dynamic view)) return false;
+            try
+            {
+                // SkipAnimationsWhenNavigating：PPT 的 GotoSlide 第二参数 1 = msoFalse（不播动画）
+                view.GotoSlide(slideNumber, SkipAnimationsWhenNavigating ? 1 : 0);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 跳转到第 {slideNumber} 页失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        public bool TryNavigateNext()
+        {
+            if (!TryGetView(out dynamic view)) return false;
+            try { view.Next(); return true; }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 下一页失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        public bool TryNavigatePrevious()
+        {
+            if (!TryGetView(out dynamic view)) return false;
+            try { view.Previous(); return true; }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 上一页失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        public int GetCurrentSlideNumber()
+        {
+            if (_currentSlide > 0) return _currentSlide;
+            if (!TryGetView(out dynamic view)) return 0;
+            try { return (int)view.CurrentShowPosition; }
+            catch { return 0; }
+        }
+
+        public string GetPresentationName()
+        {
+            if (_comApplication == null) return null;
+            try
+            {
+                dynamic app = _comApplication;
+                dynamic pres = app.ActivePresentation;
+                return pres == null ? null : (string)pres.Name;
+            }
+            catch { return null; }
+        }
+
+        public object GetCurrentActivePresentation()
+        {
+            if (_comApplication == null) return null;
+            try
+            {
+                dynamic app = _comApplication;
+                return app.ActivePresentation;
+            }
+            catch { return null; }
+        }
+
+        public bool TryStartSlideShow()
+        {
+            if (!TryGetSlideShowWindows(out dynamic windows)) return false;
+            try
+            {
+                dynamic app = _comApplication;
+                dynamic pres = app.ActivePresentation;
+                if (pres == null) return false;
+                pres.SlideShowSettings.Run();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 启动放映失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        public bool TryEndSlideShow()
+        {
+            if (!TryGetSlideShowWindows(out dynamic windows)) return false;
+            try
+            {
+                int count = (int)windows.Count;
+                if (count == 0) return false;
+                dynamic window = windows[1];
+                dynamic view = window.View;
+                view.Exit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 结束放映失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        public bool TryShowSlideNavigation()
+        {
+            // 右键菜单 / 导航面板：.NET 下没有可靠的等价操作。
+            // 保留方法以满足接口，行为是"翻到下一页"——与旧实现保持一致的语义。
+            return TryNavigateNext();
+        }
+
+        public List<PPTSlideThumbnail> ExportSlideThumbnails(int width, int height, IProgress<double> progress = null)
+        {
+            var list = new List<PPTSlideThumbnail>();
+            if (_comApplication == null) return list;
+
+            object pres = null;
+            try
+            {
+                dynamic app = _comApplication;
+                pres = app.ActivePresentation;
+                if (pres == null) return list;
+
+                dynamic dPres = pres;
+                int total = (int)dPres.Slides.Count;
+                string tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "icc-ppt-thumbs-" + Guid.NewGuid().ToString("N"));
+                System.IO.Directory.CreateDirectory(tempDir);
+
+                try
+                {
+                    for (int i = 1; i <= total; i++)
+                    {
+                        try
+                        {
+                            dynamic slide = dPres.Slides[i];
+                            string path = System.IO.Path.Combine(tempDir, "s" + i + ".png");
+                            slide.Export(path, "PNG", width, height);
+                            if (System.IO.File.Exists(path))
+                            {
+                                list.Add(new PPTSlideThumbnail { SlideNumber = i, PngBytes = System.IO.File.ReadAllBytes(path) });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.WriteLogToFile($"PptBridge 导出第 {i} 页缩略图失败: {ex.Message}", LogHelper.LogType.Warning);
+                        }
+                        progress?.Report((double)i / total);
+                    }
+                }
+                finally
+                {
+                    try { System.IO.Directory.Delete(tempDir, true); } catch { }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"PptBridge 导出缩略图失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                SafeRelease(pres);
+            }
+
+            return list;
+        }
+
+        bool TryGetSlideShowWindows(out dynamic windows)
+        {
+            windows = null;
+            if (_comApplication == null) return false;
+            try
+            {
+                dynamic app = _comApplication;
+                windows = app.SlideShowWindows;
+                return (int)windows.Count > 0;
+            }
+            catch { return false; }
+        }
+
+        bool TryGetView(out dynamic view)
+        {
+            view = null;
+            if (!TryGetSlideShowWindows(out dynamic windows)) return false;
+            try
+            {
+                dynamic window = windows[1];
+                view = window.View;
+                return view != null;
+            }
+            catch { return false; }
+        }
+
+        #endregion
+
+        #region COM 事件
+
+        void HookComEvents(object app)
+        {
+            try
+            {
+                dynamic d = app;
+                d.SlideShowBegin += new Action<object>(OnComSlideShowBegin);
+                d.SlideShowNextSlide += new Action<object>(OnComNextSlide);
+                d.SlideShowEnd += new Action<object>(OnComSlideShowEnd);
+                d.PresentationOpen += new Action<object>(OnComPresentationOpen);
+                d.PresentationClose += new Action<object>(OnComPresentationClose);
+                _comEventsHooked = true;
+                LogHelper.WriteLogToFile("PptBridge COM 事件已注册", LogHelper.LogType.Trace);
+            }
+            catch (Exception ex)
+            {
+                // 事件挂不上不影响轮询兜底，这是刻意设计的双模
+                _comEventsHooked = false;
+                LogHelper.WriteLogToFile($"PptBridge COM 事件注册失败，改用轮询: {ex.Message}", LogHelper.LogType.Trace);
+            }
+        }
+
+        void UnhookComEvents()
+        {
+            if (!_comEventsHooked || _comApplication == null) return;
+            try
+            {
+                dynamic d = _comApplication;
+                d.SlideShowBegin -= new Action<object>(OnComSlideShowBegin);
+                d.SlideShowNextSlide -= new Action<object>(OnComNextSlide);
+                d.SlideShowEnd -= new Action<object>(OnComSlideShowEnd);
+                d.PresentationOpen -= new Action<object>(OnComPresentationOpen);
+                d.PresentationClose -= new Action<object>(OnComPresentationClose);
+            }
+            catch { }
+            _comEventsHooked = false;
+        }
+
+        void OnComSlideShowBegin(object window)
+        {
+            _comSlideShowWindow = window;
+            _currentSlide = -1;
+        }
+
+        void OnComNextSlide(object window)
+        {
+            _comSlideShowWindow = window;
+            RefreshSlidesCount();
+        }
+
+        void OnComSlideShowEnd(object pres)
+        {
+            SafeRelease(_comSlideShowWindow);
+            _comSlideShowWindow = null;
+            _currentSlide = -1;
+        }
+
+        void OnComPresentationOpen(object pres)
+        {
+            RefreshSlidesCount();
+            if (!_hasPresentation)
+            {
+                _hasPresentation = true;
+                try { PresentationOpen?.Invoke(pres); } catch { }
+            }
+        }
+
+        void OnComPresentationClose(object pres)
+        {
+            RefreshSlidesCount();
+            if (_hasPresentation)
+            {
+                _hasPresentation = false;
+                try { PresentationClose?.Invoke(pres); } catch { }
+            }
+        }
+
+        #endregion
+
+        #region COM 释放
+
+        void ReleaseCom()
+        {
+            SafeRelease(_comSlideShowWindow);
+            _comSlideShowWindow = null;
+            SafeRelease(_comApplication);
+            _comApplication = null;
+        }
+
+        static bool LooksLikePresentation(string displayName)
+        {
+            if (string.IsNullOrEmpty(displayName)) return false;
+            // 实测 ROT 里注册的是完整文件路径，按扩展名匹配是唯一可靠的判据
+            string[] exts = { ".pptx", ".ppt", ".ppsx", ".pps", ".pptm", ".ppsm", ".potx", ".pot", ".potm" };
+            foreach (var ext in exts)
+            {
+                if (displayName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)) return true;
+            }
+            return false;
+        }
+
+        static void SafeRelease(object comObject)
+        {
+            if (comObject == null) return;
+            try
+            {
+                if (Marshal.IsComObject(comObject)) Marshal.ReleaseComObject(comObject);
+            }
+            catch { }
+        }
+
+        #endregion
+
+        #region P/Invoke
+
+        [DllImport("ole32.dll")] static extern int GetRunningObjectTable(int reserved, out IRunningObjectTable pprot);
+        [DllImport("ole32.dll")] static extern int CreateBindCtx(int reserved, out IBindCtx ppbc);
+        [DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        static extern int CLSIDFromProgID(string lpszProgID, out Guid lpclsid);
+        [DllImport("oleaut32.dll", PreserveSig = true)]
+        static extern int GetActiveObject(ref Guid rclsid, IntPtr pvReserved,
+            [MarshalAs(UnmanagedType.IUnknown)] out object ppunk);
+
+        #endregion
+    }
+}
+
