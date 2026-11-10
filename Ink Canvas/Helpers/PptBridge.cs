@@ -234,6 +234,16 @@ namespace Ink_Canvas.Helpers
             {
                 var now = DateTime.UtcNow;
 
+                // 已连接时也要确认 PPT 还活着。
+                // 不查的话，PPT 被强杀/崩溃后 _comApplication 仍指向一个死 COM 对象，
+                // 下面「未连接才重连」的分支永远不会跑，TryConnect 里那句
+                // IsPptProcessAlive 也就永远执行不到——ICC 会一直停在 PPT 模式的黑屏里。
+                // IsPptProcessAlive 自带 ConnectCheckInterval 缓存，不会每 500ms 枚举进程。
+                if (_comApplication != null && !IsPptProcessAlive())
+                {
+                    Disconnect("PowerPoint 进程已退出");
+                }
+
                 // 连接：只在需要时检查
                 if (_comApplication == null &&
                     (now - _lastConnectCheck) >= ConnectCheckInterval)
