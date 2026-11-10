@@ -34,6 +34,14 @@ namespace Ink_Canvas
     {
         Mutex mutex;
 
+        /// <summary>
+        /// UI 线程卡死超过这个秒数就强制重启，不看 CrashAction 档位。
+        /// 理由见 StartHeartbeatMonitor 心跳分支里的注释：
+        /// 卡死时弹窗档的 ShowCrashWindow 排不进消息循环、不处理档等于让用户干等。
+        /// 取 20 秒——足够区分「短暂抖一下」和「真卡死」。
+        /// </summary>
+        private const double ForceRestartAfterSeconds = 20.0;
+
         public void ReleaseMutexForRestart()
         {
             try
@@ -1811,15 +1819,33 @@ namespace Ink_Canvas
 
                     if (sinceHeartbeat.TotalSeconds > 10)
                     {
-                        // 文案要与实际行为一致：原来一律写「自动重启」，
-                        // 但只有 SilentRestart 档才会真的重启，另外两档只记录。
+                        // UI 线程卡死与「普通崩溃」不是一回事，要分开处理。
+                        //
+                        // 普通崩溃：异常已经冒泡到 Dispatcher 之外，UI 线程还能再跑一次
+                        //   ShowCrashWindow，所以弹窗档要弹窗、静默档要重启、不处理档只记录——
+                        //   三档都成立，D-03 的映射是正确的。
+                        //
+                        // UI 线程卡死：线程本身已经不处理消息了。此时：
+                        //   - 弹窗档的 ShowCrashWindow 排进消息队列也永远不会被执行；
+                        //   - 不处理档等于让用户对着黑屏干等到自己关进程；
+                        //   - 只有静默重启档本来就该做的事，恰好是对的。
+                        // 也就是说，「按档位处置」在卡死场景下只有一档是有效动作。
+                        //
+                        // 所以卡死超过 ForceRestartAfterSeconds 秒后，不看档位一律强制重启。
+                        // 这是「老师的白板必须能自己活过来」压过「尊重用户的崩溃处置偏好」。
+                        // 阈值取得比 10 秒长，是因为短暂的 UI 抖动（拖大文件、开设置页）
+                        // 也会让心跳慢一拍，那种情况不该直接重启。
                         SyncCrashActionFromSettings();
-                        string restartReason = CrashAction == CrashActionType.SilentRestart
-                            ? $"检测到主线程无响应，即将自动重启。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。"
-                            : $"检测到主线程无响应（处置方式={CrashAction}，按当前设置不重启）。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。";
+                        bool hardHang = sinceHeartbeat.TotalSeconds > ForceRestartAfterSeconds;
+                        string restartReason = hardHang
+                            ? $"检测到主线程卡死 {sinceHeartbeat.TotalSeconds:F1} 秒（超过 {ForceRestartAfterSeconds:F0} 秒阈值），强制重启。原处置方式={CrashAction}。"
+                            : $"检测到主线程无响应，即将自动重启。心跳超时 {sinceHeartbeat.TotalSeconds:F1} 秒。";
+
                         LogHelper.NewLog(restartReason);
                         WriteCrashLog(restartReason);
-                        if (CrashAction == CrashActionType.SilentRestart)
+
+                        // 卡死：无条件重启。未卡死但已超 10 秒：只有静默档重启。
+                        if (hardHang || CrashAction == CrashActionType.SilentRestart)
                         {
                             TryRestartWithBreaker(restartReason);
                         }
