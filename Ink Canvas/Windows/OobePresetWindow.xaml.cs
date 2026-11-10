@@ -187,7 +187,8 @@ namespace Ink_Canvas.Windows
             settings.PowerPointSettings.PPTTimeCapsulePosition = 1;
             settings.PowerPointSettings.PPTTimeCapsuleOpacity = 1.0;
             settings.PowerPointSettings.PPTTimeCapsuleScale = 1.0;
-            settings.PowerPointSettings.PPTLinkMode = PPTLinkMode.Agent;
+            // LTSC D-02: Agent 架构已移除，预设改用 COM。
+            settings.PowerPointSettings.PPTLinkMode = PPTLinkMode.Com;
             settings.PowerPointSettings.ShowPPTButton = true;
             settings.PowerPointSettings.PPTButtonsDisplayOption = 2222;
             settings.PowerPointSettings.EnablePPTButtonPageClickable = true;

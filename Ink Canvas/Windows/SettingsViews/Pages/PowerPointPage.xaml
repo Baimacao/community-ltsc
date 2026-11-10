@@ -44,9 +44,9 @@
                         </ui:SettingsCard.HeaderIcon>
                         <ComboBox x:Name="ComboBoxPPTArchitecture"
                                   SelectionChanged="ComboBoxPPTArchitecture_SelectionChanged">
+                            <!-- LTSC D-02: Agent 架构已移除，只保留 COM 与 ROT。 -->
                             <ComboBoxItem Content="{x:Static props:PPTStrings.PPTComArchitecture}" />
                             <ComboBoxItem Content="{x:Static props:PPTStrings.PPTRotArchitecture}" />
-                            <ComboBoxItem Content="{x:Static props:PPTStrings.PPTAgentArchitecture}" />
                         </ComboBox>
                     </ui:SettingsCard>
 

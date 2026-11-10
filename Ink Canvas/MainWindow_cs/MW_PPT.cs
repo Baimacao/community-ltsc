@@ -278,15 +278,13 @@ namespace Ink_Canvas
                     LogHelper.WriteLogToFile($"清理 Interop 状态异常: {ex}", LogHelper.LogType.Warning);
                 }
 
-                // 根据设置选择 COM / ROT / Agent 架构
+                // LTSC D-02: 只保留 COM 与 ROT 两套架构，Agent（VSTO/管道）已移除。
+                // PPTLinkMode.Agent 枚举值保留，老配置反序列化得到 Agent 时落到 COM，
+                // 不会因为枚举缺失而反序列化失败或变成 0 以外的未知值。
                 switch (Settings.PowerPointSettings.PPTLinkMode)
                 {
                     case PPTLinkMode.Rot:
                         _pptManager = new ROTPPTManager();
-                        break;
-                    case PPTLinkMode.Agent:
-                        VstoRegistrationHelper.EnsureRegistered();
-                        _pptManager = new PPTAgentLinkManager();
                         break;
                     default:
                         _pptManager = new ComPPTLinkManager();
@@ -987,7 +985,7 @@ namespace Ink_Canvas
         private void OnPPTPresentationOpen(object payload)
         {
             var pres = payload as Presentation;
-            var agentState = payload as PPTState;
+            var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
             try
             {
                 Application.Current.Dispatcher.InvokeAsync(() =>
@@ -1159,7 +1157,7 @@ namespace Ink_Canvas
         private async void OnPPTSlideShowBegin(object payload)
         {
             var wn = payload as SlideShowWindow;
-            var agentState = payload as PPTState;
+            var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
             try
             {
                 if (Settings.Automation.IsAutoFoldInPPTSlideShow)
@@ -1215,11 +1213,7 @@ namespace Ink_Canvas
 
                 if (activePresentation == null)
                 {
-                    if (agentState == null && _pptManager is PPTAgentLinkManager agentManager)
-                    {
-                        agentState = agentManager.CurrentState;
-                    }
-
+                    // LTSC D-02: Agent 架构已移除，agentState 不再有来源，直接走 COM/ROT 取值。
                     if (agentState != null)
                     {
                         currentSlide = agentState.SlideIndex;
@@ -1414,7 +1408,7 @@ namespace Ink_Canvas
         private void OnPPTSlideShowNextSlide(object payload)
         {
             var wn = payload as SlideShowWindow;
-            var agentState = payload as PPTState;
+            var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
             try
             {
                 int currentSlide = 0;
@@ -1540,7 +1534,7 @@ namespace Ink_Canvas
         private async void OnPPTSlideShowEnd(object payload)
         {
             var pres = payload as Presentation;
-            var agentState = payload as PPTState;
+            var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
             try
             {
                 await Application.Current.Dispatcher.InvokeAsync(() => CollapseAllPPTNavBarPreviews());
@@ -2015,10 +2009,7 @@ namespace Ink_Canvas
                                         slide.SlideShowTransition.Hidden = MsoTriState.msoFalse;
                                 }
                             }
-                            else if (_pptManager is PPTAgentLinkManager agentManager)
-                            {
-                                agentManager.TryUnhideHiddenSlides();
-                            }
+                            // LTSC D-02: Agent 架构已移除，隐藏幻灯片走上面的 COM 路径。
                         }
                         catch (Exception ex)
                         {
@@ -2088,10 +2079,7 @@ namespace Ink_Canvas
                             {
                                 pres.SlideShowSettings.AdvanceMode = PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
                             }
-                            else if (_pptManager is PPTAgentLinkManager agentManager)
-                            {
-                                agentManager.TryDisableAutoPlayTimings();
-                            }
+                            // LTSC D-02: Agent 架构已移除。
                         }
                         catch (Exception ex)
                         {

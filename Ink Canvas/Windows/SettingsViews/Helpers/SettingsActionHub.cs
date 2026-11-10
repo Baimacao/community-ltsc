@@ -523,14 +523,8 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
                     SettingsManager.SaveSettingsToFile();
                 }
 
-                // 切换到 Agent 模式时，自动注册 VSTO 插件
-                if (ppt.PPTLinkMode == PPTLinkMode.Agent)
-                {
-                    if (!VstoRegistrationHelper.EnsureRegistered())
-                    {
-                        LogHelper.WriteLogToFile("VSTO 插件注册失败，Agent 模式可能无法正常工作", LogHelper.LogType.Warning);
-                    }
-                }
+                // LTSC D-02: Agent 架构已移除，不再注册 VSTO 插件。
+                // 若老配置里仍是 Agent，InitializePPTManagers 内部会落到 COM 分支。
 
                 mw.InitializePPTManagers();
                 if (ppt.PowerPointSupport) mw.StartPPTMonitoring();
