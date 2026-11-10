@@ -236,13 +236,22 @@ namespace Ink_Canvas
                 BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
             }
 
-            if (Settings.Startup.CrashAction == 0)
+            // LTSC D-03: 原来这里把 crashAction 归约成二值——
+            //   ==0 → SilentRestart，其余一律 → NoAction。
+            // 这会把 2（ShowCrashWindow，也就是默认值）吃掉变成 NoAction，
+            // 导致崩溃时连弹窗都不出，用户只看到程序没了。
+            // 现在按枚举一一映射，三档都保留。
+            switch (Settings.Startup.CrashAction)
             {
-                App.CrashAction = App.CrashActionType.SilentRestart;
-            }
-            else
-            {
-                App.CrashAction = App.CrashActionType.NoAction;
+                case 0:
+                    App.CrashAction = App.CrashActionType.SilentRestart;
+                    break;
+                case 2:
+                    App.CrashAction = App.CrashActionType.ShowCrashWindow;
+                    break;
+                default:
+                    App.CrashAction = App.CrashActionType.NoAction;
+                    break;
             }
 
             // Appearance - UI initialization (settings loading moved to AppearancePage)

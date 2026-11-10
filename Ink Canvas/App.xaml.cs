@@ -163,8 +163,20 @@ namespace Ink_Canvas
                 return;
             }
 
-            // CrashAction 的值将在 App_Startup 中通过缓存的 Settings.json 同步，
-            // 构造函数中先用默认值（ShowCrashWindow），LoadSettings 运行后会被覆盖。
+            // LTSC D-03: 在启动看门狗之前就把 CrashAction 从 Settings.json 读出来。
+            //
+            // 原实现的问题：StartWatchdogIfNeeded() 在本构造函数里判断
+            //   if (CrashAction == CrashActionType.SilentRestart)
+            // 而那一刻 CrashAction 还是字段默认值 ShowCrashWindow（见下方字段声明），
+            // Settings.json 要到 App_Startup 才读。结果是：
+            //   - 默认配置下看门狗永远不启动（正确）；
+            //   - 但用户把「崩溃后操作」改成「静默重启」后，也必须重启应用才生效，
+            //     而且 UI 上没有任何提示。
+            //
+            // 修法：ReadSettingsJsonOnce + SyncCrashActionFromParsed 都是静态方法，
+            // 不依赖 MainWindow，可以在这里提前调用。调用后 CrashAction 就是用户真实设置。
+            // 注意：不改变默认值（仍是 ShowCrashWindow = 弹窗），只是把时序提前。
+            TrySyncCrashActionBeforeWatchdog();
 
             Startup += App_Startup;
             SessionEnding += App_SessionEnding;
@@ -803,6 +815,30 @@ namespace Ink_Canvas
 
         // 增加字段保存崩溃后操作设置
         public static CrashActionType CrashAction = CrashActionType.ShowCrashWindow;
+
+        /// <summary>
+        /// LTSC D-03: 在启动看门狗之前，把 CrashAction 从 Settings.json 读出来。
+        ///
+        /// 为什么需要它：<see cref="StartWatchdogIfNeeded"/> 的调用点在 App 构造函数里，
+        /// 而 Settings.json 原本要到 App_Startup 才读。构造函数期 CrashAction 恒为字段默认值
+        /// （ShowCrashWindow），导致两个后果：
+        ///   1. 用户把「崩溃后操作」设为「静默重启」后，必须整个重启应用才生效，UI 无提示；
+        ///   2. 「静默重启」这个配置在课堂里恰恰是最需要可靠生效的一档。
+        ///
+        /// 本方法只做读取与赋值，不启动任何东西，失败时保持默认值（弹窗），
+        /// 因此最坏情况等价于修复前的行为，不会引入新的静默失败。
+        /// </summary>
+        private static void TrySyncCrashActionBeforeWatchdog()
+        {
+            try
+            {
+                SyncCrashActionFromParsed(ReadSettingsJsonOnce());
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LTSC D-03] 提前同步 CrashAction 失败，保持默认值: {ex.Message}");
+            }
+        }
 
         public static void SyncCrashActionFromSettings()
         {
