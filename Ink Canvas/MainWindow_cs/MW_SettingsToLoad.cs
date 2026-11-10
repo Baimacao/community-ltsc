@@ -885,7 +885,7 @@ namespace Ink_Canvas
         /// </summary>
         internal void ApplyFloatingBarMenuOpacity()
         {
-            double opacity = currentMode == 2
+            double opacity = IsInPPTPresentationMode
                 ? Settings.Appearance.FloatingBarMenuOpacityInPPT
                 : Settings.Appearance.FloatingBarMenuOpacity;
 

@@ -184,7 +184,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
         public static void OnFloatingBarMenuOpacityInPPTChanged(double value)
         {
             var mw = GetMainWindow();
-            if (mw != null && mw.currentMode == 2)
+            if (mw != null && mw.IsInPPTPresentationMode)
                 mw.ApplyFloatingBarMenuOpacity();
         }
 
@@ -336,7 +336,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
         public static void OnFloatingBarOpacityInPPTChanged(double value)
         {
             var mw = GetMainWindow();
-            if (mw != null && mw.currentMode == 2)
+            if (mw != null && mw.IsInPPTPresentationMode)
                 mw.ViewboxFloatingBar.Opacity = value;
         }
 

@@ -538,7 +538,7 @@ namespace Ink_Canvas.Helpers
         {
             var settings = Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.Settings;
             var mw = Application.Current.MainWindow as Ink_Canvas.MainWindow;
-            bool isPPTMode = mw != null && mw.currentMode == 2;
+            bool isPPTMode = mw != null && mw.IsInPPTPresentationMode;
 
             // 浮动栏菜单
             string name = popup.Name;
