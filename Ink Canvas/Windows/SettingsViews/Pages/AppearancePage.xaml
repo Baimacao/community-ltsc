@@ -74,6 +74,18 @@
                         </ComboBox>
                     </ui:SettingsCard>
 
+                    <!-- LTSC D-05: 全局动效开关。开启后全仓动画时长归零（瞬时完成）。 -->
+                    <ui:SettingsCard Header="界面动效"
+                             Description="关闭后可减少动画开销；低配机器或远程桌面下建议关闭。">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch x:Name="ToggleSwitchDisableAllAnimations"
+                                      OnContent="已关闭"
+                                      OffContent="已开启"
+                                      Toggled="ToggleSwitchDisableAllAnimations_Toggled" />
+                    </ui:SettingsCard>
+
                     <Rectangle Height="48" />
                 </ikw:SimpleStackPanel>
             </Grid>

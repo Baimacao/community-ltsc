@@ -135,7 +135,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             BackupsSizeText.Text = FormatSize(_backupsSize);
             CustomSizeText.Text = FormatSize(_customSize);
             PluginsSizeText.Text = FormatSize(_pluginsSize);
-            UpdateSizeText.Text = FormatSize(_updateSize);
             OtherSizeText.Text = FormatSize(_otherSize);
 
             // 更新柱状图列宽
@@ -147,15 +146,14 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 BarBackupsCol.Width = new GridLength(_backupsSize, GridUnitType.Star);
                 BarCustomCol.Width = new GridLength(_customSize, GridUnitType.Star);
                 BarPluginsCol.Width = new GridLength(_pluginsSize, GridUnitType.Star);
-                BarUpdateCol.Width = new GridLength(_updateSize, GridUnitType.Star);
                 BarOtherCol.Width = new GridLength(_otherSize, GridUnitType.Star);
             }
             else
             {
                 BarCoreCol.Width = BarLogsCol.Width = BarInkCol.Width =
                     BarBackupsCol.Width = BarCustomCol.Width =
-                    BarPluginsCol.Width = BarUpdateCol.Width =
-                    BarOtherCol.Width = new GridLength(0, GridUnitType.Star);
+                    BarPluginsCol.Width = BarOtherCol.Width =
+                    new GridLength(0, GridUnitType.Star);
             }
 
             // 占磁盘比例
@@ -186,7 +184,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             BackupsSizeText.Text = text;
             CustomSizeText.Text = text;
             PluginsSizeText.Text = text;
-            UpdateSizeText.Text = text;
             OtherSizeText.Text = text;
         }
 
@@ -207,10 +204,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             CleanWithConfirm(LocalizationHelper.GetString("Storage_Backups_Header"), BackupDirs, keepRoot: true);
         }
 
-        private void BtnCleanUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            CleanWithConfirm(LocalizationHelper.GetString("Storage_Update_Header"), UpdateDirs, keepRoot: true);
-        }
 
         private async void CleanWithConfirm(string displayName, string[] subDirs, bool keepRoot)
         {

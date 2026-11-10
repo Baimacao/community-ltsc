@@ -40,6 +40,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
             ComboBoxTheme.SelectedIndex = settings.Appearance.Theme;
             SelectComboBoxItemByTag(ComboBoxWindowBackdrop, settings.Appearance.WindowBackdrop);
+            ToggleSwitchDisableAllAnimations.IsOn = settings.Appearance.DisableAllAnimations;
 
             _isApplyingLanguageFromSettings = true;
             try
@@ -106,6 +107,23 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SettingsActionHub.OnLanguageChanged(language);
             }
             catch (Exception ex) { Debug.WriteLine($"切换界面语言时出错: {ex.Message}"); }
+        }
+
+        /// <summary>
+        /// LTSC D-05：全局动效开关。写入设置后立即生效——AnimationsHelper.EffectiveDuration
+        /// 每次被调用都会重新读这个字段，所以不需要重启，下一次动画就是新行为。
+        /// </summary>
+        private void ToggleSwitchDisableAllAnimations_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            try
+            {
+                var s = SettingsManager.Settings;
+                if (s?.Appearance == null) return;
+                s.Appearance.DisableAllAnimations = ToggleSwitchDisableAllAnimations.IsOn;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex) { Debug.WriteLine($"切换界面动效开关时出错: {ex.Message}"); }
         }
 
         private void ComboBoxWindowBackdrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
