@@ -76,46 +76,10 @@ namespace Ink_Canvas.Windows.SettingsViews
             ApplyCurrentTheme();
             global::Ink_Canvas.Helpers.WindowBackdropHelper.Apply(this, Helpers.SettingsManager.Settings);
 
-            // 初始化内置页面映射
-            _pageTypes = new Dictionary<string, Type>
-            {
-                { "HomePage", typeof(HomePage) },
-                { "StartupPage", typeof(StartupPage) },
-                { "ClockPage", typeof(ClockPage) },
-                { "PrivacyPage", typeof(PrivacyPage) },
-                { "SecurityPage", typeof(SecurityPage) },
-                { "WindowPage", typeof(WindowPage) },
-                { "AppearancePage", typeof(AppearancePage) },
-                { "SidebarPage", typeof(SidebarPage) },
-                { "HotkeyPage", typeof(HotkeyPage) },
-                { "ToolbarPage", typeof(ToolbarPage) },
-                { "ToolbarAppearancePage", typeof(ToolbarAppearancePage) },
-                { "ToolbarMenuPage", typeof(ToolbarMenuPage) },
-                { "BoardToolbarPage", typeof(BoardToolbarPage) },
-                { "BoardAppearancePage", typeof(BoardAppearancePage) },
-                { "BoardMenuPage", typeof(BoardMenuPage) },
-                { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
-                { "NotificationPage", typeof(NotificationPage) },
-                { "ExperimentalPage", typeof(ExperimentalPage) },
-                { "AdvancedPage", typeof(AdvancedPage) },
-                { "StoragePage", typeof(StoragePage) },
-                { "BackupPage", typeof(BackupPage) },
-                { "CloudStoragePage", typeof(CloudStoragePage) },
-                { "AutomationWorkflowPage", typeof(AutomationWorkflowPage) },
-                { "PowerPointPage", typeof(PowerPointPage) },
-                { "RandomDrawPage", typeof(RandomDrawPage) },
-                { "CanvasPage", typeof(CanvasPage) },
-                { "InkRecognitionPage", typeof(InkRecognitionPage) },
-                { "PerformancePage", typeof(PerformancePage) },
-                { "DebugPage", typeof(DebugPage) },
-                { "FriendlyLinksPage", typeof(FriendlyLinksPage) },
-                { "AboutPage", typeof(AboutPage) },
-                { "Settings", typeof(SettingsPage) },
-                { "PluginPage", typeof(PluginPage) },
-                { "PluginSettingsPage", typeof(PluginSettingsPage) },
-                { "PluginMarketplacePage", typeof(PluginMarketplacePage) },
-                { "PPTPageFlipPreviewPage", typeof(PPTPageFlipPreviewPage) }
-            };
+            // 内置页面映射见字段初始化器 _pageTypes（第 19 行起）。
+            // 这里原本重复了一份完全相同的 36 条字典，两份各自演化过，
+            // 是 C-03 误判「页面不可达」的直接原因：改一处、另一处不变，
+            // 审计时搜到哪份就信哪份。已删除，只保留字段初始化器作为唯一来源。
 
             // 默认选中首页
             if (NavigationViewControl.MenuItems.Count > 0)
@@ -375,7 +339,11 @@ namespace Ink_Canvas.Windows.SettingsViews
         {
             if (!_pageTypes.TryGetValue(pageTag, out Type pageType))
             {
-                LogHelper.WriteLogToFile($"SettingsWindow: NavigateToPage 找不到页面类型 [{pageTag}]，已注册: [{string.Join(", ", _pageTypes.Keys)}]", LogHelper.LogType.Warning);
+                // 找不到页面键时不能静默吞掉：用户点了一张卡什么都没发生，
+                // 排查时只能翻日志。这里保留日志（含已注册的全部键，便于对照），
+                // 同时把错误显示出来，让"点了没反应"变成"点了报错"。
+                LogHelper.WriteLogToFile($"SettingsWindow: NavigateToPage 找不到页面类型 [{pageTag}]，已注册: [{string.Join(", ", _pageTypes.Keys)}]", LogHelper.LogType.Error);
+                MessageBox.Show(string.Format(NavStrings.Nav_NavigateError, $"未注册的页面键: {pageTag}"), NavStrings.Nav_Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
