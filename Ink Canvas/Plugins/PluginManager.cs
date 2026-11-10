@@ -348,7 +348,10 @@ namespace Ink_Canvas.Plugins
                         Directory.Delete(targetPath, true);
                     }
                     Directory.CreateDirectory(targetPath);
-                    ZipFile.ExtractToDirectory(pkgPath, targetPath);
+                    // 用仓库自己的 SafeZipExtractor 而不是 ZipFile.ExtractToDirectory：
+                    // 后者会把压缩包里 "../" 形式的条目写到目标目录之外（Zip Slip）。
+                    // 插件包是外部输入，不能信任其中任何路径。
+                    Ink_Canvas.Helpers.SafeZipExtractor.ExtractZipSafely(pkgPath, targetPath);
 
                     Log(string.Format("Installed plugin package: {0} v{1}", manifest.Name, manifest.Version));
                 }
