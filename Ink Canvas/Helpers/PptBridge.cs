@@ -79,9 +79,19 @@ namespace Ink_Canvas.Helpers
         object _comSlideShowWindow;
         int _currentSlide = -1;
         bool _inSlideShow;
+        bool _pendingInShow;
+        int _pendingInShowTicks;
+
+        /// <summary>
+        /// 状态候选值需要连续稳定这么多轮才被采纳。500ms/轮 × 3 = 1.5s 最大延迟。
+        /// 用来吃掉 PPT 退出放映时"窗口已隐藏但进程还在"造成的瞬时抖动。
+        /// </summary>
+        const int StableTicksRequired = 3;
         volatile bool _running;
         volatile bool _pollBusy;
         readonly object _gate = new object();
+        /// <summary>保护 _timer 字段的创建与销毁。和 _gate 分开，避免等待轮询时持锁太久。</summary>
+        readonly object _timerGate = new object();
         Timer _timer;
         DateTime _lastConnectCheck = DateTime.MinValue;
         DateTime _lastProcessCheck = DateTime.MinValue;
@@ -96,17 +106,30 @@ namespace Ink_Canvas.Helpers
 
         public void StartMonitoring()
         {
-            lock (_gate)
+            // 定时器的创建/销毁必须在同一把锁里完成。
+            // 上一版把 new Timer 放在锁外，两个线程同时 Start 会互踩：
+            // A 刚 new 出 _timer，B 的 Stop 就把它 Dispose 了，A 再 Start 就抛
+            // ObjectDisposedException。
+            Timer timer;
+            lock (_timerGate)
             {
                 if (_disposed) return;
                 if (_running) return;
+
+                try { _timer?.Stop(); _timer?.Dispose(); } catch { }
+
+                timer = new Timer(PollInterval.TotalMilliseconds) { AutoReset = true };
+                timer.Elapsed += (s, e) => Poll();
+                _timer = timer;
                 _running = true;
             }
 
-            _timer?.Dispose();
-            _timer = new Timer(PollInterval.TotalMilliseconds) { AutoReset = true };
-            _timer.Elapsed += (s, e) => Poll();
-            _timer.Start();
+            try { timer.Start(); }
+            catch (ObjectDisposedException)
+            {
+                // 极端时序下仍可能被 Stop 抢先，属于合法的"已被停止"，不是错误
+                return;
+            }
 
             LogHelper.WriteLogToFile("PptBridge 监控已启动", LogHelper.LogType.Trace);
         }
@@ -119,12 +142,33 @@ namespace Ink_Canvas.Helpers
                 _running = false;
             }
 
-            try { _timer?.Stop(); _timer?.Dispose(); } catch { }
-            _timer = null;
+            lock (_timerGate)
+            {
+                try { _timer?.Stop(); _timer?.Dispose(); } catch { }
+                _timer = null;
+            }
+
+            // 关键：轮询线程可能已经进入 RefreshSlideShowState 并正握着 COM 引用，
+            // 此刻若直接 ReleaseComObject，那一侧会拿到已释放的 RCW → 访问冲突。
+            // 轮询函数有 try/finally 保证 _pollBusy 一定复位，所以这里等它是安全的。
+            // 上限 3 秒：单轮轮询正常在毫秒级，等不到说明 COM 调用卡死，
+            // 那也不能无限期阻塞 UI 线程——宁可带着一次异常退出也不冻结界面。
+            var waitStart = Environment.TickCount;
+            while (_pollBusy && Environment.TickCount - waitStart < 3000)
+            {
+                Thread.Sleep(10);
+            }
 
             UnhookComEvents();
             ReleaseCom();
-            SetInSlideShow(false);
+            // 直接改字段而不走 SetInSlideShow：状态要归零（否则 Dispose 后
+            // IsInSlideShow 还停在 true，外部会以为仍在放映），但不能发事件——
+            // 调用方此时可能正在 Dispose UI，收到 false 反而会去碰已释放的控件。
+            _inSlideShow = false;
+            _pendingInShow = false;
+            _pendingInShowTicks = 0;
+            _currentSlide = -1;
+            SlideShowBounds = System.Drawing.Rectangle.Empty;
 
             if (!isShutdown)
             {
@@ -134,13 +178,23 @@ namespace Ink_Canvas.Helpers
 
         public void ReloadConnection()
         {
+            // 和 StopMonitoring 同样的理由：先让正在跑的轮询收尾，再动 COM。
+            var waitStart = Environment.TickCount;
+            while (_pollBusy && Environment.TickCount - waitStart < 3000)
+            {
+                Thread.Sleep(10);
+            }
+
             lock (_gate)
             {
                 UnhookComEvents();
                 ReleaseCom();
             }
             _lastConnectCheck = DateTime.MinValue;
-            SetInSlideShow(false);
+            // 刻意不发 SlideShowStateChanged=false。
+            // 上一版在这里复位，下一轮轮询又把状态推回 true，导致
+            // MW_PPT 收到 false→true 抖动，工具栏闪一下。
+            // 重载期间窗口没变，对外状态本来就不该变。
         }
 
         public void Dispose()
@@ -157,6 +211,9 @@ namespace Ink_Canvas.Helpers
         void Poll()
         {
             if (_disposed || !_running || _pollBusy) return;
+            // 二次确认：StopMonitoring 可能在上一行之后、这里之前把 _running 置false，
+            // 那这一轮就不该再碰任何 COM 对象。
+            if (!_running) return;
             _pollBusy = true;
             try
             {
@@ -192,8 +249,8 @@ namespace Ink_Canvas.Helpers
             // 进程都不在就别碰 COM：枚举 ROT 是 20+ 次跨进程调用
             if (!IsPptProcessAlive())
             {
-                if (_comApplication != null) Disconnect("PowerPoint 进程已退出");
                 LastFailureReason = "PowerPoint/WPS 进程未运行";
+                if (_comApplication != null) Disconnect("PowerPoint 进程已退出");
                 return;
             }
 
@@ -202,8 +259,11 @@ namespace Ink_Canvas.Helpers
 
             if (app == null)
             {
-                // 拿不到 COM 不代表不能用：Win32 仍然能看到放映窗口
+                // 拿不到 COM 不代表不能用：Win32 仍然能看到放映窗口。
+                // 失败原因由 TryAcquireFromActiveObject 记录，这里不能覆盖成空。
                 if (_comApplication != null) Disconnect("COM 连接丢失");
+                if (string.IsNullOrEmpty(LastFailureReason))
+                    LastFailureReason = "ROT 与 GetActiveObject 均未取到 PowerPoint";
                 return;
             }
 
@@ -227,7 +287,8 @@ namespace Ink_Canvas.Helpers
                 UnhookComEvents();
                 ReleaseCom();
             }
-            LastFailureReason = reason;
+            // 只在没有更具体原因时才用这个泛化的（原因通常由上层先设好）
+            if (string.IsNullOrEmpty(LastFailureReason)) LastFailureReason = reason;
             LogHelper.WriteLogToFile($"PptBridge 断开连接：{reason}", LogHelper.LogType.Trace);
             try { PPTConnectionChanged?.Invoke(false); } catch { }
         }
@@ -406,18 +467,37 @@ namespace Ink_Canvas.Helpers
             }
 
             // 二级：Win32。COM 不可用时靠窗口类名判断，并对齐窗口矩形。
-            var bounds = FindSlideShowWindowBounds(out bool win32InShow);
+            //
+            // 这里刻意每轮都枚举，不做"已知在放映就跳过"的节流。
+            // 试过那样省：跳过枚举时只能拿上一次的结果当输入，等于让状态机自己
+            // 证明自己——一旦进入放映就永远检测不到退出。省下的那点枚举开销
+            // 换一个永远退不出去的故障，不划算。
+            System.Drawing.Rectangle bounds = FindSlideShowWindowBounds(out bool win32InShow);
 
-            if (comInShow || (!IsConnected && win32InShow))
+            var newBounds = (comInShow || (!IsConnected && win32InShow)) ? bounds : System.Drawing.Rectangle.Empty;
+            // 只在真的变了才写，避免下游绑定时每 500ms 收到一次无意义的通知
+            if (newBounds != SlideShowBounds) SlideShowBounds = newBounds;
+
+            bool nowRawInShow = comInShow || win32InShow;
+
+            // 防抖动：PPT 退出放映时会先隐藏窗口再销毁，中间有一两帧窗口
+            // 检测不到，直接照状态变化走会报一次假的"放映结束"。
+            // 要求候选状态连续稳定 StableTicksRequired 次才认定，代价是最多
+            // 500ms × 3 = 1.5s 的延迟——对人眼不可感知，却能吃掉抖动。
+            bool stable = (nowRawInShow == _pendingInShow);
+            if (stable)
             {
-                SlideShowBounds = bounds;
+                if (_pendingInShowTicks < StableTicksRequired) _pendingInShowTicks++;
             }
             else
             {
-                SlideShowBounds = System.Drawing.Rectangle.Empty;
+                _pendingInShow = nowRawInShow;
+                _pendingInShowTicks = 1;
             }
 
-            bool nowInShow = comInShow || win32InShow;
+            bool nowInShow = _inSlideShow;
+            if (_pendingInShowTicks >= StableTicksRequired)
+                nowInShow = _pendingInShow;
 
             if (nowInShow && !_inSlideShow)
             {
