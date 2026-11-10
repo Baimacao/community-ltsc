@@ -933,8 +933,6 @@ namespace Ink_Canvas
         public bool ShowPPTSidebarByDefault { get; set; } = false;
         [JsonProperty("showPPTModePrompt")]
         public bool ShowPPTModePrompt { get; set; } = false;
-        [JsonProperty("enableSmartMode")]
-        public bool EnableSmartMode { get; set; } = false;
     }
 
     public class Automation
