@@ -519,12 +519,15 @@ namespace Ink_Canvas.Helpers
             if (nowInShow && !_inSlideShow)
             {
                 SetInSlideShow(true);
+                // 这条是轮询兜底路径：COM 事件没到时由状态机补上。
+                VerboseLog($"轮询检测到放映开始(COM事件未触发) comSlide={comSlide}");
                 try { SlideShowBegin?.Invoke(_comSlideShowWindow); } catch { }
             }
             else if (!nowInShow && _inSlideShow)
             {
                 SetInSlideShow(false);
                 _currentSlide = -1;
+                VerboseLog($"轮询检测到放映结束 comSlide={comSlide}");
                 try { SlideShowEnd?.Invoke(null); } catch { }
             }
 
