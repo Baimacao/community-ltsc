@@ -1197,6 +1197,14 @@ namespace Ink_Canvas
         [JsonProperty("isSaveLogByDate")]
         public bool IsSaveLogByDate { get; set; } = true;
 
+        /// <summary>
+        /// PPT 联动详细诊断日志开关。默认关闭。
+        /// 打开后 PptBridge 会记录连接、放映启停、翻页、COM 往返等每一步细节，
+        /// 用于课堂上出问题时定位；平时关闭以免日志膨胀、也避免额外的 IO。
+        /// </summary>
+        [JsonProperty("isVerbosePptLogEnabled")]
+        public bool IsVerbosePptLogEnabled { get; set; } = false;
+
         [JsonProperty("isDebugConsoleEnabled")]
         public bool IsDebugConsoleEnabled { get; set; } = false;
 

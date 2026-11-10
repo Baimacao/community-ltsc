@@ -104,6 +104,21 @@ namespace Ink_Canvas.Helpers
 
         #region 启动 / 停止
 
+        /// <summary>
+        /// 详细诊断日志。只有用户在设置里打开「PPT 联动详细日志」时才写入。
+        /// 默认关闭：课堂上正常使用不产生额外 IO，出问题时再打开取证。
+        /// </summary>
+        static void VerboseLog(string message)
+        {
+            try
+            {
+                var adv = MainWindow.Settings?.Advanced;
+                if (adv == null || !adv.IsLogEnabled || !adv.IsVerbosePptLogEnabled) return;
+                LogHelper.WriteLogToFile($"[PPT详细] {message}", LogHelper.LogType.Trace);
+            }
+            catch { /* 诊断日志绝不能影响主流程 */ }
+        }
+
         public void StartMonitoring()
         {
             // 定时器的创建/销毁必须在同一把锁里完成。
@@ -277,6 +292,7 @@ namespace Ink_Canvas.Helpers
             }
 
             LogHelper.WriteLogToFile("PptBridge 已连接 PowerPoint", LogHelper.LogType.Trace);
+            VerboseLog($"连接成功: 放映中={IsInSlideShow} 当前页={_currentSlide}");
             try { PPTConnectionChanged?.Invoke(true); } catch { }
         }
 
@@ -290,6 +306,7 @@ namespace Ink_Canvas.Helpers
             // 只在没有更具体原因时才用这个泛化的（原因通常由上层先设好）
             if (string.IsNullOrEmpty(LastFailureReason)) LastFailureReason = reason;
             LogHelper.WriteLogToFile($"PptBridge 断开连接：{reason}", LogHelper.LogType.Trace);
+            VerboseLog($"断开原因={reason} 断开前: 放映中={IsInSlideShow} 当前页={_currentSlide} 上次失败={LastFailureReason}");
             try { PPTConnectionChanged?.Invoke(false); } catch { }
         }
 
@@ -663,6 +680,7 @@ namespace Ink_Canvas.Helpers
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"PptBridge 下一页失败: {ex.Message}", LogHelper.LogType.Warning);
+                VerboseLog($"下一页异常: {ex}");
                 return false;
             }
         }
@@ -674,6 +692,7 @@ namespace Ink_Canvas.Helpers
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"PptBridge 上一页失败: {ex.Message}", LogHelper.LogType.Warning);
+                VerboseLog($"上一页异常: {ex}");
                 return false;
             }
         }
@@ -879,12 +898,14 @@ namespace Ink_Canvas.Helpers
         {
             _comSlideShowWindow = window;
             _currentSlide = -1;
+            VerboseLog("COM 事件: 放映开始");
         }
 
         void OnComNextSlide(object window)
         {
             _comSlideShowWindow = window;
             RefreshSlidesCount();
+            VerboseLog($"COM 事件: 翻页 -> 当前页={_currentSlide}");
         }
 
         void OnComSlideShowEnd(object pres)
@@ -892,6 +913,7 @@ namespace Ink_Canvas.Helpers
             SafeRelease(_comSlideShowWindow);
             _comSlideShowWindow = null;
             _currentSlide = -1;
+            VerboseLog("COM 事件: 放映结束");
         }
 
         void OnComPresentationOpen(object pres)
