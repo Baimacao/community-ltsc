@@ -543,23 +543,54 @@ namespace Ink_Canvas.Helpers
             {
                 try
                 {
-                    dynamic app = _comApplication;
-                    dynamic windows = app.SlideShowWindows;
-                    int count = (int)windows.Count;
-                    if (count > 0)
+                    // LTSC L-8：这段每 500ms 跑一次。dynamic 每取一次成员都会造一个新 RCW
+                    // （SlideShowWindows / windows[1] / View 各一个），原来一个都不释放。
+                    // 一节课 5400 轮 × 3 个 RCW，PowerPoint 侧引用计数只涨不落。
+                    // 逐个接住，用完立刻还。
+                    object app = _comApplication;
+                    object windows = null;
+                    object window = null;
+                    object view = null;
+                    try
                     {
-                        dynamic window = windows[1];
-                        try
+                        windows = app.GetType().InvokeMember("SlideShowWindows",
+                            System.Reflection.BindingFlags.GetProperty, null, app, null);
+                        if (windows != null)
                         {
-                            dynamic view = window.View;
-                            comSlide = (int)view.CurrentShowPosition;
-                            comInShow = true;
+                            int count = Convert.ToInt32(windows.GetType().InvokeMember("Count",
+                                System.Reflection.BindingFlags.GetProperty, null, windows, null));
+                            if (count > 0)
+                            {
+                                window = windows.GetType().InvokeMember("Item",
+                                    System.Reflection.BindingFlags.GetProperty, null, windows, new object[] { 1 });
+                                if (window != null)
+                                {
+                                    try
+                                    {
+                                        view = window.GetType().InvokeMember("View",
+                                            System.Reflection.BindingFlags.GetProperty, null, window, null);
+                                        if (view != null)
+                                        {
+                                            object pos = view.GetType().InvokeMember("CurrentShowPosition",
+                                                System.Reflection.BindingFlags.GetProperty, null, view, null);
+                                            comSlide = Convert.ToInt32(pos);
+                                        }
+                                        comInShow = true;
+                                    }
+                                    catch
+                                    {
+                                        // View 拿不到但放映窗口存在，仍算在放映
+                                        comInShow = true;
+                                    }
+                                }
+                            }
                         }
-                        catch
-                        {
-                            // View 拿不到但放映窗口存在，仍算在放映
-                            comInShow = true;
-                        }
+                    }
+                    finally
+                    {
+                        SafeRelease(view);
+                        SafeRelease(window);
+                        SafeRelease(windows);
                     }
                 }
                 catch (COMException ex)

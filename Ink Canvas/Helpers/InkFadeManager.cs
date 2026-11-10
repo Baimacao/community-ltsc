@@ -88,9 +88,6 @@ namespace Ink_Canvas.Helpers
                     _mainWindow.inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 }
 
-                _strokeStartPoints[stroke] = startPoint;
-                _strokeEndPoints[stroke] = endPoint;
-
                 int animationDuration;
                 if (strokeDurationMs > 0)
                 {
@@ -102,11 +99,24 @@ namespace Ink_Canvas.Helpers
                     animationDuration = GetEffectiveAnimationDuration();
                 }
 
-                _strokeAnimationDurations[stroke] = animationDuration;
-
+                // LTSC L-10：原来先把 _strokeStartPoints / _strokeEndPoints /
+                // _strokeAnimationDurations 三个字典都写了，再去判 CreateStrokeVisual 是否为 null，
+                // null 就直接 return。这一 return 既没建计时器也没落任何清理回调，
+                // 三个字典里就永久留着一个 Stroke 的强引用——它对应的笔迹明明不会淡出，
+                // 却永远摘不掉，长课里越攒越多。
+                // 改成先造 visual，确认成功之后才登记状态；失败就整笔放弃，一个字典都不碰。
                 var strokeVisual = CreateStrokeVisual(stroke);
-                if (strokeVisual == null) return;
+                if (strokeVisual == null)
+                {
+                    LogHelper.WriteLogToFile(
+                        "InkFadeManager | CreateStrokeVisual 返回 null，跳过这笔淡出（不登记任何状态）",
+                        LogHelper.LogType.Trace);
+                    return;
+                }
 
+                _strokeStartPoints[stroke] = startPoint;
+                _strokeEndPoints[stroke] = endPoint;
+                _strokeAnimationDurations[stroke] = animationDuration;
                 _strokeVisuals[stroke] = strokeVisual;
 
                 var timer = new DispatcherTimer

@@ -232,6 +232,28 @@ namespace Ink_Canvas
         public PopupManagerHelper GetPopupManager() => _popupManager;
 
         /// <summary>
+        /// LTSC L-16：释放 Popup 管理器。窗口关闭时调用。
+        /// PopupManagerHelper 订阅了 CompositionTarget.Rendering（每帧），
+        /// 不 Dispose 就永不退订。
+        /// </summary>
+        internal void ReleasePopupManager()
+        {
+            if (_popupManager == null) return;
+            try
+            {
+                if (_popupManager is IDisposable d) d.Dispose();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"释放 PopupManager 异常: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                _popupManager = null;
+            }
+        }
+
+        /// <summary>
         /// 关闭所有已注册的 Popup 弹窗
         /// </summary>
         public void CloseAllPopups()
@@ -376,6 +398,12 @@ namespace Ink_Canvas
         {
             try
             {
+                // LTSC L-16：PopupManagerHelper 在 Initialize 里订阅了
+                // CompositionTarget.Rendering（每帧回调），全项目从未 Dispose。
+                // 重新初始化时先释放旧的，否则 Rendering 订阅一路累加。
+                // 窗口关闭时的释放见 ReleasePopupManager。
+                ReleasePopupManager();
+
                 _popupManager = new PopupManagerHelper();
 
                 _popupManager.ShouldBeTopmost = () => Settings.Advanced.IsAlwaysOnTop;

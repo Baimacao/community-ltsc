@@ -1921,6 +1921,11 @@ namespace Ink_Canvas
             // 释放PPT管理器资源
             DisposePPTManagers();
 
+            // LTSC L-16：PopupManagerHelper 订阅了 CompositionTarget.Rendering（每帧），
+            // 原来全项目从未 Dispose，关窗也不退订。
+            try { ReleasePopupManager(); }
+            catch (Exception ex) { LogHelper.WriteLogToFile($"释放 PopupManager 异常: {ex.Message}", LogHelper.LogType.Warning); }
+
             // 清理剪贴板监控
             CleanupClipboardMonitoring();
             ClipboardNotification.Stop();

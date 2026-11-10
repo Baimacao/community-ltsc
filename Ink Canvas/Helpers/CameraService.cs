@@ -144,12 +144,28 @@ namespace Ink_Canvas.Helpers
         {
             try
             {
-                if (_videoSource != null && _videoSource.IsRunning)
+                // LTSC L-13：原来整段包在 IsRunning 里。设备启动失败（或还没 Start 成功）
+                // 时 IsRunning 是 false，_videoSource 就永远挂着，DirectShow 对象不释放。
+                // 拆分：IsRunning 只决定要不要 Signaling，解绑和置空无条件做。
+                if (_videoSource != null)
                 {
-                    _videoSource.SignalToStop();
-                    _videoSource.WaitForStop();
-                    _videoSource.NewFrame -= VideoSource_NewFrame;
-                    _videoSource = null;
+                    try
+                    {
+                        if (_videoSource.IsRunning)
+                        {
+                            _videoSource.SignalToStop();
+                            _videoSource.WaitForStop();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"停止摄像头信号异常: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                    finally
+                    {
+                        try { _videoSource.NewFrame -= VideoSource_NewFrame; } catch { }
+                        _videoSource = null;
+                    }
                 }
 
                 _isCapturing = false;

@@ -21,8 +21,22 @@ namespace Ink_Canvas.Helpers
             try
             {
                 var CLSID_TaskbarList = new Guid("56FDF344-FD6D-11D0-958A-006097C9A090");
-                var obj = Activator.CreateInstance(Type.GetTypeFromCLSID(CLSID_TaskbarList));
-                (obj as ITaskbarList2)?.MarkFullscreenWindow(hwnd, isFullscreen);
+                // LTSC L-7：这台 TaskbarList 是 COM 对象，每次调用都 new 一个，
+                // 原来从不 ReleaseComObject，全靠 GC 兜底。它由设置页/全屏切换驱动，
+                // 不频繁但也没理由留着。
+                object obj = null;
+                try
+                {
+                    obj = Activator.CreateInstance(Type.GetTypeFromCLSID(CLSID_TaskbarList));
+                    (obj as ITaskbarList2)?.MarkFullscreenWindow(hwnd, isFullscreen);
+                }
+                finally
+                {
+                    if (obj != null && Marshal.IsComObject(obj))
+                    {
+                        try { Marshal.ReleaseComObject(obj); } catch { }
+                    }
+                }
             }
             catch
             {

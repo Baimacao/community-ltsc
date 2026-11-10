@@ -3185,9 +3185,15 @@ namespace Ink_Canvas
                             var ms = new MemoryStream();
                             inkCanvas.Strokes.Save(ms);
                             ms.Position = 0;
-                            if (_memoryStreams.ContainsKey(currentSlide))
-                                _memoryStreams[currentSlide]?.Dispose();
-                            _memoryStreams[currentSlide] = ms;
+                            // LTSC A-8：这里是 _memoryStreams 唯一一处没加锁的访问
+                            // （同文件另外 11 处都在 lock (_memoryStreams) 里）。
+                            // 由 PPT 切页路径调用，和后台保存线程可能同时碰。
+                            lock (_memoryStreams)
+                            {
+                                if (_memoryStreams.ContainsKey(currentSlide))
+                                    _memoryStreams[currentSlide]?.Dispose();
+                                _memoryStreams[currentSlide] = ms;
+                            }
                         }
                         timeMachine.ClearStrokeHistory();
                     });

@@ -308,6 +308,18 @@ namespace Ink_Canvas
         private void InitializeRollCallData()
         {
             // 初始化点名定时器
+            // LTSC L-15：原来直接 new，重复调用就漏一个（旧实例既没 Stop 也没 Dispose）。
+            // 目前只初始化一次，但没理由留这个坑。
+            if (rollCallTimer != null)
+            {
+                try
+                {
+                    rollCallTimer.Stop();
+                    rollCallTimer.Elapsed -= RollCallTimer_Elapsed;
+                    rollCallTimer.Dispose();
+                }
+                catch { }
+            }
             rollCallTimer = new Timer(100);
             rollCallTimer.Elapsed += RollCallTimer_Elapsed;
         }
