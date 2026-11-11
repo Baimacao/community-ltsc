@@ -314,7 +314,6 @@ namespace Ink_Canvas
                 new TipsScheme { PresetId = "osu", Name = "osu!玩家语录", IsPreset = true, IsEnabled = false },
                 new TipsScheme { PresetId = "mottos", Name = "励志名言警句", IsPreset = true, IsEnabled = false },
                 new TipsScheme { PresetId = "gaokao", Name = "高考祝福语", IsPreset = true, IsEnabled = false },
-                new TipsScheme { PresetId = "hitokoto", Name = "一言 (Hitokoto API)", IsPreset = true, IsEnabled = false },
                 new TipsScheme { PresetId = "phigros", Name = "Phigros Tips", IsPreset = true, IsEnabled = false }
             };
         }
@@ -327,7 +326,6 @@ namespace Ink_Canvas
                 case "mottos": return MingYanJingJu;
                 case "gaokao": return GaoKaoPhrases;
                 case "phigros": return PhigrosTips;
-                case "hitokoto": return null;
                 default: return null;
             }
         }

@@ -2546,7 +2546,6 @@ namespace Ink_Canvas
             InitializeFloatingWindowInterceptor();
             InitializeGlobalHotkeyManager();
 
-            _ = TelemetryUploader.UploadTelemetryIfNeededAsync();
 
             _ = Dispatcher.BeginInvoke(new Action(() =>
             {

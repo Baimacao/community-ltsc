@@ -1,6 +1,5 @@
 using Ink_Canvas.Helpers;
 using Ink_Canvas.Properties;
-using Ink_Canvas.Windows.FeedbackPages;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -117,19 +116,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"加载关于页面设置时出错: {ex.Message}");
-            }
-        }
-
-        private void BtnReportIssue_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var feedbackWindow = new FeedbackWindow();
-                feedbackWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"打开反馈窗口失败: {ex.Message}");
             }
         }
 

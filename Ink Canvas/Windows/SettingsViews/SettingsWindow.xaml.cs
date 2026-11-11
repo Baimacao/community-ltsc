@@ -39,7 +39,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "AdvancedPage", typeof(AdvancedPage) },
             { "StoragePage", typeof(StoragePage) },
             { "BackupPage", typeof(BackupPage) },
-            { "CloudStoragePage", typeof(CloudStoragePage) },
             { "AutomationWorkflowPage", typeof(AutomationWorkflowPage) },
             { "PowerPointPage", typeof(PowerPointPage) },
             { "CanvasPage", typeof(CanvasPage) },

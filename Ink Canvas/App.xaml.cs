@@ -1412,16 +1412,6 @@ namespace Ink_Canvas
 
                 try
                 {
-                    LogHelper.WriteLogToFile("初始化上传帮助类");
-                    Helpers.UploadHelper.Initialize();
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"初始化上传帮助类时出错: {ex.Message}", LogHelper.LogType.Error);
-                }
-
-                try
-                {
                     DeviceIdentifier.RecordAppLaunch();
                     var systemVersion = DeviceIdentifier.GetSystemVersion();
                     LogHelper.WriteLogToFile($"App | 系统版本: {systemVersion}");

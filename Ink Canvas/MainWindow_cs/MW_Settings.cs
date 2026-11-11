@@ -90,49 +90,9 @@ namespace Ink_Canvas
 
 
 
-        private static readonly Lazy<object> HitokotoHttpClient = new Lazy<object>(CreateHitokotoClient, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
 
         private DispatcherTimer _chickenSoupAutoRotationTimer;
 
-        /// <summary>
-        /// 创建用于获取一言（Hitokoto）数据的HttpClient
-        /// </summary>
-        /// <returns>创建的HttpClient实例，如果创建失败则返回null</returns>
-        /// <remarks>
-        /// 创建HttpClient时：
-        /// 1. 设置超时时间为5秒
-        /// 2. 尝试设置User-Agent头
-        /// 3. 捕获并记录创建过程中的异常
-        /// </remarks>
-        private static object CreateHitokotoClient()
-        {
-            try
-            {
-                var client = new HttpClient
-                {
-                    Timeout = TimeSpan.FromSeconds(5)
-                };
-                try
-                {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("InkCanvas-Hitokoto/1.0");
-                }
-                catch
-                {
-                }
-                return client;
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    LogHelper.WriteLogToFile($"无法创建 HttpClient (System.Net.Http 可能缺失): {ex.Message}", LogHelper.LogType.Warning);
-                }
-                catch
-                {
-                }
-                return null;
-            }
-        }
 
         /// <summary>
         /// 根据当前外观设置更新白板水印的名言文本。
@@ -185,61 +145,6 @@ namespace Ink_Canvas
                 var rnd = new Random();
                 var selected = enabledSchemes[rnd.Next(enabledSchemes.Count)];
 
-                // Hitokoto 预设走 HTTP API
-                if (selected.IsPreset && selected.PresetId == "hitokoto")
-                {
-                    BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_Loading;
-
-                    try
-                    {
-                        object clientObj = null;
-                        try
-                        {
-                            clientObj = HitokotoHttpClient.Value;
-                        }
-                        catch (Exception initEx)
-                        {
-                            LogHelper.WriteLogToFile($"一言 HTTP 客户端初始化失败: {initEx.Message}", LogHelper.LogType.Warning);
-                            BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_HttpUnavailable;
-                            return;
-                        }
-
-                        if (clientObj == null || !(clientObj is HttpClient client))
-                        {
-                            BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_HttpUnavailable;
-                            return;
-                        }
-
-                        var cats = Settings.Appearance.HitokotoCategories;
-                        if (cats == null || cats.Count == 0)
-                            cats = new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l" };
-
-                        var urlBuilder = new StringBuilder("https://v1.hitokoto.cn/?encode=text");
-                        foreach (var category in cats)
-                        {
-                            urlBuilder.Append($"&c={category}");
-                        }
-
-                        var response = await client.GetAsync(urlBuilder.ToString()).ConfigureAwait(true);
-                        response.EnsureSuccessStatusCode();
-
-                        var text = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                        if (!string.IsNullOrWhiteSpace(text))
-                        {
-                            BlackBoardWaterMark.Text = text.Trim();
-                        }
-                        else
-                        {
-                            BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_NoContent;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogHelper.WriteLogToFile($"一言 API 请求失败: {ex.Message}", LogHelper.LogType.Warning);
-                        BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_Unavailable;
-                    }
-                    return;
-                }
 
                 // 其它预设来源
                 if (selected.IsPreset && !string.IsNullOrEmpty(selected.PresetId))

@@ -205,13 +205,6 @@
                         </ui:SettingsCard.HeaderIcon>
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Header="{x:Static props:CloudStorageStrings.CloudStorage_Manage}" Description="{x:Static props:HomeStrings.Home_CloudStorageSettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="CloudStoragePage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Cloud}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:NavStrings.Nav_Board}" />
                     <ui:SettingsCard Header="{x:Static props:NavStrings.Nav_BoardComponents}" Description="{x:Static props:NavStrings.Nav_BoardComponents_Tooltip}"

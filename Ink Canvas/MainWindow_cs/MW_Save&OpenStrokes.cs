@@ -311,17 +311,6 @@ namespace Ink_Canvas
                                     SaveStrokesAsXML(strokes, pageFileName, false);
                                     savedCount++;
 
-                                    // 异步上传每个XML文件
-                                    _ = Task.Run(async () =>
-                                    {
-                                        try
-                                        {
-                                            await Helpers.UploadHelper.UploadFileAsync(pageFileName);
-                                        }
-                                        catch (Exception)
-                                        {
-                                        }
-                                    });
                                 }
                             }
 
@@ -489,17 +478,6 @@ namespace Ink_Canvas
                                     strokes.Save(fs);
                                 }
 
-                                // 异步上传每个icstk文件
-                                _ = Task.Run(async () =>
-                                {
-                                    try
-                                    {
-                                        await Helpers.UploadHelper.UploadFileAsync(pageFileName);
-                                    }
-                                    catch (Exception)
-                                    {
-                                    }
-                                });
                             }
                         }
 
@@ -553,19 +531,6 @@ namespace Ink_Canvas
                                 });
                             }
                         }
-
-                        // 异步上传文件
-                        _ = Task.Run(async () =>
-                        {
-                            try
-                            {
-                                string uploadPath = Settings.Automation.IsSaveStrokesAsXML ? Path.ChangeExtension(savePathWithName, ".xml") : savePathWithName;
-                                await Helpers.UploadHelper.UploadFileAsync(uploadPath);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        });
 
                         // 保存元素信息
                         var elementInfos = new List<CanvasElementInfo>();
@@ -623,20 +588,6 @@ namespace Ink_Canvas
                 CollectCanvasElementsMetadata(elementInfos);
                 File.WriteAllText(Path.ChangeExtension(xmlPath, ".elements.json"), JsonConvert.SerializeObject(elementInfos, Newtonsoft.Json.Formatting.Indented));
 
-                // 异步上传到Dlass
-                if (triggerUpload)
-                {
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await Helpers.UploadHelper.UploadFileAsync(xmlPath);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    });
-                }
             }
             catch (Exception ex)
             {
@@ -726,18 +677,6 @@ namespace Ink_Canvas
                         File.Delete(zipFileName);
 
                     ZipFile.CreateFromDirectory(tempDir, zipFileName);
-
-                    // 异步上传ZIP文件到Dlass
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await Helpers.UploadHelper.UploadFileAsync(zipFileName);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    });
 
                     if (newNotice)
                     {
@@ -847,18 +786,6 @@ namespace Ink_Canvas
                     // 使用System.IO.Compression.FileSystem来创建ZIP
                     ZipFile.CreateFromDirectory(tempDir, zipFileName);
 
-                    // 异步上传ZIP文件到Dlass
-                    _ = Task.Run(async () =>
-                    {
-                        try
-                        {
-                            await Helpers.UploadHelper.UploadFileAsync(zipFileName);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    });
-
                     if (newNotice)
                     {
                         Task.Delay(100).ContinueWith(t =>
@@ -956,16 +883,6 @@ namespace Ink_Canvas
                                 inkCanvas.Strokes.Save(fs);
                             }
 
-                            _ = Task.Run(async () =>
-                            {
-                                try
-                                {
-                                    await Helpers.UploadHelper.UploadFileAsync(imagePathWithName);
-                                }
-                                catch (Exception)
-                                {
-                                }
-                            });
                         } // using imgBitmap
                     }
                 } // using g

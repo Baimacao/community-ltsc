@@ -100,8 +100,6 @@ namespace Ink_Canvas
                         Dispatcher.Invoke(() => ShowNotification(string.Format(Properties.MainWindowStrings.Main_Screenshot_SaveSuccess, path)));
                     }
 
-                    // 使用上传帮助类上传到所有启用的服务
-                    await Helpers.UploadHelper.UploadFileAsync(path);
                 }
                 catch (Exception ex)
                 {
@@ -425,17 +423,6 @@ namespace Ink_Canvas
                     });
                 });
             }
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    // 使用上传帮助类上传到所有启用的服务
-                    await Helpers.UploadHelper.UploadFileAsync(savePath);
-                }
-                catch (Exception)
-                {
-                }
-            });
         }
 
         /// <summary>

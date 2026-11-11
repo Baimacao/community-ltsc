@@ -62,7 +62,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
                     case 0: presetId = "osu"; break;
                     case 1: presetId = "mottos"; break;
                     case 2: presetId = "gaokao"; break;
-                    case 3: presetId = "hitokoto"; break;
                     case 4: presetId = "phigros"; break;
                 }
                 if (presetId != null)

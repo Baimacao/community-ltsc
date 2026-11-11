@@ -157,9 +157,6 @@ namespace Ink_Canvas
         public bool IsForcePopupEnabled { get; set; } = true;
 
         [JsonIgnore]
-        public string AnnouncementApiBaseUrl => "https://dev-api.dy.ci/api/announcement/client/announcements/";
-
-        [JsonIgnore]
         public string AnnouncementWebSocketUrl => string.Empty;
 
         [JsonIgnore]
