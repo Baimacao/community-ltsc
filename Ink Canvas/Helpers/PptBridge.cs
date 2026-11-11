@@ -954,10 +954,47 @@ namespace Ink_Canvas.Helpers
 
         public int GetCurrentSlideNumber()
         {
+            // LTSC P2：原来失败时返回 0，但页码从 1 开始——
+            // 调用方拿到 0 分不清「第 0 页」和「不知道」。
+            // 而且 _currentSlide 初值是 -1，一旦被重置就再也不刷新：
+            // OnComSlideShowBegin 只把 _currentSlide 设成 -1，从不填真实页码。
+            //
+            // 改成：失败统一返回 -1（含义明确是"未知"），
+            // 并且每次都尝试实时读一次，不再无条件相信可能过期的缓存。
+            int live = ReadLiveSlideNumber();
+            if (live > 0)
+            {
+                if (live != _currentSlide)
+                {
+                    _currentSlide = live;
+                    VerboseLog($"[PPT详细] 页码实时读取={live}");
+                }
+                return live;
+            }
+
+            // 实时读不到就退回缓存，但缓存也得是真值
             if (_currentSlide > 0) return _currentSlide;
-            if (!TryGetView(out dynamic view)) return 0;
-            try { return (int)view.CurrentShowPosition; }
-            catch { return 0; }
+
+            VerboseLog($"[PPT详细] 页码未知（实时读取失败 live={live} 缓存={_currentSlide}）");
+            return -1;
+        }
+
+        /// <summary>
+        /// 实时读当前页码，不走缓存。读不到返回 -1。
+        /// 一级 CurrentShowPosition，二级 View.Slide.SlideIndex。
+        /// </summary>
+        int ReadLiveSlideNumber()
+        {
+            if (TryGetView(out dynamic view))
+            {
+                try
+                {
+                    int pos = (int)view.CurrentShowPosition;
+                    if (pos > 0) return pos;
+                }
+                catch { }
+            }
+            return TryGetSlideIndexFallback();
         }
 
         /// <summary>
@@ -1200,13 +1237,33 @@ namespace Ink_Canvas.Helpers
         void OnComSlideShowBegin(object window)
         {
             _comSlideShowWindow = window;
+            // LTSC P2：原来这里只置 -1 就完事，等于把页码清空后不再填。
+            // 而 GetCurrentSlideNumber 又优先信缓存，于是整场放映页码都是空的。
+            // 现在立刻读一次真实页码。
             _currentSlide = -1;
-            VerboseLog("COM 事件: 放映开始");
+            try
+            {
+                int live = ReadLiveSlideNumber();
+                if (live > 0) _currentSlide = live;
+                VerboseLog($"COM 事件: 放映开始 页码={_currentSlide}");
+            }
+            catch (Exception ex)
+            {
+                VerboseLog($"COM 事件: 放映开始取页码失败 {ex.GetType().Name}: {ex.Message}");
+            }
         }
 
         void OnComNextSlide(object window)
         {
             _comSlideShowWindow = window;
+            // 翻页事件是页码最可靠的来源，优先读它。
+            // COM 事件触发时窗口一定有效，比 500ms 轮询准得多。
+            try
+            {
+                int live = ReadLiveSlideNumber();
+                if (live > 0) _currentSlide = live;
+            }
+            catch { }
             RefreshSlidesCount();
             VerboseLog($"COM 事件: 翻页 -> 当前页={_currentSlide}");
         }

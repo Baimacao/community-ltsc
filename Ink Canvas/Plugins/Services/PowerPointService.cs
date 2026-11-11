@@ -36,7 +36,7 @@ namespace Ink_Canvas.Plugins
         {
             get
             {
-                try { return _mainWindow?.PPTManager?.GetCurrentSlideNumber() ?? 0; }
+                try { return Math.Max(0, _mainWindow?.PPTManager?.GetCurrentSlideNumber() ?? 0); }
                 catch { return 0; }
             }
         }

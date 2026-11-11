@@ -939,7 +939,7 @@ namespace Ink_Canvas
                     else
                     {
                         activePresentation = _pptManager?.GetCurrentActivePresentation() as Presentation;
-                        currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                        currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                         totalSlides = _pptManager?.SlidesCount ?? 0;
                         presentationName = _pptManager?.GetPresentationName() ?? activePresentation?.Name;
                     }
@@ -1157,7 +1157,7 @@ namespace Ink_Canvas
 
                 if (currentSlide <= 0)
                 {
-                    currentSlide = agentState?.SlideIndex ?? _pptManager?.GetCurrentSlideNumber() ?? 0;
+                    currentSlide = agentState?.SlideIndex ?? Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                 }
 
                 totalSlides = agentState?.TotalSlides ?? _pptManager?.SlidesCount ?? 0;
@@ -1269,7 +1269,7 @@ namespace Ink_Canvas
                 {
                     try
                     {
-                        currentPage = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                        currentPage = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                     }
                     catch
                     {
@@ -2116,7 +2116,7 @@ namespace Ink_Canvas
 
             if (needScreenshot)
             {
-                var currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                 if (currentSlide > 0)
                 {
                     var presentationName = _pptManager?.GetPresentationName() ?? "";
@@ -2167,7 +2167,7 @@ namespace Ink_Canvas
 
             if (needScreenshot)
             {
-                var currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                 if (currentSlide > 0)
                 {
                     var presentationName = _pptManager?.GetPresentationName() ?? "";
@@ -2272,7 +2272,7 @@ namespace Ink_Canvas
                             targetBar.PreviewItems = items;
                             targetBar.CurrentSlide = _currentSlideShowPosition > 0
                                 ? _currentSlideShowPosition
-                                : (_pptManager?.GetCurrentSlideNumber() ?? 0);
+                                : (Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0));
                             targetBar.IsPreviewExpanded = true;
                         }
                     }
@@ -2872,7 +2872,7 @@ namespace Ink_Canvas
         {
             try
             {
-                var currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                 if (currentSlide > 0)
                 {
                     Application.Current.Dispatcher.Invoke(() =>

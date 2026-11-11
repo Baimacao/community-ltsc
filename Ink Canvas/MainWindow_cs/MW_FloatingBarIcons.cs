@@ -1159,7 +1159,7 @@ namespace Ink_Canvas
                 {
                     if (IsInPPTPresentationMode)
                     {
-                        var currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                        var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                         var presentationName = _pptManager?.GetPresentationName() ?? "";
                         CaptureAndEnqueueScreenshotSave(true, $"{presentationName}/{currentSlide}_{DateTime.Now:HH-mm-ss}");
                     }
@@ -3428,7 +3428,7 @@ namespace Ink_Canvas
             {
                 if (IsInPPTPresentationMode)
                 {
-                    var currentSlide = _pptManager?.GetCurrentSlideNumber() ?? 0;
+                    var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
                     var presentationName = _pptManager?.GetPresentationName() ?? "";
                     CaptureAndEnqueueScreenshotSave(true, $"{presentationName}/{currentSlide}_{DateTime.Now:HH-mm-ss}");
                 }
