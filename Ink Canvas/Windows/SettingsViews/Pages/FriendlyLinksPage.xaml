@@ -27,29 +27,7 @@
                 Spacing="{StaticResource SettingsCardSpacing}">
 
                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                    Text="{x:Static props:FriendlyLinksStrings.FriendlyLinks_SponsorSectionTitle}" />
-
-                <ui:SettingsCard Header="CJK_mkp"
-                    Description="{x:Static props:FriendlyLinksStrings.FriendlyLinks_CjikSponsorDescription}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Heart}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:HyperlinkButton Content="{x:Static props:FriendlyLinksStrings.FriendlyLinks_Sponsor}"
-                        NavigateUri="https://www.ifdian.net/a/CJIK_mkp" />
-                </ui:SettingsCard>
-
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                     Text="{x:Static props:FriendlyLinksStrings.FriendlyLinks_FriendsSectionTitle}" />
-
-                <ui:SettingsCard Header="NamePicker"
-                    Description="{x:Static props:FriendlyLinksStrings.FriendlyLinks_NamePickerDescription}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Link}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:HyperlinkButton Content="{x:Static props:FriendlyLinksStrings.FriendlyLinks_Visit}"
-                        NavigateUri="https://github.com/NamePickerOrg/NamePicker" />
-                </ui:SettingsCard>
-
                 <ui:SettingsCard Header="Inkeys"
                     Description="{x:Static props:FriendlyLinksStrings.FriendlyLinks_InkeysDescription}">
                     <ui:SettingsCard.HeaderIcon>
@@ -57,15 +35,6 @@
                     </ui:SettingsCard.HeaderIcon>
                     <ui:HyperlinkButton Content="{x:Static props:FriendlyLinksStrings.FriendlyLinks_Visit}"
                         NavigateUri="https://github.com/Alan-CRL/Inkeys/" />
-                </ui:SettingsCard>
-
-                <ui:SettingsCard Header="开发者云平台"
-                    Description="{x:Static props:FriendlyLinksStrings.FriendlyLinks_DeveloperCloudDescription}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Link}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:HyperlinkButton Content="{x:Static props:FriendlyLinksStrings.FriendlyLinks_Visit}"
-                        NavigateUri="https://developer.dy.ci/" />
                 </ui:SettingsCard>
 
                 <Rectangle Height="48" />
