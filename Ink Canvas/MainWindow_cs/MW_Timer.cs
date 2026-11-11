@@ -754,6 +754,9 @@ namespace Ink_Canvas
         }
 
 
+        /// <summary>LTSC P2 诊断：自动收纳状态签名，只在变化时打日志。</summary>
+        private string _lastAutoFoldDiagKey;
+
         private bool foldFloatingBarByUser, // 保持收纳操作不受自动收纳的控制
             unfoldFloatingBarByUser; // 允许用户在希沃软件内进行展开操作
 
@@ -1282,6 +1285,26 @@ namespace Ink_Canvas
             {
                 bool hasFullScreen = HasFullScreenWindowOfAutoFoldApps();
                 bool shouldAutoFold = CheckShouldAutoFoldByWindowPreview();
+
+                // LTSC P2 诊断（社区 bug C2）：退出 PPT 放映后浮动栏被自动收起。
+                // 这条链上有三条会 FoldFloatingBar 的分支，但不知道是哪条在收。
+                // 只在状态要变化时打一行，稳态不刷屏。
+                try
+                {
+                    bool folded = isFloatingBarFolded;
+                    bool pptShow = PPTManager?.IsInSlideShow == true;
+                    bool pptMode = IsInPPTPresentationMode;
+                    string key = $"{hasFullScreen}|{shouldAutoFold}|{folded}|{pptShow}|{pptMode}";
+                    if (key != _lastAutoFoldDiagKey)
+                    {
+                        _lastAutoFoldDiagKey = key;
+                        LogHelper.WriteLogToFile(
+                            $"[自动收纳] 全屏={hasFullScreen} 需收纳={shouldAutoFold} 已收={folded} " +
+                            $"放映中={pptShow} 放映模式={pptMode} 用户展开={unfoldFloatingBarByUser}",
+                            LogHelper.LogType.Trace);
+                    }
+                }
+                catch { }
 
                 Thickness currentMargin = new Thickness();
                 try
