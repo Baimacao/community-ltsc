@@ -2164,25 +2164,53 @@ namespace Ink_Canvas
         /// </remarks>
         private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
+            InkPerfProbe.Hit(0);
             if (IsCurrentPageFrozen)
             {
                 TryBlockFrozenPageMutation("移动或缩放内容");
                 e.Handled = true;
+                InkPerfProbe.Hit(1);
                 return;
             }
 
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
+            {
+                InkPerfProbe.Hit(2);
                 return;
+            }
 
-            if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
+            if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture)
+            {
+                InkPerfProbe.Hit(3);
+                return;
+            }
 
             PruneStaleTouchIds();
+            InkPerfProbe.Hit(4);
             bool hasMultipleManipulators = e.Manipulators.Count() >= 2;
+            // LTSC P2 修复（2026-11-11，有闸门数据支撑）：
+            // 原来第二项是 !ArePPTControlsVisible。
+            // 但 PPTUIManager.UpdateConnectionStatus 在 isConnected 时把
+            // ArePPTControlsVisible 置 true —— 那表示"PPT 窗口连着"，
+            // 不是"正在放映"。于是只要开着 PowerPoint，这一项恒为 false，
+            // 整个条件不成立，双指手势永久失效。
+            //
+            // 实测：闸7「PPT面板挡住」=208，与闸0「进入」=208 完全相等，
+            // 说明每一次都倒在这一项上。
+            //
+            // 换成真正的"放映中"判据 IsInPPTPresentationMode：
+            //   · 平时开着 PPT 没放映 → 双指正常
+            //   · 放映中 → 遵守 IsEnableTwoFingerGestureInPresentationMode 开关
+            bool inSlideShow = IsInPPTPresentationMode;
             bool shouldUseTwoFingerGesture = (dec.Count >= 2 && hasMultipleManipulators &&
                                              (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||
-                                              !ArePPTControlsVisible)) ||
+                                              !inSlideShow)) ||
                                             isSingleFingerDragMode;
+            if (dec.Count >= 2) InkPerfProbe.Hit(5);
+            if (hasMultipleManipulators) InkPerfProbe.Hit(6);
+            if (!(Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode || !inSlideShow)) InkPerfProbe.Hit(7);
             InkPerfProbe.TwoFinger(shouldUseTwoFingerGesture);
+            if (shouldUseTwoFingerGesture) InkPerfProbe.Hit(10);
 
             if (shouldUseTwoFingerGesture)
             {

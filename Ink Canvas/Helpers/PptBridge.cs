@@ -437,6 +437,9 @@ namespace Ink_Canvas.Helpers
             IBindCtx bindCtx = null;
             IEnumMoniker enumMoniker = null;
 
+            object bestApp = null;
+            int bestPriority = 0;
+
             try
             {
                 if (GetRunningObjectTable(0, out rot) != 0 || rot == null) return null;
@@ -454,14 +457,6 @@ namespace Ink_Canvas.Helpers
                     var moniker = monikers[0];
                     if (moniker == null) continue;
 
-                    // LTSC L-3b：原来这几条路径都在漏引用。
-                    //   ① moniker 本身是 ROT 给的 COM 对象，循环里从不 Release；
-                    //   ② rot.GetObject 拿到的 comObject，在「成功取到 Application」那条路上
-                    //      直接 return，SafeRelease 只写在 app==null 的兜底里——永远走不到；
-                    //   ③ TryGetApplicationFrom 若返回的是 comObject 本身，又不能再释放一次。
-                    // 每次 500ms 轮询重连都漏一组，PowerPoint 侧引用计数只涨不落，
-                    // 表现就是「关掉演示文稿后 PowerPoint 退不出去」。
-                    // 这里改成：每个分支都保证 moniker / comObject 恰好释放一次。
                     try
                     {
                         string displayName = null;
@@ -476,28 +471,42 @@ namespace Ink_Canvas.Helpers
                         if (comObject == null) continue;
 
                         object app = TryGetApplicationFrom(comObject);
-                        if (app != null && !ReferenceEquals(app, comObject))
+                        if (app == null)
                         {
-                            // app 是 comObject 上另取的一层；comObject 这份要还掉
                             SafeRelease(comObject);
-                            return app;
+                            continue;
                         }
-                        if (app != null && ReferenceEquals(app, comObject))
+                        // app 与 comObject 是同一个对象时所有权转移，不能再释放
+                        if (!ReferenceEquals(app, comObject)) SafeRelease(comObject);
+
+                        int priority = ScorePptCandidate(app);
+                        VerboseLog($"[PPT详细] ROT候选 {displayName} 优先级={priority}");
+
+                        if (priority > bestPriority)
                         {
-                            // app 就是 comObject 本身，所有权转交给调用方，不能释放
-                            return app;
+                            // 换更好的：先把旧的还掉，避免引用泄漏
+                            if (bestApp != null) SafeRelease(bestApp);
+                            bestPriority = priority;
+                            bestApp = app;
                         }
-                        SafeRelease(comObject);
+                        else
+                        {
+                            SafeRelease(app);
+                        }
                     }
                     finally
                     {
                         SafeRelease(moniker);
                     }
                 }
-                return null;
+
+                if (bestApp != null)
+                    VerboseLog($"[PPT详细] 选中 ROT 实例 优先级={bestPriority}");
+                return bestApp;
             }
             catch
             {
+                if (bestApp != null) { SafeRelease(bestApp); bestApp = null; }
                 return null;
             }
             finally
@@ -505,6 +514,59 @@ namespace Ink_Canvas.Helpers
                 SafeRelease(enumMoniker);
                 SafeRelease(bindCtx);
                 SafeRelease(rot);
+            }
+        }
+
+        /// <summary>
+        /// 给一个 PowerPoint Application 候选打分。0 分表示这个实例没打开任何演示文稿。
+        /// 学 Inkeys3 PptCOM.GetAnyActivePowerPoint 的评分口径。
+        /// </summary>
+        int ScorePptCandidate(object app)
+        {
+            object pres = null;
+            object window = null;
+            try
+            {
+                try
+                {
+                    pres = app.GetType().InvokeMember("ActivePresentation",
+                        System.Reflection.BindingFlags.GetProperty, null, app, null);
+                }
+                catch { return 0; }
+
+                if (pres == null) return 0;
+
+                // 有 ActivePresentation：1 分
+                int score = 1;
+
+                try
+                {
+                    window = pres.GetType().InvokeMember("SlideShowWindow",
+                        System.Reflection.BindingFlags.GetProperty, null, pres, null);
+                }
+                catch { window = null; }
+
+                if (window == null) return score;
+
+                // 放映窗口存在：2 分
+                score = 2;
+
+                // 窗口 Active：3 分。MS PPT 返回 int(-1)，WPS 返回 bool(true)
+                try
+                {
+                    object val = window.GetType().InvokeMember("Active",
+                        System.Reflection.BindingFlags.GetProperty, null, window, null);
+                    if (val is int iv && iv == -1) score = 3;
+                    else if (val is bool bv && bv) score = 3;
+                }
+                catch { }
+
+                return score;
+            }
+            finally
+            {
+                SafeRelease(window);
+                SafeRelease(pres);
             }
         }
 
@@ -586,10 +648,22 @@ namespace Ink_Canvas.Helpers
                     {
                         windows = app.GetType().InvokeMember("SlideShowWindows",
                             System.Reflection.BindingFlags.GetProperty, null, app, null);
-                        if (windows != null)
+                        if (windows == null)
+                        {
+                            VerboseLog("[PPT详细] SlideShowWindows 取到 null");
+                        }
+                        else
                         {
                             int count = Convert.ToInt32(windows.GetType().InvokeMember("Count",
                                 System.Reflection.BindingFlags.GetProperty, null, windows, null));
+                            // LTSC P2：这是整条链路上唯一没有诊断的出口。
+                            // Count==0 意味着「这个 Application 上没有放映窗口」——
+                            // 可能是没在放映，也可能是连错了 PowerPoint 实例（多开的情况）。
+                            // 之前这里静默跳过，日志里只看得到 comSlide=-1，查不出是哪一种。
+                            if (count == 0)
+                            {
+                                VerboseLog("[PPT详细] SlideShowWindows.Count=0（当前实例无放映窗口）");
+                            }
                             if (count > 0)
                             {
                                 window = windows.GetType().InvokeMember("Item",

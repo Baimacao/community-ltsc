@@ -35,6 +35,34 @@ namespace Ink_Canvas.Helpers
         internal static int DecCountMax;
         internal static int SilentReleaseCount;
         internal static int TouchUpFallback;
+
+        /// <summary>
+        /// P2 编号闸门：手势链路上每个 return 各占一个槽。
+        /// 目的不是"看总数"，是看**增量**——哪个闸门在涨，哪一段就是拦路的。
+        /// 双指失效排查专用，稳定后可整块删掉。
+        /// </summary>
+        internal static readonly int[] Gate = new int[12];
+
+        internal static void Hit(int i)
+        {
+            if (i >= 0 && i < Gate.Length) Gate[i]++;
+        }
+
+        internal static readonly string[] GateName =
+        {
+            "0 ManipulationDelta进入",
+            "1 冻结页拦",
+            "2 橡皮点拦",
+            "3 多点模式/总开关关",
+            "4 到达判定行",
+            "5 dec>=2",
+            "6 Manipulators>=2",
+            "7 PPT面板挡住",
+            "8 PreviewTouchMove到达双指分支",
+            "9 PreviewTouchDown捕获触摸",
+            "10 手势已执行",
+            "11 多指定时器投递"
+        };
         internal static int StalePruned;
 
         // 双指
@@ -106,6 +134,15 @@ namespace Ink_Canvas.Helpers
             }
             sb.Append(" | dec=").Append(DecCountNow).Append(" 峰=").Append(DecCountMax);
             if (SilentReleaseCount > 0) sb.Append(" 静默释放=").Append(SilentReleaseCount);
+            // 只打非零的闸门，避免刷屏
+            {
+                var gsb = new System.Text.StringBuilder();
+                for (int i = 0; i < Gate.Length; i++)
+                {
+                    if (Gate[i] > 0) gsb.Append(' ').Append(GateName[i]).Append('=').Append(Gate[i]);
+                }
+                if (gsb.Length > 0) sb.Append(" | 闸").Append(gsb);
+            }
             if (TouchUpFallback > 0) sb.Append(" 释放降级=").Append(TouchUpFallback);
             if (StalePruned > 0) sb.Append(" 清理僵尸=").Append(StalePruned);
             sb.Append(" | 双指 中=").Append(TwoFingerMatched).Append(" 漏=").Append(TwoFingerMissed);
@@ -122,6 +159,7 @@ namespace Ink_Canvas.Helpers
             StrokeCount = 0; StrokeTotalMs = 0; StrokeMaxMs = 0;
             DecCountNow = 0; DecCountMax = 0; SilentReleaseCount = 0;
             TouchUpFallback = 0; StalePruned = 0;
+            for (int i = 0; i < Gate.Length; i++) Gate[i] = 0;
             TwoFingerMatched = 0; TwoFingerMissed = 0;
             TickCount = 0;
             _gc0AtStart = GC.CollectionCount(0);
