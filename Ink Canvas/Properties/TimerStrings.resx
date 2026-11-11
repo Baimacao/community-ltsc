@@ -129,4 +129,28 @@
   <data name="Timer_UseLegacyButtons" xml:space="preserve">
     <value>ICC 版 UI</value>
   </data>
+  <data name="Timer_UIStyle" xml:space="preserve">
+    <value>Timer UI Style</value>
+  </data>
+  <data name="Timer_SelectSound" xml:space="preserve">
+    <value>Select Sound</value>
+  </data>
+  <data name="Timer_AudioFilter" xml:space="preserve">
+    <value>Audio Files|*.wav;*.mp3;*.m4a|All Files|*.*</value>
+  </data>
+  <data name="Timer_SoundSetSuccess" xml:space="preserve">
+    <value>Sound set successfully</value>
+  </data>
+  <data name="Timer_SoundSetTitle" xml:space="preserve">
+    <value>Sound Setting</value>
+  </data>
+  <data name="Timer_SoundResetSuccess" xml:space="preserve">
+    <value>Sound reset to default</value>
+  </data>
+  <data name="Timer_ResetTitle" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Timer_SelectProgressiveSound" xml:space="preserve">
+    <value>Select Progressive Reminder Sound</value>
+  </data>
 </root>

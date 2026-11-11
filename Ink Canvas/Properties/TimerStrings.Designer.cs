@@ -97,5 +97,45 @@ namespace Ink_Canvas.Properties
         public static string Timer_FullScreen => ResourceManager.GetString(nameof(Timer_FullScreen), _resourceCulture);
 
         public static string Timer_StartPause => ResourceManager.GetString(nameof(Timer_StartPause), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 计时器样式 的本地化字符串。
+        /// </summary>
+        public static string Timer_UIStyle => ResourceManager.GetString(nameof(Timer_UIStyle), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 选择提示音 的本地化字符串。
+        /// </summary>
+        public static string Timer_SelectSound => ResourceManager.GetString(nameof(Timer_SelectSound), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 音频文件|*.wav;*.mp3;*.m4a|所有文件|*.* 的本地化字符串。
+        /// </summary>
+        public static string Timer_AudioFilter => ResourceManager.GetString(nameof(Timer_AudioFilter), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 提示音已设置 的本地化字符串。
+        /// </summary>
+        public static string Timer_SoundSetSuccess => ResourceManager.GetString(nameof(Timer_SoundSetSuccess), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 提示音设置 的本地化字符串。
+        /// </summary>
+        public static string Timer_SoundSetTitle => ResourceManager.GetString(nameof(Timer_SoundSetTitle), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 提示音已恢复默认 的本地化字符串。
+        /// </summary>
+        public static string Timer_SoundResetSuccess => ResourceManager.GetString(nameof(Timer_SoundResetSuccess), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 恢复默认 的本地化字符串。
+        /// </summary>
+        public static string Timer_ResetTitle => ResourceManager.GetString(nameof(Timer_ResetTitle), _resourceCulture);
+        
+        /// <summary>
+        ///   查找类似 选择渐进提醒音 的本地化字符串。
+        /// </summary>
+        public static string Timer_SelectProgressiveSound => ResourceManager.GetString(nameof(Timer_SelectProgressiveSound), _resourceCulture);
     }
 }

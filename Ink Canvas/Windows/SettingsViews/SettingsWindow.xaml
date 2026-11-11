@@ -272,6 +272,17 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
+                <!-- 计时器（LTSC：原混在随机抽选页，抽人移除后独立成页） -->
+                <ui:NavigationViewItem
+                    x:Name="TimerPageItem"
+                    Content="{x:Static props:TimerStrings.Timer_Title}"
+                    Tag="TimerPage"
+                    ToolTipService.ToolTip="{x:Static props:TimerStrings.Timer_Title}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
                 <!-- PPT联动 -->
                 <ui:NavigationViewItem
                     x:Name="PowerPointPageItem"

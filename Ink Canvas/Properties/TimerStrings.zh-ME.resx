@@ -129,4 +129,28 @@
   <data name="Timer_UseLegacyButtons" xml:space="preserve">
     <value>ICC 版 UI</value>
   </data>
+  <data name="Timer_UIStyle" xml:space="preserve">
+    <value>计时器样式</value>
+  </data>
+  <data name="Timer_SelectSound" xml:space="preserve">
+    <value>选择提示音</value>
+  </data>
+  <data name="Timer_AudioFilter" xml:space="preserve">
+    <value>音频文件|*.wav;*.mp3;*.m4a|所有文件|*.*</value>
+  </data>
+  <data name="Timer_SoundSetSuccess" xml:space="preserve">
+    <value>提示音已设置</value>
+  </data>
+  <data name="Timer_SoundSetTitle" xml:space="preserve">
+    <value>提示音设置</value>
+  </data>
+  <data name="Timer_SoundResetSuccess" xml:space="preserve">
+    <value>提示音已恢复默认</value>
+  </data>
+  <data name="Timer_ResetTitle" xml:space="preserve">
+    <value>恢复默认</value>
+  </data>
+  <data name="Timer_SelectProgressiveSound" xml:space="preserve">
+    <value>选择渐进提醒音</value>
+  </data>
 </root>

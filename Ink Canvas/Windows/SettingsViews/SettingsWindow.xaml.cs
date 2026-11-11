@@ -41,6 +41,7 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "BackupPage", typeof(BackupPage) },
             { "AutomationWorkflowPage", typeof(AutomationWorkflowPage) },
             { "PowerPointPage", typeof(PowerPointPage) },
+            { "TimerPage", typeof(TimerPage) },
             { "CanvasPage", typeof(CanvasPage) },
             { "InkRecognitionPage", typeof(InkRecognitionPage) },
             { "PerformancePage", typeof(PerformancePage) },
