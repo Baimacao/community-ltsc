@@ -2330,56 +2330,11 @@ namespace Ink_Canvas
                 SetTransparentNotHitThrough();
                 CursorIcon_Click(null, null);
 
-                if (Settings.PowerPointSettings.EnablePPTButtonEnhancedPreview && bar != null)
+                // LTSC P1c：增强预览已整体移除（用户裁决）。
+                // 点页码 = 调 PowerPoint 原版导航，不再画 ICC 自己的缩略图面板。
+                if (!_pptManager.TryShowSlideNavigation())
                 {
-                    // 侧边条点击时,把增强预览重定向到同侧的底部条上展开
-                    var targetBar = ResolvePreviewTargetBar(bar);
-                    if (targetBar == null)
-                    {
-                        _pptManager.TryShowSlideNavigation();
-                    }
-                    else if (targetBar.IsPreviewExpanded)
-                    {
-                        targetBar.IsPreviewExpanded = false;
-                    }
-                    else
-                    {
-                        var slides = await GetOrBuildPPTEnhancedPreviewItemsAsync(EnsurePPTEnhancedPreviewCacheToken());
-
-                        if (slides == null || slides.Count == 0)
-                        {
-                            LogHelper.WriteLogToFile("PPT增强预览未生成可用缩略图，改用默认导航", LogHelper.LogType.Warning);
-                            targetBar.IsPreviewExpanded = false;
-                            _pptManager.TryShowSlideNavigation();
-                        }
-                        else
-                        {
-                            var items = new List<Controls.PPTNavBar.PreviewItem>(slides.Count);
-                            foreach (var s in slides)
-                            {
-                                items.Add(new Controls.PPTNavBar.PreviewItem
-                                {
-                                    SlideNumber = s.SlideNumber,
-                                    Thumbnail = s.Thumbnail
-                                });
-                            }
-                            targetBar.PreviewItems = items;
-                            targetBar.CurrentSlide = _currentSlideShowPosition > 0
-                                ? _currentSlideShowPosition
-                                : (Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0));
-                            targetBar.IsPreviewExpanded = true;
-                        }
-                    }
-                }
-                else
-                {
-                    // LTSC P1c：点页码 → 调 PowerPoint 原版导航（幻灯片导航面板）。
-                    // 之前这里是 TryShowSlideNavigation()，而它被实现成了 TryNavigateNext()
-                    // ——点页码结果翻到下一页，面板根本没出来。现在直接调 PPT 自己的导航。
-                    if (!_pptManager.TryShowSlideNavigation())
-                    {
-                        LogHelper.WriteLogToFile("显示PPT幻灯片导航失败", LogHelper.LogType.Warning);
-                    }
+                    LogHelper.WriteLogToFile("显示PPT幻灯片导航失败", LogHelper.LogType.Warning);
                 }
 
                 if (!isFloatingBarFolded)
@@ -2675,11 +2630,7 @@ namespace Ink_Canvas
 
         private void SchedulePPTEnhancedPreviewPreload()
         {
-            if (!Settings.PowerPointSettings.EnablePPTButtonEnhancedPreview) return;
-            if (_pptManager?.IsConnected != true) return;
-
-            var token = EnsurePPTEnhancedPreviewCacheToken();
-            _ = PreloadPPTEnhancedPreviewAfterDelayAsync(token);
+            // LTSC P1c：增强预览已整体移除，不再预热缩略图。
         }
 
         private async Task PreloadPPTEnhancedPreviewAfterDelayAsync(CancellationToken cancellationToken)
@@ -2689,9 +2640,8 @@ namespace Ink_Canvas
                 await Task.Delay(PPTEnhancedPreviewPreloadDelayMs, cancellationToken);
                 if (cancellationToken.IsCancellationRequested) return;
                 if (_pptManager?.IsConnected != true) return;
-                if (!Settings.PowerPointSettings.EnablePPTButtonEnhancedPreview) return;
 
-                if (Settings.PowerPointSettings.ShowPPTEnhancedPreviewLoadingAnimation)
+                if (true) // LTSC P1c：加载动画开关随增强预览一起移除，此分支保留原行为
                 {
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
