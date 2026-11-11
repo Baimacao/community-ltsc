@@ -21,7 +21,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "HomePage", typeof(HomePage) },
             { "StartupPage", typeof(StartupPage) },
             { "ClockPage", typeof(ClockPage) },
-            { "PrivacyPage", typeof(PrivacyPage) },
             { "SecurityPage", typeof(SecurityPage) },
             { "WindowPage", typeof(WindowPage) },
             { "SidebarPage", typeof(SidebarPage) },

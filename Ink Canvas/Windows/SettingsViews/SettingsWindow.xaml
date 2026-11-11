@@ -154,15 +154,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                         <ui:NavigationViewItem
-                            x:Name="PrivacyPageItem"
-                            Content="{x:Static props:NavStrings.Nav_Privacy}"
-                            Tag="PrivacyPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Privacy_Tooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Shield}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
                             x:Name="SecurityPageItem"
                             Content="{x:Static props:NavStrings.Settings_Nav_Security}"
                             Tag="SecurityPage"

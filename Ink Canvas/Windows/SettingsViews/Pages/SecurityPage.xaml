@@ -162,6 +162,39 @@
                     <!-- 进程保护：LTSC 已移除（决策 D-04）。
                          原实现长期锁住程序目录并在每次写入前强制 GC，见 REMOVED.md。 -->
 
+
+                    <!-- LTSC：隐私设置并入本页（原 PrivacyPage） -->
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:NavStrings.Nav_Privacy}" />
+
+
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:AboutStrings.PrivacyAndTelemetry}" />
+
+                    <ui:SettingsExpander Header="{x:Static props:AboutStrings.PrivacyAndTelemetry}"
+                            IsExpanded="True"
+                            d:Visibility="Visible" d:IsExpanded="True">
+                        <ui:SettingsExpander.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Shield}" />
+                        </ui:SettingsExpander.HeaderIcon>
+                        <ui:SettingsExpander.Items>
+                            <ui:SettingsCard ContentAlignment="Left">
+                                <CheckBox x:Name="CheckBoxTelemetryPrivacyAccepted"
+                                          Content="{x:Static props:AboutStrings.PrivacyAgreement}"
+                                          Checked="CheckBoxTelemetryPrivacyAccepted_Checked"
+                                          Unchecked="CheckBoxTelemetryPrivacyAccepted_Checked" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="{x:Static props:AboutStrings.TelemetryLabel}">
+                                <ComboBox x:Name="ComboBoxTelemetryUploadLevel"
+                                          SelectionChanged="ComboBoxTelemetryUploadLevel_SelectionChanged">
+                                    <ComboBoxItem Tag="0" Content="{x:Static props:AboutStrings.Telemetry_Off}" />
+                                    <ComboBoxItem Tag="1" Content="{x:Static props:AboutStrings.Telemetry_Basic}" />
+                                    <ComboBoxItem Tag="2" Content="{x:Static props:AboutStrings.Telemetry_Optional}" />
+                                </ComboBox>
+                            </ui:SettingsCard>
+                        </ui:SettingsExpander.Items>
+                    </ui:SettingsExpander>
+
                     <Rectangle Height="48" />
 
                 </ikw:SimpleStackPanel>
