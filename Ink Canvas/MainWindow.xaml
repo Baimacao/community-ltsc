@@ -616,16 +616,6 @@
                                     Source="{DynamicResource ResourceKey=SeewoImageSource.HorizontalPreviousSlideNormal}" />
                             </Grid>
                         </Border>
-                        <Border Visibility="{Binding ElementName=PPTNavigationBtn, Path=Visibility}" Width="36"
-                                Height="36" CornerRadius="5" Background="{DynamicResource FloatBarBackground}" d:BorderBrush="Red" d:Background="Green"
-                                BorderThickness="1" BorderBrush="{DynamicResource FloatBarBorderBrush}">
-                            <Grid MouseUp="PPTNavigationBtn_MouseUp">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           Foreground="{Binding ElementName=PPTNavigationTextBlock, Path=Foreground}"
-                                           FontSize="{Binding ElementName=PPTNavigationTextBlock, Path=FontSize}"
-                                           Text="{Binding ElementName=PPTNavigationTextBlock, Path=Text}" />
-                            </Grid>
-                        </Border>
                         <Border Width="36" Height="36" CornerRadius="5"
                                 Background="{DynamicResource FloatBarBackground}" BorderThickness="1" d:BorderBrush="Red" d:Background="Green"
                                 BorderBrush="{DynamicResource FloatBarBorderBrush}">

@@ -2204,20 +2204,12 @@ namespace Ink_Canvas
             });
         }
 
-        /// <summary>
-        /// 处理PPT导航按钮的鼠标按下事件
-        /// </summary>
-        /// <param name="sender">事件的来源对象</param>
-        /// <param name="e">鼠标按钮事件参数</param>
-        /// <remarks>
-        /// 该方法在用户按下PPT导航按钮时执行以下操作：
-        /// 1. 记录按下的按钮对象
-        /// 2. 检查是否启用了PPT按钮页码点击功能
-        /// 3. 根据按下的按钮设置相应的反馈边框透明度
-        /// </remarks>
-        private void PPTNavigationBtn_MouseDown(object sender, MouseButtonEventArgs e) { }
-        private void PPTNavigationBtn_MouseLeave(object sender, MouseEventArgs e) { }
-        private void PPTNavigationBtn_MouseUp(object sender, MouseButtonEventArgs e) { }
+        // LTSC P2：删掉 PPTNavigationBtn_MouseDown / MouseLeave / MouseUp 三个空方法。
+        // 它们绑定的是旧 XAML 里一个 Visibility="Collapsed" 的死按钮，
+        // 该按钮的 ElementName 绑定（PPTNavigationBtn / PPTNavigationTextBlock）
+        // 在 XAML 里根本没有 x:Name 定义，绑定永远失败。
+        // 现代翻页条已经是 Controls/PPTNavBar，走 PageClick 事件，
+        // 对应 OnPPTNavBarPageClickAsync。这三个方法从来没被真正调用过。
 
         /// <summary>由 PPTNavBar 控件 PageClick 事件触发的页码点击逻辑。</summary>
         private async Task OnPPTNavBarPageClickAsync(Controls.PPTNavBar bar)
