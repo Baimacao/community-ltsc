@@ -25,37 +25,42 @@
 
 ## 二、四条必须合并处理
 
-### C2 → 不是 `ArePPTControlsVisible`，我判错过一次
+### C2 → 前两次判断都错，真相是：这不是 bug
 
-**第一次判断（错）**：我看到 `MW_AutoFold.cs:410` 有 `ArePPTControlsVisible`，
-就判定 C2 和双指同源。**那是拿变量名推断，没读机制。**
+**第一次判断（错）**：看到 `MW_AutoFold.cs:410` 有 `ArePPTControlsVisible`，
+就判定 C2 和双指同源。**拿变量名推断，没读机制。**
 
-**读完之后的事实**：
+**第二次判断（也错）**：改口说真嫌疑是 `MW_Timer.cs:1297` 的 `if (hasFullScreen)` 分支。
+读完 `HasFullScreenWindowOfAutoFoldApps()` 全文（`MW_Timer.cs:816-941`）后推翻：
+这条分支认的进程清单里**没有 PowerPoint**，全是白板一体机软件
+（EasiNote / HiteCamera / seewoPincoTeacher / MicrosoftWhiteboard / Amdox / QPoint / WhiteBoard 等）。
+PPT 放映根本进不了这条分支。
 
-- `ArePPTControlsVisible` 只在 `PPTUIManager.UpdateConnectionStatus` 里改（:60 / :65），
-  跟着「连不连 PPT」走。**退出放映这个分支根本没碰它**（:129-131 只改
-  `IsInPPTPresentationMode` + `UpdateToolbarComponentVisibility` + `HideAllNavigationPanels`）。
-- `MW_AutoFold.cs:410` 那句只在**用户手动展开浮动栏**时执行（`UnFoldFloatingBar`），
-  是给用户操作打标记，不是自动收起。
+**第三次判断（错）**：说这两个开关"没有暴露"。
+**搜法错了**——我用字段名 `IsAutoFoldAfterPPTSlideShow` 去搜 xaml，
+但 xaml 里的控件名是 `CardAutoFoldAfterPPTSlideShow`，字段名在 xaml 里根本不出现。
 
-**C2 的真实嫌疑**：`MW_Timer.cs:1297-1308`
+**实际事实**：两个开关都在「自动化」页，用户能开能关。
 
-```csharp
-if (hasFullScreen)
-{
-    if (!isFloatingBarFolded)
-        FoldFloatingBar_MouseUp(null, null);        // 强制收起
-    else if (currentMargin.Left > -50 && !isFloatingBarChangingHideMode)
-        FoldFloatingBar_MouseUp(null, null);        // 再收一次
-    return;
-}
-```
+| 字段 | 界面文案 | 调用点 |
+|---|---|---|
+| `IsAutoFoldInPPTSlideShow` | 播放 PPT 时自动收纳 | `MW_PPT.cs:878` |
+| `IsAutoFoldAfterPPTSlideShow` | 退出 PPT 放映模式后自动收纳浮动栏 | `MW_PPT.cs:1257` / `:2966` |
 
-`hasFullScreen = HasFullScreenWindowOfAutoFoldApps()`，**不看设置**。
-和社区原话「似乎与设置没有关系」完全对上。
+界面位置：`AutomationWorkflowPage.xaml:256`（CardAutoFoldInPPTSlideShow）/
+`:270`（CardAutoFoldAfterPPTSlideShow）。
+默认值：两个都是 `false`（`Settings.cs:942/945`，无初始化器）。
 
-**但这条分支是通用全屏逻辑**，不只服务 PPT，改它会影响所有全屏场景。
-所以先加诊断确认，不盲改。
+**结论：这不是 ICC 的 bug。**
+
+用户吐槽的「退出 PPT 后自动隐藏」，是他自己开了
+「退出 PPT 放映模式后自动收纳浮动栏」。社区原话「似乎与设置没有关系」——
+那是**没找到这个开关**：它不在「PPT 联动」页，在「自动化」页。
+
+**唯一可能的真实瑕疵**：这个开关放在自动化页，但用户心理预期它在 PPT 联动页。
+这属于**设置项位置不好找**，不是行为错误。要不要挪位置另说。
+
+**状态：关闭（不是 bug）。不再需要实测。**
 
 ### C1 → 同一文件的手势子系统
 
