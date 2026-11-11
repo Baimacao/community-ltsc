@@ -104,7 +104,7 @@
                     <Grid>
                         <Border x:Name="PageButtonFeedbackBorder" Margin="0,3" CornerRadius="5"
                                 Background="#18181b" Opacity="0"/>
-                        <ikw:SimpleStackPanel VerticalAlignment="Center" Orientation="Vertical"
+                        <ikw:SimpleStackPanel x:Name="PageNumberStack" VerticalAlignment="Center" Orientation="Vertical"
                                              Spacing="0.5" Margin="12,0">
                             <TextBlock x:Name="PageNowText" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        FontSize="17" FontWeight="Bold" Text="?"/>

@@ -298,6 +298,11 @@ namespace Ink_Canvas
                 _pptUIManager.PPTLBButtonPosition = Settings.PowerPointSettings.PPTLBButtonPosition;
                 _pptUIManager.PPTRBButtonPosition = Settings.PowerPointSettings.PPTRBButtonPosition;
                 _pptUIManager.EnablePPTButtonPageClickable = Settings.PowerPointSettings.EnablePPTButtonPageClickable;
+                ApplyPPTNavBarAppearanceFromSettings();
+
+                // 设置页改完立刻下发外观，不用等下次进入放映。
+                PPTUIManager.AppearanceChanged -= ApplyPPTNavBarAppearanceFromSettings;
+                PPTUIManager.AppearanceChanged += ApplyPPTNavBarAppearanceFromSettings;
                 _pptUIManager.EnablePPTButtonLongPressPageTurn = Settings.PowerPointSettings.EnablePPTButtonLongPressPageTurn;
 
                 LogHelper.WriteLogToFile("PPT管理器初始化完成", LogHelper.LogType.Event);
@@ -533,6 +538,10 @@ namespace Ink_Canvas
 
             _longPressTimer.Interval = TimeSpan.FromMilliseconds(LongPressInterval);
 
+            // 告诉四个导航栏：这次按下已经被长按消费掉了。
+            // 否则松手时 MouseUp 还会补一次 Click，长按永远多翻一页。
+            MarkAllNavBarsLongPressConsumed();
+
             // 执行翻页
             if (_isLongPressNext)
             {
@@ -541,6 +550,47 @@ namespace Ink_Canvas
             else
             {
                 BtnPPTSlidesUp_Click(null, null);
+            }
+        }
+
+        /// <summary>
+        /// 把外观设置（页码字号 / 自动淡出 / 按下反馈）从 Settings 读进 PPTUIManager 并下发到四条导航栏。
+        /// 初始化时调一次，每次进入放映再调一次——后者是为了让设置页改完立刻生效，
+        /// 不用重启。
+        /// </summary>
+        private void ApplyPPTNavBarAppearanceFromSettings()
+        {
+            if (_pptUIManager == null) return;
+            try
+            {
+                var ppt = Settings.PowerPointSettings;
+                _pptUIManager.PageNumberFontSize = ppt.PPTPageNumberFontSize;
+                _pptUIManager.PageTotalFontSize = ppt.PPTPageTotalFontSize;
+                _pptUIManager.NavBarAutoHide = ppt.PPTNavBarAutoHide;
+                _pptUIManager.NavBarAutoHideDelaySeconds = ppt.PPTNavBarAutoHideDelaySeconds;
+                _pptUIManager.NavBarAutoHideOpacity = ppt.PPTNavBarAutoHideOpacity;
+                _pptUIManager.ButtonPressFeedback = ppt.PPTButtonPressFeedback;
+                _pptUIManager.ButtonPressFeedbackOpacity = ppt.PPTButtonPressFeedbackOpacity;
+                _pptUIManager.ApplyAppearanceToAllBars();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"应用翻页栏外观设置失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        private void MarkAllNavBarsLongPressConsumed()
+        {
+            try
+            {
+                LeftBottomPanelForPPTNavigation?.MarkLongPressConsumed();
+                RightBottomPanelForPPTNavigation?.MarkLongPressConsumed();
+                LeftSidePanelForPPTNavigation?.MarkLongPressConsumed();
+                RightSidePanelForPPTNavigation?.MarkLongPressConsumed();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"标记长按消费失败: {ex.Message}", LogHelper.LogType.Warning);
             }
         }
         #endregion
@@ -947,6 +997,7 @@ namespace Ink_Canvas
 
                 _currentSlideShowPosition = currentSlide;
                 _previousSlideID = currentSlide;
+                ApplyPPTNavBarAppearanceFromSettings();
                 NotifyPluginSlideShowStateChanged(true);
 
                 lock (_memoryStreams)
@@ -2103,6 +2154,44 @@ namespace Ink_Canvas
         /// </summary>
         private static bool IsShowingAutoplaySlidesWindow;
 
+        // ── 翻页防抖（LTSC P1c，2026-11-11）──────────────────────────────
+        // 老师会快速连点翻页按钮。原来每次点击都直接 Task.Run 冲进 COM，
+        // 连点 5 次就是 5 个线程同时调 PowerPoint —— COM 单线程单元扛不住，
+        // 表现为跳页、卡顿、甚至「点了没反应」。
+        // 这里用一个带超时自释放的 in-flight 标记：上一页还没翻完，新的点击直接丢弃。
+        // 刻意不 await、不阻塞 UI —— 丢一次点击远好过卡住整个界面。
+        private static readonly object _pptNavLock = new object();
+        private static bool _pptNavInFlight;
+        private static DateTime _pptNavInFlightSince = DateTime.MinValue;
+
+        /// <summary>
+        /// 翻页互斥窗口：上一次翻页还在进行中就直接放弃这次点击。
+        /// 超过 <see cref="_pptNavStaleMs"/> 仍未释放的锁视为失效（COM 卡死时不至于永久锁住翻页）。
+        /// </summary>
+        private static bool TryEnterPPTNavigation()
+        {
+            lock (_pptNavLock)
+            {
+                if (_pptNavInFlight)
+                {
+                    // 锁超时保护：COM 调用偶尔会拖很久，不能因此永久锁死按钮。
+                    if ((DateTime.UtcNow - _pptNavInFlightSince).TotalMilliseconds < _pptNavStaleMs)
+                        return false;
+                }
+                _pptNavInFlight = true;
+                _pptNavInFlightSince = DateTime.UtcNow;
+                return true;
+            }
+        }
+
+        private static void ExitPPTNavigation()
+        {
+            lock (_pptNavLock) { _pptNavInFlight = false; }
+        }
+
+        /// <summary>锁失效阈值：超过这个时间仍持有锁，下一次点击强行接管。</summary>
+        private const int _pptNavStaleMs = 1500;
+
         /// <summary>
         /// 处理“上一页”按钮的点击操作：在满足自动保存条件时保存当前幻灯片截图并尝试切换到上一张幻灯片；在切换失败或发生异常时记录日志并更新连接状态。
         /// </summary>
@@ -2110,6 +2199,9 @@ namespace Ink_Canvas
         /// <param name="e">路由事件参数。</param>
         private void BtnPPTSlidesUp_Click(object sender, RoutedEventArgs e)
         {
+            // 防抖：上一次翻页还没结束就丢弃这次点击。
+            if (!TryEnterPPTNavigation()) return;
+
             int strokeCount = inkCanvas?.Strokes?.Count ?? 0;
             bool needScreenshot = strokeCount > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
@@ -2137,6 +2229,7 @@ namespace Ink_Canvas
                 }
             }).ContinueWith(t =>
             {
+                ExitPPTNavigation();
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (t.IsFaulted) { _pptUIManager?.UpdateConnectionStatus(false); return; }
@@ -2161,6 +2254,9 @@ namespace Ink_Canvas
         /// </remarks>
         private void BtnPPTSlidesDown_Click(object sender, RoutedEventArgs e)
         {
+            // 防抖：同上。
+            if (!TryEnterPPTNavigation()) return;
+
             int strokeCount = inkCanvas?.Strokes?.Count ?? 0;
             bool needScreenshot = strokeCount > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
@@ -2188,6 +2284,7 @@ namespace Ink_Canvas
                 }
             }).ContinueWith(t =>
             {
+                ExitPPTNavigation();
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     if (t.IsFaulted) { _pptUIManager?.UpdateConnectionStatus(false); return; }

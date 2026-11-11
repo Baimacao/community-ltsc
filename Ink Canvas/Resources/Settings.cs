@@ -665,6 +665,47 @@ namespace Ink_Canvas
         [JsonProperty("pptLSUseGlobalSettings")]
         public bool PPTLSUseGlobalSettings { get; set; } = true;
 
+        // ── LTSC P1c 外观增强（2026-11-11）────────────────────────────
+        // 三项都来自实际授课场景：
+        // · 页码字号：投影/大屏上 17px 的页码坐在后排看不清楚
+        // · 自动隐藏：翻页条常驻会挡住板书右下角
+        // · 触感反馈：投影模式下点按钮几乎没反馈，老师不确定点没点中
+
+        /// <summary>当前页码字号（像素）。默认 17，即改造前的固定值。</summary>
+        [JsonProperty("pptPageNumberFontSize")]
+        public double PPTPageNumberFontSize { get; set; } = 17;
+
+        /// <summary>总页数字号（像素）。默认 10，即改造前的固定值。</summary>
+        [JsonProperty("pptPageTotalFontSize")]
+        public double PPTPageTotalFontSize { get; set; } = 10;
+
+        /// <summary>
+        /// 翻页条自动淡出：鼠标/触摸静止一段时间后，翻页条降到极低透明度，不再挡板书。
+        /// 默认关闭，保持和改造前一致的行为。
+        /// </summary>
+        [JsonProperty("pptNavBarAutoHide")]
+        public bool PPTNavBarAutoHide { get; set; } = false;
+
+        /// <summary>自动淡出前的静止时间（秒）。默认 3 秒。</summary>
+        [JsonProperty("pptNavBarAutoHideDelaySeconds")]
+        public double PPTNavBarAutoHideDelaySeconds { get; set; } = 3.0;
+
+        /// <summary>自动淡出后的透明度。默认 0.08，仍能看见轮廓，不至于完全找不到。</summary>
+        [JsonProperty("pptNavBarAutoHideOpacity")]
+        public double PPTNavBarAutoHideOpacity { get; set; } = 0.08;
+
+        /// <summary>
+        /// 按下翻页按钮时给一点额外视觉反馈强度（除原有半透明高亮外再加一层）。
+        /// 默认开启；投影下能明显看出「点到了」。
+        /// </summary>
+        [JsonProperty("pptButtonPressFeedback")]
+        public bool PPTButtonPressFeedback { get; set; } = true;
+
+        /// <summary>按下反馈的不透明度。默认 0.35。</summary>
+        [JsonProperty("pptButtonPressFeedbackOpacity")]
+        public double PPTButtonPressFeedbackOpacity { get; set; } = 0.35;
+
+
         [JsonProperty("pptRSUseGlobalSettings")]
         public bool PPTRSUseGlobalSettings { get; set; } = true;
 

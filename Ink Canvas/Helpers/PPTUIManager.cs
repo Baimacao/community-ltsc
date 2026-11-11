@@ -20,6 +20,59 @@ namespace Ink_Canvas.Helpers
         public int PPTLBButtonPosition { get; set; } = 0;
         public int PPTRBButtonPosition { get; set; } = 0;
         public bool EnablePPTButtonPageClickable { get; set; } = true;
+
+        // ── LTSC P1c 外观增强（2026-11-11）────────────────────────────
+        public double PageNumberFontSize { get; set; } = 17;
+        public double PageTotalFontSize { get; set; } = 10;
+        public bool NavBarAutoHide { get; set; } = false;
+        public double NavBarAutoHideDelaySeconds { get; set; } = 3.0;
+        public double NavBarAutoHideOpacity { get; set; } = 0.08;
+        public bool ButtonPressFeedback { get; set; } = true;
+        public double ButtonPressFeedbackOpacity { get; set; } = 0.35;
+
+        /// <summary>
+        /// 外观设置变化通知。设置页改完立刻触发，让主窗口重新读配置并下发到四条导航栏。
+        /// 没有这条的话，改完要等下一次进入放映才看得到效果——用户会以为没生效。
+        /// </summary>
+        public static event Action AppearanceChanged;
+
+        /// <summary>设置页调用：声明外观已变，请主窗口立刻刷新。</summary>
+        public static void NotifyAppearanceChanged()
+        {
+            try { AppearanceChanged?.Invoke(); }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"通知翻页栏外观变化失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 把外观设置下发到四条导航栏。设置页改动后调用，放映开始时也调一次。
+        /// </summary>
+        public void ApplyAppearanceToAllBars()
+        {
+            var bars = new[]
+            {
+                _mainWindow.LeftBottomPanelForPPTNavigation,
+                _mainWindow.RightBottomPanelForPPTNavigation,
+                _mainWindow.LeftSidePanelForPPTNavigation,
+                _mainWindow.RightSidePanelForPPTNavigation,
+            };
+            foreach (var bar in bars)
+            {
+                if (bar == null) continue;
+                try
+                {
+                    bar.SetPageNumberFontSize(PageNumberFontSize, PageTotalFontSize);
+                    bar.SetPressFeedback(ButtonPressFeedback, ButtonPressFeedbackOpacity);
+                    bar.SetAutoHide(NavBarAutoHide, NavBarAutoHideDelaySeconds, NavBarAutoHideOpacity);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"下发翻页栏外观设置失败: {ex.Message}", LogHelper.LogType.Warning);
+                }
+            }
+        }
         public bool EnablePPTButtonLongPressPageTurn { get; set; } = true;
         public double PPTLSButtonOpacity { get; set; } = 0.5;
         public double PPTRSButtonOpacity { get; set; } = 0.5;

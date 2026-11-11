@@ -103,6 +103,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             _isLoaded = true;
 
             LoadSelectedPositionSettings();
+            LoadGlobalAppearance();
             UpdateInlinePreview();
             previewWin.UpdatePreview();
 
@@ -820,6 +821,100 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsManager.SaveSettingsToFile();
             SettingsActionHub.OnPPTGlobalSettingsChanged();
             UpdatePreviews();
+        }
+
+        // ── LTSC P1c：全局外观（2026-11-11）────────────────────────────
+        // 这三项不分位置，四条导航栏共用。
+
+        /// <summary>把当前设置填进控件。加载期间屏蔽事件，避免回写覆盖配置。</summary>
+        private void LoadGlobalAppearance()
+        {
+            bool wasLoaded = _isLoaded;
+            _isLoaded = false;
+            try
+            {
+                var ppt = SettingsManager.Settings.PowerPointSettings;
+
+                SliderPageFont.Value = Math.Max(10, Math.Min(40, ppt.PPTPageNumberFontSize));
+                TextBlockPageFontValue.Text = $"{ppt.PPTPageNumberFontSize:0}px";
+
+                // 总页数字号按 10/17 比例跟随，这里只做展示
+                ToggleAutoHide.IsOn = ppt.PPTNavBarAutoHide;
+
+                SliderAutoHideDelay.Value = Math.Max(1, Math.Min(15, ppt.PPTNavBarAutoHideDelaySeconds));
+                TextBlockAutoHideDelayValue.Text = $"{ppt.PPTNavBarAutoHideDelaySeconds:0}s";
+
+                TogglePressFeedback.IsOn = ppt.PPTButtonPressFeedback;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"加载翻页栏外观设置失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            finally
+            {
+                _isLoaded = wasLoaded;
+            }
+        }
+
+        // 这三项不分位置，四条导航栏共用。
+
+        private void SliderPageFont_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (TextBlockPageFontValue != null)
+                TextBlockPageFontValue.Text = $"{e.NewValue:0}px";
+
+            if (!_isLoaded) return;
+            var ppt = SettingsManager.Settings.PowerPointSettings;
+            double v = Math.Round(SliderPageFont.Value, 0);
+            ppt.PPTPageNumberFontSize = v;
+            // 总页数字号按比例走，保持 17:10 的原始视觉比例。
+            ppt.PPTPageTotalFontSize = Math.Max(8, Math.Round(v * 10.0 / 17.0, 0));
+            _sliderDelayAction.DebounceAction(400, null, () =>
+            {
+                SettingsManager.SaveSettingsToFile();
+                global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
+            });
+        }
+
+        private void ButtonResetPageFont_Click(object sender, RoutedEventArgs e)
+        {
+            SliderPageFont.Value = 17;
+            SettingsManager.Settings.PowerPointSettings.PPTPageNumberFontSize = 17;
+            SettingsManager.Settings.PowerPointSettings.PPTPageTotalFontSize = 10;
+            TextBlockPageFontValue.Text = "17px";
+            SettingsManager.SaveSettingsToFile();
+            global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
+        }
+
+        private void ToggleAutoHide_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.PPTNavBarAutoHide = ToggleAutoHide.IsOn;
+            SettingsManager.SaveSettingsToFile();
+            global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
+        }
+
+        private void SliderAutoHideDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (TextBlockAutoHideDelayValue != null)
+                TextBlockAutoHideDelayValue.Text = $"{e.NewValue:0}s";
+
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.PPTNavBarAutoHideDelaySeconds =
+                Math.Round(SliderAutoHideDelay.Value, 0);
+            _sliderDelayAction.DebounceAction(400, null, () =>
+            {
+                SettingsManager.SaveSettingsToFile();
+                global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
+            });
+        }
+
+        private void TogglePressFeedback_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.PPTButtonPressFeedback = TogglePressFeedback.IsOn;
+            SettingsManager.SaveSettingsToFile();
+            global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
         }
     }
 }

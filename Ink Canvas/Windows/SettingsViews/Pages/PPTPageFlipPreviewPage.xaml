@@ -184,6 +184,57 @@
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
 
+                        <!-- LTSC P1c：全局外观（不分位置，四项共用） -->
+                        <TextBlock Text="全局外观" Margin="1,24,0,6"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"/>
+
+                        <ui:SettingsCard Header="页码字号"
+                                         Description="投影和一体机上，后排常常看不清页码。默认 17px，可放大到 40px">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Zoom}"/>
+                            </ui:SettingsCard.HeaderIcon>
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="TextBlockPageFontValue" VerticalAlignment="Center"
+                                           FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                <Slider x:Name="SliderPageFont" Minimum="10" Maximum="40"
+                                        Width="200" IsSnapToTickEnabled="True" TickFrequency="1"
+                                        ValueChanged="SliderPageFont_ValueChanged"/>
+                                <Button Content="重置" Click="ButtonResetPageFont_Click"/>
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="翻页条自动淡出"
+                                         Description="静止一段时间后翻页条变淡，不再挡住板书；碰到它就恢复">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Hide}"/>
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch x:Name="ToggleAutoHide" OnContent="开" OffContent="关"
+                                          Toggled="ToggleAutoHide_Toggled"/>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="淡出等待时间"
+                                         Description="静止多少秒后开始变淡">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
+                            </ui:SettingsCard.HeaderIcon>
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="TextBlockAutoHideDelayValue" VerticalAlignment="Center"
+                                           FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                <Slider x:Name="SliderAutoHideDelay" Minimum="1" Maximum="15"
+                                        Width="200" IsSnapToTickEnabled="True" TickFrequency="1"
+                                        ValueChanged="SliderAutoHideDelay_ValueChanged"/>
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard Header="按下反馈"
+                                         Description="按下翻页按钮时给出明显的高亮，投影下也能看出是否点中">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}"/>
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch x:Name="TogglePressFeedback" OnContent="开" OffContent="关"
+                                          Toggled="TogglePressFeedback_Toggled"/>
+                        </ui:SettingsCard>
+
                     </ikw:SimpleStackPanel>
                 </Grid>
             </Grid>

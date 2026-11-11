@@ -1,3 +1,4 @@
+using System.Windows.Threading;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -287,13 +288,36 @@ namespace Ink_Canvas.Controls
             }
         }
 
-        private void SetFeedback(Border feedback, double opacity) => feedback.Opacity = opacity;
+        private void SetFeedback(Border feedback, double opacity)
+        {
+            // opacity 为 0 表示松手/离开，永远清零。
+            // 非 0 表示按下，若开启了加强反馈则用配置值，否则维持原表现。
+            if (opacity > 0 && _pressFeedbackEnabled)
+                opacity = _pressFeedbackOpacity;
+            feedback.Opacity = opacity;
+        }
 
         private object _lastDown;
+
+        /// <summary>
+        /// 本次按下期间，长按定时器是否真的翻过页。
+        /// 长按翻页和单击翻页走的是两条独立的路：定时器在按住时反复翻页，
+        /// 松手时 MouseUp 又会补一次 Click。结果是长按松手总要多翻一页。
+        /// 这个标记让 MouseUp 知道「这一次已经被长按处理过了」，不要再补一次。
+        /// </summary>
+        private bool _longPressConsumed;
+
+        // ── LTSC P1c 外观增强 ──────────────────────────────────────────
+        private DispatcherTimer _autoHideTimer;
+        private double _autoHideOpacity = 0.08;
+        private bool _autoHideEnabled;
+        /// <summary>自动淡出时被压低的容器，AllBars 共用。</summary>
+        private FrameworkElement _autoHideTarget;
 
         private void PreviousButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _lastDown = sender;
+            _longPressConsumed = false;
             SetFeedback(PreviousButtonFeedbackBorder, 0.15);
             PreviousPressedDown?.Invoke(this, EventArgs.Empty);
         }
@@ -304,6 +328,8 @@ namespace Ink_Canvas.Controls
             PressEnded?.Invoke(this, EventArgs.Empty);
             if (_lastDown != sender) return;
             _lastDown = null;
+            // 长按期间已经翻过页，松手不再补这一下，否则长按永远多翻一页。
+            if (_longPressConsumed) { _longPressConsumed = false; return; }
             PreviousClick?.Invoke(this, EventArgs.Empty);
         }
 
@@ -311,12 +337,14 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(PreviousButtonFeedbackBorder, 0);
             _lastDown = null;
+            _longPressConsumed = false;
             PressEnded?.Invoke(this, EventArgs.Empty);
         }
 
         private void NextButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _lastDown = sender;
+            _longPressConsumed = false;
             SetFeedback(NextButtonFeedbackBorder, 0.15);
             NextPressedDown?.Invoke(this, EventArgs.Empty);
         }
@@ -327,6 +355,8 @@ namespace Ink_Canvas.Controls
             PressEnded?.Invoke(this, EventArgs.Empty);
             if (_lastDown != sender) return;
             _lastDown = null;
+            // 同上：长按已经翻过页，松手不再补。
+            if (_longPressConsumed) { _longPressConsumed = false; return; }
             NextClick?.Invoke(this, EventArgs.Empty);
         }
 
@@ -334,6 +364,7 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(NextButtonFeedbackBorder, 0);
             _lastDown = null;
+            _longPressConsumed = false;
             PressEnded?.Invoke(this, EventArgs.Empty);
         }
 
@@ -389,6 +420,114 @@ namespace Ink_Canvas.Controls
         }
 
         public void SetPageButtonVisibility(Visibility v) => PageButtonBorder.Visibility = v;
+
+        /// <summary>
+        /// 设置页码字号。投影/大屏上 17px 坐在后排看不清，这里允许放大。
+        /// </summary>
+        public void SetPageNumberFontSize(double now, double total)
+        {
+            if (now   > 0) PageNowText.FontSize   = now;
+            if (total > 0) PageTotalText.FontSize = total;
+
+            // 容器宽度必须跟着字号走，否则字号一大，数字就被外层裁掉。
+            // 原设计固定 MinWidth=50、内边距 12，只够 17px 用；
+            // 40px 时「53」这种两位数会溢出。
+            // 估算：两位数字宽 ≈ 字号 × 1.2，再加左右各 12 的内边距和一点余量。
+            try
+            {
+                double needW = Math.Max(50, Math.Ceiling(Math.Max(now, total * 1.4) * 1.2) + 26);
+                PageButtonBorder.MinWidth  = needW;
+                PageNumberStack.Margin     = new Thickness(6, 0, 6, 0);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// 按下反馈：除原有半透明高亮外，再加一层更明显的底色，投影下能看出「点到了」。
+        /// </summary>
+        public void SetPressFeedback(bool enabled, double opacity)
+        {
+            _pressFeedbackEnabled = enabled;
+            _pressFeedbackOpacity = Math.Max(0.05, Math.Min(0.9, opacity));
+        }
+
+        /// <summary>
+        /// 自动淡出：静止 <paramref name="delaySeconds"/> 秒后，整条翻页栏降到
+        /// <paramref name="fadedOpacity"/>，不再挡住板书；鼠标进入或按下立刻恢复。
+        /// </summary>
+        public void SetAutoHide(bool enabled, double delaySeconds, double fadedOpacity)
+        {
+            _autoHideEnabled = enabled;
+            _autoHideOpacity = Math.Max(0.0, Math.Min(1.0, fadedOpacity));
+
+            if (_autoHideTimer == null)
+            {
+                _autoHideTimer = new DispatcherTimer();
+                _autoHideTimer.Tick += (s, e) =>
+                {
+                    _autoHideTimer.Stop();
+                    if (_autoHideEnabled) ApplyFade(_autoHideOpacity);
+                };
+            }
+
+            _autoHideTimer.Stop();
+
+            if (!enabled)
+            {
+                // 关掉时立刻恢复到正常不透明度，避免停留在淡出状态。
+                ApplyFade(1.0);
+                return;
+            }
+
+            var sec = Math.Max(0.5, delaySeconds);
+            _autoHideTimer.Interval = TimeSpan.FromSeconds(sec);
+
+            // 鼠标进入 / 按下 / 展开预览 → 立刻恢复并重新计时。
+            if (_autoHideTarget == null)
+            {
+                _autoHideTarget = this;
+                _autoHideTarget.MouseEnter += (s, e) => WakeAutoHide();
+                _autoHideTarget.MouseMove  += (s, e) => WakeAutoHide();
+                _autoHideTarget.MouseLeave += (s, e) => ArmAutoHideTimer();
+            }
+
+            ArmAutoHideTimer();
+        }
+
+        private void ArmAutoHideTimer()
+        {
+            if (!_autoHideEnabled || _autoHideTimer == null) return;
+            _autoHideTimer.Stop();
+            _autoHideTimer.Start();
+        }
+
+        /// <summary>用户又碰到翻页栏了：立刻恢复可见，并重新开始计时。</summary>
+        public void WakeAutoHide()
+        {
+            if (!_autoHideEnabled) return;
+            ApplyFade(1.0);
+            ArmAutoHideTimer();
+        }
+
+        private void ApplyFade(double opacity)
+        {
+            try
+            {
+                // 只压这个控件自身的 Opacity，不去动外层容器，
+                // 免得和「透明度」设置项打架。
+                RootBorder.Opacity = opacity;
+            }
+            catch { }
+        }
+
+        private bool _pressFeedbackEnabled = true;
+        private double _pressFeedbackOpacity = 0.35;
+
+        /// <summary>
+        /// 由 MainWindow 在长按定时器真的翻页后调用，标记「本次按下已被长按消费」，
+        /// 让紧接着的 MouseUp 不再补一次单击翻页。
+        /// </summary>
+        public void MarkLongPressConsumed() => _longPressConsumed = true;
         public void SetBarOpacity(double opacity)
         {
             _collapsedOpacity = opacity;
