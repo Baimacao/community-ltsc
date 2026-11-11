@@ -333,26 +333,6 @@
                             SwitchName="ToggleSwitchEnableWinRtHandwritingStrokeBeautify"
                             Toggled="ToggleSwitchEnableWinRtHandwritingStrokeBeautify_Toggled" />
 
-                    <ui:SettingsCard Header="{x:Static props:CanvasStrings.InkRecog_HandwritingFont}"
-                            Description="{x:Static props:CanvasStrings.InkRecog_HandwritingFontHint}"
-                            Visibility="{Binding IsOn, ElementName=CardEnableWinRtHandwritingStrokeBeautify, Converter={StaticResource BooleanToVisibilityConverter}}"
-                            d:Visibility="Visible">
-                        <ComboBox x:Name="ComboBoxHandwritingCorrectionFont"
-                                  SelectionChanged="ComboBoxHandwritingCorrectionFont_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_InkFreeKaiti}" Tag="Ink Free,KaiTi,Segoe Script" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_Kaiti}" Tag="KaiTi" FontFamily="KaiTi" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_STKaiti}" Tag="STKaiti" FontFamily="STKaiti" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_STXingkai}" Tag="STXingkai" FontFamily="STXingkai" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_FangSong}" Tag="FangSong" FontFamily="FangSong" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_STFangsong}" Tag="STFangsong" FontFamily="STFangsong" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_LiSu}" Tag="LiSu" FontFamily="LiSu" />
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_Font_YouYuan}" Tag="YouYuan" FontFamily="YouYuan" />
-                            <ComboBoxItem Content="Ink Free" Tag="Ink Free" FontFamily="Ink Free" />
-                            <ComboBoxItem Content="Segoe Script" Tag="Segoe Script" FontFamily="Segoe Script" />
-                            <ComboBoxItem Content="Segoe Print" Tag="Segoe Print" FontFamily="Segoe Print" />
-                            <ComboBoxItem Content="Comic Sans MS" Tag="Comic Sans MS" FontFamily="Comic Sans MS" />
-                        </ComboBox>
-                    </ui:SettingsCard>
 
                     <controls:LabeledSettingsCard x:Name="CardEnableInkToShapeNoFakePressureRectangle"
                             Header="{x:Static props:CanvasStrings.InkRecog_BlockRectFakePressure}"
