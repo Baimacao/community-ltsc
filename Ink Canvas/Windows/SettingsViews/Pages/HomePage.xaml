@@ -114,7 +114,7 @@
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Header="{x:Static props:ThemeStrings.Theme_GroupTitle}" Description="{x:Static props:NavStrings.Nav_Theme_Settings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="AppearancePage">
+                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="WindowPage">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Personalize}" />
                         </ui:SettingsCard.HeaderIcon>

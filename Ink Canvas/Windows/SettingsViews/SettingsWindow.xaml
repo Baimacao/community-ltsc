@@ -212,15 +212,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                         <ui:NavigationViewItem
-                            x:Name="AppearancePageItem"
-                            Content="{x:Static props:ThemeStrings.Theme_GroupTitle}"
-                            Tag="AppearancePage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Theme_Settings}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Personalize}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
                             x:Name="SidebarPageItem"
                             Content="{x:Static props:NavStrings.Nav_Sidebar}"
                             Tag="SidebarPage"

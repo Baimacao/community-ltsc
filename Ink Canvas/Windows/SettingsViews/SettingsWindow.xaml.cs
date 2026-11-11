@@ -24,7 +24,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "PrivacyPage", typeof(PrivacyPage) },
             { "SecurityPage", typeof(SecurityPage) },
             { "WindowPage", typeof(WindowPage) },
-            { "AppearancePage", typeof(AppearancePage) },
             { "SidebarPage", typeof(SidebarPage) },
             { "HotkeyPage", typeof(HotkeyPage) },
             { "ToolbarPage", typeof(ToolbarPage) },
