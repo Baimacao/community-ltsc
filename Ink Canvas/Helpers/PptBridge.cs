@@ -1295,6 +1295,7 @@ namespace Ink_Canvas.Helpers
             _comSlideShowWindow = window;
             // 翻页事件是页码最可靠的来源，优先读它。
             // COM 事件触发时窗口一定有效，比 500ms 轮询准得多。
+            int prev = _currentSlide;
             try
             {
                 int live = ReadLiveSlideNumber();
@@ -1303,6 +1304,22 @@ namespace Ink_Canvas.Helpers
             catch { }
             RefreshSlidesCount();
             VerboseLog($"COM 事件: 翻页 -> 当前页={_currentSlide}");
+
+            // LTSC P1b（2026-11-11 实测）：这里原来只更新 _currentSlide 就结束了，
+            // 从不把 SlideShowNextSlide 抛给订阅者。
+            // 而轮询路径 RefreshSlideShowState(:819) 的触发条件是
+            //   comSlide != _currentSlide
+            // COM 翻页时 _currentSlide 已经被这里改成新页码，轮询再读到同一页就不成立，
+            // 于是 SlideShowNextSlide 一次都发不出去。
+            // 下游 MW_PPT.OnPPTSlideShowNextSlide 因此从不执行，页码、墨迹切页、导航栏
+            // 全都停在第一页——实机现象就是「翻页器始终显示 1」。
+            //
+            // 修法：COM 翻页确认页码真的变了，就在这里自己把事件抛出去，
+            // 不依赖轮询那条路（它只在 COM 事件缺失时才该兜底）。
+            if (_currentSlide > 0 && _currentSlide != prev)
+            {
+                try { SlideShowNextSlide?.Invoke(_comSlideShowWindow); } catch { }
+            }
         }
 
         void OnComSlideShowEnd(object pres)
