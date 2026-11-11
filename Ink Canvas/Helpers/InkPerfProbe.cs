@@ -34,6 +34,8 @@ namespace Ink_Canvas.Helpers
         internal static int DecCountNow;
         internal static int DecCountMax;
         internal static int SilentReleaseCount;
+        internal static int TouchUpFallback;
+        internal static int StalePruned;
 
         // 双指
         internal static int TwoFingerMatched;
@@ -104,6 +106,8 @@ namespace Ink_Canvas.Helpers
             }
             sb.Append(" | dec=").Append(DecCountNow).Append(" 峰=").Append(DecCountMax);
             if (SilentReleaseCount > 0) sb.Append(" 静默释放=").Append(SilentReleaseCount);
+            if (TouchUpFallback > 0) sb.Append(" 释放降级=").Append(TouchUpFallback);
+            if (StalePruned > 0) sb.Append(" 清理僵尸=").Append(StalePruned);
             sb.Append(" | 双指 中=").Append(TwoFingerMatched).Append(" 漏=").Append(TwoFingerMissed);
             sb.Append(" | GC ").Append(gc0).Append("/").Append(gc1).Append("/").Append(gc2);
             sb.Append(" 工作集=").Append(ws).Append("MB");
@@ -117,6 +121,7 @@ namespace Ink_Canvas.Helpers
         {
             StrokeCount = 0; StrokeTotalMs = 0; StrokeMaxMs = 0;
             DecCountNow = 0; DecCountMax = 0; SilentReleaseCount = 0;
+            TouchUpFallback = 0; StalePruned = 0;
             TwoFingerMatched = 0; TwoFingerMissed = 0;
             TickCount = 0;
             _gc0AtStart = GC.CollectionCount(0);

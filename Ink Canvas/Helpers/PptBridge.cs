@@ -635,8 +635,15 @@ namespace Ink_Canvas.Helpers
                 catch (COMException ex)
                 {
                     if (ex.HResult == RPC_E_DISCONNECTED) Disconnect("COM 对象已断开");
+                    else VerboseLog($"[PPT详细] 一级取页码 COMException: 0x{ex.HResult:X8} {ex.Message}");
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    // LTSC P2：原来这里是 catch { }，什么都不知道就过去了。
+                    // 管理员权限下跨完整性访问 COM 抛的异常如果属于
+                    // AccessViolation / InvalidCast 一类，会一路走到这里。
+                    VerboseLog($"[PPT详细] 一级取页码异常: {ex.GetType().FullName}: {ex.Message}");
+                }
             }
 
             // 二级：Win32。COM 不可用时靠窗口类名判断，并对齐窗口矩形。
@@ -725,7 +732,11 @@ namespace Ink_Canvas.Helpers
                     if (pres != null) newCount = (int)((dynamic)pres).Slides.Count;
                 }
             }
-            catch { newCount = 0; }
+            catch (Exception ex)
+            {
+                newCount = 0;
+                VerboseLog($"[PPT详细] SlidesCount 取失败: {ex.GetType().Name}: {ex.Message}");
+            }
 
             int oldCount = SlidesCount;
             SlidesCount = newCount;
@@ -1105,7 +1116,10 @@ namespace Ink_Canvas.Helpers
                 d.PresentationOpen -= new Action<object>(OnComPresentationOpen);
                 d.PresentationClose -= new Action<object>(OnComPresentationClose);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                VerboseLog($"[PPT详细] 解绑 COM 事件失败: {ex.GetType().Name}: {ex.Message}");
+            }
             _comEventsHooked = false;
         }
 

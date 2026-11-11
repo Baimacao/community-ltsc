@@ -50,6 +50,15 @@ namespace Ink_Canvas
         private bool isMultiTouchTimerActive;
         /// <summary>P2 诊断：上一次 ReleaseAllTouchCaptures() 放掉了几个捕获。</summary>
         private int _releasedCaptureCount = 0;
+
+        /// <summary>
+        /// P2：每个触摸 id 最后一次活动时间。
+        /// 用来清掉收不到 TouchUp 的僵尸 id——那正是双指手势失效的根因。
+        /// </summary>
+        private readonly Dictionary<int, DateTime> _touchIdStamp = new Dictionary<int, DateTime>();
+
+        /// <summary>超过这个秒数没动静的 id 视为僵尸，直接清掉。</summary>
+        private const double StaleTouchSeconds = 15.0;
         private bool isPalmEraserActive;
         private bool palmEraserWasEnabledBeforeMultiTouch;
         private InkCanvasEditingMode palmEraserPreviousEditingMode = InkCanvasEditingMode.Ink;
@@ -152,6 +161,33 @@ namespace Ink_Canvas
             return Settings.Canvas.InkStyle == 3
                 && Settings.Canvas.VelocityBrushTipMix > 0
                 && !Settings.Canvas.DisablePressure;
+        }
+
+        /// <summary>
+        /// P2：清掉收不到 TouchUp 的僵尸触摸 id。
+        /// </summary>
+        /// <remarks>
+        /// 真机实测：dec 峰值涨到 9（正常最多等于手指数），
+        /// 「静默释放」计数器 8 分钟涨到 50。那些 id 再也收不到 TouchUp，
+        /// 一直留在 dec 里，把双指手势的判定搅乱。
+        /// 根因已经在 TouchUp 里改成只释放当前那一根，这里再兜一层：
+        /// 任何超过 StaleTouchSeconds 没动静的 id 一律清掉。
+        /// </remarks>
+        private void PruneStaleTouchIds()
+        {
+            if (_touchIdStamp.Count == 0) return;
+            var now = DateTime.UtcNow;
+            var stale = new List<int>();
+            foreach (var kv in _touchIdStamp)
+            {
+                if ((now - kv.Value).TotalSeconds > StaleTouchSeconds) stale.Add(kv.Key);
+            }
+            foreach (var id in stale)
+            {
+                _touchIdStamp.Remove(id);
+                dec.Remove(id);
+                InkPerfProbe.StalePruned++;
+            }
         }
 
         private bool ShouldUseRealtimeVelocityBrushTipForTouch()
@@ -1603,6 +1639,7 @@ namespace Ink_Canvas
                     lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
                 }
                 dec.Add(e.TouchDevice.Id);
+                _touchIdStamp[e.TouchDevice.Id] = DateTime.UtcNow;
                 InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
                 return;
             }
@@ -1613,6 +1650,9 @@ namespace Ink_Canvas
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
             lastTouchDownTime = DateTime.Now;
             dec.Add(e.TouchDevice.Id);
+            _touchIdStamp[e.TouchDevice.Id] = DateTime.UtcNow;
+            // 进新触摸前先清一次僵尸 id，避免 dec 越滚越大。
+            PruneStaleTouchIds();
             InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
 
             if (ShouldUseRealtimeVelocityBrushTipForTouch()
@@ -1902,13 +1942,32 @@ namespace Ink_Canvas
             {
                 return;
             }
-            // P2 诊断：先数一下有几根手指被一次性放掉。
             try { _releasedCaptureCount = inkCanvas.TouchesCaptured?.Count() ?? 0; } catch { _releasedCaptureCount = 0; }
-            inkCanvas.ReleaseAllTouchCaptures();
+
+            // LTSC P2 核心修复：原来这里是 ReleaseAllTouchCaptures()，
+            // 一次把「所有」手指的捕获都放掉，但下面只用 dec.Remove 移掉了当前这一根。
+            // 另一根手指从此再也收不到 TouchUp，它的 id 永久留在 dec 里。
+            // dec.Count 涨到 2 以上后：
+            //   · PreviewTouchMove 的 dec.Count > 1 分支直接 return
+            //   · shouldUseTwoFingerGesture 的 dec.Count >= 2 恒成立
+            // 双指手势就此失效。实测日志：dec 峰值 9，「静默释放」50 次。
+            // 修法：只释放当前这一根。
+            try
+            {
+                inkCanvas.ReleaseTouchCapture(e.TouchDevice);
+            }
+            catch (Exception ex)
+            {
+                // 捕获已经不在时 ReleaseTouchCapture 会抛，属正常，退回到全放。
+                InkPerfProbe.TouchUpFallback++;
+                try { inkCanvas.ReleaseAllTouchCaptures(); } catch { }
+                _ = ex;
+            }
             ViewboxFloatingBar.IsHitTestVisible = true;
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
 
             dec.Remove(e.TouchDevice.Id);
+            _touchIdStamp.Remove(e.TouchDevice.Id);
             // P2 诊断：ReleaseAllTouchCaptures() 一次放掉全部捕获，
             // 但这里只移除当前指的 ID。若另一指仍在 dec 里，它再也收不到 TouchUp。
             InkPerfProbe.TouchUp(dec.Count, e.TouchDevice.Id, _releasedCaptureCount);
@@ -2036,6 +2095,7 @@ namespace Ink_Canvas
                 if (dec.Count > 0)
                 {
                     dec.Clear();
+                    _touchIdStamp.Clear();
                 }
                 isSingleFingerDragMode = false;
 
@@ -2091,6 +2151,7 @@ namespace Ink_Canvas
 
             if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
 
+            PruneStaleTouchIds();
             bool hasMultipleManipulators = e.Manipulators.Count() >= 2;
             bool shouldUseTwoFingerGesture = (dec.Count >= 2 && hasMultipleManipulators &&
                                              (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||

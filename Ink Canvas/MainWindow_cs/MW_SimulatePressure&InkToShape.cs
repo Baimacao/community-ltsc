@@ -350,6 +350,21 @@ namespace Ink_Canvas
         /// </remarks>
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
+            // LTSC P2：笔迹耗时埋点。
+            // 上一次探针里「笔=0」——写了 StrokeDone 却一次没调用，埋点根本没接线。
+            // 这里补上：用 _stylusDownTimestamp（已有）算一笔的端到端耗时。
+            try
+            {
+                if (_stylusDownTimestamp > 0)
+                {
+                    // _stylusDownTimestamp 是 DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()，
+                    // 用同一时基算差值，别拿本地时间拼。
+                    long elapsed = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _stylusDownTimestamp;
+                    if (elapsed >= 0 && elapsed < 60000) InkPerfProbe.StrokeDone(elapsed);
+                }
+            }
+            catch { }
+
             var strokeDrawingAttributes = e.Stroke?.DrawingAttributes;
 
             var handwritingRawPointsForRecognizer =

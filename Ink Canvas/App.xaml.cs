@@ -257,6 +257,13 @@ namespace Ink_Canvas
                 // 注册非UI线程未处理异常处理程序
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+                // LTSC P2：补上 UI 线程异常。
+                // 原来只挂了 AppDomain.UnhandledException，那个只收非 UI 线程；
+                // WPF 的 UI 线程异常走 DispatcherUnhandledException，不挂就连
+                // ProcessExit 也不会触发——日志会停在抛异常那一行，不留任何痕迹。
+                // 实测证据：三份日志都断在中间，Crashes 目录里没有对应文件。
+                this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+
                 // 注册控制台Ctrl+C等终止信号处理
                 Console.CancelKeyPress += Console_CancelKeyPress;
 
