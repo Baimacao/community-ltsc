@@ -1199,8 +1199,21 @@ namespace Ink_Canvas
                 // 启动完成，恢复日志调用栈采集
                 LogHelper.SuppressCallerInfo = false;
 
-                // 启动成功，重置崩溃重启计数器
-                StartupCount.Reset();
+                // ── LTSC P5 / C5·C7（2026-11-11）─────────────────────────────
+                // 原来这里是同步 Reset()，也就是「主窗口一加载完就清零」。
+                //
+                // 而崩溃重启循环的形状是：
+                //   TryRestartWithBreaker → Increment() → count=1 → Process.Start → Exit
+                //   新进程 → mainWindow.Loaded → Reset() → count=0
+                //   再崩 → Increment() → count=1 → ...
+                //
+                // 计数永远停在 1，TryRestartWithBreaker 里那个 count >= 5 永远不成立，
+                // 熔断形同虚设 —— 这就是社区说的「无限重启」。
+                //
+                // 修法：只有**稳定运行足够久**才算真启动成功。
+                // 判据用「距上次重启记录的时间」：刚重启完就又走到这里，说明是崩溃循环，
+                // 不清零；跑够 StableRunBeforeReset 才清。
+                _ = ResetStartupCountWhenStable();
 
                 if (_isSplashScreenShown && splashStopwatch.IsRunning)
                 {
@@ -1537,6 +1550,66 @@ namespace Ink_Canvas
             SilentRestart,
             NoAction,
             ShowCrashWindow
+        }
+
+        /// <summary>
+        /// 稳定运行多久才算「真启动成功」，允许清空熔断计数。
+        /// 3 分钟：比任何崩溃循环的间隔都长，又不至于让正常用户等太久。
+        /// </summary>
+        private static readonly TimeSpan StableRunBeforeReset = TimeSpan.FromMinutes(3);
+
+        /// <summary>
+        /// LTSC P5 / C5·C7：延迟判断「这次启动算不算成功」。
+        ///
+        /// 不能像原来那样同步 Reset——那会让崩溃循环的计数永远停在 1
+        /// （每次重启后窗口都能加载完，一加载就清零），熔断永远不触发。
+        ///
+        /// 判据分两段：
+        ///   1) 启动那一刻先看「距上次重启多久」。如果不到 StableRunBeforeReset，
+        ///      说明是刚崩完又起来了，这一轮不清零。
+        ///   2) 再等 StableRunBeforeReset 后复查一次：如果这段时间内没有再次重启
+        ///      （时间戳没被 Increment 更新过），才算真的跑稳了，清掉计数。
+        /// 这样无论「起来就崩」还是「跑一会儿才崩」，计数都会累加，熔断能生效。
+        /// </summary>
+        private static async Task ResetStartupCountWhenStable()
+        {
+            try
+            {
+                int count = StartupCount.GetCount();
+                if (count == 0) return; // 本来就没有计数，不用管
+
+                var since = StartupCount.TimeSinceLastRestart();
+                if (since.HasValue && since.Value < StableRunBeforeReset)
+                {
+                    // 刚重启完又走到这里 —— 崩溃循环进行中，保留计数。
+                    LogHelper.WriteLogToFile(
+                        $"启动后 {since.Value.TotalSeconds:F1} 秒内又发生了重启，保留熔断计数 {count}/5",
+                        LogHelper.LogType.Warning);
+                    await Task.Delay(StableRunBeforeReset);
+                }
+
+                // 等够时间后复查：期间有没有再次重启？
+                var since2 = StartupCount.TimeSinceLastRestart();
+                if (since2.HasValue && since2.Value < StableRunBeforeReset)
+                {
+                    LogHelper.WriteLogToFile(
+                        $"稳定观察期内再次重启，保留熔断计数 {StartupCount.GetCount()}/5",
+                        LogHelper.LogType.Warning);
+                    return;
+                }
+
+                if (StartupCount.GetCount() > 0)
+                {
+                    LogHelper.WriteLogToFile(
+                        $"稳定运行超过 {StableRunBeforeReset.TotalMinutes:F0} 分钟，清空熔断计数",
+                        LogHelper.LogType.Info);
+                    StartupCount.Reset();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"稳定启动判定失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         /// <summary>
