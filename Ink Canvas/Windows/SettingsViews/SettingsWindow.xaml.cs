@@ -38,7 +38,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "PowerPointPage", typeof(PowerPointPage) },
             { "TimerPage", typeof(TimerPage) },
             { "CanvasPage", typeof(CanvasPage) },
-            { "PerformancePage", typeof(PerformancePage) },
             { "FriendlyLinksPage", typeof(FriendlyLinksPage) },
             { "AboutPage", typeof(AboutPage) },
             { "Settings", typeof(SettingsPage) },

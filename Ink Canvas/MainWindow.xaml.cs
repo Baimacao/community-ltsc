@@ -853,7 +853,6 @@ namespace Ink_Canvas
             }
         }
 
-
         #endregion
 
         #region Ink Canvas Functions
@@ -885,7 +884,6 @@ namespace Ink_Canvas
                 drawingAttributes = inkCanvas.DefaultDrawingAttributes;
                 drawingAttributes.Color = Ink_DefaultColor;
 
-
                 drawingAttributes.Height = 2.5;
                 drawingAttributes.Width = 2.5;
                 drawingAttributes.IsHighlighter = false;
@@ -903,7 +901,6 @@ namespace Ink_Canvas
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
-
 
         /// <summary>
         /// 将给定的十六进制颜色字符串规范化为一个带指定不透明度的 Color 值。
@@ -1511,7 +1508,7 @@ namespace Ink_Canvas
             // 启动性能监测（如果已启用）。快速启动模式下延迟到首帧之后。
             if (!App.IsFastStartupEnabled)
             {
-                PerformanceMonitorHelper.StartIfEnabled();
+
             }
             // 根据ToolbarPosition设置更新工具栏结构和位置
             UpdateToolbarPosition();
@@ -1663,8 +1660,6 @@ namespace Ink_Canvas
                 }), DispatcherPriority.Loaded);
             }
         }
-
-
 
         /// <summary>
         /// 响应显示器/分辨率配置变化：在检测启用时显示分辨率变更通知，并在后台检查悬浮工具栏是否位于屏幕之外，若是则在延迟后尝试将其通过动画恢复到可见区域（在演示模式下使用不同的动画偏移）。 
@@ -1912,7 +1907,6 @@ namespace Ink_Canvas
             }
         }
 
-
         /// <summary>
         /// 在窗口关闭时释放和清理所有相关资源并执行退出流程。
         /// </summary>
@@ -2053,7 +2047,6 @@ namespace Ink_Canvas
                 return false;
             }
         }
-
 
         /// <summary>
         /// LTSC D-01: 自动更新已整体移除（原方法 139 行：检查 dev-api.dy.ci 与
@@ -2311,7 +2304,6 @@ namespace Ink_Canvas
 
         #endregion Definations and Loading
 
-
         // 在MainWindow类中添加：
         private void ApplyCurrentEraserShape()
         {
@@ -2416,8 +2408,6 @@ namespace Ink_Canvas
             WindowSettingsHelper.ResumeTopmostMaintenance(this);
         }
 
-
-
         /// <summary>
         /// 根据窗口置顶设置和当前模式设置窗口的Topmost属性
         /// </summary>
@@ -2446,7 +2436,7 @@ namespace Ink_Canvas
                 try
                 {
                     InitializePopupManager();
-                    PerformanceMonitorHelper.StartIfEnabled();
+
                 }
                 catch (Exception ex)
                 {
@@ -2544,7 +2534,6 @@ namespace Ink_Canvas
             InitializeFloatingWindowInterceptor();
             InitializeGlobalHotkeyManager();
 
-
             _ = Dispatcher.BeginInvoke(new Action(() =>
             {
                 ApplyAlwaysOnTop();
@@ -2641,8 +2630,6 @@ namespace Ink_Canvas
         {
             // 500ms 维护计时器会在下一个 tick 重新强制置顶，无需在此重复调用
         }
-
-
 
         #region 全局快捷键管理
         /// <summary>
@@ -2763,7 +2750,6 @@ namespace Ink_Canvas
             }
         }
         #endregion
-
 
         private void ToggleSwitchEnableInkToShape_Toggled(object sender, RoutedEventArgs e)
         {
@@ -2995,8 +2981,6 @@ namespace Ink_Canvas
 
         #region 模式切换相关
 
-
-
         /// <summary>
         /// 检查是否应该显示主窗口（基于PPT模式和PPT放映状态）
         /// </summary>
@@ -3076,7 +3060,6 @@ namespace Ink_Canvas
         #region Theme Toggle
 
         // ComboBoxTheme_SelectionChanged and ComboBoxLanguage_SelectionChanged migrated to AppearancePage
-
 
         /// <summary>
         /// 应用指定主题

@@ -203,7 +203,6 @@ namespace Ink_Canvas
             Exit += App_Exit; // 注册退出事件
         }
 
-
         // 初始化崩溃监听器
         private void InitializeCrashListeners()
         {
@@ -1000,7 +999,6 @@ namespace Ink_Canvas
                 LogHelper.WriteLogToFile("App | 检测到最终应用启动（更新后的应用）");
             }
 
-
             if (_isSplashScreenShown)
             {
                 SetSplashMessage("正在加载配置...");
@@ -1057,7 +1055,6 @@ namespace Ink_Canvas
                     }
                 });
             }
-
 
             // 如果是更新过程、更新模式、最终应用或跳过Mutex检查，跳过Mutex检查
             if (!isUpdateInProgress && !isUpdateMode && !isFinalApp && !skipMutexCheck)
@@ -1833,7 +1830,7 @@ namespace Ink_Canvas
                 // 停止性能监测并保存运行记录
                 try
                 {
-                    PerformanceMonitorHelper.StopAndSave();
+
                 }
                 catch (Exception perfEx)
                 {

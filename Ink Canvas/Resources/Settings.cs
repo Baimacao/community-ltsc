@@ -69,8 +69,6 @@ namespace Ink_Canvas
 
     public class PerformanceSettings
     {
-        [JsonProperty("isMonitoringEnabled")]
-        public bool IsMonitoringEnabled { get; set; } = false;
 
         [JsonProperty("history")]
         public List<PerformanceRunRecord> History { get; set; } = new List<PerformanceRunRecord>();

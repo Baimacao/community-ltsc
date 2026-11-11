@@ -97,13 +97,6 @@
                         </ui:SettingsCard.HeaderIcon>
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Header="{x:Static props:NavStrings.Nav_Performance}" Description="{x:Static props:HomeStrings.Home_PerformanceSettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="PerformancePage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.SpeedHigh}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-                    
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:HomeStrings.Home_MainUI}" />
                     <ui:SettingsCard Header="{x:Static props:HomeStrings.Home_Window}" Description="{x:Static props:HomeStrings.Home_WindowSettings}"

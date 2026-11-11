@@ -91,7 +91,7 @@ namespace Ink_Canvas.Helpers
             {
                 stopwatch.Stop();
                 _performanceMonitor.RecordProcessingTime(stopwatch.Elapsed);
-                PerformanceMonitorHelper.UpdateSmoothingStats(GetDetailedStats());
+
             }
 
             return result;
@@ -149,7 +149,7 @@ namespace Ink_Canvas.Helpers
             {
                 stopwatch.Stop();
                 _performanceMonitor.RecordProcessingTime(stopwatch.Elapsed);
-                PerformanceMonitorHelper.UpdateSmoothingStats(GetDetailedStats());
+
             }
 
             return result;
