@@ -1777,15 +1777,45 @@ namespace Ink_Canvas
                     {
                         isMultiTouchTimerActive = true;
                         var remainingTime = MULTI_TOUCH_DELAY_MS - timeSinceLastTouch;
+                        // LTSC P2：这里原来是一个裸的 Task.Delay().ContinueWith()：
+                        //   · 没有 try/catch，里面 Dispatcher.Invoke 抛了就直接死在线程池上
+                        //   · 没有检查 Dispatcher.HasShutdownStarted，退出阶段 Invoke 必抛
+                        //   · 同步 Invoke 会阻塞线程池线程，高负载连拍时线程池被占满
+                        // 实测：多指书写时崩在 DynamicRenderer 那条
+                        // "调用线程无法访问此对象，因为另一个线程拥有该对象"，
+                        // 时间点正是这个 100ms 定时器该触发的窗口。
+                        //
+                        // 改成 BeginInvoke（异步，不阻塞线程池）+ 三重检查 + 全包 try。
                         Task.Delay((int)remainingTime).ContinueWith(_ =>
                         {
-                            Dispatcher.Invoke(() =>
+                            try
                             {
-                                if (dec.Count > 1 && inkCanvas.EditingMode == InkCanvasEditingMode.Ink)
-                                    inkCanvas.EditingMode = InkCanvasEditingMode.None;
+                                var d = Dispatcher;
+                                if (d == null || d.HasShutdownStarted || d.HasShutdownFinished) return;
+                                d.BeginInvoke(new Action(() =>
+                                {
+                                    try
+                                    {
+                                        if (dec.Count > 1 && inkCanvas.EditingMode == InkCanvasEditingMode.Ink)
+                                            inkCanvas.EditingMode = InkCanvasEditingMode.None;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        System.Diagnostics.Debug.WriteLine($"[P2] 多指定时器 UI 段失败: {ex.Message}");
+                                    }
+                                    finally
+                                    {
+                                        isMultiTouchTimerActive = false;
+                                    }
+                                }));
+                            }
+                            catch (Exception ex)
+                            {
+                                // BegInvoke 本身抛（Dispatcher 已关）：静默降级，不再往上报。
                                 isMultiTouchTimerActive = false;
-                            });
-                        });
+                                System.Diagnostics.Debug.WriteLine($"[P2] 多指定时器投递失败: {ex.Message}");
+                            }
+                        }, TaskScheduler.Default);
                     }
                     return;
                 }
@@ -1944,25 +1974,20 @@ namespace Ink_Canvas
             }
             try { _releasedCaptureCount = inkCanvas.TouchesCaptured?.Count() ?? 0; } catch { _releasedCaptureCount = 0; }
 
-            // LTSC P2 核心修复：原来这里是 ReleaseAllTouchCaptures()，
-            // 一次把「所有」手指的捕获都放掉，但下面只用 dec.Remove 移掉了当前这一根。
-            // 另一根手指从此再也收不到 TouchUp，它的 id 永久留在 dec 里。
-            // dec.Count 涨到 2 以上后：
-            //   · PreviewTouchMove 的 dec.Count > 1 分支直接 return
-            //   · shouldUseTwoFingerGesture 的 dec.Count >= 2 恒成立
-            // 双指手势就此失效。实测日志：dec 峰值 9，「静默释放」50 次。
-            // 修法：只释放当前这一根。
-            try
-            {
-                inkCanvas.ReleaseTouchCapture(e.TouchDevice);
-            }
-            catch (Exception ex)
-            {
-                // 捕获已经不在时 ReleaseTouchCapture 会抛，属正常，退回到全放。
-                InkPerfProbe.TouchUpFallback++;
-                try { inkCanvas.ReleaseAllTouchCaptures(); } catch { }
-                _ = ex;
-            }
+            // LTSC P2 回滚记录（2026-11-11）：
+            // 上一版我把这里改成 ReleaseTouchCapture(e.TouchDevice)，理由是
+            // "只放当前这根，另一根收不到 TouchUp 会残留在 dec 里"。
+            // 实测结果：双指手势从「中=1167」掉到「中=0」，一次都没成功过。
+            //
+            // 原因：WPF 的 manipulation 事件链路依赖多根手指同时被捕获。
+            // 只放一根，另外那根虽然还在捕获集里，但 ManipulationDelta 再也拼不出
+            // 完整的 Manipulators 集合，shouldUseTwoFingerGesture 的
+            // dec.Count >= 2 && hasMultipleManipulators 后半截永远不成立。
+            //
+            // 结论：这里必须保持 ReleaseAllTouchCaptures()。
+            // dec 残留改用 PruneStaleTouchIds() 从另一头收拾——那是纯清理，
+            // 不碰捕获机制，不会把手势链打断。
+            inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
 
