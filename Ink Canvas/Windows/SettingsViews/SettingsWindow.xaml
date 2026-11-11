@@ -444,35 +444,26 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItemHeader Content="{x:Static props:NavStrings.Nav_PluginSettings}"/>
+                <ui:NavigationViewItemHeader Content="{x:Static props:NavStrings.Nav_AboutInkCanvas}"/>
+
                 <ui:NavigationViewItem
-                    x:Name="PluginItem"
-                    Content="{x:Static props:NavStrings.Nav_Plugins}"
-                    SelectsOnInvoked="False"
-                    ToolTipService.ToolTip="{x:Static props:NavStrings.Settings_Plugins}">
+                    x:Name="FriendlyLinksPageItem"
+                    Content="{x:Static props:NavStrings.Nav_FriendlyLinks}"
+                    Tag="FriendlyLinksPage"
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_FriendlyLinks}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Puzzle}"/>
+                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Link}"/>
                     </ui:NavigationViewItem.Icon>
-                    <ui:NavigationViewItem.MenuItems>
-                        <ui:NavigationViewItem
-                            x:Name="PluginInstalledItem"
-                            Content="{x:Static props:PluginStrings.Market_TabInstalled}"
-                            Tag="PluginPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Settings_Plugins}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.CheckMark}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
-                            x:Name="PluginMarketplaceItem"
-                            Content="{x:Static props:PluginStrings.Market_Title}"
-                            Tag="PluginMarketplacePage"
-                            ToolTipService.ToolTip="{x:Static props:PluginStrings.Market_Title}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Globe}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                    </ui:NavigationViewItem.MenuItems>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem
+                    x:Name="AboutPageItem"
+                    Content="{x:Static props:NavStrings.Nav_AboutInkCanvas}"
+                    Tag="AboutPage"
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_AboutInkCanvas}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Info}"/>
+                    </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
 
