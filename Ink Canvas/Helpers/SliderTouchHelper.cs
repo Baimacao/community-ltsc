@@ -41,6 +41,13 @@ namespace Ink_Canvas.Helpers
             if (GetTouchSupportInitialized(slider)) return;
             SetTouchSupportInitialized(slider, true);
 
+            // 自己这层要开 manipulation，才能持续拿到触摸流做拖拽；
+            // 但**父级 ScrollViewer 必须关**——否则触摸会被当成 panning 先吃掉，
+            // Slider 收不到连续的 TouchMove，表现就是「拖不动，只能点一下跳一格」。
+            // 这条经验仓库里已有先例：TouchAwareDragDropHelper.GripHandle_PreviewStylusDown
+            // 就是为同一个原因去禁父级 ScrollViewer 的 IsManipulationEnabled。
+            DisableParentScrollViewerManipulation(slider);
+
             slider.IsManipulationEnabled = true;
 
             slider.TouchDown += (s, e) => HandleSliderTouch(s, e, slider);
@@ -51,6 +58,47 @@ namespace Ink_Canvas.Helpers
             slider.StylusMove += (s, e) => HandleSliderStylus(s, e, slider);
             slider.StylusUp += (s, e) => HandleSliderStylusEnd(s, e, slider);
         }
+
+        /// <summary>
+        /// 禁用 Slider 所有父级 ScrollViewer 的 IsManipulationEnabled。
+        ///
+        /// 原因：ScrollViewer 一旦启用 manipulation，触摸会先被判成 panning，
+        /// Slider 只能拿到零散的 TouchDown，拿不到后续 TouchMove —— 于是「拖不动」。
+        /// 只关父级、不关自己：自己那层要留着才能持续收触摸流。
+        ///
+        /// 用附加属性记原值，避免影响别处对这些 ScrollViewer 的假设。
+        /// </summary>
+        private static void DisableParentScrollViewerManipulation(DependencyObject element)
+        {
+            try
+            {
+                var parent = VisualTreeHelper.GetParent(element);
+                while (parent != null)
+                {
+                    if (parent is ScrollViewer sv)
+                    {
+                        if (sv.GetValue(OriginalScrollManipulationProperty) == null)
+                        {
+                            sv.SetValue(OriginalScrollManipulationProperty, sv.IsManipulationEnabled);
+                            sv.IsManipulationEnabled = false;
+                        }
+                    }
+                    parent = VisualTreeHelper.GetParent(parent);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        /// <summary>记 ScrollViewer 原本的 IsManipulationEnabled，便于将来需要时还原。</summary>
+        private static readonly DependencyProperty OriginalScrollManipulationProperty =
+            DependencyProperty.RegisterAttached(
+                "OriginalScrollManipulation",
+                typeof(bool?),
+                typeof(SliderTouchHelper),
+                new PropertyMetadata(null));
 
         /// <summary>
         /// 为指定逻辑树中的所有 Slider 控件添加触摸支持
