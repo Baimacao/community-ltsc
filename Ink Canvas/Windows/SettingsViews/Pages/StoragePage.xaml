@@ -7,7 +7,7 @@
       xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
       xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
-      mc:Ignorable="d"
+      mc:Ignorable="d" xmlns:controls="clr-namespace:Ink_Canvas.Controls;assembly=InkCanvas.Controls"
       Title="{x:Static props:StorageStrings.Storage_Title}">
 
     <ScrollViewer PanningMode="VerticalFirst">
@@ -225,6 +225,55 @@
                     </ui:SettingsCard.HeaderIcon>
                     <TextBlock x:Name="OtherSizeText" Text="—" FontWeight="SemiBold" VerticalAlignment="Center"/>
                 </ui:SettingsCard>
+
+
+                    <!-- LTSC：备份恢复并入本页（原 BackupPage） -->
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:StorageStrings.Backup_Title}" />
+
+
+                    <controls:LabeledSettingsCard x:Name="ToggleSwitchIsAutoBackupBeforeUpdate"
+                        Header="{x:Static props:StorageStrings.Backup_AutoBeforeUpdate}"
+                        IsOn="True"
+                        Toggled="ToggleSwitchIsAutoBackupBeforeUpdate_Toggled"/>
+
+                    <ui:SettingsExpander x:Name="ExpanderAutoBackup"
+                                         Header="{x:Static props:StorageStrings.Backup_AutoPeriodic}"
+                                         IsExpanded="{Binding IsOn, ElementName=ToggleSwitchIsAutoBackupEnabled, Mode=OneWay}">
+                        <ui:ToggleSwitch x:Name="ToggleSwitchIsAutoBackupEnabled"
+                                         Toggled="ToggleSwitchIsAutoBackupEnabled_Toggled"/>
+                        <ui:SettingsExpander.Items>
+                            <ui:SettingsCard Header="{x:Static props:StorageStrings.Backup_Interval}"
+                                             Description="{x:Static props:StorageStrings.Backup_Interval_DefaultHint}">
+                                <ComboBox x:Name="ComboBoxAutoBackupInterval"
+                                          SelectionChanged="ComboBoxAutoBackupInterval_SelectionChanged">
+                                    <ComboBoxItem Content="{x:Static props:StorageStrings.Backup_Interval_1Day}" Tag="1" />
+                                    <ComboBoxItem Content="{x:Static props:StorageStrings.Backup_Interval_3Days}" Tag="3" />
+                                    <ComboBoxItem Content="{x:Static props:StorageStrings.Backup_Interval_7Days}" Tag="7" IsSelected="True" />
+                                    <ComboBoxItem Content="{x:Static props:StorageStrings.Backup_Interval_14Days}" Tag="14" />
+                                    <ComboBoxItem Content="{x:Static props:StorageStrings.Backup_Interval_30Days}" Tag="30" />
+                                </ComboBox>
+                            </ui:SettingsCard>
+                        </ui:SettingsExpander.Items>
+                    </ui:SettingsExpander>
+
+                    <ui:SettingsExpander Header="{x:Static props:StorageStrings.Backup_Manual}"
+                                         IsExpanded="True">
+                        <ui:SettingsExpander.Items>
+                            <ui:SettingsCard Header="{x:Static props:StorageStrings.Backup_Manual}"
+                                             IsClickEnabled="True" Click="BtnManualBackup_Click">
+                                <ui:SettingsCard.HeaderIcon>
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Sync}" />
+                                </ui:SettingsCard.HeaderIcon>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="{x:Static props:StorageStrings.Backup_Restore}"
+                                             IsClickEnabled="True" Click="BtnRestoreBackup_Click">
+                                <ui:SettingsCard.HeaderIcon>
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.History}" />
+                                </ui:SettingsCard.HeaderIcon>
+                            </ui:SettingsCard>
+                        </ui:SettingsExpander.Items>
+                    </ui:SettingsExpander>
 
                 <Rectangle Height="48" />
 

@@ -199,7 +199,7 @@
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Header="{x:Static props:StorageStrings.Backup_Title}" Description="{x:Static props:HomeStrings.Home_BackupSettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="BackupPage">
+                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="StoragePage">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Sync}" />
                         </ui:SettingsCard.HeaderIcon>

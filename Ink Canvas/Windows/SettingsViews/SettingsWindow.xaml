@@ -319,15 +319,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.HardDrive}"/>
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
-                            x:Name="BackupPageItem"
-                            Content="{x:Static props:StorageStrings.Backup_Title}"
-                            Tag="BackupPage"
-                            ToolTipService.ToolTip="{x:Static props:StorageStrings.Backup_Title}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Sync}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
