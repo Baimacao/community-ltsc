@@ -70,7 +70,7 @@ namespace Ink_Canvas
         {
             if (string.IsNullOrEmpty(notice)) return;
 
-            if (IsNotificationSuppressedByDictationDoNotDisturb()) return;
+            if (IsNotificationSuppressedByPresentationMode()) return;
 
             ShowLegacyNotification(notice, Math.Max(1, notificationShowTime / 1000));
         }
@@ -82,22 +82,17 @@ namespace Ink_Canvas
         {
             if (Settings?.PowerPointSettings?.ShowPPTModePrompt != true) return;
 
-            if (IsNotificationSuppressedByDictationDoNotDisturb()) return;
-
             ShowLegacyNotification(PPTStrings.PPT_ModePrompt_Title, 4);
         }
 
-        private bool IsNotificationSuppressedByDictationDoNotDisturb()
+        /// <summary>
+        /// LTSC P7c：免打扰设置页已移除。原来那套「讲课勿扰」三开关（总开关 / PPT / 白板）
+        /// 收敛成一个固定行为——PPT 放映时静默，避免讲课时弹气泡遮挡板书。
+        /// 其余场景（含白板）通知照常显示。
+        /// </summary>
+        private bool IsNotificationSuppressedByPresentationMode()
         {
-            var notification = Settings?.Notification;
-            if (notification?.IsDictationDoNotDisturbEnabled != true) return false;
-
-            if (notification.IsDictationDoNotDisturbInPPTEnabled && IsInPPTPresentationMode)
-            {
-                return true;
-            }
-
-            return notification.IsDictationDoNotDisturbInWhiteboardEnabled && currentMode == 1;
+            return IsInPPTPresentationMode;
         }
 
         private void ShowLegacyNotification(string notice, int displaySeconds)

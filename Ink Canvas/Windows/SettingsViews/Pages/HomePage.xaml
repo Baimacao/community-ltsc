@@ -174,15 +174,6 @@
                     </ui:SettingsCard>
 
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:NotificationStrings.DefaultTitle}" />
-                    <ui:SettingsCard Header="{x:Static props:NotificationStrings.DefaultTitle}" Description="{x:Static props:NotificationStrings.NavTooltip}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="NotificationPage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Message}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:NotificationStrings.Type_Other}" />
                     <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Experimental}" Description="{x:Static props:AdvancedStrings.Experimental}"
                         IsClickEnabled="True" Click="QuickNavCard_Click" Tag="AdvancedPage">

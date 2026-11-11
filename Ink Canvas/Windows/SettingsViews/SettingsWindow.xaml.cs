@@ -32,7 +32,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "BoardAppearancePage", typeof(BoardAppearancePage) },
             { "BoardMenuPage", typeof(BoardMenuPage) },
             { "WhiteboardTipsPage", typeof(WhiteboardTipsPage) },
-            { "NotificationPage", typeof(NotificationPage) },
             { "AdvancedPage", typeof(AdvancedPage) },
             { "StoragePage", typeof(StoragePage) },
             { "AutomationWorkflowPage", typeof(AutomationWorkflowPage) },

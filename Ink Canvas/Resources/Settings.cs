@@ -151,15 +151,6 @@ namespace Ink_Canvas
 
         [JsonProperty("placement")]
         public string Placement { get; set; } = "TopCenter";
-
-        [JsonProperty("isDictationDoNotDisturbEnabled")]
-        public bool IsDictationDoNotDisturbEnabled { get; set; } = false;
-
-        [JsonProperty("isDictationDoNotDisturbInPPTEnabled")]
-        public bool IsDictationDoNotDisturbInPPTEnabled { get; set; } = true;
-
-        [JsonProperty("isDictationDoNotDisturbInWhiteboardEnabled")]
-        public bool IsDictationDoNotDisturbInWhiteboardEnabled { get; set; } = true;
     }
 
     public class Security
