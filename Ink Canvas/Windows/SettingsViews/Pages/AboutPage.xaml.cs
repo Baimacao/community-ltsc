@@ -128,47 +128,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             try
             {
-                string deviceId = DeviceIdentifier.GetDeviceId();
-                DeviceIdTextBlock.Text = deviceId;
-
-                var usageFrequency = DeviceIdentifier.GetUsageFrequency();
-                string frequencyText;
-                switch (usageFrequency)
-                {
-                    case DeviceIdentifier.UsageFrequency.High:
-                        frequencyText = AboutStrings.UsageFrequency_High;
-                        break;
-                    case DeviceIdentifier.UsageFrequency.Medium:
-                        frequencyText = AboutStrings.UsageFrequency_Medium;
-                        break;
-                    case DeviceIdentifier.UsageFrequency.Low:
-                        frequencyText = AboutStrings.UsageFrequency_Low;
-                        break;
-                    default:
-                        frequencyText = AboutStrings.Unknown;
-                        break;
-                }
-                UsageFrequencyTextBlock.Text = frequencyText;
-
-                var updatePriority = DeviceIdentifier.GetUpdatePriority();
-                string priorityText;
-                switch (updatePriority)
-                {
-                    case DeviceIdentifier.UpdatePriority.High:
-                        priorityText = AboutStrings.UpdatePriority_High;
-                        break;
-                    case DeviceIdentifier.UpdatePriority.Medium:
-                        priorityText = AboutStrings.UpdatePriority_Medium;
-                        break;
-                    case DeviceIdentifier.UpdatePriority.Low:
-                        priorityText = AboutStrings.UpdatePriority_Low;
-                        break;
-                    default:
-                        priorityText = AboutStrings.Unknown;
-                        break;
-                }
-                UpdatePriorityTextBlock.Text = priorityText;
-
                 var (launchCount, totalSeconds, avgSessionSeconds, _) = DeviceIdentifier.GetUsageStats();
                 _savedTotalSeconds = totalSeconds;
                 _sessionStartTime = DateTime.Now;
@@ -178,9 +137,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"刷新设备信息失败: {ex.Message}", LogHelper.LogType.Error);
-                DeviceIdTextBlock.Text = AboutStrings.DeviceInfo_Failed;
-                UsageFrequencyTextBlock.Text = AboutStrings.DeviceInfo_Failed;
-                UpdatePriorityTextBlock.Text = AboutStrings.DeviceInfo_Failed;
                 LaunchCountTextBlock.Text = AboutStrings.DeviceInfo_Failed;
                 TotalUsageTextBlock.Text = AboutStrings.DeviceInfo_Failed;
             }

@@ -70,15 +70,6 @@
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Devices}" />
                         </ui:SettingsExpander.HeaderIcon>
                         <ui:SettingsExpander.Items>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.DeviceIdLabel}">
-                                <TextBlock x:Name="DeviceIdTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
-                            </ui:SettingsCard>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.UsageFrequencyLabel}">
-                                <TextBlock x:Name="UsageFrequencyTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
-                            </ui:SettingsCard>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.UpdatePriorityLabel}">
-                                <TextBlock x:Name="UpdatePriorityTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
-                            </ui:SettingsCard>
                             <ui:SettingsCard Header="{x:Static props:AboutStrings.LaunchCountLabel}">
                                 <TextBlock x:Name="LaunchCountTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
                             </ui:SettingsCard>
