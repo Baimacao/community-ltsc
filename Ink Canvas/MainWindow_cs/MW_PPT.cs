@@ -269,6 +269,25 @@ namespace Ink_Canvas
                 //
                 // PPTLinkMode 枚举保留但不再分支：老配置反序列化得到任何值都走同一条路。
                 // 这是刻意的——三套实现已经证明没有一套比另一套更强。
+                //
+                // LTSC P1-10：老配置文件里 PPTLinkMode 可能是 1(Rot) 或 2(Agent)。
+                // 读进来忽略它、不报错，但要留一条日志——否则用户看到设置里
+                // 「架构」选项没了，会以为是配置丢了。
+                try
+                {
+                    var legacyMode = Settings.PowerPointSettings.PPTLinkMode;
+                    if (legacyMode != PPTLinkMode.Com)
+                    {
+                        LogHelper.WriteLogToFile(
+                            $"老配置里的 PPTLinkMode={legacyMode} 已废弃，统一走 PptBridge(ROT)，不影响使用",
+                            LogHelper.LogType.Event);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"检查旧 PPTLinkMode 失败: {ex.Message}", LogHelper.LogType.Warning);
+                }
+
                 _pptManager = new PptBridge();
 
                 _pptManager.IsSupportWPS = Settings.PowerPointSettings.IsSupportWPS;
@@ -2055,6 +2074,11 @@ namespace Ink_Canvas
         /// 1. 停止PowerPoint进程守护
         /// 无论开关状态如何变化，都会保存设置到文件
         /// </remarks>
+        // LTSC P1-8：开关防抖。老师会连点（历史上有一次手动快速开关 27 次），
+        // 每一下都 Start/Stop 监控会把 PptBridge 的轮询线程反复建销。
+        // 用一个短延时把连续变化合并成最后一次，只在停下之后真正执行。
+        private DispatcherTimer _pptEnhancementDebounceTimer;
+
         private void ToggleSwitchPowerPointEnhancement_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -2063,27 +2087,31 @@ namespace Ink_Canvas
             if (toggle != null)
                 Settings.PowerPointSettings.EnablePowerPointEnhancement = toggle.IsOn;
 
-            if (Settings.PowerPointSettings.EnablePowerPointEnhancement)
-            {
-                Settings.PowerPointSettings.IsSupportWPS = false;
-
-                if (_pptManager != null)
-                {
-                    _pptManager.IsSupportWPS = false;
-                }
-            }
-
+            // LTSC P1-8：不再在这里强改 IsSupportWPS。
+            // 那是旧「架构二选一」时代留下的——当时 COM 和 WPS 两条路互斥。
+            // 现在统一走 PptBridge(ROT)，两个开关各管各的，改一个不该动另一个。
             SaveSettingsToFile();
 
-            if (Settings.PowerPointSettings.EnablePowerPointEnhancement)
+            _pptEnhancementDebounceTimer?.Stop();
+            _pptEnhancementDebounceTimer = new DispatcherTimer
             {
-                StartPowerPointProcessMonitoring();
-            }
-            else
+                Interval = TimeSpan.FromMilliseconds(PptEnhancementDebounceMs)
+            };
+            _pptEnhancementDebounceTimer.Tick += (_, __) =>
             {
-                StopPowerPointProcessMonitoring();
-            }
+                _pptEnhancementDebounceTimer?.Stop();
+                _pptEnhancementDebounceTimer = null;
+
+                if (Settings.PowerPointSettings.EnablePowerPointEnhancement)
+                    StartPowerPointProcessMonitoring();
+                else
+                    StopPowerPointProcessMonitoring();
+            };
+            _pptEnhancementDebounceTimer.Start();
         }
+
+        /// <summary>开关防抖窗口。足够合并连续点击，又不至于让人感觉按下没反应。</summary>
+        private const int PptEnhancementDebounceMs = 400;
 
         /// <summary>
         /// 处理WPS支持开关的切换事件

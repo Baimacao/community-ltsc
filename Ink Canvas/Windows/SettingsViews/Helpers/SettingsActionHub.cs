@@ -503,36 +503,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
                 mw.PPTManager.SkipAnimationsWhenNavigating = isOn;
         }
 
-        public static void OnPPTLinkModeChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw == null) return;
-            var ppt = SettingsManager.Settings.PowerPointSettings;
-            try
-            {
-                mw.StopPPTMonitoring();
-                if (ppt.PPTLinkMode != PPTLinkMode.Com && ppt.EnablePowerPointEnhancement)
-                {
-                    ppt.EnablePowerPointEnhancement = false;
-                    mw.StopPowerPointProcessMonitoring();
-                    SettingsManager.SaveSettingsToFile();
-                }
-                if (ppt.PPTLinkMode != PPTLinkMode.Com && ppt.IsSupportWPS)
-                {
-                    ppt.IsSupportWPS = false;
-                    SettingsManager.SaveSettingsToFile();
-                }
-
-                // LTSC D-02: Agent 架构已移除，不再注册 VSTO 插件。
-                // 若老配置里仍是 Agent，InitializePPTManagers 内部会落到 COM 分支。
-
-                mw.InitializePPTManagers();
-                if (ppt.PowerPointSupport) mw.StartPPTMonitoring();
-                LogHelper.WriteLogToFile($"已切换 PPT 联动架构为 {ppt.PPTLinkMode}", LogHelper.LogType.Event);
-            }
-            catch (Exception ex) { LogHelper.WriteLogToFile($"切换 PPT 联动架构失败: {ex}", LogHelper.LogType.Error); }
-        }
-
         public static void OnSupportWPSChanged()
         {
             var mw = GetMainWindow();
