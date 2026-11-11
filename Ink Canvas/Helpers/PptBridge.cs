@@ -925,14 +925,27 @@ namespace Ink_Canvas.Helpers
 
         [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr h);
         [DllImport("user32.dll")] static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-        const byte VkEscape = 0x1B;
+        /// <summary>虚拟键码：VK_CONTROL。</summary>
+        const byte VkControl = 0x11;
+        /// <summary>虚拟键码：S。</summary>
+        const byte VkS = 0x53;
+        /// <summary>keybd_event 的 KEYEVENTF_KEYUP。</summary>
+        const uint KeyUp = 0x0002;
 
-        /// <summary>给当前前台窗口发一次 ESC（PowerPoint 放映态下用它调出原版导航）。</summary>
-        static void SendEsc(IntPtr hwnd)
+        /// <summary>
+        /// 给当前前台窗口发一次 Ctrl+S。
+        /// 微软官方文档：放映态下 Ctrl+S = View the "All Slides" dialog box。
+        /// 注意不是 ESC——ESC 在放映态是"退出放映"。
+        /// </summary>
+        static void SendCtrlS()
         {
-            keybd_event(VkEscape, 0, 0, UIntPtr.Zero);
-            System.Threading.Thread.Sleep(30);
-            keybd_event(VkEscape, 0, 2, UIntPtr.Zero);
+            keybd_event(VkControl, 0, 0, UIntPtr.Zero);
+            System.Threading.Thread.Sleep(20);
+            keybd_event(VkS, 0, 0, UIntPtr.Zero);
+            System.Threading.Thread.Sleep(20);
+            keybd_event(VkS, 0, KeyUp, UIntPtr.Zero);
+            System.Threading.Thread.Sleep(20);
+            keybd_event(VkControl, 0, KeyUp, UIntPtr.Zero);
         }
 
         /// <summary>
@@ -1201,13 +1214,19 @@ namespace Ink_Canvas.Helpers
                 }
 
                 // PowerPoint 放映态下"显示幻灯片导航"没有公开 COM 入口，
-                // 可靠做法是把焦点给放映窗口，再发它的导航快捷键。
-                // 注意：这里发的是 PowerPoint 自己的按键，不是我们自己的 UI。
+                // 只能用它的键盘快捷键。
+                //
+                // 微软官方文档《Use keyboard shortcuts to deliver PowerPoint presentations》：
+                //   View the "All Slides" dialog box  →  Ctrl+S
+                // https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-deliver-powerpoint-presentations
+                //
+                // 上一版这里发的是 ESC —— 那是错的：放映态下 ESC = 退出放映，
+                // 结果点页码把放映退掉了。已改回官方说法。
                 SetForegroundWindow(hwnd);
                 System.Threading.Thread.Sleep(80);
-                SendEsc(hwnd);
+                SendCtrlS();
                 System.Threading.Thread.Sleep(150);
-                LogHelper.WriteLogToFile("已请求 PowerPoint 原版导航", LogHelper.LogType.Event);
+                LogHelper.WriteLogToFile("已请求 PowerPoint 原版导航（Ctrl+S）", LogHelper.LogType.Event);
                 return true;
             }
             catch (Exception ex)
