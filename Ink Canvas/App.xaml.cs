@@ -1,6 +1,5 @@
 using H.NotifyIcon;
 using Ink_Canvas.Helpers;
-using Ink_Canvas.Plugins;
 using Ink_Canvas.Properties;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Win32;
@@ -202,42 +201,6 @@ namespace Ink_Canvas
                 StartWatchdogIfNeeded();
             }
             Exit += App_Exit; // 注册退出事件
-        }
-
-        /// <summary>
-        /// 统一注册所有插件服务到 PluginManager。
-        /// </summary>
-        private void RegisterPluginServices(MainWindow mainWindow)
-        {
-            var host = Plugins.PluginManager.Instance;
-            var services = new (Type iface, object impl)[]
-            {
-                (typeof(Plugins.IAppRestartService),      new Plugins.AppRestartService()),
-                (typeof(Plugins.IWindowService),          new Plugins.WindowService(mainWindow)),
-                (typeof(Plugins.IPowerPointService),      new Plugins.PowerPointService(mainWindow)),
-                (typeof(Plugins.IEventService),           new Plugins.EventService(mainWindow)),
-                (typeof(Plugins.ISettingsService),        new Plugins.SettingsService()),
-                (typeof(Plugins.IHotkeyService),          new Plugins.HotkeyService(mainWindow.GlobalHotkeyManagerInstance)),
-                (typeof(Plugins.INotificationService),    new Plugins.NotificationService(mainWindow)),
-                (typeof(Plugins.IFileAssociationService),      new Plugins.FileAssociationService()),
-                // LTSC L-5：原来是逐字重复的两行 IWindowOverviewService 注册。
-                // 第一个实例被字典覆盖，但它已经订阅了长寿命 WindowOverviewModel 的
-                // WindowsUpdated 事件，1Hz 回调永不停、Dispose 永不调用。
-                // 只保留一份。
-                (typeof(Plugins.IWindowOverviewService),  new Plugins.WindowOverviewService(mainWindow.WindowOverviewModel)),
-            };
-
-            foreach (var (iface, impl) in services)
-            {
-                try
-                {
-                    host.RegisterService(iface, impl);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"Failed to register plugin service {iface.Name}: {ex.Message}", LogHelper.LogType.Error);
-                }
-            }
         }
 
 
@@ -1230,12 +1193,6 @@ namespace Ink_Canvas
             var mainWindow = new MainWindow();
             MainWindow = mainWindow;
 
-            // 注册插件服务。快速启动模式下将服务注册延迟到首帧显示之后，避免插件相关对象阻塞主窗口创建。
-            if (!IsFastStartupEnabled)
-            {
-                RegisterPluginServices(mainWindow);
-            }
-
             // 主窗口加载完成后关闭启动画面
             mainWindow.Loaded += (s, args) =>
             {
@@ -1392,7 +1349,6 @@ namespace Ink_Canvas
                 await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ContextIdle);
                 await Task.Delay(1000);
 
-                RegisterPluginServices(mainWindow);
                 WindowTopmostManager.Initialize(mainWindow, skipScan: true);
                 LogHelper.WriteLogToFile("App | 快速启动模式的应用级延迟任务已开始");
             }
@@ -1462,27 +1418,6 @@ namespace Ink_Canvas
                 catch (Exception ex)
                 {
                     LogHelper.WriteLogToFile($"初始化上传帮助类时出错: {ex.Message}", LogHelper.LogType.Error);
-                }
-
-                try
-                {
-                    LogHelper.WriteLogToFile("开始加载插件");
-                    PluginManager.Instance.InitializeAdvancedServices(PluginMarketService.Instance);
-                    await PluginManager.Instance.LoadAllAsync();
-                    try
-                    {
-                        PluginManager.Instance.StartIpc();
-                        LogHelper.WriteLogToFile("插件 IPC 总线已启动");
-                    }
-                    catch (Exception ipcEx)
-                    {
-                        LogHelper.WriteLogToFile($"启动插件 IPC 总线失败: {ipcEx.Message}", LogHelper.LogType.Warning);
-                    }
-                    LogHelper.WriteLogToFile(string.Format("插件加载完成，共加载 {0} 个插件", PluginManager.Instance.Plugins.Count));
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile(string.Format("加载插件时出错: {0}", ex.Message), LogHelper.LogType.Error);
                 }
 
                 try
@@ -1897,18 +1832,6 @@ namespace Ink_Canvas
                 }
             }
             catch { }
-
-            // 卸载所有插件
-            try
-            {
-                LogHelper.WriteLogToFile("正在卸载插件...");
-                PluginManager.Instance.UnloadAll();
-                LogHelper.WriteLogToFile("插件卸载完成");
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"卸载插件时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
 
             // 仅在软件内主动退出时关闭看门狗，并写入退出信号
             try

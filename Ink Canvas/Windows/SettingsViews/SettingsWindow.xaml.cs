@@ -50,13 +50,9 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "FriendlyLinksPage", typeof(FriendlyLinksPage) },
             { "AboutPage", typeof(AboutPage) },
             { "Settings", typeof(SettingsPage) },
-            { "PluginPage", typeof(PluginPage) },
-            { "PluginSettingsPage", typeof(PluginSettingsPage) },
-            { "PluginMarketplacePage", typeof(PluginMarketplacePage) },
             { "PPTPageFlipPreviewPage", typeof(PPTPageFlipPreviewPage) }
         };
         private readonly Dictionary<string, object> _pages = new Dictionary<string, object>();
-        private readonly Dictionary<string, Ink_Canvas.Plugins.PluginInfo> _pluginPages = new Dictionary<string, Ink_Canvas.Plugins.PluginInfo>();
 
         // 保存窗口原始位置和大小
         private double _originalLeft;
@@ -104,7 +100,6 @@ namespace Ink_Canvas.Windows.SettingsViews
 
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        LoadPluginSettingsPages();
                         UpdateUpdateBadgeVisibility();
                         // 绑定设置窗口中的 ToggleSwitch 本地化文本
                         Ink_Canvas.Helpers.LocalizationHelper.BindToggleSwitchesInWindow(this);
@@ -315,19 +310,12 @@ namespace Ink_Canvas.Windows.SettingsViews
                 string tag = selectedItem.Tag as string;
                 if (!string.IsNullOrEmpty(tag) && _pageTypes.ContainsKey(tag))
                 {
-                    Ink_Canvas.Plugins.PluginInfo pluginInfo = null;
-                    _pluginPages.TryGetValue(tag, out pluginInfo);
-
                     object cachedPage = null;
                     _pages.TryGetValue(tag, out cachedPage);
 
                     if (cachedPage == null || rootFrame.Content != cachedPage)
                     {
-                        NavigateToPage(tag, pluginInfo);
-                    }
-                    else if (cachedPage is PluginSettingsPage pluginSettingsPage && pluginInfo != null)
-                    {
-                        pluginSettingsPage.CurrentPlugin = pluginInfo;
+                        NavigateToPage(tag);
                     }
                     NavigationViewControl.Header = selectedItem.Content;
 
@@ -335,7 +323,7 @@ namespace Ink_Canvas.Windows.SettingsViews
             }
         }
 
-        public void NavigateToPage(string pageTag, Ink_Canvas.Plugins.PluginInfo pluginInfo = null)
+        public void NavigateToPage(string pageTag)
         {
             if (!_pageTypes.TryGetValue(pageTag, out Type pageType))
             {
@@ -356,12 +344,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                     cachedPage = Activator.CreateInstance(pageType);
                     _pages.Add(pageTag, cachedPage);
                 }
-
-                if (cachedPage is PluginSettingsPage pluginSettingsPage && pluginInfo != null)
-                {
-                    pluginSettingsPage.CurrentPlugin = pluginInfo;
-                }
-
 
 
                 rootFrame.NavigationUIVisibility = NavigationUIVisibility.Hidden;
@@ -563,7 +545,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             {
                 var tag = kv.Key;
                 if (tag == "Settings") continue;
-                if (kv.Value == typeof(PluginSettingsPage)) continue;
 
                 try
                 {
@@ -584,17 +565,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(string.Format(NavStrings.Nav_IndexBuildFailed, tag, ex.Message));
-                }
-            }
-
-            foreach (var kv in _pluginPages)
-            {
-                var pageTag = kv.Key;
-                var info = kv.Value;
-                var name = info?.Name;
-                if (!string.IsNullOrWhiteSpace(name))
-                {
-                    _searchIndex.Add(new SearchEntry { Text = string.Format(NavStrings.Nav_PluginSettingsFormat, name), PageTag = pageTag });
                 }
             }
 
@@ -737,43 +707,6 @@ namespace Ink_Canvas.Windows.SettingsViews
             return items;
         }
 
-        private void LoadPluginSettingsPages()
-        {
-            try
-            {
-                var pluginManager = Ink_Canvas.Plugins.PluginManager.Instance;
-                var plugins = pluginManager.Plugins;
-
-                foreach (var plugin in plugins)
-                {
-                    var settingsView = plugin.Instance.GetSettingsView();
-                    if (settingsView != null)
-                    {
-                        var pageTag = string.Format("PluginSettings_{0}", plugin.Id);
-
-                        _pageTypes[pageTag] = typeof(PluginSettingsPage);
-                        _pluginPages[pageTag] = plugin;
-
-                        var navItem = new NavigationViewItem
-                        {
-                            Content = string.Format(NavStrings.Nav_PluginSettingsFormat, plugin.Name),
-                            Tag = pageTag
-                        };
-
-                        navItem.Icon = new FontIcon
-                        {
-                            Glyph = "\uE713"
-                        };
-
-                        NavigationViewControl.MenuItems.Add(navItem);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(string.Format(NavStrings.Nav_LoadPluginSettingsFailed, ex.Message));
-            }
-        }
         #endregion
 
         public NavigationView GetNavigationView()
@@ -794,8 +727,6 @@ namespace Ink_Canvas.Windows.SettingsViews
                     if (_pages.ContainsKey(tag))
                         continue;
                     if (!_pageTypes.TryGetValue(tag, out var type))
-                        continue;
-                    if (type == typeof(PluginSettingsPage))
                         continue;
 
                     try

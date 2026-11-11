@@ -127,7 +127,6 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\InkCanvas.PluginSdk\InkCanvas.PluginSdk.csproj" />
     <ProjectReference Include="..\InkCanvas.Controls\InkCanvas.Controls.csproj" />
     <ProjectReference Include="..\InkCanvas.PPTAgent.Contracts\InkCanvas.PPTAgent.Contracts.csproj" />
     <ProjectReference Include="..\InkCanvas.IACoreHelper\InkCanvas.IACoreHelper.csproj">
