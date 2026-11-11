@@ -260,15 +260,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/>
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
-                            x:Name="InkRecognitionPageItem"
-                            Content="{x:Static props:CanvasStrings.InkRecog_Title}"
-                            Tag="InkRecognitionPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_InkRecognition_Tooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Draw}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 

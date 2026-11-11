@@ -158,7 +158,7 @@
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Header="{x:Static props:CanvasStrings.InkRecog_Title}" Description="{x:Static props:HomeStrings.Home_InkRecognitionSettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="InkRecognitionPage">
+                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="CanvasPage">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Draw}" />
                         </ui:SettingsCard.HeaderIcon>
