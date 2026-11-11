@@ -183,10 +183,6 @@ namespace Ink_Canvas.Windows
             settings.PowerPointSettings.PowerPointSupport = true;
             settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
             settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
-            settings.PowerPointSettings.EnablePPTTimeCapsule = true;
-            settings.PowerPointSettings.PPTTimeCapsulePosition = 1;
-            settings.PowerPointSettings.PPTTimeCapsuleOpacity = 1.0;
-            settings.PowerPointSettings.PPTTimeCapsuleScale = 1.0;
             // LTSC D-02: Agent 架构已移除，预设改用 COM。
             settings.PowerPointSettings.PPTLinkMode = PPTLinkMode.Com;
             settings.PowerPointSettings.ShowPPTButton = true;
@@ -258,7 +254,6 @@ namespace Ink_Canvas.Windows
             settings.PowerPointSettings.PowerPointSupport = true;
             settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
             settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
-            settings.PowerPointSettings.EnablePPTTimeCapsule = false;
 
             // 自动化
             settings.Automation.IsAutoFoldInPPTSlideShow = false;

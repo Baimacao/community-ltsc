@@ -45,9 +45,6 @@ namespace Ink_Canvas
         [JsonProperty("dlass")]
         public DlassSettings Dlass { get; set; } = new DlassSettings();
 
-        [JsonProperty("upload")]
-        public UploadSettings Upload { get; set; } = new UploadSettings();
-
         [JsonProperty("security")]
         public Security Security { get; set; } = new Security();
 
@@ -144,18 +141,6 @@ namespace Ink_Canvas
 
     public class NotificationSettings
     {
-        [JsonProperty("isAnnouncementEnabled")]
-        public bool IsAnnouncementEnabled { get; set; } = true;
-
-        [JsonProperty("isDynamicNotificationEnabled")]
-        public bool IsDynamicNotificationEnabled { get; set; } = true;
-
-        [JsonProperty("isWindowsToastEnabled")]
-        public bool IsWindowsToastEnabled { get; set; } = true;
-
-        [JsonProperty("isForcePopupEnabled")]
-        public bool IsForcePopupEnabled { get; set; } = true;
-
         [JsonIgnore]
         public string AnnouncementWebSocketUrl => string.Empty;
 
@@ -166,24 +151,6 @@ namespace Ink_Canvas
 
         [JsonProperty("placement")]
         public string Placement { get; set; } = "TopCenter";
-
-        [JsonProperty("updateDurationSeconds")]
-        public int UpdateDurationSeconds { get; set; } = 3;
-
-        [JsonProperty("urgentDurationSeconds")]
-        public int UrgentDurationSeconds { get; set; } = 10;
-
-        [JsonProperty("importantDurationSeconds")]
-        public int ImportantDurationSeconds { get; set; } = 10;
-
-        [JsonProperty("reminderDurationSeconds")]
-        public int ReminderDurationSeconds { get; set; } = 10;
-
-        [JsonProperty("otherDurationSeconds")]
-        public int OtherDurationSeconds { get; set; } = 5;
-
-        [JsonProperty("readAnnouncementIds")]
-        public List<string> ReadAnnouncementIds { get; set; } = new List<string>();
 
         [JsonProperty("isDictationDoNotDisturbEnabled")]
         public bool IsDictationDoNotDisturbEnabled { get; set; } = false;
@@ -217,9 +184,6 @@ namespace Ink_Canvas
         public bool RequirePasswordOnResetConfig { get; set; } = false;
         [JsonProperty("requirePasswordOnModifyOrClearNameList")]
         public bool RequirePasswordOnModifyOrClearNameList { get; set; } = false;
-        [JsonProperty("enableProcessProtection")]
-        public bool EnableProcessProtection { get; set; } = true;
-
         [JsonProperty("usbVerificationEnabled")]
         public bool UsbVerificationEnabled { get; set; } = false;
         [JsonProperty("usbAuthorizedSns")]
@@ -439,12 +403,6 @@ namespace Ink_Canvas
         public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Release;
         [JsonProperty("updatePackageArchitecture")]
         public UpdatePackageArchitecture UpdatePackageArchitecture { get; set; } = Environment.Is64BitProcess ? UpdatePackageArchitecture.X64 : UpdatePackageArchitecture.X86;
-        [JsonProperty("isSmartUpdate")]
-        public bool IsSmartUpdate { get; set; } = true;
-        [JsonProperty("skippedVersion")]
-        public string SkippedVersion { get; set; } = "";
-        [JsonProperty("autoUpdatePauseUntilDate")]
-        public string AutoUpdatePauseUntilDate { get; set; } = "";
         [JsonProperty("isEnableNibMode")]
         public bool IsEnableNibMode { get; set; }
         [JsonProperty("isFoldAtStartup")]
@@ -490,8 +448,6 @@ namespace Ink_Canvas
     {
         [JsonProperty("isColorfulViewboxFloatingBar")]
         public bool IsColorfulViewboxFloatingBar { get; set; }
-        // [JsonProperty("enableViewboxFloatingBarScaleTransform")]
-        // public bool EnableViewboxFloatingBarScaleTransform { get; set; } = false;
         [JsonProperty("viewboxFloatingBarScaleTransformValue")]
         public double ViewboxFloatingBarScaleTransformValue { get; set; } = 1.0;
         [JsonProperty("floatingBarImg")]
@@ -556,8 +512,6 @@ namespace Ink_Canvas
         public int ChickenSoupSource { get; set; } = 1;
         [JsonProperty("chickenSoupPosition")]
         public string ChickenSoupPosition { get; set; } = "TopRight";
-        [JsonProperty("hitokotoCategories", NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> HitokotoCategories { get; set; }
         [JsonProperty("enableChickenSoupAutoRotation")]
         public bool EnableChickenSoupAutoRotation { get; set; } = false;
         [JsonProperty("chickenSoupAutoRotationInterval")]
@@ -599,9 +553,6 @@ namespace Ink_Canvas
 
         [JsonProperty("quickPanelBottomOffset")]
         public double QuickPanelBottomOffset { get; set; } = -150;
-
-        [JsonProperty("useFloatingQuickPanel")]
-        public bool UseFloatingQuickPanel { get; set; } = true;
 
         [JsonProperty("showPenColorOnFloatingBarIcon")]
         public bool ShowPenColorOnFloatingBarIcon { get; set; } = false;
@@ -919,18 +870,6 @@ namespace Ink_Canvas
         public bool EnablePowerPointEnhancement { get; set; } = false;
         [JsonProperty("skipAnimationsWhenGoNext")]
         public bool SkipAnimationsWhenGoNext { get; set; } = false;
-        [JsonProperty("enablePPTTimeCapsule")]
-        public bool EnablePPTTimeCapsule { get; set; } = true;
-        [JsonProperty("pptTimeCapsulePosition")]
-        public int PPTTimeCapsulePosition { get; set; } = 1;
-        [JsonProperty("pptTimeCapsuleOpacity")]
-        public double PPTTimeCapsuleOpacity { get; set; } = 1.0;
-        [JsonProperty("pptTimeCapsuleScale")]
-        public double PPTTimeCapsuleScale { get; set; } = 1.0;
-        [JsonProperty("pptTimeCapsuleOffsetX")]
-        public double PPTTimeCapsuleOffsetX { get; set; } = 0;
-        [JsonProperty("pptTimeCapsuleOffsetY")]
-        public double PPTTimeCapsuleOffsetY { get; set; } = 0;
         [JsonProperty("pptLinkMode")]
         public PPTLinkMode PPTLinkMode { get; set; } = PPTLinkMode.Com;
         [JsonProperty("showPPTSidebarByDefault")]
@@ -998,8 +937,6 @@ namespace Ink_Canvas
         [JsonProperty("isAutoFoldInWxBoardMain")]
         public bool IsAutoFoldInWxBoardMain { get; set; }
         /*
-        [JsonProperty("isAutoFoldInZySmartBoard")]
-        public bool IsAutoFoldInZySmartBoard { get; set; } = false;
         */
         [JsonProperty("isAutoFoldInOldZyBoard")]
         public bool IsAutoFoldInOldZyBoard { get; set; }
@@ -1300,22 +1237,8 @@ namespace Ink_Canvas
 
     public class RandSettings
     {
-        [JsonProperty("displayRandWindowNamesInputBtn")]
-        public bool DisplayRandWindowNamesInputBtn { get; set; }
-        [JsonProperty("randWindowOnceCloseLatency")]
-        public double RandWindowOnceCloseLatency { get; set; } = 2.5;
-        [JsonProperty("randWindowOnceMaxStudents")]
-        public int RandWindowOnceMaxStudents { get; set; } = 10;
         [JsonProperty("showRandomAndSingleDraw")]
         public bool ShowRandomAndSingleDraw { get; set; } = true;
-        [JsonProperty("directCallCiRand")]
-        public bool DirectCallCiRand { get; set; }
-        [JsonProperty("externalCallerType")]
-        public int ExternalCallerType { get; set; } = 0;
-        [JsonProperty("selectedBackgroundIndex")]
-        public int SelectedBackgroundIndex { get; set; }
-        [JsonProperty("customPickNameBackgrounds")]
-        public List<CustomPickNameBackground> CustomPickNameBackgrounds { get; set; } = new List<CustomPickNameBackground>();
         [JsonProperty("useLegacyTimerUI")]
         public bool UseLegacyTimerUI { get; set; } = false;
         [JsonProperty("useNewStyleUI")]
@@ -1334,16 +1257,6 @@ namespace Ink_Canvas
         public double ProgressiveReminderVolume { get; set; } = 1.0;
         [JsonProperty("progressiveReminderSoundPath")]
         public string ProgressiveReminderSoundPath { get; set; } = "";
-        [JsonProperty("useNewRollCallUI")]
-        public bool UseNewRollCallUI { get; set; } = true;
-        [JsonProperty("enableMLAvoidance")]
-        public bool EnableMLAvoidance { get; set; } = true;
-        [JsonProperty("mlAvoidanceHistoryCount")]
-        public int MLAvoidanceHistoryCount { get; set; } = 50;
-        [JsonProperty("mlAvoidanceWeight")]
-        public double MLAvoidanceWeight { get; set; } = 1.0;
-        [JsonProperty("enableQuickDraw")]
-        public bool EnableQuickDraw { get; set; } = true;
     }
 
     public class CustomPickNameBackground
@@ -1399,8 +1312,6 @@ namespace Ink_Canvas
         [JsonProperty("resolutionHeight")]
         public int ResolutionHeight { get; set; } = 1080;
 
-        [JsonProperty("selectedCameraIndex")]
-        public int SelectedCameraIndex { get; set; } = 0;
     }
 
     public class DlassSettings
@@ -1408,17 +1319,8 @@ namespace Ink_Canvas
         [JsonProperty("userToken")]
         public string UserToken { get; set; } = string.Empty;
 
-        [JsonProperty("savedTokens")]
-        public List<string> SavedTokens { get; set; } = new List<string>();
-
-        [JsonProperty("selectedClassName")]
-        public string SelectedClassName { get; set; } = string.Empty;
-
         [JsonProperty("apiBaseUrl")]
         public string ApiBaseUrl { get; set; } = "https://dlass.tech";
-
-        [JsonProperty("isAutoUploadNotes")]
-        public bool IsAutoUploadNotes { get; set; } = false;
 
         private int _autoUploadDelayMinutes = 0;
         [JsonProperty("autoUploadDelayMinutes")]
@@ -1428,17 +1330,6 @@ namespace Ink_Canvas
             set { _autoUploadDelayMinutes = Math.Max(0, value); }
         }
 
-        [JsonProperty("webDavUrl")]
-        public string WebDavUrl { get; set; } = string.Empty;
-
-        [JsonProperty("webDavUsername")]
-        public string WebDavUsername { get; set; } = string.Empty;
-
-        [JsonProperty("webDavPassword")]
-        public string WebDavPassword { get; set; } = string.Empty;
-
-        [JsonProperty("webDavRootDirectory")]
-        public string WebDavRootDirectory { get; set; } = string.Empty;
     }
 
     public class UploadSettings
@@ -1473,9 +1364,6 @@ namespace Ink_Canvas
 
         [JsonProperty("defaultOpacity")]
         public double DefaultOpacity { get; set; } = 0.95;
-
-        [JsonProperty("backgroundColor")]
-        public string BackgroundColor { get; set; } = "#FF2A2A2A";
 
         [JsonProperty("syncWithPPTPages")]
         public bool SyncWithPPTPages { get; set; } = true;

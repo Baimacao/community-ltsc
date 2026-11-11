@@ -663,43 +663,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
             mw?.UpdatePPTBtnPreview();
         }
 
-        public static void OnPPTTimeCapsuleChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null && mw.IsInPPTPresentationMode)
-            {
-                mw.UpdatePPTTimeCapsuleVisibility();
-                mw.UpdatePPTQuickPanelVisibility();
-            }
-        }
-
-        public static void OnPPTTimeCapsulePositionChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null && mw.IsInPPTPresentationMode)
-                mw.UpdatePPTTimeCapsulePosition();
-        }
-
-        public static void OnPPTTimeCapsuleOpacityChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null && mw.IsInPPTPresentationMode)
-                mw.UpdatePPTTimeCapsuleOpacity();
-        }
-
-        public static void OnPPTTimeCapsuleScaleChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null && mw.IsInPPTPresentationMode)
-                mw.UpdatePPTTimeCapsuleScale();
-        }
-
-        public static void OnResetPPTTimeCapsulePosition()
-        {
-            var mw = GetMainWindow();
-            mw?.ResetPPTTimeCapsuleOffset();
-        }
-
         public static void OnPPTNavBarScaleChanged(double scale)
         {
             var mw = GetMainWindow();

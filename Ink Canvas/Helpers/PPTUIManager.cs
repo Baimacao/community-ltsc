@@ -98,7 +98,6 @@ namespace Ink_Canvas.Helpers
 
                         UpdateNavigationPanelsVisibility();
                         UpdateNavigationButtonStyles();
-                        _mainWindow.UpdatePPTTimeCapsuleVisibility();
                         _mainWindow.UpdatePPTQuickPanelVisibility();
                         if (!wasInSlideShow)
                         {
@@ -129,7 +128,6 @@ namespace Ink_Canvas.Helpers
                         _mainWindow.IsInPPTPresentationMode = false;
                         _mainWindow.UpdateToolbarComponentVisibility();
                         HideAllNavigationPanels();
-                        _mainWindow.UpdatePPTTimeCapsuleVisibility();
                         _mainWindow.UpdatePPTQuickPanelVisibility();
                         if (MainWindow.Settings.Advanced.IsEnableAvoidFullScreenHelper)
                         {

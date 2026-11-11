@@ -151,7 +151,6 @@ namespace Ink_Canvas.Windows
                     CardPPTSupport.IsOn = _settings.PowerPointSettings.PowerPointSupport;
                     CardPPTAutoSaveStrokes.IsOn = _settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint;
                     CardPPTAutoSaveScreenshots.IsOn = _settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
-                    CardPPTTimeCapsule.IsOn = _settings.PowerPointSettings.EnablePPTTimeCapsule;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -264,7 +263,6 @@ namespace Ink_Canvas.Windows
                     _settings.PowerPointSettings.PowerPointSupport = CardPPTSupport.IsOn;
                     _settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = CardPPTAutoSaveStrokes.IsOn;
                     _settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = CardPPTAutoSaveScreenshots.IsOn;
-                    _settings.PowerPointSettings.EnablePPTTimeCapsule = CardPPTTimeCapsule.IsOn;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }

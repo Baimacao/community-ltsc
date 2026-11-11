@@ -43,7 +43,6 @@ namespace Ink_Canvas
                    || ContainsPoint(BorderPdfPageSidebar, windowPoint)
                    || ContainsPoint(ImageSelectionOverlay, windowPoint)
                    || ContainsPoint(BorderInkReplayToolBox, windowPoint)
-                   || ContainsPoint(PPTTimeCapsuleContainer, windowPoint)
                    || ContainsPoint(PPTQuickPanelContainer, windowPoint)
                    || ContainsPoint(VideoPresenterSidebar, windowPoint);
         }

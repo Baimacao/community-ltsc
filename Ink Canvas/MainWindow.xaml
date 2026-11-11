@@ -1299,19 +1299,6 @@
                 </Grid>
             </Grid>
         </Border>
-        <!-- 包装层：PPT 时间胶囊容器，承载 ScaleTransform 与屏幕四角定位，非死代码 -->
-        <Border x:Name="PPTTimeCapsuleContainer"
-                Visibility="Collapsed"  d:Visibility="Visible"
-                Panel.ZIndex="999"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Margin="0,20,20,0"
-                RenderTransformOrigin="1,0">
-            <Border.RenderTransform>
-                <ScaleTransform x:Name="PPTTimeCapsuleScaleTransform" ScaleX="1" ScaleY="1"/>
-            </Border.RenderTransform>
-            <Windows:PPTTimeCapsule x:Name="PPTTimeCapsule"/>
-        </Border>
         <!-- 包装层：PPT 放映快捷面板，代码中 4 处控制 Visibility/位置，非死代码 -->
         <Border x:Name="PPTQuickPanelContainer"
                 Visibility="Collapsed"  d:Visibility="Visible"

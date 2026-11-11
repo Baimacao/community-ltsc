@@ -1927,8 +1927,6 @@ namespace Ink_Canvas
 
             try
             {
-                PPTTimeCapsule?.Dispose();
-
                 // 清理视频展台资源
                 if (_cameraService != null)
                 {
@@ -2829,83 +2827,6 @@ namespace Ink_Canvas
             }
         }
 
-        private void ToggleSwitchEnablePPTTimeCapsule_Toggled(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (!isLoaded) return;
-                var toggle = sender as ToggleSwitch;
-                Settings.PowerPointSettings.EnablePPTTimeCapsule = toggle != null && toggle.IsOn;
-                SaveSettingsToFile();
-
-                // 如果当前在PPT放映模式，需要立即更新时间胶囊和快捷面板的显示状态
-                if (IsInPPTPresentationMode)
-                {
-                    UpdatePPTTimeCapsuleVisibility();
-                    UpdatePPTQuickPanelVisibility();
-                }
-
-                LogHelper.WriteLogToFile($"PPT时间显示胶囊已{(Settings.PowerPointSettings.EnablePPTTimeCapsule ? "启用" : "禁用")}", LogHelper.LogType.Event);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"切换PPT时间显示胶囊时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        private void ComboBoxPPTTimeCapsulePosition_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if (!isLoaded) return;
-                var comboBox = sender as System.Windows.Controls.ComboBox;
-                if (comboBox != null)
-                {
-                    Settings.PowerPointSettings.PPTTimeCapsulePosition = comboBox.SelectedIndex;
-                    SaveSettingsToFile();
-
-                    if (IsInPPTPresentationMode)
-                    {
-                        UpdatePPTTimeCapsulePosition();
-                    }
-
-                    LogHelper.WriteLogToFile($"PPT时间胶囊位置已更改为: {comboBox.SelectedIndex}", LogHelper.LogType.Event);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"更改PPT时间胶囊位置时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 更新PPT时间胶囊的显示状态
-        /// </summary>
-        public void UpdatePPTTimeCapsuleVisibility()
-        {
-            try
-            {
-                if (PPTTimeCapsuleContainer == null || PPTTimeCapsule == null) return;
-
-                if (Settings.PowerPointSettings.EnablePPTTimeCapsule &&
-                    IsInPPTPresentationMode)
-                {
-                    PPTTimeCapsuleContainer.Visibility = Visibility.Visible;
-                    UpdatePPTTimeCapsulePosition();
-                    UpdatePPTTimeCapsuleOpacity();
-                    UpdatePPTTimeCapsuleScale();
-                }
-                else
-                {
-                    PPTTimeCapsuleContainer.Visibility = Visibility.Collapsed;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"更新PPT时间胶囊显示状态时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
         /// <summary>
         /// 更新PPT快捷面板的显示状态
         /// </summary>
@@ -2915,7 +2836,7 @@ namespace Ink_Canvas
             {
                 if (PPTQuickPanelContainer == null || PPTQuickPanel == null) return;
 
-                // 仅在 PPT 模式下且用户开启“PPT 放映时显示快速面板”时显示
+                // 仅在 PPT 模式下且用户开启"PPT 放映时显示快速面板"时显示
                 bool inSlideShow = IsInPPTPresentationMode;
                 bool showQuickPanel = Settings.PowerPointSettings.ShowPPTSidebarByDefault;
                 if (inSlideShow && showQuickPanel)
@@ -2934,123 +2855,6 @@ namespace Ink_Canvas
                 LogHelper.WriteLogToFile($"更新PPT快捷面板显示状态时出错: {ex.Message}", LogHelper.LogType.Error);
             }
         }
-
-        /// <summary>
-        /// 更新PPT时间胶囊的位置
-        /// </summary>
-        public void UpdatePPTTimeCapsulePosition()
-        {
-            try
-            {
-                if (PPTTimeCapsuleContainer == null) return;
-
-                int position = Settings.PowerPointSettings.PPTTimeCapsulePosition;
-                // 0-左上角, 1-右上角, 2-顶部居中
-                switch (position)
-                {
-                    case 0: // 左上角
-                        PPTTimeCapsuleContainer.HorizontalAlignment = HorizontalAlignment.Left;
-                        PPTTimeCapsuleContainer.VerticalAlignment = VerticalAlignment.Top;
-                        PPTTimeCapsuleContainer.Margin = new Thickness(20, 20, 0, 0);
-                        PPTTimeCapsuleContainer.RenderTransformOrigin = new Point(0, 0);
-                        break;
-                    case 1: // 右上角
-                        PPTTimeCapsuleContainer.HorizontalAlignment = HorizontalAlignment.Right;
-                        PPTTimeCapsuleContainer.VerticalAlignment = VerticalAlignment.Top;
-                        PPTTimeCapsuleContainer.Margin = new Thickness(0, 20, 20, 0);
-                        PPTTimeCapsuleContainer.RenderTransformOrigin = new Point(1, 0);
-                        break;
-                    case 2: // 顶部居中
-                        PPTTimeCapsuleContainer.HorizontalAlignment = HorizontalAlignment.Center;
-                        PPTTimeCapsuleContainer.VerticalAlignment = VerticalAlignment.Top;
-                        PPTTimeCapsuleContainer.Margin = new Thickness(0, 20, 0, 0);
-                        PPTTimeCapsuleContainer.RenderTransformOrigin = new Point(0.5, 0);
-                        break;
-                }
-
-                // 应用拖拽偏移
-                if (PPTTimeCapsule != null)
-                {
-                    PPTTimeCapsule.ApplyDragOffset(
-                        Settings.PowerPointSettings.PPTTimeCapsuleOffsetX,
-                        Settings.PowerPointSettings.PPTTimeCapsuleOffsetY);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"更新PPT时间胶囊位置时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 更新PPT时间胶囊的透明度
-        /// </summary>
-        public void UpdatePPTTimeCapsuleOpacity()
-        {
-            try
-            {
-                if (PPTTimeCapsuleContainer == null) return;
-                PPTTimeCapsuleContainer.Opacity = Settings.PowerPointSettings.PPTTimeCapsuleOpacity;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"更新PPT时间胶囊透明度时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 更新PPT时间胶囊的大小
-        /// </summary>
-        public void UpdatePPTTimeCapsuleScale()
-        {
-            try
-            {
-                if (PPTTimeCapsuleScaleTransform == null) return;
-                double scale = Settings.PowerPointSettings.PPTTimeCapsuleScale;
-                PPTTimeCapsuleScaleTransform.ScaleX = scale;
-                PPTTimeCapsuleScaleTransform.ScaleY = scale;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"更新PPT时间胶囊大小时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 保存PPT时间胶囊拖拽偏移量
-        /// </summary>
-        public void SavePPTTimeCapsuleOffset(double offsetX, double offsetY)
-        {
-            try
-            {
-                Settings.PowerPointSettings.PPTTimeCapsuleOffsetX = offsetX;
-                Settings.PowerPointSettings.PPTTimeCapsuleOffsetY = offsetY;
-                SaveSettingsToFile();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"保存PPT时间胶囊位置偏移时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 重置PPT时间胶囊拖拽偏移量
-        /// </summary>
-        public void ResetPPTTimeCapsuleOffset()
-        {
-            try
-            {
-                Settings.PowerPointSettings.PPTTimeCapsuleOffsetX = 0;
-                Settings.PowerPointSettings.PPTTimeCapsuleOffsetY = 0;
-                PPTTimeCapsule?.ResetDragOffset();
-                SaveSettingsToFile();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"重置PPT时间胶囊位置时出错: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
 
         /// <summary>
         /// 初始化文件关联状态显示

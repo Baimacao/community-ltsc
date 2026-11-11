@@ -1309,30 +1309,21 @@ namespace Ink_Canvas.Windows
                 {
                     if (_minimizedWindow != null && _minimizedWindow.IsVisible) return;
                     if (IsFullscreenWindowOpen) return;
-
-                    bool pptCapsuleActive = MainWindow.Settings?.PowerPointSettings?.EnablePPTTimeCapsule == true
-                        && (Application.Current.MainWindow as MainWindow)?.IsInPPTPresentationMode == true;
-
-                    Hide();
-
-                    if (!pptCapsuleActive)
+                    _minimizedWindow = new NewStyleMinimizedTimerWindow(
+                    () => GetRemainingTime(),
+                    () => !isTimerRunning || isPaused,
+                    () =>
                     {
-                        _minimizedWindow = new NewStyleMinimizedTimerWindow(
-                        () => GetRemainingTime(),
-                        () => !isTimerRunning || isPaused,
-                        () =>
-                        {
-                            Show();
-                            Activate();
-                            UpdateActivityTime();
-                        },
-                        () =>
-                        {
-                            StopTimer();
-                        });
-                        _minimizedWindow.Closed += (s, args) => { _minimizedWindow = null; };
-                        _minimizedWindow.Show();
-                    }
+                        Show();
+                        Activate();
+                        UpdateActivityTime();
+                    },
+                    () =>
+                    {
+                        StopTimer();
+                    });
+                    _minimizedWindow.Closed += (s, args) => { _minimizedWindow = null; };
+                    _minimizedWindow.Show();
                 });
             }
         }

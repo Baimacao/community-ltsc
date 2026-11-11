@@ -466,11 +466,6 @@
                                                                   Icon="{x:Static ui:SegoeFluentIcons.Camera}"
                                                                   SwitchName="ToggleSwitchPPTAutoSaveScreenshots" />
 
-                                    <controls:LabeledSettingsCard x:Name="CardPPTTimeCapsule"
-                                                                  Header="{x:Static props:OobeStrings.Oobe_EnableTimeCapsule}"
-                                                                  Description="{x:Static props:OobeStrings.Oobe_EnableTimeCapsuleDesc}"
-                                                                  Icon="{x:Static ui:SegoeFluentIcons.QuietHours}"
-                                                                  SwitchName="ToggleSwitchPPTTimeCapsule" />
                                 </ikw:SimpleStackPanel>
 
                                 <!-- 步骤 6: 自动化 + 截图 -->
