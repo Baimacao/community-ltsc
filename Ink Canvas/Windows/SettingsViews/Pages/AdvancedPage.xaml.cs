@@ -2,7 +2,9 @@ using Ink_Canvas.Helpers;
 using Ink_Canvas.Properties;
 using Ink_Canvas.Windows.SettingsViews.Helpers;
 using iNKORE.UI.WPF.Modern.Controls;
+using OSVersionExtension;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,6 +37,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             LoadSettings();
+            LoadExperimentalSettings();
             _isLoaded = true;
             RefreshConfigProfileList();
             UpdateAllSliderTexts();
@@ -503,5 +506,171 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         }
 
         #endregion
+
+private void LoadExperimentalSettings()
+        {
+            _isLoaded = false;
+
+            try
+            {
+                var settings = SettingsManager.Settings;
+                if (settings.Advanced != null)
+                {
+                    CardFullScreenHelper.IsOn = settings.Advanced.IsEnableFullScreenHelper;
+                    CardEdgeGestureUtil.IsOn = settings.Advanced.IsEnableEdgeGestureUtil;
+                    CardForceFullScreen.IsOn = settings.Advanced.IsEnableForceFullScreen;
+                    CardDPIChangeDetection.IsOn = settings.Advanced.IsEnableDPIChangeDetection;
+                    CardResolutionChangeDetection.IsOn = settings.Advanced.IsEnableResolutionChangeDetection;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"加载实验性选项时出错: {ex.Message}");
+            }
+
+            _isLoaded = true;
+        }
+
+        private void ToggleSwitchFullScreenHelper_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+
+            try
+            {
+                SettingsManager.Settings.Advanced.IsEnableFullScreenHelper = CardFullScreenHelper.IsOn;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置全屏助手时出错: {ex.Message}");
+            }
+        }
+
+        private void ToggleSwitchEdgeGestureUtil_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+
+            try
+            {
+                SettingsManager.Settings.Advanced.IsEnableEdgeGestureUtil = CardEdgeGestureUtil.IsOn;
+                SettingsManager.SaveSettingsToFile();
+
+                if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10)
+                {
+                    var window = Application.Current.MainWindow;
+                    if (window != null)
+                    {
+                        var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+                        EdgeGestureUtil.DisableEdgeGestures(handle, CardEdgeGestureUtil.IsOn);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置边缘手势时出错: {ex.Message}");
+            }
+        }
+
+        private void ToggleSwitchForceFullScreen_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+
+            try
+            {
+                SettingsManager.Settings.Advanced.IsEnableForceFullScreen = CardForceFullScreen.IsOn;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置强制全屏时出错: {ex.Message}");
+            }
+        }
+
+        private void ToggleSwitchDPIChangeDetection_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+
+            try
+            {
+                SettingsManager.Settings.Advanced.IsEnableDPIChangeDetection = CardDPIChangeDetection.IsOn;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置DPI变化检测时出错: {ex.Message}");
+            }
+        }
+
+        private void ToggleSwitchResolutionChangeDetection_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+
+            try
+            {
+                SettingsManager.Settings.Advanced.IsEnableResolutionChangeDetection = CardResolutionChangeDetection.IsOn;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"设置分辨率变化检测时出错: {ex.Message}");
+            }
+        }
+
+private void ToggleSwitchDebugConsole_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            bool isOn = ToggleSwitchDebugConsole.IsOn;
+            SettingsManager.Settings.Advanced.IsDebugConsoleEnabled = isOn;
+            SettingsManager.SaveSettingsToFile();
+
+            if (isOn) DebugConsoleManager.Show();
+            else DebugConsoleManager.Hide();
+        }
+
+        private void ToggleSwitchPPTComDebugProbe_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.Advanced.IsPPTComDebugProbeEnabled = ToggleSwitchPPTComDebugProbe.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchPPTPageFlipPreview_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.Advanced.IsPPTPageFlipPreviewVisible = ToggleSwitchPPTPageFlipPreview.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void BtnTestCrash_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "确定要触发一次模拟崩溃吗？\n\n应用将立即退出并尝试自动重启。",
+                "崩溃测试确认",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+            if (result != MessageBoxResult.Yes) return;
+
+            LogHelper.WriteLogToFile("[Debug] 用户手动触发模拟崩溃", LogHelper.LogType.Warning);
+            throw new System.InvalidOperationException("[Debug] 用户手动触发的模拟崩溃异常");
+        }
+
+        private void BtnTestHeartbeatTimeout_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                "确定要停止心跳计时器吗？\n\n约10秒后守护检查将检测到心跳超时并触发重启。",
+                "心跳超时测试确认",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+            if (result != MessageBoxResult.Yes) return;
+
+            App.DebugStopHeartbeat();
+        }
+
+        private void BtnResetStartupCount_Click(object sender, RoutedEventArgs e)
+        {
+            StartupCount.Reset();
+            LogHelper.WriteLogToFile("[Debug] 熔断计数器已手动重置", LogHelper.LogType.Warning);
+            MessageBox.Show("熔断计数器已重置为 0。", "重置完成", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }

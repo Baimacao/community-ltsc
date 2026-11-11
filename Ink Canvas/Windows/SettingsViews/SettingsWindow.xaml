@@ -280,17 +280,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <!-- 实验性选项 -->
-                <ui:NavigationViewItem
-                    x:Name="ExperimentalPageItem"
-                    Content="{x:Static props:AdvancedStrings.Experimental}"
-                    Tag="ExperimentalPage"
-                    ToolTipService.ToolTip="{x:Static props:AdvancedStrings.Experimental}">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-
                 <!-- 存储 -->
                 <ui:NavigationViewItem
                     x:Name="StorageItem"
@@ -405,17 +394,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                 </ui:NavigationViewItem>
 
                 <!-- 点名与计时器 -->
-
-                <!-- Debug -->
-                <ui:NavigationViewItem
-                    x:Name="DebugPageItem"
-                    Content="Debug"
-                    Tag="DebugPage"
-                    ToolTipService.ToolTip="Debug">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemHeader Content="{x:Static props:NavStrings.Nav_AboutInkCanvas}"/>
 

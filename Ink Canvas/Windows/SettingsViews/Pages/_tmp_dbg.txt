@@ -1,29 +1,4 @@
-using Ink_Canvas.Helpers;
-using Ink_Canvas.Windows.SettingsViews.Helpers;
-using System.Windows;
-using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
-using Page = iNKORE.UI.WPF.Modern.Controls.Page;
-
-namespace Ink_Canvas.Windows.SettingsViews.Pages
-{
-    public partial class DebugPage : Page
-    {
-        private bool _isLoaded;
-
-        public DebugPage()
-        {
-            InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                ToggleSwitchDebugConsole.IsOn = SettingsManager.Settings.Advanced.IsDebugConsoleEnabled;
-                ToggleSwitchPPTComDebugProbe.IsOn = SettingsManager.Settings.Advanced.IsPPTComDebugProbeEnabled;
-                ToggleSwitchPPTPageFlipPreview.IsOn = SettingsManager.Settings.Advanced.IsPPTPageFlipPreviewVisible;
-                _isLoaded = true;
-            };
-            Unloaded += (s, e) => _isLoaded = false;
-        }
-
-        private void ToggleSwitchDebugConsole_Toggled(object sender, RoutedEventArgs e)
+private void ToggleSwitchDebugConsole_Toggled(object sender, RoutedEventArgs e)
         {
             if (!_isLoaded) return;
             bool isOn = ToggleSwitchDebugConsole.IsOn;
@@ -79,5 +54,3 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             LogHelper.WriteLogToFile("[Debug] 熔断计数器已手动重置", LogHelper.LogType.Warning);
             MessageBox.Show("熔断计数器已重置为 0。", "重置完成", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-    }
-}

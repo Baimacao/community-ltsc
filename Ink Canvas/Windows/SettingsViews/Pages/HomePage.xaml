@@ -185,7 +185,7 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:NotificationStrings.Type_Other}" />
                     <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Experimental}" Description="{x:Static props:AdvancedStrings.Experimental}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="ExperimentalPage">
+                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="AdvancedPage">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}" />
                         </ui:SettingsCard.HeaderIcon>
@@ -236,7 +236,7 @@
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Header="Debug" Description="Debug"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="DebugPage">
+                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="AdvancedPage">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}" />
                         </ui:SettingsCard.HeaderIcon>

@@ -1,29 +1,4 @@
-using Ink_Canvas.Helpers;
-using Ink_Canvas.Windows.SettingsViews.Helpers;
-using OSVersionExtension;
-using System;
-using System.Diagnostics;
-using System.Windows;
-
-namespace Ink_Canvas.Windows.SettingsViews.Pages
-{
-    public partial class ExperimentalPage : iNKORE.UI.WPF.Modern.Controls.Page
-    {
-        private bool _isLoaded = false;
-
-        public ExperimentalPage()
-        {
-            InitializeComponent();
-            Loaded += ExperimentalPage_Loaded;
-        }
-
-        private void ExperimentalPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            LoadSettings();
-            _isLoaded = true;
-        }
-
-        private void LoadSettings()
+private void LoadExperimentalSettings()
         {
             _isLoaded = false;
 
@@ -131,5 +106,3 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 Debug.WriteLine($"设置分辨率变化检测时出错: {ex.Message}");
             }
         }
-    }
-}
