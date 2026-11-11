@@ -434,6 +434,35 @@ namespace Ink_Canvas
         /// 执行 UI 可见性与布局初始设置、浮动栏位置计算与动画、日志文件清理与调试标记、定时器与撤销/重做绑定、输入事件与墨迹管理器初始化、
         /// 首页画布创建、左右侧面板的触摸滑动与点击分页交互绑定、无焦点与置顶模式应用、滑块触摸支持以及延迟的首-run OOBE 检查等启动工作。
         /// </remarks>
+        /// <summary>
+        /// 启动 P2 诊断探针定时器（5 秒一次，只读）。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P2：用户反馈「用久了卡 + 双指缩放失效」。
+        /// 需要区分是性能退化还是触摸状态机被污染，两者修法完全不同。
+        /// 探针只记录，不改任何逻辑，测完可整块删掉。
+        /// </remarks>
+        private DispatcherTimer _inkPerfProbeTimer;
+
+        private void StartInkPerfProbe()
+        {
+            try
+            {
+                InkPerfProbe.Reset();
+                _inkPerfProbeTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(5)
+                };
+                _inkPerfProbeTimer.Tick += (s, e) => InkPerfProbe.Tick(Dispatcher);
+                _inkPerfProbeTimer.Start();
+                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测）", LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"[P2诊断] 探针启动失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
         public MainWindow()
         {
             /*
@@ -441,6 +470,11 @@ namespace Ink_Canvas
                 处于 PPT 放映内：BtnPPTSlideShowEnd.Visibility
             */
             InitializeComponent();
+
+            // LTSC P2：笔迹性能/触摸诊断探针。只观测，不改行为。
+            // 必须放在 InitializeComponent 之后——Dispatcher 消息循环此时才可用，
+            // 放在前面定时器不会触发（第一次接的时候踩了这个坑）。
+            StartInkPerfProbe();
 
             if (BorderTools.Child is FrameworkElement btChild) btChild.Visibility = Visibility.Collapsed;
             if (BorderDrawShape.Child is FrameworkElement bdsChild) bdsChild.Visibility = Visibility.Collapsed;

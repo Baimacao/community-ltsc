@@ -48,6 +48,8 @@ namespace Ink_Canvas
         /// </summary>
         private const double MULTI_TOUCH_DELAY_MS = 100;
         private bool isMultiTouchTimerActive;
+        /// <summary>P2 诊断：上一次 ReleaseAllTouchCaptures() 放掉了几个捕获。</summary>
+        private int _releasedCaptureCount = 0;
         private bool isPalmEraserActive;
         private bool palmEraserWasEnabledBeforeMultiTouch;
         private InkCanvasEditingMode palmEraserPreviousEditingMode = InkCanvasEditingMode.Ink;
@@ -1601,6 +1603,7 @@ namespace Ink_Canvas
                     lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
                 }
                 dec.Add(e.TouchDevice.Id);
+                InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
                 return;
             }
 
@@ -1610,6 +1613,7 @@ namespace Ink_Canvas
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
             lastTouchDownTime = DateTime.Now;
             dec.Add(e.TouchDevice.Id);
+            InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
 
             if (ShouldUseRealtimeVelocityBrushTipForTouch()
                 && inkCanvas.EditingMode != InkCanvasEditingMode.EraseByPoint
@@ -1898,11 +1902,16 @@ namespace Ink_Canvas
             {
                 return;
             }
+            // P2 诊断：先数一下有几根手指被一次性放掉。
+            try { _releasedCaptureCount = inkCanvas.TouchesCaptured?.Count() ?? 0; } catch { _releasedCaptureCount = 0; }
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
 
             dec.Remove(e.TouchDevice.Id);
+            // P2 诊断：ReleaseAllTouchCaptures() 一次放掉全部捕获，
+            // 但这里只移除当前指的 ID。若另一指仍在 dec 里，它再也收不到 TouchUp。
+            InkPerfProbe.TouchUp(dec.Count, e.TouchDevice.Id, _releasedCaptureCount);
 
             if (dec.Count <= 1)
                 isMultiTouchTimerActive = false;
@@ -2087,6 +2096,7 @@ namespace Ink_Canvas
                                              (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||
                                               !ArePPTControlsVisible)) ||
                                             isSingleFingerDragMode;
+            InkPerfProbe.TwoFinger(shouldUseTwoFingerGesture);
 
             if (shouldUseTwoFingerGesture)
             {
