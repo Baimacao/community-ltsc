@@ -129,7 +129,6 @@ namespace Ink_Canvas
         /// <summary>
         /// 长按翻页方向标志，true表示下一页，false表示上一页。
         /// </summary>
-        private bool _isLongPressNext = true; // true为下一页，false为上一页
 
         /// <summary>
         /// 长按延迟时间（毫秒），即用户需要按住按钮多长时间才开始连续翻页。
@@ -511,7 +510,6 @@ namespace Ink_Canvas
                 try
                 {
                     _longPressTimer.Stop();
-                    _longPressTimer.Tick -= OnLongPressTimerTick;
                 }
                 catch (Exception ex)
                 {
@@ -522,22 +520,6 @@ namespace Ink_Canvas
 
             _longPressTimer = new DispatcherTimer();
             _longPressTimer.Interval = TimeSpan.FromMilliseconds(LongPressDelay);
-            _longPressTimer.Tick += OnLongPressTimerTick;
-        }
-
-        /// <summary>
-        /// 启动长按检测
-        /// </summary>
-        /// <param name="sender">触发事件的控件</param>
-        /// <param name="isNext">是否为下一页按钮</param>
-        private void StartLongPressDetection(object sender, bool isNext)
-        {
-            if (!Settings.PowerPointSettings.EnablePPTButtonLongPressPageTurn) return;
-
-            _isLongPressNext = isNext;
-            // 重置定时器间隔为初始延迟时间，确保每次长按检测都从正确的延迟开始
-            _longPressTimer.Interval = TimeSpan.FromMilliseconds(LongPressDelay);
-            _longPressTimer?.Start();
         }
 
         /// <summary>
@@ -545,33 +527,13 @@ namespace Ink_Canvas
         /// </summary>
         private void StopLongPressDetection()
         {
+            if (_longPressTimer != null && _longPressTimer.IsEnabled)
             _longPressTimer?.Stop();
         }
 
         /// <summary>
         /// 长按定时器事件处理
         /// </summary>
-        private void OnLongPressTimerTick(object sender, EventArgs e)
-        {
-            if (!Settings.PowerPointSettings.EnablePPTButtonLongPressPageTurn) return;
-
-            _longPressTimer.Interval = TimeSpan.FromMilliseconds(LongPressInterval);
-
-            // 告诉四个导航栏：这次按下已经被长按消费掉了。
-            // 否则松手时 MouseUp 还会补一次 Click，长按永远多翻一页。
-            MarkAllNavBarsLongPressConsumed();
-
-            // 执行翻页
-            if (_isLongPressNext)
-            {
-                BtnPPTSlidesDown_Click(null, null);
-            }
-            else
-            {
-                BtnPPTSlidesUp_Click(null, null);
-            }
-        }
-
         /// <summary>
         /// 把外观设置（页码字号 / 自动淡出 / 按下反馈）从 Settings 读进 PPTUIManager 并下发到四条导航栏。
         /// 初始化时调一次，每次进入放映再调一次——后者是为了让设置页改完立刻生效，
@@ -1326,7 +1288,7 @@ namespace Ink_Canvas
                 // 社区原话：「ppt 退出直接卡死（严重）**关闭长按翻页修复**」——
                 // 用户自己已经试出来规避方法，说明卡死和长按定时器直接相关。
                 //
-                // 链路：OnLongPressTimerTick(:535) 每 LongPressInterval(50ms) 调一次
+                // LTSC P1c：长按连续翻页已整体移除（实测从未生效）。
                 //       BtnPPTSlidesDown_Click → Task.Run 冲 COM。
                 //       而本函数（整个 247 行）原来**一次都没停过这个定时器**。
                 // 于是按住翻页按钮时退出放映，定时器还在跑，50ms 一次去碰
@@ -2210,6 +2172,7 @@ namespace Ink_Canvas
         /// 翻页互斥窗口：上一次翻页还在进行中就直接放弃这次点击。
         /// 超过 <see cref="_pptNavStaleMs"/> 仍未释放的锁视为失效（COM 卡死时不至于永久锁住翻页）。
         /// </summary>
+
         private static bool TryEnterPPTNavigation()
         {
             lock (_pptNavLock)
@@ -2410,14 +2373,10 @@ namespace Ink_Canvas
                 }
                 else
                 {
-                    if (_pptManager.TryShowSlideNavigation())
-                    {
-                        if (Settings.PowerPointSettings.SkipAnimationsWhenGoNext)
-                        {
-                            ExceptionHandler.TryExecute(() => this.Activate(), "激活主窗口失败（PPT 导航时）");
-                        }
-                    }
-                    else
+                    // LTSC P1c：点页码 → 调 PowerPoint 原版导航（幻灯片导航面板）。
+                    // 之前这里是 TryShowSlideNavigation()，而它被实现成了 TryNavigateNext()
+                    // ——点页码结果翻到下一页，面板根本没出来。现在直接调 PPT 自己的导航。
+                    if (!_pptManager.TryShowSlideNavigation())
                     {
                         LogHelper.WriteLogToFile("显示PPT幻灯片导航失败", LogHelper.LogType.Warning);
                     }
@@ -2587,16 +2546,10 @@ namespace Ink_Canvas
                 if (bar == null) continue;
                 bar.PreviousClick += (s, e) => BtnPPTSlidesUp_Click(null, null);
                 bar.NextClick += (s, e) => BtnPPTSlidesDown_Click(null, null);
-                bar.PreviousPressedDown += (s, e) =>
-                {
-                    if (Settings.PowerPointSettings.EnablePPTButtonLongPressPageTurn)
-                        StartLongPressDetection(s, false);
-                };
-                bar.NextPressedDown += (s, e) =>
-                {
-                    if (Settings.PowerPointSettings.EnablePPTButtonLongPressPageTurn)
-                        StartLongPressDetection(s, true);
-                };
+                // LTSC P1c：长按连续翻页整条功能移除。
+                // 实测从未生效（老师真机 + 我的脚本都没能触发定时器），
+                // 而它带来的是「松手多翻一页」这个更难修的副作用。
+                // 一个不生效的功能留着只会继续藏 bug。
                 bar.PressEnded += (s, e) => StopLongPressDetection();
                 var captured = bar;
                 bar.PageClick += async (s, e) => await OnPPTNavBarPageClickAsync(captured);

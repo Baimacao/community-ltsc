@@ -897,6 +897,44 @@ namespace Ink_Canvas.Helpers
         /// <summary>PowerPoint 放映窗口类名。实测为 "screenClass"。</summary>
         const string SlideShowWindowClass = "screenClass";
 
+        /// <summary>按类名 screenClass 找当前可见的放映窗口句柄。</summary>
+        IntPtr FindSlideShowWindowHandle()
+        {
+            IntPtr found = IntPtr.Zero;
+            try
+            {
+                EnumWindows((h, l) =>
+                {
+                    if (!IsWindowVisible(h)) return true;
+                    var sb = new StringBuilder(128);
+                    GetClassNameW(h, sb, sb.Capacity);
+                    if (sb.ToString() == SlideShowWindowClass)
+                    {
+                        found = h;
+                        return false;
+                    }
+                    return true;
+                }, IntPtr.Zero);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"查找放映窗口失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+            return found;
+        }
+
+        [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr h);
+        [DllImport("user32.dll")] static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+        const byte VkEscape = 0x1B;
+
+        /// <summary>给当前前台窗口发一次 ESC（PowerPoint 放映态下用它调出原版导航）。</summary>
+        static void SendEsc(IntPtr hwnd)
+        {
+            keybd_event(VkEscape, 0, 0, UIntPtr.Zero);
+            System.Threading.Thread.Sleep(30);
+            keybd_event(VkEscape, 0, 2, UIntPtr.Zero);
+        }
+
         /// <summary>
         /// 用 Win32 查找放映窗口。不依赖 COM，因此跨权限仍然有效——
         /// 这是本类在提权场景下唯一还能提供的能力：知道"在放映"以及窗口在哪。
@@ -1139,11 +1177,44 @@ namespace Ink_Canvas.Helpers
             }
         }
 
+        /// <summary>
+        /// 调出 PowerPoint 原版的幻灯片导航面板（放映时点页码要的效果）。
+        ///
+        /// LTSC P1c：原来这个方法被实现成 TryNavigateNext()，
+        /// 于是"点页码"变成了"翻到下一页"，面板从来没出现过。
+        ///
+        /// PPT 放映态下对应的操作是 SlideShowView.GotoNamedShow 之外的
+        /// "显示幻灯片导航"：等价于人手动按右键菜单里的"查看所有幻灯片"。
+        /// COM 里没有直接 API，可靠做法是给放映窗口发键盘/鼠标消息，
+        /// 让 PowerPoint 自己弹它自己的导航。
+        /// </summary>
         public bool TryShowSlideNavigation()
         {
-            // 右键菜单 / 导航面板：.NET 下没有可靠的等价操作。
-            // 保留方法以满足接口，行为是"翻到下一页"——与旧实现保持一致的语义。
-            return TryNavigateNext();
+            try
+            {
+                IntPtr hwnd = FindSlideShowWindowHandle();
+
+                if (hwnd == IntPtr.Zero)
+                {
+                    LogHelper.WriteLogToFile("调出PPT导航失败：找不到放映窗口", LogHelper.LogType.Warning);
+                    return false;
+                }
+
+                // PowerPoint 放映态下"显示幻灯片导航"没有公开 COM 入口，
+                // 可靠做法是把焦点给放映窗口，再发它的导航快捷键。
+                // 注意：这里发的是 PowerPoint 自己的按键，不是我们自己的 UI。
+                SetForegroundWindow(hwnd);
+                System.Threading.Thread.Sleep(80);
+                SendEsc(hwnd);
+                System.Threading.Thread.Sleep(150);
+                LogHelper.WriteLogToFile("已请求 PowerPoint 原版导航", LogHelper.LogType.Event);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"调出PPT导航异常: {ex.Message}", LogHelper.LogType.Error);
+                return false;
+            }
         }
 
         public List<PPTSlideThumbnail> ExportSlideThumbnails(int width, int height, IProgress<double> progress = null)
