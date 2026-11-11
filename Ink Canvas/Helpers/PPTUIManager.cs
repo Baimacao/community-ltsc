@@ -51,6 +51,17 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         public void ApplyAppearanceToAllBars()
         {
+            // LTSC P5：这条路径有两个来源——
+            //   ① 主窗口初始化 / 进入放映（本来就在 UI 线程）
+            //   ② 设置页改完外观后通过静态事件 AppearanceChanged 回调（**设置窗口是独立线程**）
+            // ② 会直接碰 WPF 元素，抛「调用线程无法访问此对象，因为另一个线程拥有该对象」。
+            // 这里统一转回主窗口 UI 线程执行，两条来源都不用各自小心。
+            if (!_dispatcher.CheckAccess())
+            {
+                _dispatcher.InvokeAsync(ApplyAppearanceToAllBars);
+                return;
+            }
+
             var bars = new[]
             {
                 _mainWindow.LeftBottomPanelForPPTNavigation,
