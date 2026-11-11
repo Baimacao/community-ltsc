@@ -139,7 +139,7 @@ namespace Ink_Canvas
 
             if (!skipVerification)
             {
-                bool ok = await SecurityManager.PromptAndVerifyPasswordOrTotpAsync(
+                bool ok = await SecurityManager.PromptAndVerifyAsync(
                     Settings,
                     this,
                     MainWindowStrings.Main_Freeze_VerifyTitle,

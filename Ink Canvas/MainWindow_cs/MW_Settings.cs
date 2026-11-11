@@ -1111,7 +1111,7 @@ namespace Ink_Canvas
             {
                 if (sender != null && Ink_Canvas.Helpers.SecurityManager.IsPasswordRequiredForResetConfig(Settings))
                 {
-                    bool ok = await Ink_Canvas.Helpers.SecurityManager.PromptAndVerifyPasswordOrTotpAsync(Settings, this, Properties.MainWindowStrings.Main_Settings_ResetVerify, Properties.MainWindowStrings.Main_Settings_ResetVerifyMessage);
+                    bool ok = await Ink_Canvas.Helpers.SecurityManager.PromptAndVerifyAsync(Settings, this, Properties.MainWindowStrings.Main_Settings_ResetVerify, Properties.MainWindowStrings.Main_Settings_ResetVerifyMessage);
                     if (!ok) return;
                 }
             }

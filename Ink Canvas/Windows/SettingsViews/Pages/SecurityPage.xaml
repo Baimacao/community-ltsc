@@ -58,30 +58,6 @@
                                 Click="BtnSetOrChangePassword_Click" />
                     </ui:SettingsCard>
 
-                    <controls:LabeledSettingsCard x:Name="CardTotpEnabled"
-                            Header="{x:Static props:SecurityStrings.Security_EnableTotp}"
-                            Description="{x:Static props:SecurityStrings.Security_EnableTotpHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Permissions}"
-                            SwitchName="ToggleSwitchTotpEnabled"
-                            Toggled="ToggleSwitchTotpEnabled_Toggled" />
-
-                    <ui:SettingsCard x:Name="CardTotpManage"
-                                     Header="{x:Static props:SecurityStrings.Security_TotpSecretKey}"
-                                     Description="{x:Static props:SecurityStrings.Security_TotpSecretKeyHint}">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Lock}" />
-                        </ui:SettingsCard.HeaderIcon>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                            <TextBox x:Name="TextBoxTotpSecret"
-                                     Width="260"
-                                     IsReadOnly="True" />
-                            <Button x:Name="BtnGenerateTotpSecret"
-                                    Content="{x:Static props:SecurityStrings.Security_GenerateOrResetKey}"
-                                    MinWidth="120"
-                                    Click="BtnGenerateTotpSecret_Click" />
-                        </ikw:SimpleStackPanel>
-                    </ui:SettingsCard>
-
                     <controls:LabeledSettingsCard x:Name="CardRequirePasswordOnExit"
                             Header="{x:Static props:SecurityStrings.Security_RequirePasswordOnExit}"
                             Description="{x:Static props:SecurityStrings.SecurityPanel__InkCanvasForClass_Hint}"
@@ -109,55 +85,6 @@
                             Icon="{x:Static ui:SegoeFluentIcons.People}"
                             SwitchName="ToggleSwitchRequirePasswordOnModifyOrClearNameList"
                             Toggled="ToggleSwitchRequirePasswordOnModifyOrClearNameList_Toggled" />
-
-                    <!-- U盘验证 -->
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:SecurityStrings.Security_UsbSectionHeader}" />
-
-                    <ui:InfoBar IsClosable="False"
-                                IsOpen="True"
-                                Severity="Informational"
-                                Title="{x:Static props:SecurityStrings.Security_InfoBarTitle}"
-                                Message="{x:Static props:SecurityStrings.Security_UsbInfoBarMessage}" />
-
-                    <controls:LabeledSettingsCard x:Name="CardUsbVerificationEnabled"
-                            Header="{x:Static props:SecurityStrings.Security_EnableUsbVerification}"
-                            Description="{x:Static props:SecurityStrings.Security_EnableUsbVerification_Hint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Permissions}"
-                            SwitchName="ToggleSwitchUsbVerificationEnabled"
-                            Toggled="ToggleSwitchUsbVerificationEnabled_Toggled" />
-
-                    <ui:SettingsCard x:Name="CardUsbSnManage"
-                                     Header="{x:Static props:SecurityStrings.Security_UsbAuthorizedSns}"
-                                     Description="{x:Static props:SecurityStrings.Security_UsbAuthorizedSns_Hint}">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Lock}" />
-                        </ui:SettingsCard.HeaderIcon>
-                        <TextBox x:Name="TextBoxUsbAuthorizedSns"
-                                 Width="320"
-                                 TextChanged="TextBoxUsbAuthorizedSns_TextChanged" />
-                    </ui:SettingsCard>
-
-                    <ui:SettingsCard x:Name="CardUsbSnRegister"
-                                     Header="{x:Static props:SecurityStrings.Security_UsbDetectAndAuthorize}"
-                                     Description="{x:Static props:SecurityStrings.Security_UsbDetectAndAuthorize_Hint}">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Permissions}" />
-                        </ui:SettingsCard.HeaderIcon>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                            <ComboBox x:Name="ComboBoxUsbDrives"
-                                      Width="240" />
-                            <Button x:Name="BtnRefreshUsbDrives"
-                                    Content="{x:Static props:SecurityStrings.Security_UsbRefreshDrives}"
-                                    MinWidth="80"
-                                    Click="BtnRefreshUsbDrives_Click" />
-                            <Button x:Name="BtnAuthorizeSelectedDrive"
-                                    Content="{x:Static props:SecurityStrings.Security_UsbAuthorizeDrive}"
-                                    MinWidth="100"
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Click="BtnAuthorizeSelectedDrive_Click" />
-                        </ikw:SimpleStackPanel>
-                    </ui:SettingsCard>
 
                     <!-- 进程保护：LTSC 已移除（决策 D-04）。
                          原实现长期锁住程序目录并在每次写入前强制 GC，见 REMOVED.md。 -->

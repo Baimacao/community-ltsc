@@ -39,21 +39,11 @@ namespace Ink_Canvas.Helpers
                 && !string.IsNullOrWhiteSpace(settings.Security.PasswordSalt)
                 && !string.IsNullOrWhiteSpace(settings.Security.PasswordHash);
 
-        public static bool HasTotpConfigured(Settings settings)
-            => settings?.Security != null
-               && settings.Security.TotpEnabled
-               && !string.IsNullOrWhiteSpace(settings.Security.TotpSecret);
-
-        public static bool IsTotpOnlyMode(Settings settings)
-            => settings?.Security != null
-               && settings.Security.TotpOnlyMode
-               && HasTotpConfigured(settings);
-
         public static bool IsSecurityFeatureEnabled(Settings settings)
-            => IsPasswordFeatureEnabled(settings) || HasTotpConfigured(settings);
+            => IsPasswordFeatureEnabled(settings);
 
         public static bool IsSecurityConfigured(Settings settings)
-            => HasPasswordConfigured(settings) || HasTotpConfigured(settings);
+            => HasPasswordConfigured(settings);
 
         /// <summary>
         /// 确定在退出应用时是否需要输入密码或 TOTP 验证码。
@@ -114,17 +104,6 @@ namespace Ink_Canvas.Helpers
         {
             if (!HasPasswordConfigured(settings)) return true;
 
-            // 1. Check if USB verification is enabled and active
-            bool usbVerified = false;
-            DispatcherTimer usbCheckTimer = null;
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                if (UsbSecurityManager.VerifyCurrentUsbDrives(settings))
-                {
-                    return true;
-                }
-            }
-
             var dialog = new ContentDialog
             {
                 Title = title,
@@ -138,12 +117,7 @@ namespace Ink_Canvas.Helpers
                 Margin = new Thickness(0, 10, 0, 0)
             };
 
-            // Enhance message if USB verification is enabled
             string finalMessage = message;
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                finalMessage += SecurityStrings.Security_UsbBypassDialogHint;
-            }
 
             var textBlock = new TextBlock
             {
@@ -168,24 +142,6 @@ namespace Ink_Canvas.Helpers
                 noFocusModeWasTemporarilyDisabled = true;
             }
 
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                usbCheckTimer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromSeconds(1)
-                };
-                usbCheckTimer.Tick += (s, e) =>
-                {
-                    if (UsbSecurityManager.VerifyCurrentUsbDrives(settings))
-                    {
-                        usbVerified = true;
-                        usbCheckTimer.Stop();
-                        dialog.Hide();
-                    }
-                };
-                usbCheckTimer.Start();
-            }
-
             try
             {
                 dialog.Opened += (s, e) =>
@@ -198,152 +154,12 @@ namespace Ink_Canvas.Helpers
                 };
 
                 var result = await dialog.ShowAsync();
-                if (usbVerified) return true;
                 if (result != ContentDialogResult.Primary) return false;
 
                 return VerifyPassword(settings, passwordBox.Password);
             }
             finally
             {
-                if (usbCheckTimer != null)
-                {
-                    usbCheckTimer.Stop();
-                }
-
-                if (noFocusModeWasTemporarilyDisabled)
-                {
-                    WindowSettingsHelper.IsTemporarilyDisablingNoFocusMode = false;
-                    WindowSettingsHelper.ApplyNoFocusMode(owner);
-                }
-            }
-        }
-
-        public static async Task<bool> PromptAndVerifyPasswordOrTotpAsync(Settings settings, Window owner, string title, string message)
-        {
-            bool hasPassword = IsPasswordFeatureEnabled(settings) && HasPasswordConfigured(settings);
-            bool hasTotp = HasTotpConfigured(settings);
-            bool totpOnlyMode = IsTotpOnlyMode(settings);
-            if (!hasPassword && !hasTotp) return true;
-
-            if (totpOnlyMode)
-            {
-                hasPassword = false;
-            }
-
-            // 1. Check if USB verification is enabled and active
-            bool usbVerified = false;
-            DispatcherTimer usbCheckTimer = null;
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                if (UsbSecurityManager.VerifyCurrentUsbDrives(settings))
-                {
-                    return true;
-                }
-            }
-
-            var dialog = new ContentDialog
-            {
-                Title = title,
-                PrimaryButtonText = CommonStrings.Common_OK,
-                SecondaryButtonText = CommonStrings.Common_Cancel
-            };
-
-            var panel = new SimpleStackPanel
-            {
-                Spacing = 12,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
-
-            var inputBox = new PasswordBox
-            {
-                Height = 32
-            };
-            panel.Children.Add(inputBox);
-
-            string hintText;
-            if (totpOnlyMode)
-            {
-                hintText = MainWindowStrings.Main_Security_TotpOnlyHint;
-            }
-            else if (hasPassword && hasTotp)
-            {
-                hintText = MainWindowStrings.Main_Security_PasswordOrTotpHint;
-            }
-            else if (hasTotp)
-            {
-                hintText = MainWindowStrings.Main_Security_TotpOnlyHint;
-            }
-            else
-            {
-                hintText = MainWindowStrings.Main_Security_PasswordOnlyHint;
-            }
-
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                hintText += SecurityStrings.Security_UsbBypassDialogHintShort;
-            }
-
-            panel.Children.Add(new TextBlock
-            {
-                Text = hintText,
-                TextWrapping = TextWrapping.Wrap,
-                Opacity = 0.72
-            });
-
-            dialog.Content = panel;
-
-            bool noFocusModeWasTemporarilyDisabled = false;
-            if (owner != null && owner.IsVisible && settings?.Advanced?.IsNoFocusMode == true)
-            {
-                WindowSettingsHelper.IsTemporarilyDisablingNoFocusMode = true;
-                WindowSettingsHelper.ApplyNoFocusMode(owner);
-                noFocusModeWasTemporarilyDisabled = true;
-            }
-
-            if (settings?.Security?.UsbVerificationEnabled == true)
-            {
-                usbCheckTimer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromSeconds(1)
-                };
-                usbCheckTimer.Tick += (s, e) =>
-                {
-                    if (UsbSecurityManager.VerifyCurrentUsbDrives(settings))
-                    {
-                        usbVerified = true;
-                        usbCheckTimer.Stop();
-                        dialog.Hide();
-                    }
-                };
-                usbCheckTimer.Start();
-            }
-
-            try
-            {
-                dialog.Opened += (s, e) =>
-                {
-                    inputBox.Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        inputBox.Focus();
-                        Keyboard.Focus(inputBox);
-                    }), DispatcherPriority.Input);
-                };
-
-                var result = await dialog.ShowAsync();
-                if (usbVerified) return true;
-                if (result != ContentDialogResult.Primary) return false;
-
-                string input = inputBox.Password ?? "";
-                if (!totpOnlyMode && hasPassword && VerifyPassword(settings, input)) return true;
-                return hasTotp && VerifyTotp(settings, input);
-            }
-            finally
-            {
-                if (usbCheckTimer != null)
-                {
-                    usbCheckTimer.Stop();
-                }
-
                 if (noFocusModeWasTemporarilyDisabled)
                 {
                     WindowSettingsHelper.IsTemporarilyDisablingNoFocusMode = false;
@@ -571,42 +387,6 @@ namespace Ink_Canvas.Helpers
             settings.Security.PasswordHash = "";
         }
 
-        public static string GenerateTotpSecret()
-        {
-            var bytes = new byte[20];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(bytes);
-            }
-            return Base32Encode(bytes);
-        }
-
-        public static bool VerifyTotp(Settings settings, string code)
-        {
-            if (!HasTotpConfigured(settings) || string.IsNullOrWhiteSpace(code)) return false;
-
-            string normalized = new string(code.Where(char.IsDigit).ToArray());
-            if (normalized.Length != 6) return false;
-
-            try
-            {
-                var secret = Base32Decode(settings.Security.TotpSecret);
-                long step = DateTimeOffset.UtcNow.ToUnixTimeSeconds() / 30;
-                for (long offset = -1; offset <= 1; offset++)
-                {
-                    string expected = GenerateTotpCode(secret, step + offset);
-                    if (FixedTimeEquals(Encoding.ASCII.GetBytes(normalized), Encoding.ASCII.GetBytes(expected)))
-                        return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// 使用 PBKDF2（Rfc2898）从给定的密码和盐派生指定长度的密钥字节。
         /// </summary>
@@ -640,88 +420,5 @@ namespace Ink_Canvas.Helpers
             }
             return diff == 0;
         }
-
-        private static string GenerateTotpCode(byte[] secret, long timeStep)
-        {
-            var counter = BitConverter.GetBytes(timeStep);
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(counter);
-
-            using (var hmac = new HMACSHA1(secret))
-            {
-                var hash = hmac.ComputeHash(counter);
-                int offset = hash[hash.Length - 1] & 0x0f;
-                int binary =
-                    ((hash[offset] & 0x7f) << 24)
-                    | ((hash[offset + 1] & 0xff) << 16)
-                    | ((hash[offset + 2] & 0xff) << 8)
-                    | (hash[offset + 3] & 0xff);
-                return (binary % 1_000_000).ToString("D6");
-            }
-        }
-
-        private static string Base32Encode(byte[] data)
-        {
-            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-            if (data == null || data.Length == 0) return "";
-
-            var result = new StringBuilder();
-            int buffer = data[0];
-            int next = 1;
-            int bitsLeft = 8;
-            while (bitsLeft > 0 || next < data.Length)
-            {
-                if (bitsLeft < 5)
-                {
-                    if (next < data.Length)
-                    {
-                        buffer <<= 8;
-                        buffer |= data[next++] & 0xff;
-                        bitsLeft += 8;
-                    }
-                    else
-                    {
-                        int pad = 5 - bitsLeft;
-                        buffer <<= pad;
-                        bitsLeft += pad;
-                    }
-                }
-
-                int index = 0x1f & (buffer >> (bitsLeft - 5));
-                bitsLeft -= 5;
-                result.Append(alphabet[index]);
-            }
-
-            return result.ToString();
-        }
-
-        private static byte[] Base32Decode(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input)) return Array.Empty<byte>();
-
-            string normalized = input.Trim().Replace(" ", "").Replace("-", "").TrimEnd('=').ToUpperInvariant();
-            var bytes = new System.Collections.Generic.List<byte>();
-            int buffer = 0;
-            int bitsLeft = 0;
-
-            foreach (char c in normalized)
-            {
-                int value;
-                if (c >= 'A' && c <= 'Z') value = c - 'A';
-                else if (c >= '2' && c <= '7') value = c - '2' + 26;
-                else continue;
-
-                buffer = (buffer << 5) | value;
-                bitsLeft += 5;
-
-                if (bitsLeft >= 8)
-                {
-                    bytes.Add((byte)((buffer >> (bitsLeft - 8)) & 0xff));
-                    bitsLeft -= 8;
-                }
-            }
-
-            return bytes.ToArray();
-        }
-    }
+}
 }

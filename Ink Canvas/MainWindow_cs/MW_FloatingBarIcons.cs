@@ -4345,7 +4345,7 @@ namespace Ink_Canvas
             {
                 if (Ink_Canvas.Helpers.SecurityManager.IsPasswordRequiredForEnterSettings(Settings))
                 {
-                    bool ok = await Ink_Canvas.Helpers.SecurityManager.PromptAndVerifyPasswordOrTotpAsync(Settings, this, Properties.MainWindowStrings.Main_EnterSettings, Properties.MainWindowStrings.Main_EnterSettings_Message);
+                    bool ok = await Ink_Canvas.Helpers.SecurityManager.PromptAndVerifyAsync(Settings, this, Properties.MainWindowStrings.Main_EnterSettings, Properties.MainWindowStrings.Main_EnterSettings_Message);
                     if (!ok) return;
                 }
             }

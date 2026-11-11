@@ -159,12 +159,6 @@ namespace Ink_Canvas
         public string PasswordSalt { get; set; } = "";
         [JsonProperty("passwordHash")]
         public string PasswordHash { get; set; } = "";
-        [JsonProperty("totpEnabled")]
-        public bool TotpEnabled { get; set; } = false;
-        [JsonProperty("totpSecret")]
-        public string TotpSecret { get; set; } = "";
-        [JsonProperty("totpOnlyMode")]
-        public bool TotpOnlyMode { get; set; } = false;
         [JsonProperty("requirePasswordOnExit")]
         public bool RequirePasswordOnExit { get; set; } = false;
         [JsonProperty("requirePasswordOnEnterSettings")]
@@ -173,10 +167,6 @@ namespace Ink_Canvas
         public bool RequirePasswordOnResetConfig { get; set; } = false;
         [JsonProperty("requirePasswordOnModifyOrClearNameList")]
         public bool RequirePasswordOnModifyOrClearNameList { get; set; } = false;
-        [JsonProperty("usbVerificationEnabled")]
-        public bool UsbVerificationEnabled { get; set; } = false;
-        [JsonProperty("usbAuthorizedSns")]
-        public string UsbAuthorizedSns { get; set; } = "";
     }
 
     public class Canvas

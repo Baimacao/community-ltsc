@@ -1760,7 +1760,7 @@ namespace Ink_Canvas
                     {
                         try
                         {
-                            bool ok = await SecurityManager.PromptAndVerifyPasswordOrTotpAsync(Settings, this, Properties.MainWindowStrings.Main_ExitVerify, Properties.MainWindowStrings.Main_ExitVerifyWithTotp);
+                            bool ok = await SecurityManager.PromptAndVerifyAsync(Settings, this, Properties.MainWindowStrings.Main_ExitVerify, Properties.MainWindowStrings.Main_ExitVerifyWithTotp);
                             if (!ok)
                             {
                                 _forceCloseFromExitOrRestartButton = false;
