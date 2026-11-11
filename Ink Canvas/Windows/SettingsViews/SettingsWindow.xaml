@@ -375,7 +375,7 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <!-- 点名与计时器 -->
+                <!-- 关于 -->
 
                 <ui:NavigationViewItemHeader Content="{x:Static props:NavStrings.Nav_AboutInkCanvas}"/>
 
@@ -400,24 +400,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
 
-            <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem
-                    x:Name="FriendlyLinksItem"
-                    Content="{x:Static props:NavStrings.Nav_FriendlyLinks}"
-                    Tag="FriendlyLinksPage">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Link}" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-                <ui:NavigationViewItem
-                    x:Name="AboutItem"
-                    Content="{x:Static props:NavStrings.Nav_AboutInkCanvas}"
-                    Tag="AboutPage">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Help" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-            </ui:NavigationView.FooterMenuItems>
 
             <ui:Frame x:Name="rootFrame" Navigated="OnRootFrameNavigated" NavigationUIVisibility="Hidden" />
             <!--我要玩原神-->
