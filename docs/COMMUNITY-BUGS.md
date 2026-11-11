@@ -248,3 +248,58 @@ COM 对象 → PPT 卡死。这精确解释了「关闭长按翻页就好了」�
 - 「已修」必须有 commit + 可复算的证据（行号、计数、复现步骤）
 - 「不存在 / 不修」必须有所有者裁决或代码证明
 - 推断阶段的排期判断，动过手之后要回来改，不能留着当结论
+
+
+---
+
+## 九、C8 / C9 的结论（2026-11-11 晚）
+
+### C8 滑块拖不动 —— 已改，但**未经真机触屏验证**
+
+社区原话「只能通过屏幕键盘来移动」这个细节给了方向：屏幕键盘发的是鼠标事件。
+
+**查证过程中我撤回了两条自己的推断**：
+
+1. 一开始说「触摸被提升成鼠标事件导致 TouchDown 被吞」——推断，没验证，撤回。
+2. 接着说「设置窗口是独立线程，跨线程访问」——查了打开路径
+   （`MW_FloatingBarIcons.cs:4362` 直接 `new SettingsWindow()`），**同线程**，撤回。
+
+最后站得住的依据来自仓库里现成的注释。`TouchAwareDragDropHelper.cs`
+的 `GripHandle_PreviewStylusDown` 写着：
+
+> 禁用所有父级 ScrollViewer 的 IsManipulationEnabled，防止触屏移动被处理为 panning
+
+而 `SliderTouchHelper.AddTouchSupportToAllSliders` 只遍历树找 Slider，
+从来没管过它们外面裹着的 ScrollViewer。
+
+**修法**（`c8634f9d`）：给 Slider 自己开 `IsManipulationEnabled` 的同时，
+沿视觉树往上把所有父级 ScrollViewer 的该项关掉（附加属性记原值）。
+
+**验证边界**：Build 0 error。**没有触屏设备，无法验证拖动是否真的变顺。**
+这条基于同仓库已验证的同类做法 + 机制推理，不是实测通过。需要真机复验才算闭环。
+
+若复验后仍拖不动，下一个怀疑点是 Slider 模板取不到 `PART_Track`，
+导致回退算法里硬编码的 `thumbSize = 20` 与实际滑块尺寸不符 —— 那是独立问题。
+
+### C9 「每次更新可能会重置设置」—— 在 LTSC 上**不成立**
+
+D-01 已经把自动更新整个移除（`AutoUpdateHelper` 现在只剩占位成员，
+`HandleUpdateModeStartup` 恒返回 false，所有联网/下载/替换文件的能力都删了）。
+
+**没有自动更新，就不存在「更新导致的设置重置」。**
+
+检查了实际会碰配置的 `CleanupObsoleteSettings`（`MW_SettingsToLoad.cs:742`）：
+它的逻辑是拿当前版本的默认配置做 schema，**只删「默认配置里已经不存在的键」，
+不删值**。设计是对的。
+
+顺带发现一处不足（不影响 C9 结论，另记）：
+`RemoveObsoleteProperties` 处理数组时有个前置条件——
+
+    if (userArray.Count > 0 && defaultArray.Count > 0)
+        if (userArray[0].Type == Object && defaultArray[0].Type == Object)
+
+**默认数组为空时整个数组跳过检查**，用户数组里的过期字段永远清不掉。
+这是「该清的没清」，不是「用户的值丢了」，和 C9 反方向。暂不改。
+
+用户手动下载新版本覆盖安装导致设置重置，属于部署/打包问题（有没有把
+`Configs/` 排除在覆盖范围外），不是这轮代码能解决的，留给 P6 交付时定。
