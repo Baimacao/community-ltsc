@@ -243,15 +243,6 @@
                     </ui:SettingsCard>
 
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:HomeStrings.Home_PluginSettings}" />
-                    <ui:SettingsCard Header="{x:Static props:NavStrings.Nav_Plugins}" Description="{x:Static props:NavStrings.Settings_Plugins}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="PluginPage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Puzzle}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:NavStrings.Nav_FriendlyLinks}" />
                     <ui:SettingsCard Header="{x:Static props:NavStrings.Nav_FriendlyLinks}" Description="{x:Static props:HomeStrings.Home_FriendlyLinks}"
                         IsClickEnabled="True" Click="QuickNavCard_Click" Tag="FriendlyLinksPage">
