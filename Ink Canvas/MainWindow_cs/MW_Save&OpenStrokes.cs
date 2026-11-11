@@ -699,11 +699,20 @@ namespace Ink_Canvas
                             writer.WriteLine($"当前页面: {CurrentWhiteboardIndex}");
                             writer.WriteLine($"总页面数: {WhiteboardTotalCount}");
                         }
-                        else if (pptApplication != null)
+                        else
                         {
-                            writer.WriteLine($"PPT名称: {pptApplication.SlideShowWindows[1].Presentation.Name}");
-                            writer.WriteLine($"PPT总页数: {pptApplication.SlideShowWindows[1].Presentation.Slides.Count}");
-                            writer.WriteLine($"PPT文件路径: {pptApplication.SlideShowWindows[1].Presentation.FullName}");
+                            // LTSC P1：原来读 pptApplication.SlideShowWindows[1].Presentation.*，
+                            // 那是「放映窗口的演示文稿」。统一改走 PptBridge，
+                            // 名字和路径同源（ActivePresentation），不会出现
+                            // 「名字是 A、路径是 B」的错配。
+                            var pptName = _pptManager?.GetPresentationName();
+                            var pptPath = _pptManager?.GetPresentationPath();
+                            if (!string.IsNullOrEmpty(pptName))
+                            {
+                                writer.WriteLine($"PPT名称: {pptName}");
+                                writer.WriteLine($"PPT总页数: {_pptManager?.SlidesCount ?? 0}");
+                                writer.WriteLine($"PPT文件路径: {pptPath}");
+                            }
                         }
 
                         for (int i = 0; i < allPageStrokes.Count; i++)
@@ -809,11 +818,20 @@ namespace Ink_Canvas
                             writer.WriteLine($"当前页面: {CurrentWhiteboardIndex}");
                             writer.WriteLine($"总页面数: {WhiteboardTotalCount}");
                         }
-                        else if (pptApplication != null)
+                        else
                         {
-                            writer.WriteLine($"PPT名称: {pptApplication.SlideShowWindows[1].Presentation.Name}");
-                            writer.WriteLine($"PPT总页数: {pptApplication.SlideShowWindows[1].Presentation.Slides.Count}");
-                            writer.WriteLine($"PPT文件路径: {pptApplication.SlideShowWindows[1].Presentation.FullName}");
+                            // LTSC P1：原来读 pptApplication.SlideShowWindows[1].Presentation.*，
+                            // 那是「放映窗口的演示文稿」。统一改走 PptBridge，
+                            // 名字和路径同源（ActivePresentation），不会出现
+                            // 「名字是 A、路径是 B」的错配。
+                            var pptName = _pptManager?.GetPresentationName();
+                            var pptPath = _pptManager?.GetPresentationPath();
+                            if (!string.IsNullOrEmpty(pptName))
+                            {
+                                writer.WriteLine($"PPT名称: {pptName}");
+                                writer.WriteLine($"PPT总页数: {_pptManager?.SlidesCount ?? 0}");
+                                writer.WriteLine($"PPT文件路径: {pptPath}");
+                            }
                         }
 
                         for (int i = 0; i < allPageStrokes.Count; i++)
@@ -1088,7 +1106,7 @@ namespace Ink_Canvas
                     bool isWhiteboardMode = metadata.ContainsKey("模式") && metadata["模式"].Contains(FloatingBarStrings.FloatingBar_Whiteboard);
 
                     // 检查当前是否处于PPT模式
-                    bool isCurrentlyInPPTMode = IsInPPTPresentationMode && pptApplication != null;
+                    bool isCurrentlyInPPTMode = IsInPPTPresentationMode && _pptManager != null && _pptManager.IsInSlideShow;
 
                     // 检查当前是否处于白板模式
                     bool isCurrentlyInWhiteboardMode = currentMode != 0;
@@ -1171,7 +1189,7 @@ namespace Ink_Canvas
             try
             {
                 // 确保当前处于PPT放映模式
-                if (!IsInPPTPresentationMode || pptApplication == null)
+                if (!IsInPPTPresentationMode || _pptManager == null || !_pptManager.IsInSlideShow)
                 {
                     throw new InvalidOperationException("当前不在PPT放映模式，无法恢复PPT墨迹");
                 }
@@ -1180,7 +1198,7 @@ namespace Ink_Canvas
                 if (metadata.ContainsKey("PPT文件路径"))
                 {
                     string savedPPTPath = metadata["PPT文件路径"];
-                    string currentPPTPath = pptApplication.SlideShowWindows[1].Presentation.FullName;
+                    string currentPPTPath = _pptManager?.GetPresentationPath();
 
                     if (!string.IsNullOrEmpty(savedPPTPath) && !string.IsNullOrEmpty(currentPPTPath))
                     {

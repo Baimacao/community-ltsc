@@ -89,11 +89,6 @@ namespace Ink_Canvas
 
         #region PPT Application Variables
         /// <summary>
-        /// PowerPoint应用程序实例，用于与PowerPoint进行交互。
-        /// </summary>
-        public static Microsoft.Office.Interop.PowerPoint.Application pptApplication;
-
-        /// <summary>
         /// 当前活动的PowerPoint演示文稿。
         /// </summary>
         public static Presentation presentation;
@@ -147,16 +142,6 @@ namespace Ink_Canvas
         private const int LongPressInterval = 50; // 长按翻页间隔（毫秒）
 
         // PowerPoint应用程序守护相关字段
-        /// <summary>
-        /// 用于监控PowerPoint应用程序状态的定时器。
-        /// </summary>
-        private DispatcherTimer _powerPointProcessMonitorTimer;
-
-        /// <summary>
-        /// 应用程序监控间隔（毫秒），即每隔多长时间检查一次PowerPoint应用程序状态。
-        /// </summary>
-        private const int ProcessMonitorInterval = 1000; // 应用程序监控间隔（毫秒）
-
         // 上次播放位置相关字段
         /// <summary>
         /// 上次播放的幻灯片页码。
@@ -269,13 +254,10 @@ namespace Ink_Canvas
                 try
                 {
                     StopPowerPointProcessMonitoring();
-                    _powerPointProcessMonitorTimer = null;
-                    ClosePowerPointApplication();
-                    ClearStaticInteropState();
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.WriteLogToFile($"清理 Interop 状态异常: {ex}", LogHelper.LogType.Warning);
+                    LogHelper.WriteLogToFile($"清理 PPT 联动状态异常: {ex}", LogHelper.LogType.Warning);
                 }
 
                 // LTSC D-02c: PPT 联动统一到 PptBridge 一套实现。
@@ -362,364 +344,48 @@ namespace Ink_Canvas
 
         #region PowerPoint Application Management
         /// <summary>
-        /// 启动PowerPoint应用程序守护
+        /// 启动 PPT 联动监控。
         /// </summary>
         /// <remarks>
-        /// 启动对本地 PowerPoint 应用实例的守护监控并在需要时创建应用程序实例。
-        /// 仅在 PowerPoint 增强功能已启用且未使用 ROT 链接时生效；方法将创建 PowerPoint 应用（若不存在）并启动用于定期检查应用状态的定时器。
+        /// LTSC P1：原实现会 new 一个 PowerPoint.Application、设 Visible=msoFalse、
+        /// 再起 1 秒守护定时器。而 Visible=msoFalse 在 PPT 已有可见窗口时必抛
+        /// 0x80048240（"Hiding the application window is not allowed"），
+        /// catch 里又不置空字段，于是每次开关都失败一次、还顺带 Quit 掉老师的 PPT。
+        ///
+        /// 现在只剩一件事：让 PptBridge 自己走 ROT 找已经在跑的 PowerPoint。
+        /// 不创建、不隐藏、不退出。
         /// </remarks>
         public void StartPowerPointProcessMonitoring()
         {
             try
             {
-                if (!Settings.PowerPointSettings.EnablePowerPointEnhancement) return;
-                if (Settings.PowerPointSettings.PPTLinkMode != PPTLinkMode.Com) return;
-
-                // 创建PowerPoint应用程序实例
-                CreatePowerPointApplication();
-
-                // 启动应用程序监控定时器
-                if (_powerPointProcessMonitorTimer == null)
-                {
-                    _powerPointProcessMonitorTimer = new DispatcherTimer();
-                    _powerPointProcessMonitorTimer.Interval = TimeSpan.FromMilliseconds(ProcessMonitorInterval);
-                    _powerPointProcessMonitorTimer.Tick += OnPowerPointApplicationMonitorTick;
-                }
-                _powerPointProcessMonitorTimer.Start();
-
-                LogHelper.WriteLogToFile("PowerPoint应用程序守护已启动", LogHelper.LogType.Event);
+                _pptManager?.StartMonitoring();
+                LogHelper.WriteLogToFile("PPT 联动监控已启动", LogHelper.LogType.Event);
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"启动PowerPoint应用程序守护失败: {ex}", LogHelper.LogType.Error);
+                LogHelper.WriteLogToFile($"启动 PPT 联动监控失败: {ex}", LogHelper.LogType.Error);
             }
         }
-
         /// <summary>
-        /// 停止PowerPoint应用程序守护
+        /// 停止 PPT 联动监控。
         /// </summary>
+        /// <remarks>
+        /// LTSC P1：原实现会调用 ClosePowerPointApplication()，
+        /// 那是 pptApplication.Quit() —— 直接退出 PowerPoint 进程，
+        /// 老师的演示文稿跟着一起没了。现在只断开 PptBridge 的轮询与 COM 连接，
+        /// 不碰 PowerPoint 本身。
+        /// </remarks>
         public void StopPowerPointProcessMonitoring(bool isShutdown = false)
         {
             try
             {
-                // 停止应用程序监控定时器
-                _powerPointProcessMonitorTimer?.Stop();
-
-                // 关闭PowerPoint应用程序（包括关机时）
-                ClosePowerPointApplication(isShutdown);
-
-                LogHelper.WriteLogToFile("PowerPoint应用程序守护已停止", LogHelper.LogType.Event);
+                _pptManager?.StopMonitoring(isShutdown: isShutdown);
+                LogHelper.WriteLogToFile("PPT 联动监控已停止", LogHelper.LogType.Event);
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"停止PowerPoint应用程序守护失败: {ex}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 创建PowerPoint应用程序实例
-        /// <summary>
-        /// 创建并初始化一个隐藏的 PowerPoint 应用程序 COM 实例，并在可用时将该实例注入到当前的 PPT 管理器中。
-        /// </summary>
-        /// <remarks>
-        /// 如果配置为使用 ROT 链接或已有有效的 PowerPoint 实例，则不会创建新实例。创建的实例会被设置为不可见并最小化；在实例准备就绪后会通过延迟调用将其设置到 PPT 管理器（SetPPTManagerApplication）。任何创建或注入失败的情况会被记录日志，但不会抛出异常给调用者。
-        /// </remarks>
-        private void CreatePowerPointApplication()
-        {
-            try
-            {
-                if (Settings.PowerPointSettings.PPTLinkMode != PPTLinkMode.Com) return;
-                // 如果应用程序已存在且有效，则不重复创建
-                if (pptApplication != null && IsPowerPointApplicationValid())
-                {
-                    return;
-                }
-
-                // 创建新的PowerPoint应用程序实例
-                pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
-
-                // 设置为不可见，作为后台进程
-                pptApplication.Visible = MsoTriState.msoFalse;
-
-                // 设置应用程序属性
-                pptApplication.WindowState = PpWindowState.ppWindowMinimized;
-
-                // 直接设置PPTManager的PPTApplication属性，绕过COM注册问题
-                Task.Delay(1000).ContinueWith(_ =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        try
-                        {
-                            // 直接设置PPTManager的PowerPoint应用程序实例
-                            if (_pptManager != null)
-                            {
-                                // 使用反射或直接访问来设置PPTManager的PPTApplication
-                                SetPPTManagerApplication(pptApplication);
-                                LogHelper.WriteLogToFile("已直接设置PPTManager的PowerPoint应用程序实例", LogHelper.LogType.Event);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"设置PPTManager的PowerPoint应用程序实例失败: {ex}", LogHelper.LogType.Error);
-                        }
-                    });
-                });
-
-                LogHelper.WriteLogToFile("PowerPoint应用程序实例已创建", LogHelper.LogType.Event);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"创建PowerPoint应用程序实例失败: {ex}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 设置PPTManager的PowerPoint应用程序实例
-        /// </summary>
-        /// <remarks>
-        /// 将给定的 PowerPoint 应用实例注入到当前的 PPT 管理器中，若管理器为 null 或启用 ROT 链接则不做任何操作。
-        /// 尝试使用非公开的 `ConnectToPPT` 方法进行绑定，若不可用则回退到写入公共 `PPTApplication` 属性；操作结果和异常通过日志记录。
-        /// </remarks>
-        /// <param name="app">要注入的 PowerPoint 应用实例（Microsoft.Office.Interop.PowerPoint.Application）。</param>
-        private void SetPPTManagerApplication(Microsoft.Office.Interop.PowerPoint.Application app)
-        {
-            try
-            {
-                if (_pptManager == null) return;
-                if (Settings.PowerPointSettings.PPTLinkMode != PPTLinkMode.Com) return;
-
-                // 使用反射调用PPTManager的ConnectToPPT方法
-                var pptManagerType = _pptManager.GetType();
-                var connectMethod = pptManagerType.GetMethod("ConnectToPPT",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-                if (connectMethod != null)
-                {
-                    connectMethod.Invoke(_pptManager, new object[] { app });
-                    LogHelper.WriteLogToFile("通过ConnectToPPT方法设置PowerPoint应用程序实例", LogHelper.LogType.Event);
-                }
-                else
-                {
-                    // 如果无法通过反射调用，尝试直接设置属性
-                    var pptApplicationProperty = pptManagerType.GetProperty("PPTApplication",
-                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
-                    if (pptApplicationProperty != null && pptApplicationProperty.CanWrite)
-                    {
-                        pptApplicationProperty.SetValue(_pptManager, app);
-                        LogHelper.WriteLogToFile("通过属性设置PPTManager的PowerPoint应用程序实例", LogHelper.LogType.Event);
-                    }
-                    else
-                    {
-                        LogHelper.WriteLogToFile("无法设置PPTManager的PowerPoint应用程序实例", LogHelper.LogType.Warning);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"设置PPTManager的PowerPoint应用程序实例失败: {ex}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 检查PowerPoint应用程序是否有效
-        /// </summary>
-        /// <summary>
-        /// LTSC P-1：判断 PowerPoint 进程是否还活着，不碰 COM。
-        /// 用 OpenProcess + GetExitCodeProcess，纯本地调用，PPT 弹模态框也不受影响。
-        /// </summary>
-        private static bool IsPowerPointProcessAlive()
-        {
-            try
-            {
-                var procs = Process.GetProcessesByName("POWERPNT");
-                if (procs == null || procs.Length == 0)
-                {
-                    procs = Process.GetProcessesByName("wpp");
-                }
-                if (procs == null || procs.Length == 0) return false;
-                bool alive = false;
-                foreach (var p in procs)
-                {
-                    try { if (!p.HasExited) { alive = true; } }
-                    catch { }
-                    finally { try { p.Dispose(); } catch { } }
-                }
-                return alive;
-            }
-            catch { return false; }
-        }
-
-        private bool IsPowerPointApplicationValid()
-        {
-            // LTSC P-1：原实现在这里同步读 pptApplication.Name。
-            // 这是 UI 线程上的一次跨进程 COM 调用，PPT 弹任何模态框（保存提示、
-            // 只读提示、激活向导、修复提示）都会把它挂住，而 COM 的默认超时是
-            // 分钟级的——课上一打开课件就整窗冻住。审计给的实测就是这个。
-            //
-            // 现在只做不需要跨进程的东西：
-            //   ① 对象在不在、是不是 COM 对象（纯托管判断）
-            //   ② 进程还活着吗（Win32 EnumProcesses，本地调用，毫秒级，不会阻塞在 PPT 上）
-            // 真正的「COM 还能不能用」不在这里判——让用到它的那条路径自己吃异常，
-            // 那才是它该付代价的地方，而且不会把 UI 线程拖下水。
-            try
-            {
-                if (pptApplication == null) return false;
-                if (!Marshal.IsComObject(pptApplication)) return false;
-
-                // 进程级探活：不碰 COM，不会因为 PPT 弹框而卡住
-                return IsPowerPointProcessAlive();
-            }
-            catch (COMException comEx)
-            {
-                var hr = (uint)comEx.HResult;
-                // 如果COM对象已失效，返回false
-                if (hr == 0x8001010E || hr == 0x80004005 || hr == 0x800706B5)
-                {
-                    return false;
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 关闭PowerPoint应用程序
-        /// </summary>
-        /// <remarks>
-        /// 关闭当前的 PowerPoint 应用程序及其所有打开的演示文稿，释放相关 COM 资源并清理静态互操作状态。</summary>
-        /// 会尝试关闭所有打开的演示文稿、退出 PowerPoint 进程、释放 COM 对象引用，并将内部 PowerPoint 互操作状态重置为初始值；操作结果会被记录到日志，发生异常时会记录错误并仍然尝试清理互操作状态。
-        /// </remarks>
-        private void ClosePowerPointApplication(bool isShutdown = false)
-        {
-            try
-            {
-                if (pptApplication != null)
-                {
-                    // 关闭所有打开的演示文稿
-                    try
-                    {
-                        if (pptApplication.Presentations.Count > 0)
-                        {
-                            for (int i = pptApplication.Presentations.Count; i >= 1; i--)
-                            {
-                                try
-                                {
-                                    pptApplication.Presentations[i].Close();
-                                }
-                                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
-                            }
-                        }
-                    }
-                    catch (COMException comEx)
-                    {
-                        // 关机时 COM 对象可能已失效，记录但继续清理
-                        LogHelper.WriteLogToFile($"关闭演示文稿时 COM 异常 (HResult: 0x{comEx.HResult:X}): {comEx.Message}",
-                            isShutdown ? LogHelper.LogType.Warning : LogHelper.LogType.Error);
-                    }
-
-                    // 退出PowerPoint应用程序
-                    try
-                    {
-                        pptApplication.Quit();
-                    }
-                    catch (COMException comEx)
-                    {
-                        // 关机时 COM 对象可能已失效，记录但继续清理
-                        LogHelper.WriteLogToFile($"退出 PowerPoint 时 COM 异常 (HResult: 0x{comEx.HResult:X}): {comEx.Message}",
-                            isShutdown ? LogHelper.LogType.Warning : LogHelper.LogType.Error);
-                    }
-
-                    // 释放COM对象
-                    try
-                    {
-                        if (Marshal.IsComObject(pptApplication))
-                        {
-                            Marshal.ReleaseComObject(pptApplication);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogHelper.WriteLogToFile($"释放 PowerPoint COM 对象异常: {ex.Message}", LogHelper.LogType.Warning);
-                    }
-
-                    pptApplication = null;
-                }
-
-                ClearStaticInteropState();
-                LogHelper.WriteLogToFile("PowerPoint应用程序已关闭", LogHelper.LogType.Event);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"关闭PowerPoint应用程序失败: {ex}", LogHelper.LogType.Error);
-                ClearStaticInteropState();
-            }
-        }
-
-        /// <summary>
-        /// 释放并清理与 PowerPoint COM 互操作相关的引用（演示文稿、Slides、当前幻灯片），并将幻灯片计数重置为 0。
-        /// </summary>
-        /// <remarks>
-        /// 在释放过程中若发生异常会被捕获并以警告级别记录日志，不会抛出异常到调用者。
-        /// </remarks>
-        private void ClearStaticInteropState()
-        {
-            try
-            {
-                if (presentation != null)
-                {
-                    try { if (Marshal.IsComObject(presentation)) Marshal.ReleaseComObject(presentation); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
-                    presentation = null;
-                }
-                if (slides != null)
-                {
-                    try { if (Marshal.IsComObject(slides)) Marshal.ReleaseComObject(slides); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
-                    slides = null;
-                }
-                if (slide != null)
-                {
-                    try { if (Marshal.IsComObject(slide)) Marshal.ReleaseComObject(slide); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
-                    slide = null;
-                }
-                slidescount = 0;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"ClearStaticInteropState 异常: {ex}", LogHelper.LogType.Warning);
-            }
-        }
-
-        /// <summary>
-        /// PowerPoint应用程序监控定时器事件
-        /// </summary>
-        /// <remarks>
-        /// 周期性监控嵌入的 PowerPoint 应用实例的可用性，并在检测到失效时尝试重建实例；当增强功能被禁用时停止监控，并在使用 ROT 链接时不进行检查。
-        /// </remarks>
-        private void OnPowerPointApplicationMonitorTick(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!Settings.PowerPointSettings.EnablePowerPointEnhancement)
-                {
-                    StopPowerPointProcessMonitoring();
-                    return;
-                }
-                if (Settings.PowerPointSettings.PPTLinkMode != PPTLinkMode.Com) return;
-
-                // 检查应用程序是否还在运行
-                if (!IsPowerPointApplicationValid())
-                {
-                    LogHelper.WriteLogToFile("检测到PowerPoint应用程序已失效，重新创建", LogHelper.LogType.Event);
-                    CreatePowerPointApplication();
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"PowerPoint应用程序监控异常: {ex}", LogHelper.LogType.Error);
+                LogHelper.WriteLogToFile($"停止 PPT 联动监控失败: {ex}", LogHelper.LogType.Error);
             }
         }
         #endregion
@@ -750,9 +416,6 @@ namespace Ink_Canvas
                 _pptUIManager = null;
 
                 StopPowerPointProcessMonitoring(isShutdown);
-                _powerPointProcessMonitorTimer = null;
-
-                ClearStaticInteropState();
 
                 StopPPTOnlyVisibilityProbeTimer();
 
@@ -771,7 +434,6 @@ namespace Ink_Canvas
                 try
                 {
                     _longPressTimer?.Stop();
-                    _powerPointProcessMonitorTimer?.Stop();
                     StopPPTOnlyVisibilityProbeTimer();
                     LogHelper.WriteLogToFile("关机时已停止所有 PPT 相关定时器", LogHelper.LogType.Event);
                 }

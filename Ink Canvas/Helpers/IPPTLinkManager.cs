@@ -60,6 +60,17 @@ namespace Ink_Canvas.Helpers
         // 查询
         int GetCurrentSlideNumber();
         string GetPresentationName();
+
+        /// <summary>
+        /// 取当前演示文稿的完整文件路径。取不到返回 null。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P1：旧代码用 pptApplication.SlideShowWindows[1].Presentation.FullName 取路径，
+        /// 那是放映窗口的演示文稿；和 GetPresentationName()（ActivePresentation）不同源。
+        /// 放映中有隐藏页、或同时开多个演示文稿时，同一次保存里名字和路径会来自不同文档。
+        /// 这里统一来源，保证「名字、页数、路径」三者一致。
+        /// </remarks>
+        string GetPresentationPath();
         bool TryShowSlideNavigation();
         object GetCurrentActivePresentation();
         List<PPTSlideThumbnail> ExportSlideThumbnails(int width, int height, IProgress<double> progress = null);

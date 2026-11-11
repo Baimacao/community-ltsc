@@ -48,12 +48,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             var ppt = SettingsManager.Settings.PowerPointSettings;
 
             CardSupportPowerPoint.IsOn = ppt.PowerPointSupport;
-            ComboBoxPPTArchitecture.SelectedIndex = (int)ppt.PPTLinkMode;
             CardPowerPointEnhancement.IsOn = ppt.EnablePowerPointEnhancement;
             CardSkipAnimationsWhenGoNext.IsOn = ppt.SkipAnimationsWhenGoNext;
             CardSupportWPS.IsOn = ppt.IsSupportWPS;
             CardEnableWppProcessKill.IsOn = ppt.EnableWppProcessKill;
-            UpdatePPTArchitectureDependentCards();
 
 
 
@@ -85,14 +83,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
         #region PPT Basic
 
-        private void UpdatePPTArchitectureDependentCards()
-        {
-            bool isComArchitecture = SettingsManager.Settings.PowerPointSettings.PPTLinkMode == PPTLinkMode.Com;
-            var visibility = isComArchitecture ? Visibility.Visible : Visibility.Collapsed;
-            CardPowerPointEnhancement.Visibility = visibility;
-            CardSupportWPS.Visibility = visibility;
-            CardEnableWppProcessKill.Visibility = visibility;
-        }
+        // LTSC P1：架构选择已移除，PPT 联动统一走 PptBridge（ROT）。
+        // 原来的 UpdatePPTArchitectureDependentCards() 会按 PPTLinkMode 隐藏
+        // 「增强 / WPS / 结束 WPP 进程」三张卡——老配置里 PPTLinkMode=Rot 的用户
+        // 根本看不到增强开关，等于功能被藏了。现在三张卡永远可见。
 
         private void ToggleSwitchSupportPowerPoint_Toggled(object sender, RoutedEventArgs e)
         {
@@ -120,30 +114,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             }
             SettingsManager.SaveSettingsToFile();
             SettingsActionHub.OnPPTEnhancementChanged(CardPowerPointEnhancement.IsOn);
-        }
-
-        private void ComboBoxPPTArchitecture_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_isLoaded) return;
-            var ppt = SettingsManager.Settings.PowerPointSettings;
-            var selectedMode = (PPTLinkMode)Math.Max(0, ComboBoxPPTArchitecture.SelectedIndex);
-            if (ppt.PPTLinkMode == selectedMode) return;
-
-            ppt.PPTLinkMode = selectedMode;
-            if (ppt.PPTLinkMode != PPTLinkMode.Com)
-            {
-                ppt.EnablePowerPointEnhancement = false;
-                ppt.IsSupportWPS = false;
-                CardPowerPointEnhancement.IsOn = false;
-                CardSupportWPS.IsOn = false;
-            }
-            UpdatePPTArchitectureDependentCards();
-            SettingsManager.SaveSettingsToFile();
-            try
-            {
-                SettingsActionHub.OnPPTLinkModeChanged();
-            }
-            catch (Exception ex) { LogHelper.WriteLogToFile($"切换 PPT 联动架构失败: {ex}", LogHelper.LogType.Error); }
         }
 
         private void ToggleSwitchSkipAnimationsWhenGoNext_Toggled(object sender, RoutedEventArgs e)

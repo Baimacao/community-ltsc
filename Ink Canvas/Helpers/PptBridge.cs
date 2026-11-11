@@ -600,18 +600,26 @@ namespace Ink_Canvas.Helpers
                                     {
                                         view = window.GetType().InvokeMember("View",
                                             System.Reflection.BindingFlags.GetProperty, null, window, null);
+                                        comInShow = true;
                                         if (view != null)
                                         {
-                                            object pos = view.GetType().InvokeMember("CurrentShowPosition",
-                                                System.Reflection.BindingFlags.GetProperty, null, view, null);
-                                            comSlide = Convert.ToInt32(pos);
+                                            // 一级：View.CurrentShowPosition
+                                            comSlide = ReadShowPosition(view);
                                         }
-                                        comInShow = true;
                                     }
-                                    catch
+                                    catch (Exception exView)
                                     {
-                                        // View 拿不到但放映窗口存在，仍算在放映
+                                        // 放映窗口在，但 View 取不到。仍然算在放映。
                                         comInShow = true;
+                                        // LTSC P1：这里原来什么都不记。日志里 comSlide 一路 -1，
+                                        // 却查不出是哪一级断的——所以补上三级诊断。
+                                        VerboseLog($"[PPT详细] View 取不到: {exView.GetType().Name}: {exView.Message}");
+                                    }
+
+                                    // 二级兜底：View 拿不到页码时，退到 Presentation.SlideShowWindow.View
+                                    if (comSlide <= 0)
+                                    {
+                                        comSlide = TryGetSlideIndexFallback();
                                     }
                                 }
                             }
@@ -667,8 +675,19 @@ namespace Ink_Canvas.Helpers
             if (nowInShow && !_inSlideShow)
             {
                 SetInSlideShow(true);
-                // 这条是轮询兜底路径：COM 事件没到时由状态机补上。
-                VerboseLog($"轮询检测到放映开始(COM事件未触发) comSlide={comSlide}");
+                // LTSC P1：轮询兜底路径原来直接把 _comSlideShowWindow 传下去，
+                // 而走这条路时 COM 事件从没触发过，这个字段就是 null。
+                // 订阅方 MW_PPT.OnPPTSlideShowBegin 拿 payload as SlideShowWindow 得到 null，
+                // 进不了主分支，只能走兜底——而兜底里 GetCurrentSlideNumber() 又常常是 -1。
+                // 结果：放映明明开始了，页码是 0，翻页组件不出现。
+                // 这里在触发事件前先把窗口补上。
+                if (_comSlideShowWindow == null)
+                {
+                    _comSlideShowWindow = TryFetchSlideShowWindow();
+                    if (_comSlideShowWindow != null)
+                        VerboseLog("[PPT详细] 轮询路径已补取放映窗口");
+                }
+                VerboseLog($"轮询检测到放映开始(COM事件未触发) comSlide={comSlide} 窗口={(_comSlideShowWindow != null ? "有" : "无")}");
                 try { SlideShowBegin?.Invoke(_comSlideShowWindow); } catch { }
             }
             else if (!nowInShow && _inSlideShow)
@@ -856,16 +875,48 @@ namespace Ink_Canvas.Helpers
             catch { return 0; }
         }
 
+        /// <summary>
+        /// 取当前演示文稿名。取不到返回 null。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P1：原实现用 <c>dynamic pres = app.ActivePresentation</c>，
+        /// 每调一次造一个 RCW 且从不归还——和 L-8 修的是同一类泄漏。
+        /// 改成走 GetCurrentActivePresentation()（调用方持有）+ 显式 SafeRelease。
+        /// </remarks>
         public string GetPresentationName()
         {
-            if (_comApplication == null) return null;
+            object pres = GetCurrentActivePresentation();
+            if (pres == null) return null;
             try
             {
-                dynamic app = _comApplication;
-                dynamic pres = app.ActivePresentation;
-                return pres == null ? null : (string)pres.Name;
+                return (string)pres.GetType().InvokeMember("Name",
+                    System.Reflection.BindingFlags.GetProperty, null, pres, null);
             }
             catch { return null; }
+            finally { SafeRelease(pres); }
+        }
+
+        /// <summary>
+        /// 取当前演示文稿的完整文件路径。取不到返回 null。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P1：旧代码三处用 <c>pptApplication.SlideShowWindows[1].Presentation.FullName</c>
+        /// 取路径，那是「放映窗口的演示文稿」；而 GetPresentationName() 用的是
+        /// ActivePresentation。放映中有隐藏页、或同时开了多个演示文稿时，两者会不一致
+        /// ——同一次保存里名字和路径来自不同文档，恢复时按路径比对就会认错文件。
+        /// 这里统一走 ActivePresentation，和 GetPresentationName() 同源。
+        /// </remarks>
+        public string GetPresentationPath()
+        {
+            object pres = GetCurrentActivePresentation();
+            if (pres == null) return null;
+            try
+            {
+                return (string)pres.GetType().InvokeMember("FullName",
+                    System.Reflection.BindingFlags.GetProperty, null, pres, null);
+            }
+            catch { return null; }
+            finally { SafeRelease(pres); }
         }
 
         public object GetCurrentActivePresentation()
@@ -884,11 +935,24 @@ namespace Ink_Canvas.Helpers
             if (!TryGetSlideShowWindows(out dynamic windows)) return false;
             try
             {
-                dynamic app = _comApplication;
-                dynamic pres = app.ActivePresentation;
+                // LTSC P1：dynamic 每取一次成员造一个 RCW。这里 pres 用完必须还，
+                // 否则每次「开始放映」都留一份引用，PowerPoint 就一直退不掉。
+                object pres = GetCurrentActivePresentation();
                 if (pres == null) return false;
-                pres.SlideShowSettings.Run();
-                return true;
+                try
+                {
+                    object settings = pres.GetType().InvokeMember("SlideShowSettings",
+                        System.Reflection.BindingFlags.GetProperty, null, pres, null);
+                    if (settings == null) return false;
+                    try
+                    {
+                        settings.GetType().InvokeMember("Run",
+                            System.Reflection.BindingFlags.InvokeMethod, null, settings, null);
+                        return true;
+                    }
+                    finally { SafeRelease(settings); }
+                }
+                finally { SafeRelease(pres); }
             }
             catch (Exception ex)
             {
@@ -1157,6 +1221,117 @@ namespace Ink_Canvas.Helpers
                     if (!ReferenceEquals(owned, pres)) SafeRelease(owned);
                 }
             }
+        }
+
+        /// <summary>
+        /// 主动取一次放映窗口对象（SlideShowWindow），成功返回并保有引用，失败返回 null。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P1：轮询兜底路径没有 COM 事件送来的 window，必须自己取一次，
+        /// 否则订阅方拿到的 payload 是 null，页码永远是 0。
+        /// </remarks>
+        object TryFetchSlideShowWindow()
+        {
+            if (_comApplication == null) return null;
+            object windows = null;
+            try
+            {
+                windows = _comApplication.GetType().InvokeMember("SlideShowWindows",
+                    System.Reflection.BindingFlags.GetProperty, null, _comApplication, null);
+                if (windows == null) return null;
+                int count = Convert.ToInt32(windows.GetType().InvokeMember("Count",
+                    System.Reflection.BindingFlags.GetProperty, null, windows, null));
+                if (count <= 0) return null;
+                return windows.GetType().InvokeMember("Item",
+                    System.Reflection.BindingFlags.GetProperty, null, windows, new object[] { 1 });
+            }
+            catch (Exception ex)
+            {
+                VerboseLog($"[PPT详细] 补取放映窗口失败: {ex.GetType().Name}: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                SafeRelease(windows);
+            }
+        }
+
+        /// <summary>
+        /// 从 View 对象读当前放映页码。失败返回 -1。
+        /// </summary>
+        int ReadShowPosition(object view)
+        {
+            if (view == null) return -1;
+            try
+            {
+                object pos = view.GetType().InvokeMember("CurrentShowPosition",
+                    System.Reflection.BindingFlags.GetProperty, null, view, null);
+                return Convert.ToInt32(pos);
+            }
+            catch (Exception ex)
+            {
+                VerboseLog($"[PPT详细] CurrentShowPosition 读取失败: {ex.GetType().Name}: {ex.Message}");
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// 二级兜底：用 ActivePresentation.SlideShowWindow.View.Slide.SlideIndex 取页码。
+        /// </summary>
+        /// <remarks>
+        /// LTSC P1：历史日志里 comSlide 全程 -1，翻页组件因此从不出现。
+        /// 一级路径走 SlideShowWindows[1].View.CurrentShowPosition，
+        /// 某些情况下（放映窗口刚建立、WPS、跨权限）这一级取不到；
+        /// 退到 ActivePresentation 这条路往往还能拿到。
+        /// 三级（Presentation.Slides 里定位当前页）留作最后手段。
+        /// </remarks>
+        int TryGetSlideIndexFallback()
+        {
+            object pres = GetCurrentActivePresentation();
+            if (pres != null)
+            {
+                object window = null;
+                object view = null;
+                object slide = null;
+                try
+                {
+                    window = pres.GetType().InvokeMember("SlideShowWindow",
+                        System.Reflection.BindingFlags.GetProperty, null, pres, null);
+                    if (window != null)
+                    {
+                        view = window.GetType().InvokeMember("View",
+                            System.Reflection.BindingFlags.GetProperty, null, window, null);
+                        if (view != null)
+                        {
+                            slide = view.GetType().InvokeMember("Slide",
+                                System.Reflection.BindingFlags.GetProperty, null, view, null);
+                            if (slide != null)
+                            {
+                                object idx = slide.GetType().InvokeMember("SlideIndex",
+                                    System.Reflection.BindingFlags.GetProperty, null, slide, null);
+                                int v = Convert.ToInt32(idx);
+                                if (v > 0)
+                                {
+                                    VerboseLog($"[PPT详细] 二级兜底拿到页码: {v}");
+                                    return v;
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    VerboseLog($"[PPT详细] 二级兜底失败: {ex.GetType().Name}: {ex.Message}");
+                }
+                finally
+                {
+                    SafeRelease(slide);
+                    SafeRelease(view);
+                    SafeRelease(window);
+                    SafeRelease(pres);
+                }
+            }
+            return -1;
         }
 
         static void SafeRelease(object comObject)
