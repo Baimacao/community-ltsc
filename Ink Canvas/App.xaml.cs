@@ -1323,6 +1323,19 @@ namespace Ink_Canvas
                 });
             }
 
+            if (e.Args.Any(x => x.StartsWith("--ppt-e2e")))
+            {
+                try
+                {
+                    int di = Array.FindIndex(e.Args, x => x.StartsWith("--ppt-e2e"));
+                    string path = (di + 1 < e.Args.Length) ? e.Args[di + 1] : "";
+                    Ink_Canvas.Helpers.LtscProbe.PptEndToEnd(path);
+                }
+                catch (Exception ex) { LogHelper.WriteLogToFile("PPT 测试异常: " + ex, LogHelper.LogType.Error); }
+                Shutdown();
+                return;
+            }
+
             if (e.Args.Contains("--smoke-test"))
             {
                 try { Ink_Canvas.Helpers.LtscProbe.SmokeTest(); }

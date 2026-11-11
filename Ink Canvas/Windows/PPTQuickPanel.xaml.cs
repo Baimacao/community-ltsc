@@ -1570,6 +1570,11 @@ namespace Ink_Canvas.Windows
 
                             if (presentation != null)
                             {
+                                // LTSC P-4：这个 presentation 是刚取到的独立 RCW
+                                // （GetCurrentActivePresentation 里是 app.ActivePresentation，
+                                //  每次取值都是一份新引用），用完必须还。
+                                // 原来整个方法里从不 ReleaseComObject——面板每打开一次漏一份，
+                                // 开关几次 PowerPoint 就退不出去。用 finally 保证所有 return 分支都还。
                                 try
                                 {
                                     // 立即检查COM对象是否仍然有效
@@ -1619,6 +1624,20 @@ namespace Ink_Canvas.Windows
                                         LogHelper.WriteLogToFile($"获取PPT文件夹路径时发生非COM异常: {ex.Message}", LogHelper.LogType.Warning);
                                     }
                                     return null;
+                                }
+                                finally
+                                {
+                                    // LTSC P-4：谁取谁还。GetCurrentActivePresentation 每次给的是
+                                    // 新 RCW，这里不还可能就再也没人还了。
+                                    try
+                                    {
+                                        if (presentation != null &&
+                                            System.Runtime.InteropServices.Marshal.IsComObject(presentation))
+                                        {
+                                            System.Runtime.InteropServices.Marshal.ReleaseComObject(presentation);
+                                        }
+                                    }
+                                    catch { }
                                 }
                             }
                         }

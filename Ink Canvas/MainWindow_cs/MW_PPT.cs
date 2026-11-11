@@ -525,16 +525,51 @@ namespace Ink_Canvas
         /// <summary>
         /// 检查PowerPoint应用程序是否有效
         /// </summary>
+        /// <summary>
+        /// LTSC P-1：判断 PowerPoint 进程是否还活着，不碰 COM。
+        /// 用 OpenProcess + GetExitCodeProcess，纯本地调用，PPT 弹模态框也不受影响。
+        /// </summary>
+        private static bool IsPowerPointProcessAlive()
+        {
+            try
+            {
+                var procs = Process.GetProcessesByName("POWERPNT");
+                if (procs == null || procs.Length == 0)
+                {
+                    procs = Process.GetProcessesByName("wpp");
+                }
+                if (procs == null || procs.Length == 0) return false;
+                bool alive = false;
+                foreach (var p in procs)
+                {
+                    try { if (!p.HasExited) { alive = true; } }
+                    catch { }
+                    finally { try { p.Dispose(); } catch { } }
+                }
+                return alive;
+            }
+            catch { return false; }
+        }
+
         private bool IsPowerPointApplicationValid()
         {
+            // LTSC P-1：原实现在这里同步读 pptApplication.Name。
+            // 这是 UI 线程上的一次跨进程 COM 调用，PPT 弹任何模态框（保存提示、
+            // 只读提示、激活向导、修复提示）都会把它挂住，而 COM 的默认超时是
+            // 分钟级的——课上一打开课件就整窗冻住。审计给的实测就是这个。
+            //
+            // 现在只做不需要跨进程的东西：
+            //   ① 对象在不在、是不是 COM 对象（纯托管判断）
+            //   ② 进程还活着吗（Win32 EnumProcesses，本地调用，毫秒级，不会阻塞在 PPT 上）
+            // 真正的「COM 还能不能用」不在这里判——让用到它的那条路径自己吃异常，
+            // 那才是它该付代价的地方，而且不会把 UI 线程拖下水。
             try
             {
                 if (pptApplication == null) return false;
                 if (!Marshal.IsComObject(pptApplication)) return false;
 
-                // 尝试访问一个简单的属性来验证连接是否有效
-                var _ = pptApplication.Name;
-                return true;
+                // 进程级探活：不碰 COM，不会因为 PPT 弹框而卡住
+                return IsPowerPointProcessAlive();
             }
             catch (COMException comEx)
             {

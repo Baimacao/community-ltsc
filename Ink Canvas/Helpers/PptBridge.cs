@@ -101,6 +101,8 @@ namespace Ink_Canvas.Helpers
         bool _disposed;
         bool _comEventsHooked;
 
+
+
         // ---------- 进程检测 ----------
         static readonly string[] PptProcessNames = { "powerpnt", "wpp", "wps", "wpsoffice" };
 
@@ -153,9 +155,14 @@ namespace Ink_Canvas.Helpers
 
         public void StopMonitoring(bool isShutdown = false)
         {
+            // LTSC P-2：原来这里是 if (!_running) return;——只要「监控没在跑」就直接返回，
+            // 后面的计时器停止、COM 释放、状态归零统统跳过。
+            // 而调用方有 Disconnect 之后再 Stop、异常路径里 Stop、Dispose 里 Stop 三种情况，
+            // 那时 _running 已经是 false，于是 COM 引用和 _comSlideShowWindow 全都留在原地：
+            // PPT 侧引用计数只涨不落，退出 PowerPoint 要等 GC 终结器兜底。
+            // 改成：只剪掉「重复停表」这一半，清理那一半永远执行。
             lock (_gate)
             {
-                if (!_running) return;
                 _running = false;
             }
 
@@ -447,21 +454,45 @@ namespace Ink_Canvas.Helpers
                     var moniker = monikers[0];
                     if (moniker == null) continue;
 
-                    string displayName = null;
-                    try { moniker.GetDisplayName(bindCtx, null, out displayName); }
-                    catch { }
+                    // LTSC L-3b：原来这几条路径都在漏引用。
+                    //   ① moniker 本身是 ROT 给的 COM 对象，循环里从不 Release；
+                    //   ② rot.GetObject 拿到的 comObject，在「成功取到 Application」那条路上
+                    //      直接 return，SafeRelease 只写在 app==null 的兜底里——永远走不到；
+                    //   ③ TryGetApplicationFrom 若返回的是 comObject 本身，又不能再释放一次。
+                    // 每次 500ms 轮询重连都漏一组，PowerPoint 侧引用计数只涨不落，
+                    // 表现就是「关掉演示文稿后 PowerPoint 退不出去」。
+                    // 这里改成：每个分支都保证 moniker / comObject 恰好释放一次。
+                    try
+                    {
+                        string displayName = null;
+                        try { moniker.GetDisplayName(bindCtx, null, out displayName); }
+                        catch { }
 
-                    if (!LooksLikePresentation(displayName)) continue;
+                        if (!LooksLikePresentation(displayName)) continue;
 
-                    object comObject = null;
-                    try { rot.GetObject(moniker, out comObject); }
-                    catch { continue; }
-                    if (comObject == null) continue;
+                        object comObject = null;
+                        try { rot.GetObject(moniker, out comObject); }
+                        catch { continue; }
+                        if (comObject == null) continue;
 
-                    var app = TryGetApplicationFrom(comObject);
-                    if (app != null) return app;
-
-                    SafeRelease(comObject);
+                        object app = TryGetApplicationFrom(comObject);
+                        if (app != null && !ReferenceEquals(app, comObject))
+                        {
+                            // app 是 comObject 上另取的一层；comObject 这份要还掉
+                            SafeRelease(comObject);
+                            return app;
+                        }
+                        if (app != null && ReferenceEquals(app, comObject))
+                        {
+                            // app 就是 comObject 本身，所有权转交给调用方，不能释放
+                            return app;
+                        }
+                        SafeRelease(comObject);
+                    }
+                    finally
+                    {
+                        SafeRelease(moniker);
+                    }
                 }
                 return null;
             }

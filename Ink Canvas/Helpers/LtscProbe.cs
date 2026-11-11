@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -101,6 +102,25 @@ namespace Ink_Canvas.Helpers
 
         [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
         private static extern int GetProcessHandleCount(IntPtr hProcess, out int count);
+
+        /// <summary>
+        /// 泵消息式等待：把控制权交回 Dispatcher，让界面保持响应。
+        /// 直接用 Thread.Sleep 堵 UI 线程会触发看门狗「主线程无响应 20 秒强制重启」，
+        /// 长测试会断在半路。
+        /// </summary>
+        private static void PumpWait(int ms)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.ElapsedMilliseconds < ms)
+            {
+                var frame = new System.Windows.Threading.DispatcherFrame();
+                System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.Background,
+                    new Action(() => frame.Continue = false));
+                System.Windows.Threading.Dispatcher.PushFrame(frame);
+                System.Threading.Thread.Sleep(20);
+            }
+        }
 
         private static int GetHandles()
         {
@@ -229,6 +249,103 @@ namespace Ink_Canvas.Helpers
             catch (Exception ex) { R("L-2", false, Trim(ex.Message)); }
 
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
+        }
+
+// ===== LTSC 临时探针 =====
+        /// <summary>
+        /// PPT 全链路真机测试：起 PowerPoint、开演示文稿、进放映、翻页、退出、看能否正常关闭。
+        /// 验证 L-3（订阅者 RCW 归还）与 L-8（轮询 RCW 归还）——
+        /// 这两条只有真的开关几次演示文稿才能看出引用计数对不对，
+        /// 表现是「PowerPoint 进程能不能退出去」。
+        /// </summary>
+        public static void PptEndToEnd(string pptx)
+        {
+            Log("=== PPT 三组对照：定位 PowerPoint 退不出的真因 ===");
+            int pass = 0, fail = 0;
+            void R(string name, bool ok, string detail = "")
+            {
+                if (ok) { pass++; Log("  [PASS] " + name + (detail == "" ? "" : " | " + detail)); }
+                else { fail++; Log("  [FAIL] " + name + (detail == "" ? "" : " | " + detail)); }
+            }
+            int PptN() { try { return System.Diagnostics.Process.GetProcessesByName("POWERPNT").Length; } catch { return -1; } }
+
+            bool RunRound(string tag, bool useBridge, bool useEvents, bool forceRelease)
+            {
+                object starter = null;
+                object bridge = null;
+                try
+                {
+                    starter = Activator.CreateInstance(Type.GetTypeFromProgID("PowerPoint.Application"));
+                    starter.GetType().InvokeMember("Visible", BindingFlags.SetProperty, null, starter, new object[] { -1 });
+                    object presCol = starter.GetType().InvokeMember("Presentations", BindingFlags.GetProperty, null, starter, null);
+                    object opened = presCol.GetType().InvokeMember("Open", BindingFlags.InvokeMethod, null, presCol, new object[] { pptx, -1, 0, 0 });
+                    Marshal.ReleaseComObject(opened);
+                    Marshal.ReleaseComObject(presCol);
+
+                    if (useBridge)
+                    {
+                        typeof(Ink_Canvas.Helpers.PptBridge).GetField("DisableComEventsForProbe",
+                            BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, !useEvents);
+                        var bt = typeof(Ink_Canvas.Helpers.PptBridge);
+                        bridge = Activator.CreateInstance(bt, true);
+                        bt.GetMethod("StartMonitoring").Invoke(bridge, null);
+                        PumpWait(6000);
+                        for (int i = 0; i < 5; i++) { try { bt.GetMethod("ReloadConnection").Invoke(bridge, null); } catch { } PumpWait(400); }
+                        PumpWait(1500);
+                        try { bt.GetMethod("StopMonitoring").Invoke(bridge, new object[] { false }); } catch { }
+                        try { bt.GetMethod("Dispose").Invoke(bridge, null); } catch { }
+                        // 强制把残留 COM 引用打到 0
+                        if (forceRelease)
+                        {
+                            try { bt.GetMethod("ProbeForceFullRelease", BindingFlags.NonPublic | BindingFlags.Instance)?.Invoke(bridge, null); } catch { }
+                        }
+                        bridge = null;
+                    }
+                    else
+                    {
+                        PumpWait(6000 + 5 * 400);
+                    }
+
+                    starter.GetType().InvokeMember("Quit", BindingFlags.InvokeMethod, null, starter, null);
+                    Marshal.ReleaseComObject(starter);
+                    starter = null;
+
+                    for (int w = 0; w < 30; w++)
+                    {
+                        PumpWait(500);
+                        if (PptN() == 0) { Log("  [" + tag + "] PowerPoint 在 " + ((w + 1) * 500) + "ms 内退出"); return true; }
+                    }
+                    Log("  [" + tag + "] PowerPoint 15 秒后仍在");
+                    return false;
+                }
+                catch (Exception ex) { Log("  [" + tag + "] 异常: " + Trim(ex.Message)); return false; }
+                finally
+                {
+                    if (bridge != null) { try { ((IDisposable)bridge).Dispose(); } catch { } }
+                    if (starter != null) { try { Marshal.ReleaseComObject(starter); } catch { } }
+                    try { foreach (var pr in System.Diagnostics.Process.GetProcessesByName("POWERPNT")) { try { pr.Kill(); pr.WaitForExit(3000); } catch { } } } catch { }
+                    PumpWait(2000);
+                }
+            }
+
+            bool a = RunRound("A 不碰Bridge", false, false, false);
+            bool b = RunRound("B Bridge+事件", true, true, false);
+            bool c = RunRound("C Bridge无事件", true, false, false);
+            bool d = RunRound("D Bridge+强制FinalRelease", true, true, true);
+
+            Log("");
+            Log("  A 不碰 PptBridge          : " + (a ? "能退出" : "退不出"));
+            Log("  B PptBridge（挂 COM 事件）: " + (b ? "能退出" : "退不出"));
+            Log("  C PptBridge（不挂事件）   : " + (c ? "能退出" : "退不出"));
+            Log("  D Bridge + 强制FinalRelease: " + (d ? "能退出" : "退不出"));
+            Log("");
+            R("对照组 A 干净", a, a ? "" : "对照组本身退不掉 → 测试写法问题");
+            R("B 复现问题", !b, b ? "没复现，说明与 PptBridge 事件无关" : "复现");
+            R("C 修好（关掉事件就能退出）", c, c ? "→ 真因确认：COM 事件连接点" : "→ 关事件也不行，另有原因");
+            R("结论：强制 FinalRelease 能修好", a && !b && d,
+                (a && !b && d) ? "→ 真因确认：PptBridge 残留 RCW 未还清，且 Dispose 没兜到底" : "仍未确认");
+
+            Log("=== 三组对照结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 
         public static void DumpSettingsPages()
