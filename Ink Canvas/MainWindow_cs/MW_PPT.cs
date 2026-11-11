@@ -1303,6 +1303,20 @@ namespace Ink_Canvas
             var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
             try
             {
+                // ── LTSC P5 / C4（2026-11-11）────────────────────────────────
+                // 社区原话：「ppt 退出直接卡死（严重）**关闭长按翻页修复**」——
+                // 用户自己已经试出来规避方法，说明卡死和长按定时器直接相关。
+                //
+                // 链路：OnLongPressTimerTick(:535) 每 LongPressInterval(50ms) 调一次
+                //       BtnPPTSlidesDown_Click → Task.Run 冲 COM。
+                //       而本函数（整个 247 行）原来**一次都没停过这个定时器**。
+                // 于是按住翻页按钮时退出放映，定时器还在跑，50ms 一次去碰
+                // 正在销毁的 COM 对象 —— PPT 卡死。
+                //
+                // 修法：退出放映第一件事就停掉长按检测，并清掉「这次按下已被消费」
+                // 标记，避免下一次进入放映时手还没松就误判。
+                StopLongPressDetection();
+                MarkAllNavBarsLongPressConsumed();
                 await Application.Current.Dispatcher.InvokeAsync(() => CollapseAllPPTNavBarPreviews());
 
                 if (Settings.Automation.IsAutoFoldAfterPPTSlideShow && !isFloatingBarFolded)
