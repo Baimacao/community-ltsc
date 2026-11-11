@@ -42,6 +42,9 @@ namespace Ink_Canvas.Helpers
         const int RPC_E_DISCONNECTED = unchecked((int)0x80010108);
 
         /// <summary>轮询间隔。事件模式可用时仍然保留轮询作为兜底：COM 事件在异常退出时会静默丢失。</summary>
+        /// <summary>LTSC P1b：上一轮一级读到的页码，只在变化时记日志，避免每 500ms 刷屏。</summary>
+        int _lastComSlideLogged = -1;
+
         static readonly TimeSpan PollInterval = TimeSpan.FromMilliseconds(500);
         /// <summary>连接检查间隔（进程都不在时不必每次都枚举 ROT）。</summary>
         static readonly TimeSpan ConnectCheckInterval = TimeSpan.FromMilliseconds(2000);
@@ -666,8 +669,21 @@ namespace Ink_Canvas.Helpers
                             }
                             if (count > 0)
                             {
-                                window = windows.GetType().InvokeMember("Item",
-                                    System.Reflection.BindingFlags.GetProperty, null, windows, new object[] { 1 });
+                                // LTSC P1b（2026-11-11 实测）：SlideShowWindows 是 COM 集合，
+                                // Index 是带参数的索引器，不是普通属性。
+                                // 用 BindingFlags.GetProperty + args 调它，在 MS PowerPoint 16.0 上
+                                // 稳定抛 0x80020003 DISP_E_MEMBERNOTFOUND（Count 能拿到、Item 拿不到）。
+                                // 正确做法是先按 InvokeMethod 试索引器，不行再退回 GetProperty。
+                                try
+                                {
+                                    window = windows.GetType().InvokeMember("Item",
+                                        System.Reflection.BindingFlags.InvokeMethod, null, windows, new object[] { 1 });
+                                }
+                                catch (Exception exItem)
+                                {
+                                    VerboseLog($"[PPT详细] SlideShowWindows.Item(InvokeMethod) 失败: {exItem.GetType().Name}: {exItem.Message}");
+                                    window = null;
+                                }
                                 if (window != null)
                                 {
                                     try
@@ -677,8 +693,13 @@ namespace Ink_Canvas.Helpers
                                         comInShow = true;
                                         if (view != null)
                                         {
-                                            // 一级：View.CurrentShowPosition
+                                            // 一级：View.Slide.SlideIndex（Office 标准路径）
                                             comSlide = ReadShowPosition(view);
+                                            if (comSlide > 0 && comSlide != _lastComSlideLogged)
+                                            {
+                                                _lastComSlideLogged = comSlide;
+                                                VerboseLog($"[PPT详细] 一级拿到页码: {comSlide}");
+                                            }
                                         }
                                     }
                                     catch (Exception exView)
@@ -716,7 +737,23 @@ namespace Ink_Canvas.Helpers
                     // LTSC P2：原来这里是 catch { }，什么都不知道就过去了。
                     // 管理员权限下跨完整性访问 COM 抛的异常如果属于
                     // AccessViolation / InvalidCast 一类，会一路走到这里。
-                    VerboseLog($"[PPT详细] 一级取页码异常: {ex.GetType().FullName}: {ex.Message}");
+                    //
+                    // LTSC P1b：InvokeMember 抛的是 TargetInvocationException，
+                    // 真正的 COM 错误包在 InnerException 里。只打外层等于什么都没说——
+                    // 实机测试时日志被 "TargetInvocationException" 刷满，
+                    // 却查不出到底是哪个属性、什么 HRESULT。
+                    var inner = ex is System.Reflection.TargetInvocationException tie && tie.InnerException != null
+                        ? tie.InnerException
+                        : null;
+                    if (inner != null)
+                    {
+                        string hr = inner is COMException cie ? $"0x{cie.HResult:X8} " : "";
+                        VerboseLog($"[PPT详细] 一级取页码异常: {hr}{inner.GetType().Name}: {inner.Message}");
+                    }
+                    else
+                    {
+                        VerboseLog($"[PPT详细] 一级取页码异常: {ex.GetType().FullName}: {ex.Message}");
+                    }
                 }
             }
 
@@ -1404,20 +1441,58 @@ namespace Ink_Canvas.Helpers
         /// <summary>
         /// 从 View 对象读当前放映页码。失败返回 -1。
         /// </summary>
+        /// <remarks>
+        /// LTSC P1b（2026-11-11 实机实测）：原来这里只读 <c>View.CurrentShowPosition</c>，
+        /// 在 MS PowerPoint 16.0 上稳定抛 <c>0x80020003 DISP_E_MEMBERNOTFOUND</c>——
+        /// 该成员在 Slide 的 View 对象上不存在，每 500ms 刷一条日志，一直取不到页码。
+        /// 同期日志显示 <c>View.Slide.SlideIndex</c> 这条路是通的（它原本只当二级兜底用）。
+        ///
+        /// 参考 Inkeys3 的 PptCOM.GetCurrentSlideIndex：它读的也是 <c>view.Slide.SlideIndex</c>。
+        ///
+        /// 现在的顺序：先 Slide.SlideIndex（Office 标准路径），失败再试 CurrentShowPosition
+        /// （WPS / 老版本可能只有后者）。两条都不通才返回 -1，交给上层兜底。
+        /// </remarks>
         int ReadShowPosition(object view)
         {
             if (view == null) return -1;
+
+            // 一级：view.Slide.SlideIndex —— Office 标准路径，实测可用
+            object slide = null;
+            try
+            {
+                slide = view.GetType().InvokeMember("Slide",
+                    System.Reflection.BindingFlags.GetProperty, null, view, null);
+                if (slide != null)
+                {
+                    object idx = slide.GetType().InvokeMember("SlideIndex",
+                        System.Reflection.BindingFlags.GetProperty, null, slide, null);
+                    int v = Convert.ToInt32(idx);
+                    if (v > 0) return v;
+                }
+            }
+            catch (Exception ex)
+            {
+                VerboseLog($"[PPT详细] View.Slide.SlideIndex 读取失败: {ex.GetType().Name}: {ex.Message}");
+            }
+            finally
+            {
+                SafeRelease(slide);
+            }
+
+            // 二级：view.CurrentShowPosition —— WPS / 老版本可能只有这个
             try
             {
                 object pos = view.GetType().InvokeMember("CurrentShowPosition",
                     System.Reflection.BindingFlags.GetProperty, null, view, null);
-                return Convert.ToInt32(pos);
+                int v2 = Convert.ToInt32(pos);
+                if (v2 > 0) return v2;
             }
             catch (Exception ex)
             {
-                VerboseLog($"[PPT详细] CurrentShowPosition 读取失败: {ex.GetType().Name}: {ex.Message}");
-                return -1;
+                VerboseLog($"[PPT详细] View.CurrentShowPosition 读取失败: {ex.GetType().Name}: {ex.Message}");
             }
+
+            return -1;
         }
 
         /// <summary>
