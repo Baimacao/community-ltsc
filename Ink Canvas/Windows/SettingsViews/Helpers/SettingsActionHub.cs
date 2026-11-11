@@ -725,28 +725,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
 
         #endregion
 
-        #region RandomDraw
-
-        public static void OnShowRandomAndSingleDrawChanged(bool isOn)
-        {
-            var mw = GetMainWindow();
-            if (mw != null)
-            {
-                if (mw.BoardRandomDrawToolBtn != null)
-                    mw.BoardRandomDrawToolBtn.Visibility = isOn ? Visibility.Visible : Visibility.Collapsed;
-                if (mw.BoardSingleDrawToolBtn != null)
-                    mw.BoardSingleDrawToolBtn.Visibility = isOn ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        public static void OnEnableQuickDrawChanged()
-        {
-            var mw = GetMainWindow();
-            if (mw != null) mw.ShowQuickDrawFloatingButton();
-        }
-
-        #endregion
-
         #region InkRecognition
 
         public static void OnInkToShapeEnabledChanged(bool isOn)

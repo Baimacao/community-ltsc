@@ -170,10 +170,6 @@ namespace Ink_Canvas
 
             if (content.TimerBtn != null)
                 content.TimerBtn.ButtonMouseUp += ImageCountdownTimer_MouseUp;
-            if (content.RandomDrawBtn != null)
-                content.RandomDrawBtn.ButtonMouseUp += SymbolIconRand_MouseUp;
-            if (content.SingleDrawBtn != null)
-                content.SingleDrawBtn.ButtonMouseUp += SymbolIconRandOne_MouseUp;
             if (content.SaveBtn != null)
             {
                 content.SaveBtn.ButtonMouseDown += Border_MouseDown;
@@ -1598,9 +1594,6 @@ namespace Ink_Canvas
             {
                 UnFoldFloatingBar_MouseUp(new object(), null);
             }
-
-            // 显示快抽悬浮按钮
-            ShowQuickDrawFloatingButton();
 
             // 如果当前不是黑板模式，则切换到黑板模式
             if (currentMode == 0)
@@ -3359,50 +3352,6 @@ namespace Ink_Canvas
         {
             WindowSettingsHelper.ApplyUIAccessTopMost(this);
         }
-
-        internal void OpenQuickDrawFromHotkey()
-        {
-            try
-            {
-                if (Settings?.RandSettings?.EnableQuickDraw != true)
-                    return;
-
-                var quickDrawWindow = new QuickDrawWindow();
-                quickDrawWindow.Owner = this;
-                quickDrawWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"打开快抽窗口失败: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        /// <summary>
-        /// 显示快抽悬浮按钮
-        /// </summary>
-        public void ShowQuickDrawFloatingButton()
-        {
-            try
-            {
-                var quickDrawButton = FindName("QuickDrawFloatingButton") as Controls.QuickDrawFloatingButtonControl;
-                if (quickDrawButton == null) return;
-
-                // 检查设置是否启用快抽功能
-                if (Settings?.RandSettings?.EnableQuickDraw == true)
-                {
-                    quickDrawButton.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    quickDrawButton.Visibility = Visibility.Collapsed;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"显示快抽悬浮按钮失败: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
 
         #endregion
     }

@@ -106,12 +106,6 @@ namespace Ink_Canvas
                         if (isFloatingBarFolded)
                             this.Visibility = Settings.Automation.ThoroughlyHideWhenFolded ? Visibility.Hidden : Visibility.Visible;
                         return;
-                    case "randone":
-                        SymbolIconRandOne_MouseUp(null, null);
-                        return;
-                    case "rand":
-                        SymbolIconRand_MouseUp(null, null);
-                        return;
                     case "timer":
                         ImageCountdownTimer_MouseUp(null, null);
                         return;

@@ -285,7 +285,6 @@ namespace Ink_Canvas.Helpers
                 // 功能快捷键
                 RegisterHotkey("DrawLine", Key.L, ModifierKeys.Alt, () => _mainWindow.DrawLineFromHotkey());
                 RegisterHotkey("Screenshot", Key.C, ModifierKeys.Alt, () => _mainWindow.SaveScreenShotToDesktop());
-                RegisterHotkey("QuickDraw", Key.K, ModifierKeys.Alt, () => _mainWindow.OpenQuickDrawFromHotkey());
                 RegisterHotkey("Hide", Key.V, ModifierKeys.Alt, () => _mainWindow.SymbolIconEmoji_MouseUp(null, null));
 
                 // 退出快捷键
@@ -1264,8 +1263,6 @@ namespace Ink_Canvas.Helpers
                         return () => _mainWindow.DrawLineFromHotkey();
                     case "Screenshot":
                         return () => _mainWindow.SaveScreenShotToDesktop();
-                    case "QuickDraw":
-                        return () => _mainWindow.OpenQuickDrawFromHotkey();
                     case "Hide":
                         return () => _mainWindow.SymbolIconEmoji_MouseUp(null, null);
                     case "Exit":

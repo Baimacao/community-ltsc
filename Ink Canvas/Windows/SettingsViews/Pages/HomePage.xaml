@@ -242,13 +242,6 @@
                         </ui:SettingsCard.HeaderIcon>
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Header="{x:Static props:RandomStrings.Random_Title}" Description="{x:Static props:HomeStrings.Home_RandomAndTimer}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="RandomDrawPage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.People}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
                     <ui:SettingsCard Header="Debug" Description="Debug"
                         IsClickEnabled="True" Click="QuickNavCard_Click" Tag="DebugPage">
                         <ui:SettingsCard.HeaderIcon>

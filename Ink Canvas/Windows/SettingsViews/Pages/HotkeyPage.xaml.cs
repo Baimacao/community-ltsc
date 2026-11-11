@@ -297,7 +297,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 case "Pen5": return () => SwitchToPenType(4);
                 case "DrawLine": return () => _mainWindow.DrawLineFromHotkey();
                 case "Screenshot": return () => _mainWindow.SaveScreenShotToDesktop();
-                case "QuickDraw": return () => _mainWindow.OpenQuickDrawFromHotkey();
                 case "Hide": return () => _mainWindow.SymbolIconEmoji_MouseUp(null, null);
                 case "Exit": return () => _mainWindow.KeyExit(null, null);
                 default: return null;

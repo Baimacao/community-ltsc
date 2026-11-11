@@ -1409,39 +1409,6 @@ namespace Ink_Canvas
             new OperatingGuideWindow().Show();
         }
 
-        /// <summary>
-        /// 随机点名图标点击事件处理
-        /// </summary>
-        /// <param name="sender">发送者</param>
-        /// <param name="e">路由事件参数</param>
-        internal void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            // 如果控件被隐藏，不处理事件
-            if (BoardRandomDrawToolBtn == null || BoardRandomDrawToolBtn.Visibility != Visibility.Visible) return;
-
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            SidePannelMarginAnimation(-10);
-            AnimationsHelper.HidePopupWithSlideAndFade(BorderTools);
-            AnimationsHelper.HidePopupWithSlideAndFade(BoardBorderToolsPopup);
-            AnimationsHelper.HideWithSlideAndFade(BoardImageOptionsPanel);
-
-            // 根据设置决定使用哪个点名窗口
-            if (Settings.RandSettings.UseNewRollCallUI)
-            {
-                // 使用新点名UI - 随机抽模式
-                var rollCallWindow = new NewStyleRollCallWindow(Settings, false);
-                rollCallWindow.Owner = this;
-                rollCallWindow.ShowDialog();
-            }
-            else
-            {
-                // 使用默认的随机点名窗口
-                var randWindow = new RandWindow(Settings);
-                randWindow.Show();
-                // WindowTopmostManager 会自动管理 RandWindow 的置顶状态
-            }
-        }
 
         /// <summary>
         /// 检查并更新橡皮擦类型标签的状态
@@ -1454,88 +1421,6 @@ namespace Ink_Canvas
                 BoardEraserTypeTab.SelectedIndex = Settings.Canvas.EraserShapeType;
         }
 
-        /// <summary>
-        /// 单次点名图标点击事件处理
-        /// </summary>
-        /// <param name="sender">发送者</param>
-        /// <param name="e">路由事件参数</param>
-        internal void SymbolIconRandOne_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            // 如果控件被隐藏，不处理事件
-            if (BoardSingleDrawToolBtn == null || BoardSingleDrawToolBtn.Visibility != Visibility.Visible) return;
-
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            SidePannelMarginAnimation(-10);
-            AnimationsHelper.HidePopupWithSlideAndFade(BorderTools);
-            AnimationsHelper.HidePopupWithSlideAndFade(BoardBorderToolsPopup);
-            AnimationsHelper.HideWithSlideAndFade(BoardImageOptionsPanel);
-
-            // 检查是否启用了外部点名功能
-            if (Settings.RandSettings.DirectCallCiRand)
-            {
-                try
-                {
-                    string[] protocols;
-                    switch (Settings.RandSettings.ExternalCallerType)
-                    {
-                        case 0: // ClassIsland点名
-                            protocols = ExternalCallerLauncher.GetProtocolsByType(0);
-                            break;
-                        case 1: // SecRandom点名
-                            protocols = ExternalCallerLauncher.GetProtocolsByType(1);
-                            break;
-                        case 2: // NamePicker点名
-                            protocols = ExternalCallerLauncher.GetProtocolsByType(2);
-                            break;
-                        default:
-                            protocols = ExternalCallerLauncher.GetProtocolsByType(0);
-                            break;
-                    }
-
-                    if (!ExternalCallerLauncher.TryLaunch(protocols, out Exception lastException))
-                    {
-                        throw lastException ?? new InvalidOperationException("external caller protocols are unavailable");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Format(Properties.MainWindowStrings.Main_RollCall_CannotCallExternal, ex.Message));
-
-                    // 调用失败时回退到相应的点名窗口
-                    if (Settings.RandSettings.UseNewRollCallUI)
-                    {
-                        var rollCallWindow = new NewStyleRollCallWindow(Settings, true); // 单次抽模式
-                        rollCallWindow.Owner = this;
-                        rollCallWindow.ShowDialog();
-                    }
-                    else
-                    {
-                        var randWindow = new RandWindow(Settings, true);
-                        randWindow.Owner = this;
-                        randWindow.ShowDialog();
-                    }
-                }
-            }
-            else
-            {
-                // 根据设置决定使用哪个点名窗口
-                if (Settings.RandSettings.UseNewRollCallUI)
-                {
-                    // 使用新点名UI - 单次抽模式
-                    var rollCallWindow = new NewStyleRollCallWindow(Settings, true);
-                    rollCallWindow.Owner = this;
-                    rollCallWindow.ShowDialog();
-                }
-                else
-                {
-                    // 使用默认的随机点名窗口
-                    var randWindow = new RandWindow(Settings, true);
-                    randWindow.Owner = this;
-                    randWindow.ShowDialog();
-                }
-            }
-        }
 
         /// <summary>
         /// 墨迹重播按钮点击事件处理

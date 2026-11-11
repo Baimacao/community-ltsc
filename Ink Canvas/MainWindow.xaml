@@ -193,13 +193,6 @@
                 </Image>
             </Canvas>
 
-            <!-- 快抽悬浮按钮 -->
-            <localControls:QuickDrawFloatingButtonControl x:Name="QuickDrawFloatingButton"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="0,0,0,200"
-                    Visibility="Collapsed"  d:Visibility="Visible"
-                    Panel.ZIndex="1001"/>
         </Grid>
         <Canvas IsHitTestVisible="False">
             <ikw:SimpleStackPanel Canvas.Left="25" Canvas.Top="15" Orientation="Vertical">
@@ -1080,8 +1073,6 @@
                     <DropShadowEffect x:Name="LeftQuickPanelShadow" BlurRadius="16" ShadowDepth="2" Direction="270" Opacity="0.3" Color="#000000" />
                 </Border.Effect>
                 <ikw:SimpleStackPanel Orientation="Vertical" Margin="0,5">
-                    <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelPersonMoneyIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_SingleDraw}" ButtonMouseUp="SymbolIconRandOne_MouseUp" />
-                    <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelPeopleMoneyIcon}" Label="{x:Static props:FloatingBarStrings.Tools_RandomDraw}" ButtonMouseUp="SymbolIconRand_MouseUp" />
                     <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelTimerIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_Timer}" ButtonMouseUp="ImageCountdownTimer_MouseUp" />
                     <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelBlackboardIcon}" Label="{x:Static props:FloatingBarStrings.FloatingBar_Whiteboard}" ButtonMouseUp="ImageBlackboard_MouseUp" />
                     <controls:QuickPanelButton x:Name="BtnExitPPTFromSidebarLeft" IconSource="{DynamicResource QuickPanelEndSlideshowIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_ExitShow}" LabelFontSize="7" Visibility="Collapsed"  d:Visibility="Visible" ButtonMouseUp="ExitPPTSlideShow_MouseUp" />
@@ -1104,8 +1095,6 @@
                     <DropShadowEffect x:Name="RightQuickPanelShadow" BlurRadius="16" ShadowDepth="2" Direction="270" Opacity="0.3" Color="#000000" />
                 </Border.Effect>
                 <ikw:SimpleStackPanel Orientation="Vertical" Margin="0,5">
-                    <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelPersonMoneyIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_SingleDraw}" ButtonMouseUp="SymbolIconRandOne_MouseUp" />
-                    <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelPeopleMoneyIcon}" Label="{x:Static props:FloatingBarStrings.Tools_RandomDraw}" ButtonMouseUp="SymbolIconRand_MouseUp" />
                     <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelTimerIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_Timer}" ButtonMouseUp="ImageCountdownTimer_MouseUp" />
                     <controls:QuickPanelButton IconSource="{DynamicResource QuickPanelBlackboardIcon}" Label="{x:Static props:FloatingBarStrings.FloatingBar_Whiteboard}" ButtonMouseUp="ImageBlackboard_MouseUp" />
                     <controls:QuickPanelButton x:Name="BtnExitPPTFromSidebarRight" IconSource="{DynamicResource QuickPanelEndSlideshowIcon}" Label="{x:Static props:FloatingBarStrings.QuickPanel_ExitShow}" LabelFontSize="7" Visibility="Collapsed"  d:Visibility="Visible" ButtonMouseUp="ExitPPTSlideShow_MouseUp" />
