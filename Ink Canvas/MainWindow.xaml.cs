@@ -445,13 +445,39 @@ namespace Ink_Canvas
             try
             {
                 InkPerfProbe.Reset();
+
+                // LTSC P2（后期迭代）：把触摸层现场状态喂给探针。
+                // 只读，不改任何行为 —— 慢笔发生时探针要用它判断是「多指并发」
+                // 还是「状态机残留」还是「GC 抖动」。
+                InkPerfProbe.ContextProvider = () =>
+                {
+                    try
+                    {
+                        var sb = new System.Text.StringBuilder(96);
+                        sb.Append("dec=").Append(InkPerfProbe.DecCountNow);
+                        sb.Append('/').Append(InkPerfProbe.DecCountMax);
+                        try { sb.Append(" 笔画视觉=").Append(StrokeVisualList?.Count ?? 0); } catch { }
+                        try { sb.Append(" 视觉画布=").Append(VisualCanvasList?.Count ?? 0); } catch { }
+                        try { sb.Append(" 落笔点=").Append(TouchDownPointsList?.Count ?? 0); } catch { }
+                        try { sb.Append(" 僵尸清理=").Append(InkPerfProbe.StalePruned); } catch { }
+                        try { sb.Append(" 静默释放=").Append(InkPerfProbe.SilentReleaseCount); } catch { }
+                        try { sb.Append(" GC=").Append(GC.CollectionCount(0)); } catch { }
+                        try { sb.Append(" 工作集=").Append(Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).Append("MB"); } catch { }
+                        return sb.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        return "现场采集异常: " + ex.Message;
+                    }
+                };
+
                 _inkPerfProbeTimer = new DispatcherTimer
                 {
                     Interval = TimeSpan.FromSeconds(5)
                 };
                 _inkPerfProbeTimer.Tick += (s, e) => InkPerfProbe.Tick(Dispatcher);
                 _inkPerfProbeTimer.Start();
-                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测）", LogHelper.LogType.Event);
+                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测；慢笔 >120ms 会额外抓现场）", LogHelper.LogType.Event);
             }
             catch (Exception ex)
             {

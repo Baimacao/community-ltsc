@@ -123,16 +123,105 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
             if (SettingsManager.Settings.Advanced.WindowMode)
             {
                 window.WindowState = WindowState.Normal;
-                window.Left = 0.0;
-                window.Top = 0.0;
-                window.Height = SystemParameters.PrimaryScreenHeight;
-                window.Width = SystemParameters.PrimaryScreenWidth;
+
+                // LTSC D-11：铺满「工作区」而不是「整块屏幕」。
+                //
+                // PrimaryScreenWidth/Height 是物理屏幕尺寸，含任务栏；
+                // 用它设窗口，底部会被任务栏压住（用户实测反馈：ICC 底边被挡住）。
+                //
+                // SystemParameters.WorkArea 已经扣掉任务栏和停靠的工具条。
+                // 但它是 DIP 单位，而 Window.Left/Top/Width/Height 也是 DIP，
+                // 所以直接可用；多屏时取窗口当前所在屏的工作区，避免主副屏混用。
+                Rect workArea;
+                if (!TryGetCurrentScreenWorkArea(window, out workArea))
+                {
+                    workArea = SystemParameters.WorkArea;
+                }
+
+                window.Left = workArea.Left;
+                window.Top = workArea.Top;
+                window.Width = workArea.Width;
+                window.Height = workArea.Height;
             }
             else
             {
                 window.WindowState = WindowState.Maximized;
             }
         }
+
+        /// <summary>
+        /// 取窗口当前所在那块屏幕的工作区（DIP）。
+        /// 多屏且缩放不同时，主屏的 WorkArea 不适用于副屏，必须按窗口实际位置找。
+        /// 拿不到就返回 false，调用方回退到主屏工作区。
+        /// </summary>
+        private static bool TryGetCurrentScreenWorkArea(Window window, out Rect workArea)
+        {
+            workArea = default(Rect);
+
+            try
+            {
+                var hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+                if (hwnd == IntPtr.Zero) return false;
+
+                IntPtr monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor == IntPtr.Zero) return false;
+
+                var info = new MONITORINFO();
+                info.cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+                if (!GetMonitorInfo(monitor, ref info)) return false;
+
+                // rcWork / rcMonitor 都是物理像素，需要换算成 DIP
+                double scale = 1.0;
+                try
+                {
+                    var source = System.Windows.PresentationSource.FromVisual(window);
+                    if (source?.CompositionTarget != null)
+                    {
+                        scale = source.CompositionTarget.TransformToDevice.M11;
+                        if (scale <= 0) scale = 1.0;
+                    }
+                }
+                catch { }
+
+                RECT rc = info.rcWork;
+                workArea = new Rect(
+                    rc.Left / scale,
+                    rc.Top / scale,
+                    Math.Max(1, (rc.Right - rc.Left) / scale),
+                    Math.Max(1, (rc.Bottom - rc.Top) / scale));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MONITORINFO
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public int dwFlags;
+        }
+
+        private const int MONITOR_DEFAULTTONEAREST = 0x00000002;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
         public static void ApplyAlwaysOnTop(Window window)
         {

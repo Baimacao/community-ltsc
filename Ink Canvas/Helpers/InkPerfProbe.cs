@@ -30,6 +30,30 @@ namespace Ink_Canvas.Helpers
         internal static long StrokeTotalMs;
         internal static long StrokeMaxMs;
 
+        /// <summary>
+        /// LTSC P2（后期迭代）：多指卡顿现场快照。
+        ///
+        /// 背景：用户反馈「多指比单指卡，五指更卡，写着写着越来越卡」，但在班级
+        /// 实机上「卡顿不明显」，无法复现。本地没有可复现压力，所以不能靠猜改触摸层。
+        ///
+        /// 做法：只在单笔耗时超过阈值时抓一次现场 —— 那一刻有几根手指、dec 里挂了
+        /// 几个 ID、有没有僵尸残留、GC 刚好走过几轮。下次现场真卡了，日志直接给出
+        /// 是「多指并发」还是「状态机残留」还是「GC 抖动」，不用再靠猜。
+        ///
+        /// 代价：只有超阈值才写一行，正常书写不产生任何额外 I/O。
+        /// </summary>
+        internal const long SlowStrokeThresholdMs = 120;  // 超过它就记一条现场
+        internal static int SlowStrokeCount;
+
+        /// <summary>抓现场时的外部状态提供者，由 MainWindow 注入（避免探针反向依赖触摸层）。</summary>
+        internal static Func<string> ContextProvider;
+
+        /// <summary>最近一次慢笔的现场快照（只在被启动时抓）。</summary>
+        internal static string LastSlowContext;
+
+        /// <summary>现场快照条数上限，防止长时间运行把日志刷爆。</summary>
+        internal const int MaxSlowSnapshots = 40;
+
         // 触摸状态
         internal static int DecCountNow;
         internal static int DecCountMax;
@@ -99,6 +123,37 @@ namespace Ink_Canvas.Helpers
             StrokeCount++;
             StrokeTotalMs += ms;
             if (ms > StrokeMaxMs) StrokeMaxMs = ms;
+
+            // 只在明显卡顿时抓现场，正常书写零开销
+            if (ms >= SlowStrokeThresholdMs)
+            {
+                SlowStrokeCount++;
+                if (SlowStrokeCount <= MaxSlowSnapshots) CaptureSlowStroke(ms);
+            }
+        }
+
+        /// <summary>
+        /// 抓一次卡顿现场并立刻落盘。
+        /// 不用等 5 秒汇总 —— 卡顿发生的那一刻状态才准，等 5 秒手指都抬完了。
+        /// </summary>
+        static void CaptureSlowStroke(long ms)
+        {
+            try
+            {
+                string ctx = null;
+                try { ctx = ContextProvider?.Invoke(); }
+                catch (Exception ex) { ctx = "上下文采集异常: " + ex.Message; }
+
+                LastSlowContext = ctx;
+
+                LogHelper.WriteLogToFile(
+                    $"[P2卡顿] 第 {SlowStrokeCount} 次慢笔 {ms}ms | 笔序={StrokeCount} 均={(StrokeTotalMs / Math.Max(1, StrokeCount))}ms | {ctx}",
+                    LogHelper.LogType.Warning);
+            }
+            catch
+            {
+                // 探针自身绝不能抛
+            }
         }
 
         /// <summary>每 5 秒最多打一条汇总。异常自吞并记 Error，不让探针本身拖垮程序。</summary>
@@ -145,6 +200,7 @@ namespace Ink_Canvas.Helpers
             }
             if (TouchUpFallback > 0) sb.Append(" 释放降级=").Append(TouchUpFallback);
             if (StalePruned > 0) sb.Append(" 清理僵尸=").Append(StalePruned);
+            if (SlowStrokeCount > 0) sb.Append(" 慢笔=").Append(SlowStrokeCount);
             sb.Append(" | 双指 中=").Append(TwoFingerMatched).Append(" 漏=").Append(TwoFingerMissed);
             sb.Append(" | GC ").Append(gc0).Append("/").Append(gc1).Append("/").Append(gc2);
             sb.Append(" 工作集=").Append(ws).Append("MB");
@@ -161,6 +217,7 @@ namespace Ink_Canvas.Helpers
             TouchUpFallback = 0; StalePruned = 0;
             for (int i = 0; i < Gate.Length; i++) Gate[i] = 0;
             TwoFingerMatched = 0; TwoFingerMissed = 0;
+            SlowStrokeCount = 0; LastSlowContext = null;
             TickCount = 0;
             _gc0AtStart = GC.CollectionCount(0);
             _gc1AtStart = GC.CollectionCount(1);
