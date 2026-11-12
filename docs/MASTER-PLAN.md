@@ -788,13 +788,47 @@ ToolbarPage            WhiteboardTipsPage     WindowPage
 
 | 阶段 | 状态 | 开始 | 完成 | 备注 |
 |---|---|---|---|---|
-| P0 | 未开始 | | | |
-| P1 | 未开始 | | | |
+| P0 | 未开始 | | | 原表从未更新过，实际状态见下 |
+| P1 | 基本完成 | 2026-11-10 | 未完成 | 12 项中 9 项已完成，3 项待办，见 §12.1 |
 | P2 | 未开始 | | | |
 | P3 | 未开始 | | | |
 | P4 | 未开始 | | | |
 | P5 | 未开始 | | | |
 | P6 | 未开始 | | | |
+
+### 12.1 P1 逐项实测状态（2026-11-12 08:20 按代码与提交核对）
+
+核对方法：grep 代码 + 查提交记录 + 日志实测。不是凭印象。
+
+| 项 | 状态 | 证据 |
+|---|---|---|
+| P1-1 读全代码 | 完成 | 各文件已通读，调用图见 §1.2 |
+| P1-2 pptApplication 迁移方案 | 完成（选 A 全删） | 全仓仅剩 2 处注释，无实际引用 |
+| P1-3 拆旧 COM 路径 | **完成，但与计划描述不同** | `CreatePowerPointApplication` / `OnPowerPointApplicationMonitorTick` / `_powerPointProcessMonitorTimer` / `ProcessMonitorInterval` / `IsPowerPointApplicationValid` / `SetPPTManagerApplication` / `ClearStaticInteropState` 全部为 0 引用。`ClosePowerPointApplication` 仅剩 1 处注释。**`Start/StopPowerPointProcessMonitoring` 保留了，但已换实现**：现在只调 `_pptManager.StartMonitoring()/StopMonitoring()`，不碰 PowerPoint 进程。原计划写「删掉这两个方法」，实际做法是保留方法名、换掉实现——因为它们是 `SettingsActionHub` 和开关逻辑的稳定入口，删了要改 11 处调用且没有收益。 |
+| P1-4 清理 PPTLinkMode 死判断 | 完成 | 全仓 11 处均为：枚举定义、序列化字段、迁移日志、注释。**无任何分支依赖它** |
+| P1-5 页码三级兜底 | 完成 | 一级 View.Slide、二级 TryGetSlideIndexFallback、三级 Win32；三级失败各自记日志（本次又补了连接失败日志） |
+| P1-6 翻页栏不出现 | **待办** | 见下方问题 A |
+| P1-7 退出放映无效 | 完成 | `OnPPTSlideShowEnd` 存在且被订阅，日志实测有「轮询检测到放映结束」+「PPT状态变量已重置」 |
+| P1-8 重写开关逻辑 | 完成 | 只调 Start/Stop ProcessMonitoring；防抖 400ms 已实现；不再创建 Application、不调 Quit |
+| P1-9 清理设置页 | 完成 | `ComboBoxPPTArchitecture` 全仓 0 引用 |
+| P1-10 配置迁移 | 完成 | 老 PPTLinkMode 值会写迁移日志，不报错 |
+| P1-11 编译验证 | 完成 | 0 error |
+| P1-12 真机验证 | **部分** | 翻页栏出现 ✅、点页码弹缩略图网格 ✅（2026-11-12 用户确认）；退出放映 ✅；**字体/外观类未逐项验** |
+
+#### 问题 A（P1-6 实际暴露的缺陷）
+
+`Helpers/PPTUIManager.cs:302-310`：
+
+```
+bool hasValidPageCount = slidesCount > 0;
+bool shouldShowButtons = ShowPPTButton && ... && hasValidPageCount && ...;
+if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
+```
+
+`slidesCount` 来自 `PPTManager.SlidesCount`，而它只在 COM 事件回调里刷新。
+**只要总页数读不到，翻页栏就整个不显示**——这是 2026-11-12 早上「翻页栏不出现」的直接原因。
+
+要不要放宽这个条件是设计取舍（没有总页数时显示 1/0 更怪），留待定夺，先记录。
 
 ---
 
