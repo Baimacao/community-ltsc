@@ -925,27 +925,21 @@ namespace Ink_Canvas.Helpers
 
         [DllImport("user32.dll")] static extern bool SetForegroundWindow(IntPtr h);
         [DllImport("user32.dll")] static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-        /// <summary>虚拟键码：VK_CONTROL。</summary>
-        const byte VkControl = 0x11;
-        /// <summary>虚拟键码：S。</summary>
-        const byte VkS = 0x53;
+        /// <summary>虚拟键码：G。</summary>
+        const byte VkG = 0x47;
         /// <summary>keybd_event 的 KEYEVENTF_KEYUP。</summary>
         const uint KeyUp = 0x0002;
 
         /// <summary>
-        /// 给当前前台窗口发一次 Ctrl+S。
-        /// 微软官方文档：放映态下 Ctrl+S = View the "All Slides" dialog box。
-        /// 注意不是 ESC——ESC 在放映态是"退出放映"。
+        /// 给当前前台窗口发一次 G。
+        /// 放映态下 G = 全套幻灯片缩略图网格（2026-11-12 实测确认）。
+        /// 别再改成 ESC（退出放映）或 Ctrl+S（下拉对话框）。
         /// </summary>
-        static void SendCtrlS()
+        static void SendKeyG()
         {
-            keybd_event(VkControl, 0, 0, UIntPtr.Zero);
-            System.Threading.Thread.Sleep(20);
-            keybd_event(VkS, 0, 0, UIntPtr.Zero);
-            System.Threading.Thread.Sleep(20);
-            keybd_event(VkS, 0, KeyUp, UIntPtr.Zero);
-            System.Threading.Thread.Sleep(20);
-            keybd_event(VkControl, 0, KeyUp, UIntPtr.Zero);
+            keybd_event(VkG, 0, 0, UIntPtr.Zero);
+            System.Threading.Thread.Sleep(40);
+            keybd_event(VkG, 0, KeyUp, UIntPtr.Zero);
         }
 
         /// <summary>
@@ -1216,17 +1210,17 @@ namespace Ink_Canvas.Helpers
                 // PowerPoint 放映态下"显示幻灯片导航"没有公开 COM 入口，
                 // 只能用它的键盘快捷键。
                 //
-                // 微软官方文档《Use keyboard shortcuts to deliver PowerPoint presentations》：
-                //   View the "All Slides" dialog box  →  Ctrl+S
-                // https://support.microsoft.com/en-us/accessibility/powerpoint/use-keyboard-shortcuts-to-deliver-powerpoint-presentations
+                // 放映态下按 G = 全套幻灯片缩略图网格（就是"查看所有幻灯片"那种预览）。
+                // 2026-11-12 实测确认：按 G 后整屏铺开 53 页缩略图、带页码、左上角有退出按钮。
                 //
-                // 上一版这里发的是 ESC —— 那是错的：放映态下 ESC = 退出放映，
-                // 结果点页码把放映退掉了。已改回官方说法。
+                // 历史错误（都别再犯）：
+                //   ESC   —— 放映态是"退出放映"，会把放映退掉
+                //   Ctrl+S —— 弹的是"所有幻灯片"下拉对话框，不是缩略图网格
                 SetForegroundWindow(hwnd);
                 System.Threading.Thread.Sleep(80);
-                SendCtrlS();
+                SendKeyG();
                 System.Threading.Thread.Sleep(150);
-                LogHelper.WriteLogToFile("已请求 PowerPoint 原版导航（Ctrl+S）", LogHelper.LogType.Event);
+                LogHelper.WriteLogToFile("已请求 PowerPoint 幻灯片缩略图网格（G）", LogHelper.LogType.Event);
                 return true;
             }
             catch (Exception ex)
