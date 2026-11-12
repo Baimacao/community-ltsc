@@ -1241,10 +1241,6 @@ namespace Ink_Canvas
         public double LineStraightenSensitivity { get; set; } = 0.20;
         [JsonProperty("lineNormalizationThreshold")]
         public double LineNormalizationThreshold { get; set; } = 0.5;
-        [JsonProperty("shapeRecognitionEngine")]
-        public int ShapeRecognitionEngine { get; set; }
-        [JsonProperty("enableWinRtHandwritingStrokeBeautify")]
-        public bool EnableWinRtHandwritingStrokeBeautify { get; set; }
         [JsonProperty("handwritingCorrectionFontFamily")]
         public string HandwritingCorrectionFontFamily { get; set; } = "Ink Free,KaiTi,Segoe Script";
     }

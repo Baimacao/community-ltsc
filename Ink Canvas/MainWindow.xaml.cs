@@ -1566,16 +1566,14 @@ namespace Ink_Canvas
 
             // 识别后端预热改为后台低优先级执行，避免启动主线程被 WinRT 初始化拖慢。
             // 快速启动模式下由第二阶段统一延迟。
-            if (!App.IsFastStartupEnabled && ShapeRecognitionRouter.ShouldRunShapeRecognition(
-                    Settings.InkToShape.IsInkToShapeEnabled,
-                    ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine)))
+            if (!App.IsFastStartupEnabled && ShapeRecognitionRouter.ShouldRunShapeRecognition(Settings.InkToShape.IsInkToShapeEnabled))
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     Task.Run(() =>
                     {
                         InkRecognizeHelper.WarmupShapeRecognition(
-                            ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine));
+                            );
                     });
                 }), DispatcherPriority.ContextIdle);
             }
@@ -2474,12 +2472,10 @@ namespace Ink_Canvas
 
             // 后移的非首屏初始化
             if (App.IsFastStartupEnabled &&
-                ShapeRecognitionRouter.ShouldRunShapeRecognition(
-                    Settings.InkToShape.IsInkToShapeEnabled,
-                    ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine)))
+                ShapeRecognitionRouter.ShouldRunShapeRecognition(Settings.InkToShape.IsInkToShapeEnabled))
             {
                 _ = Task.Run(() => InkRecognizeHelper.WarmupShapeRecognition(
-                    ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine)));
+                    ));
             }
 
             try

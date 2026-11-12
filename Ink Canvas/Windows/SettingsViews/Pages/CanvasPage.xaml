@@ -316,23 +316,6 @@
                             SwitchName="ToggleSwitchEnableInkToShape"
                             Toggled="ToggleSwitchEnableInkToShape_Toggled" />
 
-                    <ui:SettingsCard Header="{x:Static props:CanvasStrings.InkRecog_ShapeEngine}"
-                            Description="{x:Static props:CanvasStrings.InkRecog_ShapeEngineHint}">
-                        <ComboBox x:Name="ComboBoxShapeRecognitionEngine"
-                                  SelectionChanged="ComboBoxShapeRecognitionEngine_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static props:CanvasStrings.InkRecog_ShapeEngineAuto}" />
-                            <ComboBoxItem Content="IACore" />
-                            <ComboBoxItem Content="WinRT" />
-                        </ComboBox>
-                    </ui:SettingsCard>
-
-                    <controls:LabeledSettingsCard x:Name="CardEnableWinRtHandwritingStrokeBeautify"
-                            Header="{x:Static props:CanvasStrings.InkRecog_HandwritingBeautify}"
-                            Description="{x:Static props:CanvasStrings.InkRecog_HandwritingBeautifyHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.PenWorkspace}"
-                            SwitchName="ToggleSwitchEnableWinRtHandwritingStrokeBeautify"
-                            Toggled="ToggleSwitchEnableWinRtHandwritingStrokeBeautify_Toggled" />
-
 
                     <controls:LabeledSettingsCard x:Name="CardEnableInkToShapeNoFakePressureRectangle"
                             Header="{x:Static props:CanvasStrings.InkRecog_BlockRectFakePressure}"

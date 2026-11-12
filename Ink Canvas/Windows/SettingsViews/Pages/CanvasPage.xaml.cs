@@ -201,12 +201,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 if (settings.InkToShape != null)
                 {
                     CardEnableInkToShape.IsOn = settings.InkToShape.IsInkToShapeEnabled;
-                    int eng = settings.InkToShape.ShapeRecognitionEngine;
-                    if (eng < 0) eng = 0;
-                    if (eng > 2) eng = 2;
-                    ComboBoxShapeRecognitionEngine.SelectedIndex = eng;
-                    CardEnableWinRtHandwritingStrokeBeautify.IsOn = settings.InkToShape.EnableWinRtHandwritingStrokeBeautify;
-
                     CardEnableInkToShapeNoFakePressureRectangle.IsOn = settings.InkToShape.IsInkToShapeNoFakePressureRectangle;
                     CardEnableInkToShapeNoFakePressureTriangle.IsOn = settings.InkToShape.IsInkToShapeNoFakePressureTriangle;
                     ToggleCheckboxEnableInkToShapeTriangle.IsChecked = settings.InkToShape.IsInkToShapeTriangle;
@@ -240,23 +234,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsManager.Settings.InkToShape.IsInkToShapeEnabled = CardEnableInkToShape.IsOn;
             SettingsManager.SaveSettingsToFile();
             SettingsActionHub.OnInkToShapeEnabledChanged(CardEnableInkToShape.IsOn);
-        }
-
-        private void ComboBoxShapeRecognitionEngine_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_isLoaded || ComboBoxShapeRecognitionEngine == null) return;
-            int idx = ComboBoxShapeRecognitionEngine.SelectedIndex;
-            if (idx < 0) idx = 0;
-            if (idx > 2) idx = 2;
-            SettingsManager.Settings.InkToShape.ShapeRecognitionEngine = idx;
-            SettingsManager.SaveSettingsToFile();
-        }
-
-        private void ToggleSwitchEnableWinRtHandwritingStrokeBeautify_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!_isLoaded) return;
-            SettingsManager.Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify = CardEnableWinRtHandwritingStrokeBeautify.IsOn;
-            SettingsManager.SaveSettingsToFile();
         }
 
         private void ToggleSwitchEnableInkToShapeNoFakePressureRectangle_Toggled(object sender, RoutedEventArgs e)

@@ -30,9 +30,10 @@ namespace Ink_Canvas
     /// </remarks>
     public partial class MainWindow : Ink_Canvas.Helpers.PerformanceTransparentWin
     {
-        private Helpers.ModernInkAnalyzer _modernInkAnalyzer;
-        private Helpers.ModernInkAnalyzer ModernInkAnalyzer =>
-            _modernInkAnalyzer ??= new Helpers.ModernInkAnalyzer();
+
+        // LTSC（2026-11-12）：原 Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid。
+        // WinRT 后端移除后该 GUID 只用作「这笔是形状识别产物」的标记，值与原来保持一致以兼容已保存的墨迹。
+        private static readonly Guid ShapeStrokePropertyGuid = new Guid("4E7B0E4C-0C2A-4B4E-9E4A-4B6E0C2A4B4E");
 
         /// <summary>
         /// 存储新的笔画集合，用于形状识别
@@ -595,7 +596,7 @@ namespace Ink_Canvas
                             {
                                 DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                             };
-                            straightStroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                            straightStroke.AddPropertyData(ShapeStrokePropertyGuid, true);
 
                             // Replace the original stroke with the straightened one
                             ReplaceStrokesSafely(null, straightStroke, e.Stroke);
@@ -622,9 +623,7 @@ namespace Ink_Canvas
                     strokeForHandwritingBeautify = inkCanvas.Strokes[inkCanvas.Strokes.Count - 1];
 
 
-                if (ShapeRecognitionRouter.ShouldRunShapeRecognition(
-                        Settings.InkToShape.IsInkToShapeEnabled,
-                        ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine)))
+                if (ShapeRecognitionRouter.ShouldRunShapeRecognition(Settings.InkToShape.IsInkToShapeEnabled))
                 {
                     async Task InkToShapeProcessCoreAsync()
                     {
@@ -644,21 +643,16 @@ namespace Ink_Canvas
                             // 处理矩形参考线系统
                             ProcessRectangleGuideLines(e.Stroke);
 
-                            var shapeMode = ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine);
                             InkShapeRecognitionResult result = InkShapeRecognitionResult.Empty;
 
-                            if (ShapeRecognitionRouter.ResolveUseWinRt(shapeMode) && Helpers.WinRtInkShapeRecognizer.IsApiAvailable)
                             {
-                                result = await ModernInkAnalyzer.AnalyzeAsync(newStrokes);
-                            }
-                            else
-                            {
+
                                 var strokeReco = new StrokeCollection();
-                                result = await InkRecognizeHelper.RecognizeShapeUnifiedAsync(newStrokes, shapeMode);
+                                result = await InkRecognizeHelper.RecognizeShapeUnifiedAsync(newStrokes);
                                 for (var i = newStrokes.Count - 1; i >= 0; i--)
                                 {
                                     strokeReco.Add(newStrokes[i]);
-                                    var newResult = await InkRecognizeHelper.RecognizeShapeUnifiedAsync(strokeReco, shapeMode);
+                                    var newResult = await InkRecognizeHelper.RecognizeShapeUnifiedAsync(strokeReco);
                                     if (newResult.IsSuccess &&
                                         (newResult.ShapeName == "Circle" || newResult.ShapeName == "Ellipse"))
                                     {
@@ -724,7 +718,7 @@ namespace Ink_Canvas
                                     {
                                         DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                                     };
-                                    stroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                                    stroke.AddPropertyData(ShapeStrokePropertyGuid, true);
                                     circles.Add(new Circle(result.Centroid, result.ShapeWidth / 2.0, stroke));
                                     ReplaceStrokesSafely(result.StrokesToRemove, stroke, e.Stroke);
                                     newStrokes = new StrokeCollection();
@@ -821,7 +815,7 @@ namespace Ink_Canvas
                                                 {
                                                     DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                                                 };
-                                                _stroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                                                _stroke.AddPropertyData(ShapeStrokePropertyGuid, true);
                                                 var _dashedLineStroke =
                                                     GenerateDashedLineEllipseStrokeCollection(iniP, endP, true, false);
                                                 var strokes = new StrokeCollection {
@@ -867,7 +861,7 @@ namespace Ink_Canvas
                                     {
                                         DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                                     };
-                                    stroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                                    stroke.AddPropertyData(ShapeStrokePropertyGuid, true);
 
                                     if (needRotation)
                                     {
@@ -911,7 +905,7 @@ namespace Ink_Canvas
                                     {
                                         DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                                     };
-                                    stroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                                    stroke.AddPropertyData(ShapeStrokePropertyGuid, true);
                                     ReplaceStrokesSafely(result.StrokesToRemove, stroke, e.Stroke);
                                     GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
                                     newStrokes = new StrokeCollection();
@@ -953,7 +947,7 @@ namespace Ink_Canvas
                                     {
                                         DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                                     };
-                                    stroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                                    stroke.AddPropertyData(ShapeStrokePropertyGuid, true);
                                     ReplaceStrokesSafely(result.StrokesToRemove, stroke, e.Stroke);
                                     GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
                                     newStrokes = new StrokeCollection();
@@ -982,13 +976,6 @@ namespace Ink_Canvas
                             {
                                 await InkToShapeProcessCoreAsync();
                                 var strokeAfterTail = RunStrokeCollectedPostShapeRecognitionTail(e, wsTail);
-                                if (Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify)
-                                {
-                                    var canvasStrokeForHw = wsTail ? strokeHw : strokeAfterTail;
-                                    ScheduleHandwritingGlyphReplaceAfterStrokeCollected(
-                                        canvasStrokeForHw,
-                                        preBrushHwPts);
-                                }
                             }
                             catch (Exception ex)
                             {
@@ -1005,16 +992,7 @@ namespace Ink_Canvas
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
 
             var strokeAfterTailSync = RunStrokeCollectedPostShapeRecognitionTail(e, wasStraightened);
-            if (Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify
-                && !ShapeRecognitionRouter.ShouldRunShapeRecognition(
-                    Settings.InkToShape.IsInkToShapeEnabled,
-                    ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine)))
-            {
-                var canvasStrokeForHw = wasStraightened ? strokeForHandwritingBeautify : strokeAfterTailSync;
-                ScheduleHandwritingGlyphReplaceAfterStrokeCollected(
-                    canvasStrokeForHw,
-                    preBrushHandwritingPoints);
-            }
+            
         }
 
         /// <summary>
@@ -2905,7 +2883,7 @@ namespace Ink_Canvas
                 {
                     DrawingAttributes = inkCanvas.DefaultDrawingAttributes.Clone()
                 };
-                rectangleStroke.AddPropertyData(Helpers.ModernInkAnalyzer.ShapeStrokePropertyGuid, true);
+                rectangleStroke.AddPropertyData(ShapeStrokePropertyGuid, true);
 
                 // 移除原有的四条直线
                 SetNewBackupOfStroke();
@@ -2994,8 +2972,7 @@ namespace Ink_Canvas
         {
             if (fromStroke == null || toStroke == null || ReferenceEquals(fromStroke, toStroke))
                 return;
-            if (!Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify)
-                return;
+            
 
             if (_handwritingBeautifyInkInputByCanvasStroke.TryGetValue(fromStroke, out var inkInput))
             {
@@ -3054,8 +3031,7 @@ namespace Ink_Canvas
             Stroke strokeForBeautify,
             StylusPointCollection preBrushHandwritingPoints = null)
         {
-            if (!Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify)
-                return;
+            
             if (strokeForBeautify == null || strokeForBeautify.DrawingAttributes?.IsHighlighter == true)
                 return;
             if (!inkCanvas.Strokes.Contains(strokeForBeautify))
@@ -3128,93 +3104,11 @@ namespace Ink_Canvas
             }
         }
 
-        private async Task HandwritingGlyphReplaceFromBatchCoreAsync(ulong revisionWhenIdle)
+        // LTSC（2026-11-12）：手写美化（WinRT 手写体识别 + 字体轮廓转墨迹）已随 WinRT 后端一并移除。
+        // 保留空方法以维持调用点结构，实际不做任何事。
+        private Task HandwritingGlyphReplaceFromBatchCoreAsync(ulong revisionWhenIdle)
         {
-            await InkToShapeSerial.WaitAsync().ConfigureAwait(true);
-            try
-            {
-                if (_handwritingBeautifyScheduleRevision != revisionWhenIdle)
-                    return;
-
-                PruneHandwritingBeautifyBatch();
-
-                var canvasStrokes = new StrokeCollection();
-                var recognitionInput = new StrokeCollection();
-                foreach (Stroke s in _handwritingRecentStrokesForBeautify)
-                {
-                    if (!inkCanvas.Strokes.Contains(s))
-                        continue;
-                    canvasStrokes.Add(s);
-                    if (_handwritingBeautifyInkInputByCanvasStroke.TryGetValue(s, out var inkInput) && inkInput != null)
-                    {
-                        recognitionInput.Add(inkInput);
-                    }
-                    else
-                    {
-                        LogHelper.WriteLogToFile(
-                            "[手写体] 批次识别输入回退为画布笔画（未命中原始点快照）。画布点数=" +
-                            (s.StylusPoints?.Count ?? 0),
-                            LogHelper.LogType.Info);
-                        recognitionInput.Add(s);
-                    }
-                }
-
-                if (canvasStrokes.Count == 0)
-                    return;
-                if (_handwritingBeautifyScheduleRevision != revisionWhenIdle)
-                    return;
-
-                var shapeMode = ShapeRecognitionRouter.FromSettingsInt(Settings.InkToShape.ShapeRecognitionEngine);
-                var result = await InkRecognizeHelper.CorrectHandwritingStrokesUnifiedAsync(recognitionInput, shapeMode).ConfigureAwait(true);
-
-                if (_handwritingBeautifyScheduleRevision != revisionWhenIdle)
-                    return;
-                if (result == null || result.Count == 0)
-                    return;
-                if (ReferenceEquals(result, recognitionInput))
-                    return;
-
-                var anyInputStillPresent = false;
-                foreach (Stroke s in canvasStrokes)
-                {
-                    if (inkCanvas.Strokes.Contains(s))
-                    {
-                        anyInputStillPresent = true;
-                        break;
-                    }
-                }
-
-                if (!anyInputStillPresent)
-                    return;
-
-                SetNewBackupOfStroke();
-                _currentCommitType = CommitReason.ShapeRecognition;
-                foreach (Stroke s in canvasStrokes)
-                {
-                    if (inkCanvas.Strokes.Contains(s))
-                        inkCanvas.Strokes.Remove(s);
-                }
-
-                foreach (Stroke s in result)
-                    inkCanvas.Strokes.Add(s);
-                _currentCommitType = CommitReason.UserInput;
-
-                foreach (Stroke s in canvasStrokes)
-                {
-                    _handwritingRecentStrokesForBeautify.Remove(s);
-                    _handwritingBeautifyInkInputByCanvasStroke.Remove(s);
-                }
-
-                PruneHandwritingBeautifyBatch();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile("[手写体] 收笔替换异常: " + ex.Message, LogHelper.LogType.Warning);
-            }
-            finally
-            {
-                InkToShapeSerial.Release();
-            }
+            return Task.CompletedTask;
         }
 
         #endregion

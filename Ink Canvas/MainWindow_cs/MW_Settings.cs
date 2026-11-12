@@ -1085,7 +1085,6 @@ namespace Ink_Canvas
             Settings.InkToShape.IsInkToShapeTriangle = true;
             Settings.InkToShape.IsInkToShapeRectangle = true;
             Settings.InkToShape.IsInkToShapeRounded = true;
-            Settings.InkToShape.EnableWinRtHandwritingStrokeBeautify = false;
             Settings.InkToShape.HandwritingCorrectionFontFamily = "Ink Free,KaiTi,Segoe Script";
 
             Settings.Startup.IsEnableNibMode = false;

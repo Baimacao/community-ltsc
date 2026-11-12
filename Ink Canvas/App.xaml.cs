@@ -1385,9 +1385,8 @@ namespace Ink_Canvas
 
                 try
                 {
-                    var shapeMode = ShapeRecognitionRouter.FromSettingsInt(
-                        Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.Settings?.InkToShape?.ShapeRecognitionEngine ?? 0);
-                    if (!ShapeRecognitionRouter.ResolveUseWinRt(shapeMode) && IpcIACoreClient.Instance.IsHelperExecutableAvailable)
+                    // LTSC（2026-11-12）：WinRT 后端已移除，形状识别只走 IACore IPC。
+                    if (IpcIACoreClient.Instance.IsHelperExecutableAvailable)
                     {
                         LogHelper.WriteLogToFile("启动 IACore IPC 辅助进程");
                         bool ipcStarted = IpcIACoreClient.Instance.Start();
