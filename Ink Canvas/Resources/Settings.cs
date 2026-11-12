@@ -689,6 +689,24 @@ namespace Ink_Canvas
         public double PPTNavBarAutoHideOpacity { get; set; } = 0.08;
 
         /// <summary>
+        /// LTSC D-13：主悬浮窗（屏幕/PPT 批注模式下的底部工具栏）是否也做空闲减淡。
+        ///
+        /// 和翻页条的区别：
+        ///   - 只在非白板模式 + PPT 联动放映时生效
+        ///   - 计时按「整个画布有没有操作」，不是「有没有碰到工具栏」——
+        ///     这是触摸屏，老师写字时笔不会碰工具栏，按那个算会一节课都淡着
+        ///   - 淡出比例更保守，工具栏要一直看得见轮廓
+        /// </summary>
+        [JsonProperty("floatingBarIdleFade")]
+        public bool FloatingBarIdleFade { get; set; } = true;
+
+        [JsonProperty("floatingBarIdleFadeDelaySeconds")]
+        public double FloatingBarIdleFadeDelaySeconds { get; set; } = 4.0;
+
+        [JsonProperty("floatingBarIdleFadeOpacity")]
+        public double FloatingBarIdleFadeOpacity { get; set; } = 0.45;
+
+        /// <summary>
         /// 按下翻页按钮时给一点额外视觉反馈强度（除原有半透明高亮外再加一层）。
         /// 默认开启；投影下能明显看出「点到了」。
         /// </summary>

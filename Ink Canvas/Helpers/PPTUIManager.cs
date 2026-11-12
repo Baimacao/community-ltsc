@@ -167,15 +167,26 @@ namespace Ink_Canvas.Helpers
                         {
                             _mainWindow.ShowPPTModePromptNotification();
                         }
-                        if (MainWindow.Settings.Advanced.IsEnableAvoidFullScreenHelper)
                         {
-                            // 设置为画板模式，允许全屏操作
+                            // LTSC D-17：进放映【无条件】铺满整屏。
+                            //
+                            // 原来这段被 IsEnableAvoidFullScreenHelper 闸着，那个开关默认关，
+                            // 所以进放映时窗口根本不移动，一直停在启动时的 1050。
+                            // 而放映时任务栏被隐藏、屏幕实际是 1080，于是底部露出 30px 空带，
+                            // 翻页组件悬在那条空带上方 —— 就是用户看到的那条透明条。
+                            //
+                            // "避免全屏辅助" 和 "放映时铺满屏幕" 是两件事，不该共用一个开关。
                             AvoidFullScreenHelper.SetBoardMode(true);
                             _dispatcher.BeginInvoke(new Action(() =>
                             {
-                                MainWindow.MoveWindow(new WindowInteropHelper(_mainWindow).Handle, 0, 0,
-                                    System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
-                                    System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
+                                var bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                                //
+                                // 上一轮我误用了 WorkingArea(1050)，结果放映时任务栏被隐藏、
+                                // ICC 只铺到 1050，底下露出 30px 空带，翻页组件离屏幕底边悬空。
+                                // 放映是独占全屏场景，任务栏不在，就必须铺满 1080。
+                                // 非放映场景（桌面/白板）才用 WorkingArea，那条另算。
+                                MainWindow.MoveWindow(new WindowInteropHelper(_mainWindow).Handle,
+                                    bounds.X, bounds.Y, bounds.Width, bounds.Height, true);
 
                                 // MoveWindow 触发的 WM_WINDOWPOSCHANGING + 重绘会打断面板的 ShowWithFadeIn 动画，
                                 // 在窗口尺寸最终确定后重新评估一次翻页面板的可见性。
@@ -184,6 +195,10 @@ namespace Ink_Canvas.Helpers
                             }), DispatcherPriority.ApplicationIdle);
 
                             _mainWindow.isFullScreenApplied = true; // 标记已应用全屏处理
+                            // LTSC D-14：进放映后重新评估悬浮窗空闲淡出。
+                            // 定时器只在条件满足时才启动，条件从「不满足→满足」这一刻
+                            // 必须有人叫一声，否则表永远不走（这是第一版的 bug）。
+                            _mainWindow.ReArmFloatingBarIdleFade();
                         }
                     }
                     else
@@ -208,6 +223,8 @@ namespace Ink_Canvas.Helpers
                             }), DispatcherPriority.ApplicationIdle);
 
                             _mainWindow.isFullScreenApplied = false; // 标记全屏处理已还原
+                            // LTSC D-14：退出放映后条件不再满足，恢复清晰并停表
+                            _mainWindow.ReArmFloatingBarIdleFade();
                         }
                     }
                 }

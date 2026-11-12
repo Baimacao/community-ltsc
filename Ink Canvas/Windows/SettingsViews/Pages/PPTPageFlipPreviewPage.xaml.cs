@@ -844,6 +844,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SliderAutoHideDelay.Value = Math.Max(1, Math.Min(15, ppt.PPTNavBarAutoHideDelaySeconds));
                 TextBlockAutoHideDelayValue.Text = $"{ppt.PPTNavBarAutoHideDelaySeconds:0}s";
 
+                // LTSC D-13：主悬浮窗空闲减淡
+                ToggleFloatingBarIdleFade.IsOn = ppt.FloatingBarIdleFade;
+                SliderFloatingBarFadeDelay.Value = Math.Max(2, Math.Min(20, ppt.FloatingBarIdleFadeDelaySeconds));
+                TextBlockFloatingBarFadeDelayValue.Text = $"{ppt.FloatingBarIdleFadeDelaySeconds:0}s";
+                SliderFloatingBarFadeOpacity.Value = Math.Max(0.2, Math.Min(1.0, ppt.FloatingBarIdleFadeOpacity));
+                TextBlockFloatingBarFadeOpacityValue.Text = $"{ppt.FloatingBarIdleFadeOpacity:0.00}";
+
                 TogglePressFeedback.IsOn = ppt.PPTButtonPressFeedback;
             }
             catch (Exception ex)
@@ -907,6 +914,61 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SettingsManager.SaveSettingsToFile();
                 global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
             });
+        }
+
+        // ===== LTSC D-13：主悬浮窗空闲减淡 =====
+
+        private void ToggleFloatingBarIdleFade_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.FloatingBarIdleFade = ToggleFloatingBarIdleFade.IsOn;
+            SettingsManager.SaveSettingsToFile();
+            NotifyFloatingBarIdleFadeChanged();
+        }
+
+        private void SliderFloatingBarFadeDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (TextBlockFloatingBarFadeDelayValue != null)
+                TextBlockFloatingBarFadeDelayValue.Text = $"{e.NewValue:0}s";
+
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.FloatingBarIdleFadeDelaySeconds =
+                Math.Round(SliderFloatingBarFadeDelay.Value, 0);
+            _sliderDelayAction.DebounceAction(400, null, () =>
+            {
+                SettingsManager.SaveSettingsToFile();
+                NotifyFloatingBarIdleFadeChanged();
+            });
+        }
+
+        private void SliderFloatingBarFadeOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (TextBlockFloatingBarFadeOpacityValue != null)
+                TextBlockFloatingBarFadeOpacityValue.Text = $"{e.NewValue:0.00}";
+
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.FloatingBarIdleFadeOpacity =
+                Math.Round(SliderFloatingBarFadeOpacity.Value, 2);
+            _sliderDelayAction.DebounceAction(400, null, () =>
+            {
+                SettingsManager.SaveSettingsToFile();
+                NotifyFloatingBarIdleFadeChanged();
+            });
+        }
+
+        /// <summary>
+        /// 设置改了之后让 MainWindow 重新读一遍。走全局静态事件，
+        /// 免得这个页面反向依赖 MainWindow 实例。
+        /// </summary>
+        private static void NotifyFloatingBarIdleFadeChanged()
+        {
+            try { Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged(); } catch { }
+            try
+            {
+                if (global::Ink_Canvas.App.Current?.MainWindow is MainWindow mw)
+                    mw.ApplyFloatingBarIdleFadeSettings();
+            }
+            catch { }
         }
 
         private void TogglePressFeedback_Toggled(object sender, RoutedEventArgs e)

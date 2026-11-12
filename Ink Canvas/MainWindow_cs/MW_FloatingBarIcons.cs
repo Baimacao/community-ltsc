@@ -3241,17 +3241,24 @@ namespace Ink_Canvas
                 }
 
                 // 先移动主窗口到目标屏，确保画布承载区域切换到新屏幕。
+                //
+                // LTSC D-14：这里原来用 Bounds（整块屏，含任务栏）。
+                // 造成两个症状，其实是同一个根因：
+                //   1. 不在 PPT 模式时窗口被撑到 1080，底边被任务栏压住
+                //   2. 画布高度也被设成 1080，比窗口多出 30px，底部空出一条
+                // 统一改用 WorkingArea，窗口和画布都用同一个高度。
+                var workArea = targetScreen.WorkingArea;
                 MainWindow.MoveWindow(
                     new WindowInteropHelper(this).Handle,
-                    targetScreen.Bounds.X,
-                    targetScreen.Bounds.Y,
-                    targetScreen.Bounds.Width,
-                    targetScreen.Bounds.Height,
+                    workArea.X,
+                    workArea.Y,
+                    workArea.Width,
+                    workArea.Height,
                     true);
 
                 // 重新铺设画布尺寸，强制触发布局刷新。
-                inkCanvas.Width = targetScreen.Bounds.Width / dpiScaleX;
-                inkCanvas.Height = targetScreen.Bounds.Height / dpiScaleY;
+                inkCanvas.Width = workArea.Width / dpiScaleX;
+                inkCanvas.Height = workArea.Height / dpiScaleY;
                 inkCanvas.InvalidateMeasure();
                 inkCanvas.InvalidateArrange();
                 inkCanvas.UpdateLayout();
@@ -3283,6 +3290,7 @@ namespace Ink_Canvas
         /// <param name="e">路由事件参数</param>
         internal async void CursorIcon_Click(object sender, MouseButtonEventArgs e)
         {
+
             if (lastBorderMouseDownObject is Panel panel)
                 panel.Background = new SolidColorBrush(Colors.Transparent);
 
@@ -3472,7 +3480,7 @@ namespace Ink_Canvas
                 { /* Old UI removed */ }
 
                 // 进入批注模式时的全屏处理（仅当未应用过全屏处理时）
-                if (Settings.Advanced.IsEnableAvoidFullScreenHelper && !isFullScreenApplied)
+                if (Settings.Advanced.IsEnableAvoidFullScreenHelper && !isFullScreenApplied && !IsInPPTPresentationMode)
                 {
                     // 设置为画板模式，允许全屏操作
                     AvoidFullScreenHelper.SetBoardMode(true);
@@ -4736,7 +4744,7 @@ namespace Ink_Canvas
                 { /* Old UI removed */ }
 
                 // 进入批注模式时的全屏处理（仅当未应用过全屏处理时）
-                if (Settings.Advanced.IsEnableAvoidFullScreenHelper && !isFullScreenApplied)
+                if (Settings.Advanced.IsEnableAvoidFullScreenHelper && !isFullScreenApplied && !IsInPPTPresentationMode)
                 {
                     // 设置为画板模式，允许全屏操作
                     AvoidFullScreenHelper.SetBoardMode(true);

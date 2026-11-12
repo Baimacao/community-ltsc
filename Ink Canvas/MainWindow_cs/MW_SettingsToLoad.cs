@@ -563,8 +563,9 @@ namespace Ink_Canvas
                     {
                         if (isLoaded)
                         {
-                            MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
-                                WinForms.Screen.PrimaryScreen.Bounds.Width, WinForms.Screen.PrimaryScreen.Bounds.Height, true);
+                            // LTSC D-14：同上，启动时也用工作区，别把任务栏压住
+                            var wa = WinForms.Screen.PrimaryScreen.WorkingArea;
+                            MoveWindow(new WindowInteropHelper(this).Handle, wa.X, wa.Y, wa.Width, wa.Height, true);
                         }
                     }), DispatcherPriority.ApplicationIdle);
                 }

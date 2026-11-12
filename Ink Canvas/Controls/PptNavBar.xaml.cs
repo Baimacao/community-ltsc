@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
 namespace Ink_Canvas.Controls
@@ -475,7 +476,8 @@ namespace Ink_Canvas.Controls
             if (!enabled)
             {
                 // 关掉时立刻恢复到正常不透明度，避免停留在淡出状态。
-                ApplyFade(1.0);
+                // 这里用无动画版本：功能已经关了，不该还留一段淡入动画在跑。
+                ApplyFadeImmediate(1.0);
                 return;
             }
 
@@ -509,12 +511,60 @@ namespace Ink_Canvas.Controls
             ArmAutoHideTimer();
         }
 
+        /// <summary>
+        /// LTSC D-12：空闲减淡的淡入淡出。
+        ///
+        /// 原来是把 Opacity 直接赋目标值，降下来/弹回去都是硬切，
+        /// 静止一会突然整条消失、鼠标一扫又突然蹦出来，很跳。
+        /// 现在改成补间过渡：
+        ///   - 淡出（回 1.0 → 变淡）：慢一点，160ms，不要让人注意到"它在动"
+        ///   - 淡入（变淡 → 回 1.0）：快一点，110ms，鼠标来了要立刻跟手
+        ///
+        /// 只动 RootBorder.Opacity，不去碰外层容器，免得和「透明度」设置项打架。
+        /// </summary>
         private void ApplyFade(double opacity)
         {
             try
             {
-                // 只压这个控件自身的 Opacity，不去动外层容器，
-                // 免得和「透明度」设置项打架。
+                if (RootBorder == null) return;
+
+                // 已经在目标值附近就别再启动动画，省掉无谓的动画时钟
+                if (Math.Abs(RootBorder.Opacity - opacity) < 0.005)
+                {
+                    RootBorder.Opacity = opacity;
+                    return;
+                }
+
+                bool fadingOut = opacity < RootBorder.Opacity;
+                var duration = TimeSpan.FromMilliseconds(fadingOut ? 160 : 110);
+
+                var easing = fadingOut
+                    ? (IEasingFunction)new CubicEase { EasingMode = EasingMode.EaseIn }
+                    : new CubicEase { EasingMode = EasingMode.EaseOut };
+
+                var anim = new DoubleAnimation
+                {
+                    To = opacity,
+                    Duration = duration,
+                    EasingFunction = easing,
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+
+                RootBorder.BeginAnimation(UIElement.OpacityProperty, anim, HandoffBehavior.SnapshotAndReplace);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// 立刻把不透明度拍到位（不走动画）。用在初始化、关闭功能、以及
+        /// 需要瞬时同步的场景，避免动画排队导致状态落后一步。
+        /// </summary>
+        private void ApplyFadeImmediate(double opacity)
+        {
+            try
+            {
+                if (RootBorder == null) return;
+                RootBorder.BeginAnimation(UIElement.OpacityProperty, null);
                 RootBorder.Opacity = opacity;
             }
             catch { }
@@ -534,7 +584,7 @@ namespace Ink_Canvas.Controls
             ApplyRootOpacity();
         }
 
-        private void ApplyRootOpacity() => RootBorder.Opacity = IsPreviewExpanded ? 1 : _collapsedOpacity;
+        private void ApplyRootOpacity() => ApplyFadeImmediate(IsPreviewExpanded ? 1 : _collapsedOpacity);
 
         public void SetBarScale(double scale)
         {

@@ -440,6 +440,144 @@ namespace Ink_Canvas
         /// </remarks>
         private DispatcherTimer _inkPerfProbeTimer;
 
+        /// <summary>
+        /// LTSC D-13：主悬浮窗的画布空闲减淡。
+        /// 只在 PPT 联动 + 非白板模式下生效，触摸屏没有 hover，靠画布停笔计时。
+        /// </summary>
+        private Helpers.FloatingBarIdleFade _floatingBarIdleFade;
+
+        /// <summary>
+        /// LTSC D-13：初始化主悬浮窗空闲减淡。
+        ///
+        /// 触发条件（三个同时满足才淡）：
+        ///   1. 当前不在白板模式（currentMode == 0）
+        ///   2. PPT 联动正在放映
+        ///   3. 画布已经停笔超过 N 秒
+        ///
+        /// 恢复条件：画布任何一次落笔 / 触摸 → 立刻回到不透明。
+        /// 触摸屏没有鼠标悬停，所以不能用 MouseEnter 恢复。
+        /// </summary>
+        private void StartFloatingBarIdleFade()
+        {
+            try
+            {
+                if (ViewboxFloatingBar == null) return;
+                if (_floatingBarIdleFade != null) return;
+
+                // LTSC D-14：淡出作用在【外层容器】上，不是 ViewboxFloatingBar。
+                //
+                // 原因：进 PPT 模式时 ViewboxFloatingBar.Opacity 已经被设为
+                // ViewboxFloatingBarOpacityInPPTValue（默认 0.5）。如果淡出也压
+                // 同一个元素，就是两层相乘 0.5 × 0.45 = 0.225，几乎看不见，
+                // 而且从 0.5 到 0.45 的落差肉眼根本分辨不出，看起来就像"没效果"。
+                //
+                // 改到外层 Grid 上，两个透明度各自独立相乘，PPT 那层保持 0.5 不变，
+                // 淡出只在自己那一层做 1.0 → 0.45，幅度看得见。
+                _floatingBarIdleFade = new Helpers.FloatingBarIdleFade(
+                    FloatingbarUIForInkReplay,
+                    () =>
+                    {
+                        try
+                        {
+                            // LTSC D-19：只按「非白板」判定，普通桌面和 PPT 放映都算。
+                            //
+                            // 用户原话「只出现于非白板状态」——非白板就是一律生效，
+                            // 不包括"只在 PPT 里"。上一轮我收窄成必须 PPT 放映，
+                            // 结果普通桌面下怎么弄都不淡，是收过头了。
+                            //
+                            // 之前真正的问题是「淡了回不来」，那个已经靠 D-18 的
+                            // 全局输入监听解决了，跟条件放宽没关系。
+                            return currentMode == 0;
+                        }
+                        catch { return false; }
+                    });
+
+                // LTSC D-18：全局输入监听。
+                //
+                // 原来只有 inkCanvas_StylusDown 一个点会调 Touch()，
+                // 结果点工具栏按钮、擦除、触摸、翻页这些都不算"有活动"，
+                // 工具栏淡下去之后就一直不回来。
+                //
+                // 改成挂在这一层（窗口根容器）上做预览阶段监听：
+                // 用户只要在 ICC 窗口任何地方按下、移动、滚轮，都算有活动。
+                // 用 Preview* 是隧道阶段，鼠标/触摸/笔三种输入都会先经过它，
+                // 不需要区分是手写笔还是手指。
+                try
+                {
+                    PreviewMouseDown += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewMouseMove += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewTouchDown += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewTouchMove += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewStylusDown += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewStylusMove += (s2, e2) => NotifyFloatingBarActivity();
+                    PreviewMouseWheel += (s2, e2) => NotifyFloatingBarActivity();
+
+                    // 笔迹真正落纸 / 擦除时再补一次，保证画布内部的写入也算
+                    inkCanvas.Strokes.StrokesChanged += (s2, e2) => NotifyFloatingBarActivity();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"[D-18] 全局输入监听挂载失败: {ex.Message}", LogHelper.LogType.Warning);
+                }
+
+                ApplyFloatingBarIdleFadeSettings();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"[D-13] 空闲减淡初始化失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
+        /// LTSC D-13：按当前设置刷新主悬浮窗空闲减淡。
+        /// 设置页改完会调这个方法，不用重启程序。
+        /// </summary>
+        /// <summary>
+        /// LTSC D-14：外部条件变化（进/出 PPT 放映、切白板、窗口显隐）时调用。
+        /// 定时器只在「条件满足」时才会真正启动，所以条件从假变真的那一刻
+        /// 必须有人叫一声，否则表永远不走 —— 设置项显示已启用，实际永远不淡。
+        /// </summary>
+        internal void ReArmFloatingBarIdleFade()
+        {
+            try { _floatingBarIdleFade?.ReArm(); } catch { }
+        }
+
+        internal void ApplyFloatingBarIdleFadeSettings()
+        {
+            try
+            {
+                if (_floatingBarIdleFade == null) return;
+
+                var ppt = SettingsManager.Settings?.PowerPointSettings;
+                if (ppt == null) return;
+
+                bool enabled = ppt.FloatingBarIdleFade;
+                double delay = Math.Max(1.0, Math.Min(60.0, ppt.FloatingBarIdleFadeDelaySeconds));
+                double opacity = Math.Max(0.05, Math.Min(1.0, ppt.FloatingBarIdleFadeOpacity));
+
+                _floatingBarIdleFade.Configure(enabled, delay, opacity);
+
+                LogHelper.WriteLogToFile(
+                    enabled
+                        ? $"[D-13] 主悬浮窗空闲减淡已启用（仅 PPT 联动 + 非白板，停笔 {delay:0}s 淡到 {opacity:0.00}）"
+                        : "[D-13] 主悬浮窗空闲减淡已关闭",
+                    LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"[D-13] 空闲减淡初始化失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
+        /// LTSC D-13：画布有任何操作就叫一下，让悬浮窗立刻恢复清晰。
+        /// 触摸屏没有 hover，所有操作都必须走这里。
+        /// </summary>
+        private void NotifyFloatingBarActivity()
+        {
+            try { _floatingBarIdleFade?.Touch(); } catch { }
+        }
+
         private void StartInkPerfProbe()
         {
             try
@@ -497,6 +635,9 @@ namespace Ink_Canvas
             // 必须放在 InitializeComponent 之后——Dispatcher 消息循环此时才可用，
             // 放在前面定时器不会触发（第一次接的时候踩了这个坑）。
             StartInkPerfProbe();
+
+            // LTSC D-13：主悬浮窗空闲减淡。同样必须在 InitializeComponent 之后。
+            StartFloatingBarIdleFade();
 
             if (BorderTools.Child is FrameworkElement btChild) btChild.Visibility = Visibility.Collapsed;
             if (BorderDrawShape.Child is FrameworkElement bdsChild) bdsChild.Visibility = Visibility.Collapsed;
@@ -1925,9 +2066,9 @@ namespace Ink_Canvas
                 if (isLoaded) ShowNotification(
                     $"检测到窗口大小变化，已自动恢复到全屏：{Screen.PrimaryScreen.Bounds.Width}x{Screen.PrimaryScreen.Bounds.Height}（缩放比例为{Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth}x{Screen.PrimaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight}）");
                 WindowState = WindowState.Maximized;
-                MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
-                    Screen.PrimaryScreen.Bounds.Width,
-                    Screen.PrimaryScreen.Bounds.Height, true);
+                // LTSC D-14：用工作区，别用整块屏。ForceFullScreen 也不该压住任务栏。
+                var waFs = Screen.PrimaryScreen.WorkingArea;
+                MoveWindow(new WindowInteropHelper(this).Handle, waFs.X, waFs.Y, waFs.Width, waFs.Height, true);
             }
         }
 
@@ -2285,6 +2426,9 @@ namespace Ink_Canvas
         private void inkCanvas_StylusDown(object sender, StylusDownEventArgs e)
         {
             _stylusDownTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            // D-13：落笔即恢复悬浮窗清晰
+            NotifyFloatingBarActivity();
 
             if (IsCurrentPageFrozen && IsFreezeMutatingMode(inkCanvas.EditingMode))
             {
