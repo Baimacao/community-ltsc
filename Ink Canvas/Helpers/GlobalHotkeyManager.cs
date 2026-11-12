@@ -270,7 +270,7 @@ namespace Ink_Canvas.Helpers
 
                 // 工具切换快捷键
                 RegisterHotkey("SelectTool", Key.S, ModifierKeys.Alt, () => _mainWindow.SwitchToSelectFromHotkey());
-                RegisterHotkey("DrawTool", Key.D, ModifierKeys.Alt, () => _mainWindow.PenIcon_Click(null, null));
+                RegisterHotkey("DrawTool", Key.D, ModifierKeys.Alt, () => _mainWindow.SwitchToPenFromHotkey());
                 RegisterHotkey("EraserTool", Key.E, ModifierKeys.Alt, () => _mainWindow.SwitchToEraserFromHotkey());
                 RegisterHotkey("BlackboardTool", Key.B, ModifierKeys.Alt, () => _mainWindow.ImageBlackboard_MouseUp(null, null));
                 RegisterHotkey("QuitDrawTool", Key.Q, ModifierKeys.Alt, () => _mainWindow.KeyChangeToQuitDrawTool(null, null));

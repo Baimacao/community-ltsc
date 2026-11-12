@@ -2196,6 +2196,16 @@ namespace Ink_Canvas
                 return;
             CaptureInkCanvasInputIfNeeded(point);
 
+            // LTSC P2（2026-11-12）：鼠标路径也要记起点。
+            // _stylusDownTimestamp 原先只在 inkCanvas_StylusDown 里赋值，
+            // 那是数位板/触摸笔专用事件。鼠标画线走的是这里，永远不经过 StylusDown，
+            // 于是 inkCanvas_StrokeCollected 的耗时埋点恒为 0，探针一直显示「笔=0」。
+            // 只记左键，且只在还没记的时候记，避免覆盖同一笔里后来的事件。
+            if (_stylusDownTimestamp == 0 && e.LeftButton == MouseButtonState.Pressed)
+            {
+                _stylusDownTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            }
+
             if (IsCurrentPageFrozen && IsFreezeMutatingMode(inkCanvas.EditingMode))
             {
                 TryBlockFrozenPageMutation("修改冻结页面");

@@ -53,9 +53,20 @@ namespace Ink_Canvas.Helpers
             if (_internalAnalyzer == null || strokes == null || strokes.Count == 0)
                 return InkShapeRecognitionResult.Empty;
 
-            _cts?.Cancel();
+            // LTSC P2（2026-11-12）：上一轮的 CTS 必须 Dispose，不能只 Cancel。
+            // CancellationTokenSource 内部持有一个 ManualResetEvent 内核对象，
+            // Cancel() 只是发信号，内核对象要等 Dispose() 才释放。
+            // 这里每次 AnalyzeAsync 都新建一个而旧的不 Dispose——
+            // 即「每画一笔漏一个 Event 句柄」。实测：画 150 笔，Event 从 355 涨到 556。
+            var previousCts = _cts;
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
+            if (previousCts != null)
+            {
+                try { previousCts.Cancel(); } catch { }
+                try { previousCts.Dispose(); } catch { }
+            }
+
 
             try
             {
@@ -70,11 +81,15 @@ namespace Ink_Canvas.Helpers
                         AddStrokeInternal(stroke);
                     }
                 }
-
                 if (_strokeIdMap.Count == 0)
                     return InkShapeRecognitionResult.Empty;
-
-                var result = await _internalAnalyzer.AnalyzeAsync().AsTask(token).ConfigureAwait(true);
+                // LTSC P2（2026-11-12）：不把 token 传给 AsTask。
+                // AsTask(token) 会在 token 上注册回调，WinRT 的 IAsyncOperation 转换层
+                // 每次都会带出一个内核 Event；实测每笔 AnalyzeAsync 净涨 1（分位测量：
+                // 进=1031 → await后=1032，前三个分位全是 +0，只有 await 那一步 +1）。
+                // 这里改成不带取消的 AsTask，取消改成 await 完成之后再判断——
+                // 形状识别本身是毫秒级的短操作，中断收益远小于每笔漏一个句柄的代价。
+                var result = await _internalAnalyzer.AnalyzeAsync().AsTask().ConfigureAwait(true);
 
                 if (token.IsCancellationRequested) return InkShapeRecognitionResult.Empty;
 
@@ -130,6 +145,15 @@ namespace Ink_Canvas.Helpers
 
         public void Dispose()
         {
+            // LTSC P2（2026-11-12）：这里原来只把 _internalAnalyzer 置 null，
+            // 手上的 CTS 一直挂着，也会漏一个 Event。
+            var cts = _cts;
+            _cts = null;
+            if (cts != null)
+            {
+                try { cts.Cancel(); } catch { }
+                try { cts.Dispose(); } catch { }
+            }
             _internalAnalyzer = null;
         }
     }

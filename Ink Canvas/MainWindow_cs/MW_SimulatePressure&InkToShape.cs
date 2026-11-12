@@ -349,18 +349,24 @@ namespace Ink_Canvas
         /// </remarks>
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
-            // LTSC P2：笔迹耗时埋点。
-            // 上一次探针里「笔=0」——写了 StrokeDone 却一次没调用，埋点根本没接线。
-            // 这里补上：用 _stylusDownTimestamp（已有）算一笔的端到端耗时。
+            // LTSC P2（2026-11-12）：笔迹耗时埋点，必须在这里一次算完并清零。
+            // 走过的弯路：
+            //   1) 原先 _stylusDownTimestamp 只在 inkCanvas_StylusDown 里赋值，
+            //      鼠标画线不经过那个事件，埋点恒为 0；
+            //   2) 补了 PreviewMouseDown 赋值后，清零写在下面 if (Settings.Canvas.EnableInkFade)
+            //      分支里；渐隐关闭时那一段整块不执行，时间戳永远不清，
+            //      第二笔起就拿最早的起点算，报出 3 秒、8 秒、27 秒这种不可能的耗时。
+            // 所以：算耗时 + 清零，放在方法最前面，无条件执行。
+            long strokeElapsedMs = 0;
+            if (_stylusDownTimestamp > 0)
+            {
+                strokeElapsedMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _stylusDownTimestamp;
+                _stylusDownTimestamp = 0;
+            }
+
             try
             {
-                if (_stylusDownTimestamp > 0)
-                {
-                    // _stylusDownTimestamp 是 DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()，
-                    // 用同一时基算差值，别拿本地时间拼。
-                    long elapsed = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _stylusDownTimestamp;
-                    if (elapsed >= 0 && elapsed < 60000) InkPerfProbe.StrokeDone(elapsed);
-                }
+                if (strokeElapsedMs > 0 && strokeElapsedMs < 60000) InkPerfProbe.StrokeDone(strokeElapsedMs);
             }
             catch { }
 
@@ -380,15 +386,12 @@ namespace Ink_Canvas
                     inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 }
 
+                // 起点时间戳已在方法开头算过并清零，这里直接用。
+                long strokeDurationMs = strokeElapsedMs;
+
                 // 添加到墨迹渐隐管理器
                 if (_inkFadeManager != null)
                 {
-                    long strokeDurationMs = 0;
-                    if (_stylusDownTimestamp > 0)
-                    {
-                        strokeDurationMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _stylusDownTimestamp;
-                        _stylusDownTimestamp = 0;
-                    }
                     _inkFadeManager.AddFadingStroke(e.Stroke, startPoint, endPoint, strokeDurationMs);
                 }
                 else

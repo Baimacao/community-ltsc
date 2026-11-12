@@ -1,4 +1,6 @@
 using System;
+using System.Windows.Controls;
+using System.Windows.Ink;
 using System.Windows.Input;
 
 namespace Ink_Canvas
@@ -233,6 +235,65 @@ namespace Ink_Canvas
             }
 
             EraserIcon_Click(lastBorderMouseDownObject, null);
+        }
+
+        /// <summary>
+        /// LTSC P2（2026-11-12）：画笔快捷键。
+        /// </summary>
+        /// <remarks>
+        /// 原来 DrawTool 直接绑 PenIcon_Click。那个方法一个入口干两件事：
+        ///   - 没进批注模式时：切到画笔、进入批注模式（分支 A）
+        ///   - 已在批注模式时：开合笔调色板（分支 B，3594-3612 行）
+        /// 于是「按一次进批注、按第二次弹出笔菜单」，跟快捷键该有的行为不一样。
+        ///
+        /// 这里照 SwitchToSelectFromHotkey / SwitchToEraserFromHotkey 的写法：
+        /// 只在还没进批注时调 PenIcon_Click 进入模式，之后只做「切到画笔」，
+        /// 不碰调色板。
+        /// </remarks>
+        internal async void SwitchToPenFromHotkey()
+        {
+            if (isFloatingBarFolded)
+            {
+                await UnFoldFloatingBar(new object());
+            }
+
+            if (!IsAnnotating)
+            {
+                // 未进批注：走 PenIcon_Click 的进入分支（分支 A）
+                PenIcon_Click(lastBorderMouseDownObject, null);
+                return;
+            }
+
+            // 已在批注：只保证当前工具是画笔，不开合调色板。
+            if (drawingShapeMode != 0 && !isLongPressSelected)
+            {
+                return;
+            }
+
+            if (currentSelectedElement != null)
+            {
+                UnselectElement(currentSelectedElement);
+                currentSelectedElement = null;
+            }
+            DisableEraserOverlay();
+            StopEraserAutoSwitchBackTimer();
+
+            SetCurrentToolMode(InkCanvasEditingMode.Ink);
+            UpdateCurrentToolMode("pen");
+            SetFloatingBarHighlightPosition("pen");
+
+            forceEraser = false;
+            forcePointEraser = false;
+            drawingShapeMode = 0;
+
+            if (!drawingAttributes.IsHighlighter && penType != 2)
+            {
+                penType = 0;
+                drawingAttributes.IsHighlighter = false;
+                drawingAttributes.StylusTip = StylusTip.Ellipse;
+            }
+
+            HideSubPanels("pen", true);
         }
 
         internal async void SwitchToSelectFromHotkey()
