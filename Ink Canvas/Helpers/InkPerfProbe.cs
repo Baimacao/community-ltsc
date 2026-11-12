@@ -205,6 +205,24 @@ namespace Ink_Canvas.Helpers
             sb.Append(" | GC ").Append(gc0).Append("/").Append(gc1).Append("/").Append(gc2);
             sb.Append(" 工作集=").Append(ws).Append("MB");
 
+            // LTSC P2-10：内存与句柄稳态。
+            // 只看工作集不够——Win32 句柄和 GDI/USER 对象泄漏不会立刻反映到托管堆，
+            // 必须单独看这三项，否则"没涨"只是没测到。
+            try
+            {
+                var proc = Process.GetCurrentProcess();
+                proc.Refresh();
+                sb.Append(" 句柄=").Append(proc.HandleCount);
+            }
+            catch { }
+            try { sb.Append(" 托管堆=").Append(GC.GetTotalMemory(false) / (1024 * 1024)).Append("MB"); } catch { }
+            try
+            {
+                sb.Append(" GDI=").Append(GetGuiResources(GetCurrentProcess(), 0));
+                sb.Append(" USER=").Append(GetGuiResources(GetCurrentProcess(), 1));
+            }
+            catch { }
+
             TickCount++;
             LogHelper.WriteLogToFile(sb.ToString(),
                 TickCount <= 3 ? LogHelper.LogType.Event : LogHelper.LogType.Trace);
@@ -225,5 +243,12 @@ namespace Ink_Canvas.Helpers
             _since.Restart();
             _lastFlushMs = 0;
         }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern int GetGuiResources(IntPtr hProcess, int uiFlags);
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern IntPtr GetCurrentProcess();
     }
+
 }
