@@ -732,6 +732,23 @@ namespace Ink_Canvas.Helpers
                                         view = window.GetType().InvokeMember("View",
                                             System.Reflection.BindingFlags.GetProperty, null, window, null);
                                         comInShow = true;
+
+                                        // LTSC P1-6（2026-11-12）：轮询路径原来从不刷 SlidesCount。
+                                        //
+                                        // RefreshSlidesCount() 只有 4 个调用点，全在 COM 事件回调里
+                                        // （连接成功 / 翻页 / 打开演示文稿 / 关闭演示文稿）。
+                                        // 而 COM 事件在放映刚启动时经常不触发——那时靠的就是这条轮询。
+                                        //
+                                        // 后果：SlidesCount 一直是 0，而
+                                        // PPTUIManager.UpdateNavigationPanelsVisibility 里
+                                        // 有 hasValidPageCount = SlidesCount > 0 这个闸门，
+                                        // 于是整条翻页栏被 HideAllNavigationPanels() 隐藏。
+                                        // 2026-11-12 早上「翻页栏不出现」就是这么来的：
+                                        // 轮询能算出 comSlide=1，却没人去刷总页数。
+                                        //
+                                        // 这里在确认进入放映后补刷一次。RefreshSlidesCount 自带
+                                        // oldCount/newCount 变化判断，重复调用不会重复触发事件。
+                                        if (SlidesCount <= 0) RefreshSlidesCount();
                                         if (view != null)
                                         {
                                             // 一级：View.Slide.SlideIndex（Office 标准路径）
