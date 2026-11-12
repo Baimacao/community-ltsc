@@ -118,7 +118,7 @@
     <value>窗口置顶</value>
   </data>
   <data name="TopMostHint" xml:space="preserve">
-    <value>窗口始终显示在其他窗口之上</value>
+    <value>盖住任务栏和全屏窗口。需要管理员权限或 UIAccess；以管理员运行会导致 PPT 联动失效。</value>
   </data>
   <data name="TopMostMode" xml:space="preserve">
     <value>置顶模式</value>
@@ -130,7 +130,7 @@
     <value>切换到普通置顶模式需要重启软件才能生效，是否立即重启？</value>
   </data>
   <data name="TopMostMode_RestartAsAdmin" xml:space="preserve">
-    <value>重启到管理员模式</value>
+    <value>重启到管理员模式（用于覆盖任务栏）</value>
   </data>
   <data name="TopMostMode_CurrentUIAccessNormal" xml:space="preserve">
     <value>当前为拥有 UIA 权限的降权进程</value>

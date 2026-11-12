@@ -3393,6 +3393,10 @@ namespace Ink_Canvas
         {
             if (TryBlockFrozenPageMutation("切换到画笔")) return;
 
+            // LTSC D-07：用户自己点了批注键 —— 作废「等切页后自动恢复」的挂起状态。
+            // 恢复流程内部会先清零再调本方法，所以不会误伤自己。
+            CancelPendingPptNavigationRestore();
+
             if (lastBorderMouseDownObject is Panel panel)
                 panel.Background = new SolidColorBrush(Colors.Transparent);
 

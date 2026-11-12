@@ -1,0 +1,87 @@
+<Window x:Class="Ink_Canvas.Windows.AdminLaunchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+        mc:Ignorable="d"
+        Title="兼容性提醒"
+        Width="560"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ShowInTaskbar="True"
+        Topmost="True"
+        Background="{DynamicResource ApplicationBackgroundBrush}"
+        ui:ThemeManager.IsThemeAware="True"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:WindowHelper.CornerStyle="Round">
+
+    <Grid Margin="28,24,28,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题行 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Warning}"
+                         FontSize="28"
+                         Margin="0,0,14,0"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource SystemFillColorCautionBrush}"/>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="正在以管理员权限运行"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="这会影响部分功能"
+                           FontSize="13"
+                           Margin="0,3,0,0"
+                           Opacity="0.7"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 说明 -->
+        <Border Grid.Row="1"
+                Margin="0,20,0,0"
+                Padding="16,14"
+                CornerRadius="8"
+                Background="{DynamicResource SubtleFillColorSecondaryBrush}">
+            <StackPanel>
+                <TextBlock TextWrapping="Wrap"
+                           LineHeight="22"
+                           Text="Windows 会隔离不同权限级别的程序。InkCanvasForClass 以管理员身份运行时，无法与普通权限的 PowerPoint 通信，会导致："/>
+                <StackPanel Margin="6,10,0,0">
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Opacity="0.85" Text="·  PPT 联动失效，翻页组件不显示"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Opacity="0.85" Text="·  从资源管理器拖放文件可能被系统拦截"/>
+                    <TextBlock TextWrapping="Wrap" Opacity="0.85" Text="·  部分快捷键在其他程序上不生效"/>
+                </StackPanel>
+                <TextBlock TextWrapping="Wrap"
+                           LineHeight="22"
+                           Margin="0,12,0,0"
+                           Opacity="0.85"
+                           Text="建议以普通权限重新启动。这只是权限问题，不会影响你的数据。"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,22,0,0">
+            <Button x:Name="BtnIgnore"
+                    Content="忽略并继续使用"
+                    MinWidth="132"
+                    Height="34"
+                    Margin="0,0,10,0"
+                    Click="BtnIgnore_Click"/>
+            <Button x:Name="BtnRestart"
+                    Content="以普通权限重启"
+                    MinWidth="132"
+                    Height="34"
+                    Style="{DynamicResource AccentButtonStyle}"
+                    Click="BtnRestart_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

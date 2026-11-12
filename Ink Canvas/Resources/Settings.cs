@@ -858,8 +858,13 @@ namespace Ink_Canvas
         public bool IsShowCanvasAtNewSlideShow { get; set; } = false;
         [JsonProperty("isNoClearStrokeOnSelectWhenInPowerPoint")]
         public bool IsNoClearStrokeOnSelectWhenInPowerPoint { get; set; } = true;
+        /// <summary>
+        /// LTSC D-06：PPT 模式下点鼠标（退出批注）时是否保留笔迹。
+        /// 原默认 false——老师写完一转向鼠标，整页笔迹直接消失，实际用起来是缺陷。
+        /// 改为 true，并在「PPT 联动」设置页暴露开关。
+        /// </summary>
         [JsonProperty("isShowStrokeOnSelectInPowerPoint")]
-        public bool IsShowStrokeOnSelectInPowerPoint { get; set; }
+        public bool IsShowStrokeOnSelectInPowerPoint { get; set; } = true;
         [JsonProperty("isAutoSaveStrokesInPowerPoint")]
         public bool IsAutoSaveStrokesInPowerPoint { get; set; } = true;
         [JsonProperty("isAutoSaveScreenShotInPowerPoint")]
@@ -1112,6 +1117,17 @@ namespace Ink_Canvas
         [JsonProperty("isSpecialScreen")]
         public bool IsSpecialScreen { get; set; }
 
+        /// <summary>
+        /// LTSC D-09：以管理员身份启动时的处理方式。
+        /// 0 = 弹窗提醒（默认）  1 = 自动以普通权限重启  2 = 不做处理
+        ///
+        /// 为什么需要：Windows 的 UIPI 会隔断不同完整性级别的进程。
+        /// ICC 以管理员运行时，PowerPoint 若是普通权限，COM 连接会被拒绝
+        /// （GetActiveObject → MK_E_UNAVAILABLE），表现为 PPT 联动整体失效
+        /// （翻页组件消失、页码读取失败、退出无响应）。
+        /// </summary>
+        [JsonProperty("adminLaunchAction")]
+        public int AdminLaunchAction { get; set; } = 0;
         [JsonProperty("isQuadIR")]
         public bool IsQuadIR { get; set; }
 

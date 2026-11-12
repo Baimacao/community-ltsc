@@ -39,8 +39,14 @@ namespace Ink_Canvas.Helpers
             {
                 string exePath = Process.GetCurrentProcess().MainModule.FileName;
 
+                // LTSC D-10：写到 HKCU\Software\Classes 而不是 HKCR（= HKLM\Software\Classes）。
+                // HKCR 写入需要管理员权限，普通权限下会抛 UnauthorizedAccessException——
+                // 这正是日志里那条「注册文件关联时访问被拒绝」的来源。
+                // HKCU 下的 Classes 对当前用户同等生效，且不需要任何提权。
+                using (RegistryKey classesRoot = Registry.CurrentUser.CreateSubKey(@"Software\Classes"))
+                {
                 // 注册文件类型
-                using (RegistryKey fileTypeKey = Registry.ClassesRoot.CreateSubKey(FileTypeName))
+                using (RegistryKey fileTypeKey = classesRoot.CreateSubKey(FileTypeName))
                 {
                     fileTypeKey.SetValue("", AppDescription);
                     fileTypeKey.SetValue("FriendlyTypeName", AppDescription);
@@ -61,9 +67,10 @@ namespace Ink_Canvas.Helpers
                 }
 
                 // 注册文件扩展名
-                using (RegistryKey extensionKey = Registry.ClassesRoot.CreateSubKey(FileExtension))
+                using (RegistryKey extensionKey = classesRoot.CreateSubKey(FileExtension))
                 {
                     extensionKey.SetValue("", FileTypeName);
+                }
                 }
 
                 // 刷新系统文件关联缓存
@@ -96,11 +103,15 @@ namespace Ink_Canvas.Helpers
         {
             try
             {
-                // 删除文件扩展名关联
-                Registry.ClassesRoot.DeleteSubKeyTree(FileExtension, false);
-
-                // 删除文件类型定义
-                Registry.ClassesRoot.DeleteSubKeyTree(FileTypeName, false);
+                // LTSC D-10：与注册保持同一位置（HKCU\Software\Classes）
+                using (RegistryKey classesRoot = Registry.CurrentUser.OpenSubKey(@"Software\Classes", true))
+                {
+                    if (classesRoot != null)
+                    {
+                        classesRoot.DeleteSubKeyTree(FileExtension, false);
+                        classesRoot.DeleteSubKeyTree(FileTypeName, false);
+                    }
+                }
 
                 // 刷新系统文件关联缓存
                 RefreshSystemFileAssociations();
@@ -122,14 +133,15 @@ namespace Ink_Canvas.Helpers
         {
             try
             {
-                using (RegistryKey extensionKey = Registry.ClassesRoot.OpenSubKey(FileExtension))
+                using (RegistryKey classesRoot = Registry.CurrentUser.OpenSubKey(@"Software\Classes"))
+                using (RegistryKey extensionKey = classesRoot?.OpenSubKey(FileExtension))
                 {
                     if (extensionKey == null) return false;
 
                     string fileType = extensionKey.GetValue("") as string;
                     if (string.IsNullOrEmpty(fileType)) return false;
 
-                    using (RegistryKey fileTypeKey = Registry.ClassesRoot.OpenSubKey(fileType))
+                    using (RegistryKey fileTypeKey = classesRoot.OpenSubKey(fileType))
                     {
                         if (fileTypeKey == null) return false;
 

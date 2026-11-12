@@ -139,10 +139,10 @@
     <value>Canvas</value>
   </data>
   <data name="Canvas_HideInkOnExit" xml:space="preserve">
-    <value>Hide ink when leaving canvas</value>
+    <value>Hide ink when switching to mouse</value>
   </data>
   <data name="Canvas_HideStrokeWhenSelectingHint" xml:space="preserve">
-    <value>When this option is on, ink will not be shown in PPT mode if not in annotation mode.</value>
+    <value>When on, clicking the Mouse button to leave annotation mode hides the current ink; turn it off to keep the ink on screen.</value>
   </data>
   <data name="Canvas_HyperbolaAsymptoteHint" xml:space="preserve">
     <value>If not kept, undo-related bugs may occur.</value>

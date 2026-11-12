@@ -139,10 +139,10 @@
     <value>画板</value>
   </data>
   <data name="Canvas_HideInkOnExit" xml:space="preserve">
-    <value>退出画板模式后隐藏墨迹</value>
+    <value>点鼠标时隐藏笔迹</value>
   </data>
   <data name="Canvas_HideStrokeWhenSelectingHint" xml:space="preserve">
-    <value>开启 退出画板模式后隐藏墨迹 选项后，进入 PPT 模式时未处于批注模式时不会显示墨迹。</value>
+    <value>开启后，点「鼠标」退出批注模式时隐藏当前笔迹；关闭则笔迹继续显示在屏幕上。</value>
   </data>
   <data name="Canvas_HyperbolaAsymptoteHint" xml:space="preserve">
     <value>请注意，若不保留双曲线渐近线可能会有遇到撤回相关的 BUG 影响使用。</value>

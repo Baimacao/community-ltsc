@@ -85,6 +85,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
             ToggleSwitchIsSpecialScreen.IsOn = settings.Advanced.IsSpecialScreen;
             ToggleSwitchDisableHardwareAcceleration.IsOn = !settings.Canvas.UseHardwareAcceleration;
+            try { ComboAdminLaunch.SelectedIndex = Math.Max(0, Math.Min(2, settings.Advanced.AdminLaunchAction)); } catch { ComboAdminLaunch.SelectedIndex = 0; }
             TouchMultiplierSlider.Value = settings.Advanced.TouchMultiplier;
             ToggleSwitchEraserBindTouchMultiplier.IsOn = settings.Advanced.EraserBindTouchMultiplier;
             NibModeBoundsWidthSlider.Value = settings.Advanced.NibModeBoundsWidth;
@@ -141,6 +142,14 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
             TextBlockShowRawValue.Text = value.ToString();
             TextBlockShowCalculatedMultiplier.Text = (5 / (value * 1.1)).ToString();
+        }
+
+        private void ComboAdminLaunch_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            if (ComboAdminLaunch == null || ComboAdminLaunch.SelectedIndex < 0) return;
+            SettingsManager.Settings.Advanced.AdminLaunchAction = ComboAdminLaunch.SelectedIndex;
+            SettingsManager.SaveSettingsToFile();
         }
 
         #endregion

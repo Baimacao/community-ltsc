@@ -1263,6 +1263,27 @@ namespace Ink_Canvas
                 _previousSlideID = currentSlide;
                 NotifyPluginSlideChanged(currentSlide);
 
+                // LTSC D-07：这次切页若是「点页码进 PPT 原生网格选页」引发的，
+                // 自动回到批注态。挂在这里是因为 PowerPoint 的网格选页只发 COM 翻页事件，
+                // 不经过 ICC 自己的 PPTNavBar（SlideSelected 不会触发）。
+                if (_pptNavPendingRestoreAnnotation)
+                {
+                    int targetPage = currentSlide;
+                    Application.Current?.Dispatcher.InvokeAsync(async () =>
+                    {
+                        try
+                        {
+                            // 等墨迹切到新页（上面那段 Dispatcher 里的保存/恢复）跑完。
+                            await Task.Delay(500);
+                            TryRestoreAnnotationAfterPptNavigation($"切到第 {targetPage} 页");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.WriteLogToFile($"[PPT导航] 延迟恢复异常: {ex.Message}", LogHelper.LogType.Warning);
+                        }
+                    });
+                }
+
                 // 转发PPT翻页事件到小白板（如果已打开且启用了联动）
                 _miniWhiteboardWindow?.OnPPTSlideChangedExternal(currentSlide - 1);
             }
@@ -2314,6 +2335,54 @@ namespace Ink_Canvas
         // 对应 OnPPTNavBarPageClickAsync。这三个方法从来没被真正调用过。
 
         /// <summary>由 PPTNavBar 控件 PageClick 事件触发的页码点击逻辑。</summary>
+        #region LTSC D-07：点页码临时穿透 → 切页后自动回批注
+
+        /// <summary>
+        /// 这次「点页码进导航」是不是从批注态发起的。
+        /// 需求原话：「点击页码键后先临时进入 ppt 鼠标穿透模式并且隐藏笔迹，
+        /// 切页成功后自动恢复至 ppt 批注状态（笔迹恢复成当前页的笔迹）；
+        /// 如果没有切页，点批注键也要能回到 ppt 批注模式并恢复此页笔迹」。
+        /// </summary>
+        private bool _pptNavPendingRestoreAnnotation;
+
+        /// <summary>切页完成后自动回批注态（幂等，只生效一次）。</summary>
+        internal void TryRestoreAnnotationAfterPptNavigation(string reason)
+        {
+            if (!_pptNavPendingRestoreAnnotation) return;
+            _pptNavPendingRestoreAnnotation = false;
+
+            try
+            {
+                if (_pptManager?.IsConnected != true || _pptManager?.IsInSlideShow != true) return;
+
+                Application.Current?.Dispatcher.InvokeAsync(() =>
+                {
+                    try
+                    {
+                        inkCanvas.Visibility = Visibility.Visible;
+                        PenIcon_Click(null, null);
+                        LogHelper.WriteLogToFile($"[PPT导航] 已自动回到批注模式（{reason}）", LogHelper.LogType.Event);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"[PPT导航] 恢复批注模式失败: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"[PPT导航] 恢复批注模式失败(外层): {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>用户自己点了批注键 —— 作废挂起的自动恢复。</summary>
+        internal void CancelPendingPptNavigationRestore()
+        {
+            _pptNavPendingRestoreAnnotation = false;
+        }
+
+        #endregion
+
         private async Task OnPPTNavBarPageClickAsync(Controls.PPTNavBar bar)
         {
             if (!Settings.PowerPointSettings.EnablePPTButtonPageClickable) return;
@@ -2325,10 +2394,18 @@ namespace Ink_Canvas
 
             try
             {
+                // LTSC D-07：记下是否从批注态进来，切页后自动回去。
+                bool wasAnnotating = IsAnnotating;
+                _pptNavPendingRestoreAnnotation = wasAnnotating;
+
                 GridTransparencyFakeBackground.Opacity = 1;
                 GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
                 SetTransparentNotHitThrough();
                 CursorIcon_Click(null, null);
+
+                // 点页码进导航时必须隐藏笔迹（这是与「点鼠标」不同的行为：
+                // 点鼠标要保留笔迹，点页码要临时藏起来，方便看清缩略图）。
+                if (wasAnnotating) inkCanvas.Visibility = Visibility.Collapsed;
 
                 // LTSC P1c：增强预览已整体移除（用户裁决）。
                 // 点页码 = 调 PowerPoint 原版导航，不再画 ICC 自己的缩略图面板。
@@ -2357,6 +2434,7 @@ namespace Ink_Canvas
             try { _pptManager?.TryNavigateToSlide(slideNumber); }
             catch (Exception ex) { LogHelper.WriteLogToFile($"PPT增强预览跳转异常: {ex}", LogHelper.LogType.Error); }
             finally { if (bar != null) bar.IsPreviewExpanded = false; }
+
         }
 
         /// <summary>

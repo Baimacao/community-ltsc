@@ -37,6 +37,24 @@
                         IsOn="True"
                         Toggled="ToggleSwitchIsSpecialScreen_OnToggled"/>
 
+                    <!-- LTSC D-09：管理员权限启动提醒。
+                         Windows UIPI 会隔断不同完整性级别的进程，ICC 以管理员运行时
+                         连不上普通权限的 PowerPoint，PPT 联动会整体失效。 -->
+                    <ui:SettingsCard x:Name="CardAdminLaunch"
+                                     Header="以管理员权限启动时"
+                                     Description="管理员权限会导致 PPT 联动失效（翻页组件消失、页码读不到）">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Admin}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox x:Name="ComboAdminLaunch"
+                                  MinWidth="200"
+                                  SelectionChanged="ComboAdminLaunch_SelectionChanged">
+                            <ComboBoxItem Content="弹窗提醒"/>
+                            <ComboBoxItem Content="自动以普通权限重启"/>
+                            <ComboBoxItem Content="不做处理"/>
+                        </ComboBox>
+                    </ui:SettingsCard>
+
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchDisableHardwareAcceleration"
                         Header="{x:Static props:CanvasStrings.Canvas_DisableHardwareAcceleration}"
                         Description="{x:Static props:CanvasStrings.Canvas_DisableHardwareAccelerationHint}"

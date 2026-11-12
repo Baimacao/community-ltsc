@@ -118,7 +118,7 @@
     <value>Topmost</value>
   </data>
   <data name="TopMostHint" xml:space="preserve">
-    <value>Window always stays on top of other windows</value>
+    <value>Covers the taskbar and full-screen windows. Requires admin rights or UIAccess — admin mode will break PowerPoint linking.</value>
   </data>
   <data name="TopMostMode" xml:space="preserve">
     <value>Topmost Mode</value>
@@ -130,7 +130,7 @@
     <value>Switching to normal topmost mode requires a restart to take effect. Restart now?</value>
   </data>
   <data name="TopMostMode_RestartAsAdmin" xml:space="preserve">
-    <value>Restart as Administrator</value>
+    <value>Restart with admin rights (to cover the taskbar)</value>
   </data>
   <data name="TopMostMode_RestartAsNormal" xml:space="preserve">
     <value>Switch to Non-Admin Mode</value>

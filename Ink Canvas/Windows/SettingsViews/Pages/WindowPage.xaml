@@ -148,8 +148,6 @@
                         Text="{x:Static props:ThemeStrings.Theme_GroupTitle}" />
 
 
-                        Text="{x:Static props:ThemeStrings.Theme_Label}" />
-
                     <ui:SettingsCard Header="{x:Static props:ThemeStrings.Theme_Label}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Pinned}" />

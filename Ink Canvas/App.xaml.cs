@@ -1,6 +1,7 @@
 using H.NotifyIcon;
 using Ink_Canvas.Helpers;
 using Ink_Canvas.Properties;
+using Ink_Canvas.Windows.SettingsViews.Helpers;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -926,6 +927,61 @@ namespace Ink_Canvas
         /// - "--skip-mutex-check"：跳过单实例互斥检查
         /// - "-m"：允许多实例启动
         /// 另外也可能包含以 "icc:" 开头的 URI 参数或 .icstk 文件路径用于启动时的 IPC 交互。</param>
+        /// <summary>
+        /// LTSC D-09：检测到以管理员权限启动时的处理入口。
+        /// 由设置项 Advanced.AdminLaunchAction 控制：
+        ///   0 = 弹窗提醒（默认）
+        ///   1 = 自动以普通权限重启
+        ///   2 = 不做处理
+        /// </summary>
+        private void TryHandleAdminLaunch()
+        {
+            try
+            {
+                if (!AppRestartHelper.IsRunningAsAdmin()) return;
+
+                int action = 0;
+                try
+                {
+                    action = SettingsManager.Settings?.Advanced?.AdminLaunchAction ?? 0;
+                }
+                catch
+                {
+                    action = 0;
+                }
+
+                LogHelper.WriteLogToFile($"检测到以管理员权限运行，处理方式={action}", LogHelper.LogType.Warning);
+
+                if (action == 2) return; // 不处理
+
+                if (action == 1)
+                {
+                    // 自动降权重启。给日志留一行，方便回查。
+                    LogHelper.WriteLogToFile("按设置自动以普通权限重启", LogHelper.LogType.Event);
+                    AppRestartHelper.RestartApp(false);
+                    return;
+                }
+
+                // 默认：弹窗提醒。延迟到主窗口建立后再弹，避免盖在启动画面上。
+                Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        var win = new Windows.AdminLaunchWindow();
+                        win.ShowDialog();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"显示管理员权限提醒失败: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                }), DispatcherPriority.ApplicationIdle);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"管理员权限检测异常: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
         async void App_Startup(object sender, StartupEventArgs e)
         {
             appStartTime = DateTime.Now;
@@ -972,6 +1028,12 @@ namespace Ink_Canvas
                 }
             }
             LogHelper.NewLog(string.Format("Ink Canvas Starting (Version: {0})", versionString));
+
+            // LTSC D-09：管理员权限检测。
+            // Windows UIPI 会隔断不同完整性级别的进程，ICC 以管理员运行会连不上普通权限的
+            // PowerPoint（GetActiveObject → MK_E_UNAVAILABLE），PPT 联动整体失效。
+            // 处理方式由设置项 AdminLaunchAction 决定：0 弹窗 / 1 自动降权重启 / 2 不处理。
+            TryHandleAdminLaunch();
 
             // 检查是否为最终应用启动（更新后的应用）
             bool isFinalApp = e.Args.Contains("--final-app");

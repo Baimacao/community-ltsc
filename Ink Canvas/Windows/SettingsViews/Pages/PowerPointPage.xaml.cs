@@ -73,6 +73,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             CardAlwaysGoToFirstPageOnReenter.IsOn = ppt.IsAlwaysGoToFirstPageOnReenter;
             CardNotifyHiddenPage.IsOn = ppt.IsNotifyHiddenPage;
             CardNotifyAutoPlayPresentation.IsOn = ppt.IsNotifyAutoPlayPresentation;
+            CardKeepStrokeInPowerPoint.IsOn = ppt.IsShowStrokeOnSelectInPowerPoint;
 
             _isLoaded = true;
         }
@@ -260,6 +261,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             if (!_isLoaded) return;
             SettingsManager.Settings.PowerPointSettings.IsNotifyAutoPlayPresentation = CardNotifyAutoPlayPresentation.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchKeepStrokeInPowerPoint_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.PowerPointSettings.IsShowStrokeOnSelectInPowerPoint = CardKeepStrokeInPowerPoint.IsOn;
             SettingsManager.SaveSettingsToFile();
         }
 

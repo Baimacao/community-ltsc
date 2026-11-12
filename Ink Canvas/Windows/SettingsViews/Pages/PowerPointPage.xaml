@@ -149,6 +149,15 @@
                             Icon="{x:Static ui:SegoeFluentIcons.Hide}"
                             Toggled="ToggleSwitchNotifyHiddenPage_Toggled"/>
 
+                    <!-- LTSC D-06：PPT 模式下点鼠标（退出批注）时保留笔迹。
+                         原来的行为由 IsShowStrokeOnSelectInPowerPoint 控制，但该项从未暴露到界面上，
+                         默认又是 false，导致老师写完一转向鼠标笔迹就整块消失。 -->
+                    <controls:LabeledSettingsCard x:Name="CardKeepStrokeInPowerPoint"
+                            Header="PPT 模式下保留笔迹"
+                            Description="开启后，在 PPT 批注状态下点鼠标时不隐藏笔迹。"
+                            Icon="{x:Static ui:SegoeFluentIcons.Hide}"
+                            Toggled="ToggleSwitchKeepStrokeInPowerPoint_Toggled"/>
+
                     <controls:LabeledSettingsCard x:Name="CardNotifyAutoPlayPresentation"
                             Header="{x:Static props:PPTStrings.NotifyAutoPlay}"
                             Icon="{x:Static ui:SegoeFluentIcons.Play}"
