@@ -77,6 +77,11 @@ namespace Ink_Canvas.Helpers
         /// <summary>上一次连接失败的原因，用于把"为什么连不上"写进日志而不是留个空。</summary>
         public string LastFailureReason { get; private set; }
 
+        /// <summary>上次已写进日志的连接失败原因，用于限流，避免每 2 秒刷一遍。</summary>
+        string _lastLoggedFailureReason;
+        /// <summary>上次写连接失败日志的时间（UTC）。</summary>
+        DateTime _lastFailureLogAt = DateTime.MinValue;
+
         // ---------- 状态 ----------
         object _comApplication;
         object _comSlideShowWindow;
@@ -375,6 +380,21 @@ namespace Ink_Canvas.Helpers
                 if (_comApplication != null) Disconnect("COM 连接丢失");
                 if (string.IsNullOrEmpty(LastFailureReason))
                     LastFailureReason = "ROT 与 GetActiveObject 均未取到 PowerPoint";
+
+                // LTSC P2（2026-11-12）：原来这里直接 return —— 失败原因只存进字段，
+                // 从不写日志。而 Disconnect 只在「已连接又断开」时才走，
+                // 于是「从头到尾没连上」这种情况日志里一条线索都没有。
+                // 2026-11-12 实测：一整场 4911 行日志里「已连接 PowerPoint」一次都没出现，
+                // 也一条失败原因都没有，完全查不出为什么。
+                // 这里补写日志，但要限流——轮询每 2 秒一轮，不能刷屏。
+                if (LastFailureReason != _lastLoggedFailureReason ||
+                    (DateTime.UtcNow - _lastFailureLogAt).TotalMinutes >= 1)
+                {
+                    _lastLoggedFailureReason = LastFailureReason;
+                    _lastFailureLogAt = DateTime.UtcNow;
+                    LogHelper.WriteLogToFile(
+                        $"PPT 连接失败：{LastFailureReason}", LogHelper.LogType.Warning);
+                }
                 return;
             }
 
@@ -591,10 +611,26 @@ namespace Ink_Canvas.Helpers
             try
             {
                 int hr = CLSIDFromProgID("PowerPoint.Application", out Guid clsid);
-                if (hr != 0) return null;
+                if (hr != 0)
+                {
+                    // LTSC P2（2026-11-12）：原来这里直接 return null，原因一个字不记。
+                    LastFailureReason = "CLSIDFromProgID(PowerPoint.Application) 失败，HRESULT=0x" + hr.ToString("X8");
+                    return null;
+                }
 
+                // 关键：GetActiveObject 失败时【不抛异常】，它把错误放在返回值 hr 里。
+                // 原来这里 if (hr != 0) return null; —— 原因直接丢掉。
+                // 于是 LastFailureReason 一直是 null，TryConnect 兜底成空字符串，
+                // 日志里只剩「连不上」三个字，查不出为什么。
+                // 2026-11-12 实测：一整场 4911 行日志里「已连接 PowerPoint」一次都没出现，
+                // 却一条失败原因都没有——就是这条路径吞掉的。
                 hr = GetActiveObject(ref clsid, IntPtr.Zero, out object obj);
-                if (hr != 0 || obj == null) return null;
+                if (hr != 0 || obj == null)
+                {
+                    LastFailureReason = ExplainHResult(hr) +
+                        $"（GetActiveObject HRESULT=0x{hr:X8}）";
+                    return null;
+                }
 
                 dynamic probe = obj;
                 var _ = probe.Name;
@@ -605,7 +641,12 @@ namespace Ink_Canvas.Helpers
                 LastFailureReason = ExplainHResult(ex.HResult);
                 return null;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                // LTSC P2：原来这里是 catch { return null; }，任何托管异常都被吞。
+                LastFailureReason = $"{ex.GetType().Name}: {ex.Message}";
+                return null;
+            }
         }
 
         static string ExplainHResult(int hr)
