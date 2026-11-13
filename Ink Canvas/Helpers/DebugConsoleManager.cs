@@ -49,7 +49,7 @@ namespace Ink_Canvas.Helpers
                     _allocated = true;
 
                     Console.OutputEncoding = Encoding.UTF8;
-                    SetConsoleTitle("InkCanvasForClass - Debug Console");
+                    SetConsoleTitle("ICC LTSC - Debug Console");
 
                     // 移除关闭菜单，避免用户点 X 时直接结束进程
                     var hWnd = GetConsoleWindow();

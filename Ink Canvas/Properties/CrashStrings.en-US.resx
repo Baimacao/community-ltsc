@@ -58,10 +58,10 @@
     <value>Crash Handling</value>
   </data>
   <data name="CrashWindowTitle" xml:space="preserve">
-    <value>Crash details - InkCanvasForClass</value>
+    <value>Crash details - ICC LTSC</value>
   </data>
   <data name="CrashWindowHeader" xml:space="preserve">
-    <value>InkCanvasForClass encountered an unhandled exception</value>
+    <value>ICC LTSC encountered an unhandled exception</value>
   </data>
   <data name="CrashWindowDescription" xml:space="preserve">
     <value>Crash details are shown below. You can copy them and send them to the developers.</value>

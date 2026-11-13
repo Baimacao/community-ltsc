@@ -51,7 +51,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Oobe_WelcomeTitle" xml:space="preserve">
-    <value>欢迎使用 InkCanvasForClass CE</value>
+    <value>欢迎使用 ICC LTSC</value>
   </data>
   <data name="Oobe_WelcomeDesc" xml:space="preserve">
     <value>一款面向课堂场景的批注与白板工具。下面的向导将帮助你快速完成首次配置,所有选项都可以稍后在「设置」中修改。</value>
@@ -198,7 +198,7 @@
     <value>在系统托盘显示图标</value>
   </data>
   <data name="Oobe_EnableTrayIconDesc" xml:space="preserve">
-    <value>方便后台快速唤出 InkCanvasForClass。</value>
+    <value>方便后台快速唤出 ICC LTSC。</value>
   </data>
   <data name="Oobe_EnableQuickPanel" xml:space="preserve">
     <value>启用快速面板</value>

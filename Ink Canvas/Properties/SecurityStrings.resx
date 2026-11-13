@@ -52,7 +52,7 @@
     <value>取消文件关联</value>
   </data>
   <data name="SecurityPanel__InkCanvasForClass_Hint" xml:space="preserve">
-    <value>关闭 InkCanvasForClass 时进行密码验证</value>
+    <value>关闭 ICC LTSC 时进行密码验证</value>
   </data>
   <data name="SecurityPanel__Settingsjson_Hint" xml:space="preserve">
     <value>重置 Settings.json 前进行二次验证</value>
