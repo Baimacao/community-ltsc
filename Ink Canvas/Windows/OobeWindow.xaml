@@ -404,10 +404,10 @@
                                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_None}" Tag="None" />
                                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Mica}" Tag="Mica" />
                                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Acrylic}" Tag="Acrylic" />
-                                            <ComboBoxItem Content="Tabbed" Tag="Tabbed" />
-                                            <ComboBoxItem Content="Transient" Tag="Transient" />
-                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Acrylic10}" Tag="Acrylic10" />
-                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Acrylic11}" Tag="Acrylic11" />
+                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Tabbed}" Tag="Tabbed" Visibility="Collapsed" />
+                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Transient}" Tag="Transient" Visibility="Collapsed" />
+                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Acrylic10}" Tag="Acrylic10" Visibility="Collapsed" />
+                                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_WindowBackdrop_Acrylic11}" Tag="Acrylic11" Visibility="Collapsed" />
                                         </ComboBox>
                                     </ui:SettingsCard>
 

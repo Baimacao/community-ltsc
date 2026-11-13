@@ -325,10 +325,10 @@
     <value>无背景效果</value>
   </data>
   <data name="Theme_WindowBackdrop_Tabbed" xml:space="preserve">
-    <value>Tabbed</value>
+    <value>标签页背景</value>
   </data>
   <data name="Theme_WindowBackdrop_Transient" xml:space="preserve">
-    <value>Transient</value>
+    <value>临时窗口背景</value>
   </data>
   <data name="Theme_FloatingBarButtonsDescription" xml:space="preserve">
     <value>请前往「工具栏」设置页面管理浮动工具栏的组件显示与排序。</value>

@@ -325,10 +325,10 @@
     <value>无背景效果</value>
   </data>
   <data name="Theme_WindowBackdrop_Tabbed" xml:space="preserve">
-    <value>Tabbed</value>
+    <value>分頁標籤背景</value>
   </data>
   <data name="Theme_WindowBackdrop_Transient" xml:space="preserve">
-    <value>Transient</value>
+    <value>臨時視窗背景</value>
   </data>
   <data name="Theme_FloatingBarButtonsDescription" xml:space="preserve">
     <value>去「装备栏」设置页面管理装备栏的组件显示与排序吧。</value>
