@@ -176,4 +176,7 @@
   <data name="About_Dev_ICCLTSC" xml:space="preserve">
     <value>ICC LTSC 分支</value>
   </data>
+  <data name="About_Dev_AI" xml:space="preserve">
+    <value>AI 协作者</value>
+  </data>
 </root>

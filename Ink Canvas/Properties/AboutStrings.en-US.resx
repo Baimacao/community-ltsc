@@ -176,4 +176,7 @@ When reporting a problem, include the version shown at the top of this page so w
   <data name="About_Dev_ICCLTSC" xml:space="preserve">
     <value>ICC LTSC branch</value>
   </data>
+  <data name="About_Dev_AI" xml:space="preserve">
+    <value>AI collaborator</value>
+  </data>
 </root>

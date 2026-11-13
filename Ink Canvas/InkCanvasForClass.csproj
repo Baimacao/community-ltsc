@@ -213,6 +213,7 @@
     <Resource Include="Resources\Icons-png\iccltsc-light.png" />
     <Resource Include="Resources\Icons-png\iccltsc-dark.png" />
     <Resource Include="Resources\DeveloperAvatars\DQYJUNIT.png" />
+    <Resource Include="Resources\DeveloperAvatars\Jingzai.png" />
     <Resource Include="Resources\Icons-png\AdmoxWhiteboard.png" />
     <Resource Include="Resources\Icons-png\Donview.png" />
     <Resource Include="Resources\Icons-png\EasiNote3.png" />
