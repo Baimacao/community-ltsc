@@ -124,6 +124,16 @@ namespace Ink_Canvas.Properties
         public static string Oobe_Previous => ResourceManager.GetString(nameof(Oobe_Previous), _resourceCulture);
         public static string Oobe_Next => ResourceManager.GetString(nameof(Oobe_Next), _resourceCulture);
         public static string Oobe_Skip => ResourceManager.GetString(nameof(Oobe_Skip), _resourceCulture);
+        public static string Oobe_LtscIntroTitle => ResourceManager.GetString(nameof(Oobe_LtscIntroTitle), _resourceCulture);
+        public static string Oobe_LtscIntroDesc => ResourceManager.GetString(nameof(Oobe_LtscIntroDesc), _resourceCulture);
+        public static string Oobe_WhatChanged => ResourceManager.GetString(nameof(Oobe_WhatChanged), _resourceCulture);
+        public static string Oobe_Highlight1Title => ResourceManager.GetString(nameof(Oobe_Highlight1Title), _resourceCulture);
+        public static string Oobe_Highlight1Desc => ResourceManager.GetString(nameof(Oobe_Highlight1Desc), _resourceCulture);
+        public static string Oobe_Highlight2Title => ResourceManager.GetString(nameof(Oobe_Highlight2Title), _resourceCulture);
+        public static string Oobe_Highlight2Desc => ResourceManager.GetString(nameof(Oobe_Highlight2Desc), _resourceCulture);
+        public static string Oobe_Highlight3Title => ResourceManager.GetString(nameof(Oobe_Highlight3Title), _resourceCulture);
+        public static string Oobe_Highlight3Desc => ResourceManager.GetString(nameof(Oobe_Highlight3Desc), _resourceCulture);
+        public static string Oobe_FeedbackDesc => ResourceManager.GetString(nameof(Oobe_FeedbackDesc), _resourceCulture);
         public static string Oobe_SaveAndStart => ResourceManager.GetString(nameof(Oobe_SaveAndStart), _resourceCulture);
         public static string Oobe_StepFormat => ResourceManager.GetString(nameof(Oobe_StepFormat), _resourceCulture);
         public static string Oobe_StepFinishFormat => ResourceManager.GetString(nameof(Oobe_StepFinishFormat), _resourceCulture);

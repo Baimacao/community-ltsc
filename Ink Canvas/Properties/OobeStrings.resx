@@ -57,7 +57,7 @@
     <value>一款面向课堂场景的批注与白板工具。下面的向导将帮助你快速完成首次配置,所有选项都可以稍后在「设置」中修改。</value>
   </data>
   <data name="Oobe_StepCount" xml:space="preserve">
-    <value>共 8 个步骤 · 大约 1 分钟</value>
+    <value>共 3 步 · 大约 30 秒</value>
   </data>
   <data name="Oobe_StartStepByStep" xml:space="preserve">
     <value>开始逐步配置</value>
@@ -298,6 +298,36 @@
   </data>
   <data name="Oobe_Skip" xml:space="preserve">
     <value>跳过引导</value>
+  </data>
+  <data name="Oobe_LtscIntroTitle" xml:space="preserve">
+    <value>为课堂而改的版本</value>
+  </data>
+  <data name="Oobe_LtscIntroDesc" xml:space="preserve">
+    <value>这是 ICC-CE 的长期支持分支。去掉了干扰课堂的功能，重做了一批容易卡顿、容易出错的地方，把力量花在稳定和顺手上面。</value>
+  </data>
+  <data name="Oobe_WhatChanged" xml:space="preserve">
+    <value>这一版做了什么</value>
+  </data>
+  <data name="Oobe_Highlight1Title" xml:space="preserve">
+    <value>更顺滑的动画</value>
+  </data>
+  <data name="Oobe_Highlight1Desc" xml:space="preserve">
+    <value>所有界面动效换成弹簧引擎，跟手、不抖、不跳帧。</value>
+  </data>
+  <data name="Oobe_Highlight2Title" xml:space="preserve">
+    <value>更稳的退出与恢复</value>
+  </data>
+  <data name="Oobe_Highlight2Desc" xml:space="preserve">
+    <value>关掉主程序后不残留后台进程，PPT 退出不再被透明层挡住。</value>
+  </data>
+  <data name="Oobe_Highlight3Title" xml:space="preserve">
+    <value>为触摸屏调过</value>
+  </data>
+  <data name="Oobe_Highlight3Desc" xml:space="preserve">
+    <value>设置页支持自然滚动，笔迹与手势在触摸屏上更跟手。</value>
+  </data>
+  <data name="Oobe_FeedbackDesc" xml:space="preserve">
+    <value>遇到问题或有建议，来这里反馈</value>
   </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
     <value>保存并开始使用</value>

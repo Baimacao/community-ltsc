@@ -1,4 +1,5 @@
 using Ink_Canvas.Helpers;
+using System.Diagnostics;
 using Ink_Canvas.Properties;
 using iNKORE.UI.WPF.Modern.Common.IconKeys;
 using System;
@@ -26,8 +27,8 @@ namespace Ink_Canvas.Windows
 
         // 视图状态: -1 = 欢迎; 0..7 = 步骤; 8 = 完成
         private const int WelcomeIndex = -1;
-        private const int FinishIndex = 7;
-        private const int StepCount = 7;
+        private const int FinishIndex = 3;
+        private const int StepCount = 3;
         private const int MaxStepIndex = StepCount - 1;
 
         private int _currentStep = WelcomeIndex;
@@ -48,24 +49,16 @@ namespace Ink_Canvas.Windows
 
             _stepPanels = new FrameworkElement[]
             {
-                StepTelemetryPanel,
                 StepCanvasPanel,
                 StepGesturesPanel,
                 StepAppearancePanel,
-                StepPPTPanel,
-                StepAutomationPanel,
-                StepLuckyRandomPanel,
             };
 
             _navItems = new[]
             {
-                NavItemTelemetry,
                 NavItemCanvas,
                 NavItemGestures,
                 NavItemAppearance,
-                NavItemPPT,
-                NavItemAutomation,
-                NavItemLuckyRandom,
             };
 
             InitializeFromSettings();
@@ -81,13 +74,8 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.Startup != null)
                 {
-                    ComboBoxTelemetryUploadLevel.SelectedIndex = (int)_settings.Startup.TelemetryUploadLevel;
-                    CardFoldAtStartup.IsOn = _settings.Startup.IsFoldAtStartup;
-                    CardAutoUpdate.IsOn = _settings.Startup.IsAutoUpdate;
                     int crashAction = _settings.Startup.CrashAction;
                     if (crashAction < 0 || crashAction > 2) crashAction = 0;
-                    ComboBoxCrashAction.SelectedIndex = crashAction;
-                    CheckBoxPrivacyAccepted.IsChecked = _settings.Startup.HasAcceptedTelemetryPrivacy;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -143,8 +131,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.PowerPointSettings != null)
                 {
-                    CardPPTSupport.IsOn = _settings.PowerPointSettings.PowerPointSupport;
-                    CardPPTAutoSaveStrokes.IsOn = _settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -153,14 +139,9 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.Automation != null)
                 {
-                    CardAutoFoldInPPTSlideShow.IsOn = _settings.Automation.IsAutoFoldInPPTSlideShow;
-                    CardEnableAutoSaveStrokes.IsOn = _settings.Automation.IsEnableAutoSaveStrokes;
                     if (_settings.Automation.FloatingWindowInterceptor != null)
                     {
-                        CardFloatingWindowInterceptor.IsOn = _settings.Automation.FloatingWindowInterceptor.IsEnabled;
                     }
-                    CardAutoSaveStrokesAtClear.IsOn = _settings.Automation.IsAutoSaveScreenshotAtClear;
-                    CardSaveScreenshotsInDateFolders.IsOn = _settings.Automation.IsSaveScreenshotsInDateFolders;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -169,7 +150,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.RandSettings != null)
                 {
-                    CardShowRandomAndSingleDraw.IsOn = _settings.RandSettings.ShowRandomAndSingleDraw;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -178,7 +158,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.Advanced != null)
                 {
-                    CardIsLogEnabled.IsOn = _settings.Advanced.IsLogEnabled;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -188,18 +167,7 @@ namespace Ink_Canvas.Windows
         {
             try
             {
-                if (_settings.Startup != null)
-                {
-                    int level = ComboBoxTelemetryUploadLevel.SelectedIndex;
-                    if (level < 0) level = 0;
-                    _settings.Startup.TelemetryUploadLevel = (TelemetryUploadLevel)level;
-                    _settings.Startup.IsFoldAtStartup = CardFoldAtStartup.IsOn;
-                    _settings.Startup.IsAutoUpdate = CardAutoUpdate.IsOn;
-                    int crashAction = ComboBoxCrashAction.SelectedIndex;
-                    if (crashAction < 0 || crashAction > 2) crashAction = 0;
-                    _settings.Startup.CrashAction = crashAction;
-                    _settings.Startup.HasAcceptedTelemetryPrivacy = CheckBoxPrivacyAccepted.IsChecked == true;
-                }
+                // LTSC：OOBE 不再涉及遥测/崩溃处理，这些留在「设置 → 启动」里改。
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
 
@@ -254,8 +222,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.PowerPointSettings != null)
                 {
-                    _settings.PowerPointSettings.PowerPointSupport = CardPPTSupport.IsOn;
-                    _settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = CardPPTAutoSaveStrokes.IsOn;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -264,13 +230,8 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.Automation != null)
                 {
-                    _settings.Automation.IsAutoFoldInPPTSlideShow = CardAutoFoldInPPTSlideShow.IsOn;
-                    _settings.Automation.IsEnableAutoSaveStrokes = CardEnableAutoSaveStrokes.IsOn;
-                    _settings.Automation.IsAutoSaveScreenshotAtClear = CardAutoSaveStrokesAtClear.IsOn;
-                    _settings.Automation.IsSaveScreenshotsInDateFolders = CardSaveScreenshotsInDateFolders.IsOn;
                     if (_settings.Automation.FloatingWindowInterceptor != null)
                     {
-                        _settings.Automation.FloatingWindowInterceptor.IsEnabled = CardFloatingWindowInterceptor.IsOn;
                     }
                 }
             }
@@ -280,7 +241,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.RandSettings != null)
                 {
-                    _settings.RandSettings.ShowRandomAndSingleDraw = CardShowRandomAndSingleDraw.IsOn;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -289,7 +249,6 @@ namespace Ink_Canvas.Windows
             {
                 if (_settings.Advanced != null)
                 {
-                    _settings.Advanced.IsLogEnabled = CardIsLogEnabled.IsOn;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -381,19 +340,43 @@ namespace Ink_Canvas.Windows
         /// 那是法律层面的同意，用户没勾就是没同意，跳过不能替他勾。
         /// 所以跳过时不动它。
         /// </summary>
+        /// <summary>
+        /// 反馈入口：智教联盟。
+        ///
+        /// 网址还没拿到，先留一个明确的占位分支 —— 点下去会记日志、不跳转。
+        /// 拿到 ta 给的地址后，只要把 ZhijiaoUrl 换掉即可，不用再动别处。
+        /// 不填假地址：编一个链接比暂时不能点更糟。
+        /// </summary>
+        private const string ZhijiaoUrl = "";
+
+        private void LinkZhijiao_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(ZhijiaoUrl))
+                {
+                    LogHelper.WriteLogToFile("智教联盟反馈链接尚未配置", LogHelper.LogType.Warning);
+                    return;
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = ZhijiaoUrl,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"打开智教联盟链接失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
         private void BtnSkipOobe_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // 跳过 = 不看剩下的步骤，但已经改过的照旧生效。
-                // 隐私协议除外：没勾就是没勾，跳过不构成同意。
-                bool privacyAccepted = CheckBoxPrivacyAccepted.IsChecked == true;
+                // 跳过 = 用当前设置直接开始，不应用任何默认值。
                 ApplySelection();
-                if (_settings.Startup != null)
-                {
-                    _settings.Startup.HasAcceptedTelemetryPrivacy = privacyAccepted;
-                }
-
                 LogHelper.WriteLogToFile("用户跳过 OOBE 引导", LogHelper.LogType.Event);
             }
             catch (Exception ex)
@@ -473,7 +456,6 @@ namespace Ink_Canvas.Windows
                 bool? result = dialog.ShowDialog();
                 if (result == true && dialog.UserAccepted)
                 {
-                    CheckBoxPrivacyAccepted.IsChecked = true;
                 }
             }
             catch (Exception ex)
@@ -708,14 +690,6 @@ namespace Ink_Canvas.Windows
         {
             FinishSummaryHost.Children.Clear();
 
-            string telemetryText;
-            switch (ComboBoxTelemetryUploadLevel.SelectedIndex)
-            {
-                case 0: telemetryText = Properties.OobeStrings.Oobe_TelemetryNone; break;
-                case 1: telemetryText = Properties.OobeStrings.Oobe_TelemetryBasic; break;
-                default: telemetryText = Properties.OobeStrings.Oobe_TelemetryOptional; break;
-            }
-
             string themeText;
             string backdropText = GetSelectedComboBoxContent(ComboBoxWindowBackdrop, ThemeStrings.Theme_WindowBackdrop_None);
             switch (ComboBoxTheme.SelectedIndex)
@@ -725,15 +699,11 @@ namespace Ink_Canvas.Windows
                 default: themeText = ThemeStrings.Theme_System; break;
             }
 
-            AddSummaryRow(SegoeFluentIcons.Shield, Properties.OobeStrings.Oobe_SummaryTelemetryLevel, telemetryText);
-            AddSummaryRow(SegoeFluentIcons.Sync, UpdateStrings.Header_AutoUpdate, BoolText(CardAutoUpdate.IsOn));
             AddSummaryRow(SegoeFluentIcons.Personalize, Properties.OobeStrings.Oobe_SummaryAppTheme, themeText);
             AddSummaryRow(SegoeFluentIcons.FullScreen, ThemeStrings.Theme_WindowBackdrop, backdropText);
-            AddSummaryRow(SegoeFluentIcons.Slideshow, Properties.OobeStrings.Oobe_SummaryPPTLink, BoolText(CardPPTSupport.IsOn));
             AddSummaryRow(SegoeFluentIcons.TouchPointer, Properties.OobeStrings.Oobe_SummaryTwoFingerZoom,
                 $"{BoolText(CardTwoFingerZoom.IsOn)} / {BoolText(CardTwoFingerTranslate.IsOn)}");
             AddSummaryRow(SegoeFluentIcons.Pin, Properties.OobeStrings.Oobe_SummaryTrayIcon, BoolText(CardEnableTrayIcon.IsOn));
-            AddSummaryRow(SegoeFluentIcons.Document, Properties.OobeStrings.Oobe_SummaryLogEnabled, BoolText(CardIsLogEnabled.IsOn));
         }
 
         private static string BoolText(bool value) => value ? Properties.OobeStrings.Oobe_BoolEnabled : Properties.OobeStrings.Oobe_BoolDisabled;

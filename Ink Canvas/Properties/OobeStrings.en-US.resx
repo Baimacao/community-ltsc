@@ -57,7 +57,7 @@
     <value>An annotation and whiteboard tool designed for classrooms. The wizard below will help you complete the initial setup. All options can be changed later in Settings.</value>
   </data>
   <data name="Oobe_StepCount" xml:space="preserve">
-    <value>8 steps · About 1 minute</value>
+    <value>3 steps · about 30 seconds</value>
   </data>
   <data name="Oobe_StartStepByStep" xml:space="preserve">
     <value>Start step-by-step setup</value>
@@ -298,6 +298,36 @@
   </data>
   <data name="Oobe_Skip" xml:space="preserve">
     <value>Skip</value>
+  </data>
+  <data name="Oobe_LtscIntroTitle" xml:space="preserve">
+    <value>A version rebuilt for the classroom</value>
+  </data>
+  <data name="Oobe_LtscIntroDesc" xml:space="preserve">
+    <value>A long-term servicing branch of ICC-CE. Distractions removed, unstable parts rebuilt, effort spent on stability and feel.</value>
+  </data>
+  <data name="Oobe_WhatChanged" xml:space="preserve">
+    <value>What this build does</value>
+  </data>
+  <data name="Oobe_Highlight1Title" xml:space="preserve">
+    <value>Smoother motion</value>
+  </data>
+  <data name="Oobe_Highlight1Desc" xml:space="preserve">
+    <value>All UI motion runs on a spring engine - responsive, no jitter, no dropped frames.</value>
+  </data>
+  <data name="Oobe_Highlight2Title" xml:space="preserve">
+    <value>Cleaner exit and recovery</value>
+  </data>
+  <data name="Oobe_Highlight2Desc" xml:space="preserve">
+    <value>No leftover background processes after exit, and the transparent overlay no longer blocks the toolbar after PowerPoint.</value>
+  </data>
+  <data name="Oobe_Highlight3Title" xml:space="preserve">
+    <value>Tuned for touch</value>
+  </data>
+  <data name="Oobe_Highlight3Desc" xml:space="preserve">
+    <value>Settings pages scroll naturally, and ink and gestures feel more natural on touchscreens.</value>
+  </data>
+  <data name="Oobe_FeedbackDesc" xml:space="preserve">
+    <value>Problems or suggestions? Reach us at</value>
   </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
     <value>Save and Start</value>
