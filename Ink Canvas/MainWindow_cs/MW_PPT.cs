@@ -2228,20 +2228,6 @@ namespace Ink_Canvas
             // 防抖：上一次翻页还没结束就丢弃这次点击。
             if (!TryEnterPPTNavigation()) return;
 
-            int strokeCount = inkCanvas?.Strokes?.Count ?? 0;
-            bool needScreenshot = strokeCount > Settings.Automation.MinimumAutomationStrokeNumber &&
-                Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
-
-            if (needScreenshot)
-            {
-                var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
-                if (currentSlide > 0)
-                {
-                    var presentationName = _pptManager?.GetPresentationName() ?? "";
-                    CaptureAndEnqueueScreenshotSave(true, $"{presentationName}/{currentSlide}");
-                }
-            }
-
             Task.Run(() =>
             {
                 try
@@ -2282,20 +2268,6 @@ namespace Ink_Canvas
         {
             // 防抖：同上。
             if (!TryEnterPPTNavigation()) return;
-
-            int strokeCount = inkCanvas?.Strokes?.Count ?? 0;
-            bool needScreenshot = strokeCount > Settings.Automation.MinimumAutomationStrokeNumber &&
-                Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
-
-            if (needScreenshot)
-            {
-                var currentSlide = Math.Max(0, _pptManager?.GetCurrentSlideNumber() ?? 0);
-                if (currentSlide > 0)
-                {
-                    var presentationName = _pptManager?.GetPresentationName() ?? "";
-                    CaptureAndEnqueueScreenshotSave(true, $"{presentationName}/{currentSlide}");
-                }
-            }
 
             Task.Run(() =>
             {

@@ -182,7 +182,6 @@ namespace Ink_Canvas.Windows
             // PPT 联动
             settings.PowerPointSettings.PowerPointSupport = true;
             settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
-            settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
             // LTSC D-02: Agent 架构已移除，预设改用 COM。
             settings.PowerPointSettings.PPTLinkMode = PPTLinkMode.Com;
             settings.PowerPointSettings.ShowPPTButton = true;
@@ -253,7 +252,6 @@ namespace Ink_Canvas.Windows
             // PPT 联动
             settings.PowerPointSettings.PowerPointSupport = true;
             settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
-            settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
 
             // 自动化
             settings.Automation.IsAutoFoldInPPTSlideShow = false;

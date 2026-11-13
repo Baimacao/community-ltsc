@@ -109,6 +109,8 @@ namespace Ink_Canvas
         private int penType;
 
         private long _stylusDownTimestamp;
+        // LTSC（2026-11-13）：笔迹处理耗时打点（Stopwatch 时间戳），只测处理不测人书写。
+        private long _strokeCollectTimestamp;
 
         /// <summary>
         /// 桌面模式最后使用的墨水颜色

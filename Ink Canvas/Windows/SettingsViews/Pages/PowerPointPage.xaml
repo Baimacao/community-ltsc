@@ -120,11 +120,6 @@
 
                     <TextBlock Text="{x:Static props:PPTStrings.AutoScreenshot}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                    <controls:LabeledSettingsCard x:Name="CardAutoSaveScreenShotInPowerPoint"
-                            Header="{x:Static props:PPTStrings.AutoScreenshot}"
-                            Description="{x:Static props:PPTStrings.AutoScreenshotHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Camera}"
-                            Toggled="ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled"/>
 
                     <controls:LabeledSettingsCard x:Name="CardAutoSaveStrokesInPowerPoint"
                             Header="{x:Static props:PPTStrings.AutoSaveStrokes}"

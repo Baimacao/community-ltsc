@@ -455,11 +455,6 @@
                                                                   Icon="{x:Static ui:SegoeFluentIcons.Save}"
                                                                   SwitchName="ToggleSwitchPPTAutoSaveStrokes" />
 
-                                    <controls:LabeledSettingsCard x:Name="CardPPTAutoSaveScreenshots"
-                                                                  Header="{x:Static props:OobeStrings.Oobe_AutoScreenshot}"
-                                                                  Description="{x:Static props:OobeStrings.Oobe_AutoScreenshotDesc}"
-                                                                  Icon="{x:Static ui:SegoeFluentIcons.Camera}"
-                                                                  SwitchName="ToggleSwitchPPTAutoSaveScreenshots" />
 
                                 </ikw:SimpleStackPanel>
 

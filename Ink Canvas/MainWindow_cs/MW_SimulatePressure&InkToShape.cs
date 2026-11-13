@@ -350,26 +350,22 @@ namespace Ink_Canvas
         /// </remarks>
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
-            // LTSC P2（2026-11-12）：笔迹耗时埋点，必须在这里一次算完并清零。
-            // 走过的弯路：
-            //   1) 原先 _stylusDownTimestamp 只在 inkCanvas_StylusDown 里赋值，
-            //      鼠标画线不经过那个事件，埋点恒为 0；
-            //   2) 补了 PreviewMouseDown 赋值后，清零写在下面 if (Settings.Canvas.EnableInkFade)
-            //      分支里；渐隐关闭时那一段整块不执行，时间戳永远不清，
-            //      第二笔起就拿最早的起点算，报出 3 秒、8 秒、27 秒这种不可能的耗时。
-            // 所以：算耗时 + 清零，放在方法最前面，无条件执行。
+            // LTSC（2026-11-13 修正）：原来的埋点从落笔算到抬笔，测的是"人写完这一笔花了多久"，
+            // 不是"软件处理这一笔花了多久"。课堂上点一下翻页组件也会被记成 300ms「慢笔」，
+            // 排查时被这个数字误导了三次。
+            //
+            // 现在改成只测本方法里的处理耗时：进来打点，各处收集逻辑跑完再打一次。
+            // 只看最后这一测的结果，才是真正能反映软件卡顿的数字。
+            _strokeCollectTimestamp = Stopwatch.GetTimestamp();
+
+            // 渐隐需要"这一笔写了多久"来决定淡出节奏，这是功能需求，跟性能无关。
+            // 单独算一份，绝不喂给探针。
             long strokeElapsedMs = 0;
             if (_stylusDownTimestamp > 0)
             {
                 strokeElapsedMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _stylusDownTimestamp;
                 _stylusDownTimestamp = 0;
             }
-
-            try
-            {
-                if (strokeElapsedMs > 0 && strokeElapsedMs < 60000) InkPerfProbe.StrokeDone(strokeElapsedMs);
-            }
-            catch { }
 
             var strokeDrawingAttributes = e.Stroke?.DrawingAttributes;
 
@@ -992,7 +988,18 @@ namespace Ink_Canvas
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
 
             var strokeAfterTailSync = RunStrokeCollectedPostShapeRecognitionTail(e, wasStraightened);
-            
+
+            // LTSC（2026-11-13）：处理耗时收尾。只看这一段——从进入到全部收集逻辑跑完。
+            try
+            {
+                if (_strokeCollectTimestamp != 0)
+                {
+                    long ms = (long)((Stopwatch.GetTimestamp() - _strokeCollectTimestamp) * 1000.0 / Stopwatch.Frequency);
+                    _strokeCollectTimestamp = 0;
+                    InkPerfProbe.StrokeDone(ms);
+                }
+            }
+            catch { }
         }
 
         /// <summary>

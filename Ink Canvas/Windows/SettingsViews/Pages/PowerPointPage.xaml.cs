@@ -66,7 +66,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             CardShowPPTSidebarByDefault.IsOn = ppt.ShowPPTSidebarByDefault;
             CardShowPPTModePrompt.IsOn = ppt.ShowPPTModePrompt;
 
-            CardAutoSaveScreenShotInPowerPoint.IsOn = ppt.IsAutoSaveScreenShotInPowerPoint;
             CardAutoSaveStrokesInPowerPoint.IsOn = ppt.IsAutoSaveStrokesInPowerPoint;
 
             CardNotifyPreviousPage.IsOn = ppt.IsNotifyPreviousPage;
@@ -222,12 +221,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
         #region PPT Auto Save & Notifications
 
-        private void ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!_isLoaded) return;
-            SettingsManager.Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = CardAutoSaveScreenShotInPowerPoint.IsOn;
-            SettingsManager.SaveSettingsToFile();
-        }
 
         private void ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled(object sender, RoutedEventArgs e)
         {

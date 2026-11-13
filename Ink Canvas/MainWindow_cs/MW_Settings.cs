@@ -1036,7 +1036,6 @@ namespace Ink_Canvas
             Settings.PowerPointSettings.IsNoClearStrokeOnSelectWhenInPowerPoint = true;
             Settings.PowerPointSettings.IsShowStrokeOnSelectInPowerPoint = false;
             Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = true;
-            Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint = true;
             Settings.PowerPointSettings.IsNotifyPreviousPage = false;
             Settings.PowerPointSettings.IsNotifyHiddenPage = false;
             Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode = false;

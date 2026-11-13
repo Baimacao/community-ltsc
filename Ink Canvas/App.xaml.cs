@@ -114,6 +114,56 @@ namespace Ink_Canvas
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int SetCurrentProcessExplicitAppUserModelID(string appId);
 
+        /// <summary>
+        /// 判断原版 ICC-CE（不是本程序）是否正在运行。
+        /// LTSC（2026-11-13）：两个白板同时开会抢同一支触控笔，
+        /// 老师只会看到"画不出线"，想不到是两个程序打架。所以 LTSC 主动让路。
+        ///
+        /// 判据说明（这里容易错）：
+        ///   1. 两者 AssemblyName 都是 InkCanvasForClass，进程名区分不了；
+        ///   2. 只能靠可执行文件路径区分——本程序路径 != 对方路径，才算原版；
+        ///   3. 必须排除自己（GetProcessesByName 会把自己也列进来）。
+        /// </summary>
+        private static bool IsUpstreamIccRunning()
+        {
+            try
+            {
+                string selfPath = null;
+                try { selfPath = System.Reflection.Assembly.GetEntryAssembly()?.Location; } catch { }
+                if (string.IsNullOrEmpty(selfPath))
+                {
+                    try { selfPath = Process.GetCurrentProcess().MainModule?.FileName; } catch { }
+                }
+                if (string.IsNullOrEmpty(selfPath)) return false;
+
+                foreach (var p in Process.GetProcessesByName("InkCanvasForClass"))
+                {
+                    try
+                    {
+                        if (p.Id == Process.GetCurrentProcess().Id) continue;
+                        string otherPath = p.MainModule?.FileName;
+                        if (string.IsNullOrEmpty(otherPath)) continue;
+                        // 路径相同 = 同一个程序开两份，交给原互斥体逻辑处理；
+                        // 路径不同 = 原版 ICC 在跑，LTSC 让路。
+                        if (!string.Equals(otherPath, selfPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            LogHelper.WriteLogToFile(
+                                $"发现另一个 ICC 实例: {otherPath}（本程序: {selfPath}）",
+                                LogHelper.LogType.Event);
+                            return true;
+                        }
+                    }
+                    catch { }
+                    finally { try { p.Dispose(); } catch { } }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("IsUpstreamIccRunning: " + ex);
+            }
+            return false;
+        }
+
         public App()
         {
             System.Windows.Forms.Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -128,7 +178,9 @@ namespace Ink_Canvas
 
             try
             {
-                SetCurrentProcessExplicitAppUserModelID("InkCanvasForClass.CE");
+                // LTSC：和上游 ICC-CE 分开，任务栏里不再合并图标。
+                // 这一处必须和上游不同，否则同一台电脑上装两个版本时任务栏会并成一个。
+                SetCurrentProcessExplicitAppUserModelID("InkCanvasForClass.LTSC");
             }
             catch
             {
@@ -1122,7 +1174,56 @@ namespace Ink_Canvas
             if (!isUpdateInProgress && !isUpdateMode && !isFinalApp && !skipMutexCheck)
             {
                 bool ret;
-                mutex = new Mutex(true, "InkCanvasForClass CE", out ret);
+                // LTSC 自己的互斥体：加 LTSC 后缀，和上游 ICC-CE 分开。
+                mutex = new Mutex(true, "InkCanvasForClass CE LTSC", out ret);
+
+                // LTSC（2026-11-13）方案 B：多一层保护。
+                // 光把互斥体改名只是让两个版本能共存，但两个白板同时开着会抢同一支笔，
+                // 老师只会看到"画不出线"，根本想不到是两个程序在打架。
+                // 所以：检测到原版 ICC-CE 正在运行就直接退出，并明确告诉用户怎么办。
+                if (!ret && !e.Args.Contains("-m") && IsUpstreamIccRunning())
+                {
+                    LogHelper.NewLog("Detected upstream ICC-CE running");
+                    LogHelper.WriteLogToFile(
+                        "检测到原版 ICC-CE 正在运行，LTSC 拒绝启动（避免两个白板抢触控笔）",
+                        LogHelper.LogType.Warning);
+                    // 注意：这里可能还压着 ICC 自己的"以管理员权限运行"提示框，
+                    // 直接 Show 会和它叠在一起、谁也不点就一起挂住。
+                    // 所以先做退出清理，再在一个短命线程里弹窗，主线程立刻走人。
+                    IsAppExitByUser = true;
+                    try
+                    {
+                        StartupCount.Reset();
+                        File.WriteAllText(watchdogExitSignalFile, "exit");
+                        if (watchdogProcess != null && !watchdogProcess.HasExited) watchdogProcess.Kill();
+                    }
+                    catch { }
+
+                    try
+                    {
+                        var tip = new System.Threading.Thread(() =>
+                        {
+                            try
+                            {
+                                System.Windows.MessageBox.Show(
+                                    "检测到原版 InkCanvasForClass（ICC-CE）正在运行。\n\n" +
+                                    "两个白板同时开启会争用触控笔，可能出现画不出线、笔迹跑偏等问题。\n\n" +
+                                    "ICC LTSC 现在退出。请先关闭原版 ICC，再重新启动 LTSC。",
+                                    "ICC LTSC",
+                                    System.Windows.MessageBoxButton.OK,
+                                    System.Windows.MessageBoxImage.Warning);
+                            }
+                            catch { }
+                        });
+                        tip.IsBackground = true;
+                        tip.Start();
+                        tip.Join(3000);   // 最多等 3 秒，用户不点也照退
+                    }
+                    catch { }
+
+                    Environment.Exit(0);
+                    return;
+                }
 
                 if (!ret && !e.Args.Contains("-m")) //-m multiple
                 {
@@ -1231,7 +1332,7 @@ namespace Ink_Canvas
                 }
 
                 // 在特殊模式下，创建一个临时的Mutex以避免其他检查出错
-                string mutexName = isFinalApp ? "InkCanvasForClass CE Final" : "InkCanvasForClass CE Update";
+                string mutexName = isFinalApp ? "InkCanvasForClass CE LTSC Final" : "InkCanvasForClass CE LTSC Update";
                 mutex = new Mutex(true, mutexName, out bool tempRet);
 
                 // 额外等待一小段时间确保更新进程完全退出

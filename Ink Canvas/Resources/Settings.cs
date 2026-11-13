@@ -864,8 +864,6 @@ namespace Ink_Canvas
         public bool IsShowStrokeOnSelectInPowerPoint { get; set; } = true;
         [JsonProperty("isAutoSaveStrokesInPowerPoint")]
         public bool IsAutoSaveStrokesInPowerPoint { get; set; } = true;
-        [JsonProperty("isAutoSaveScreenShotInPowerPoint")]
-        public bool IsAutoSaveScreenShotInPowerPoint { get; set; }
         [JsonProperty("isNotifyPreviousPage")]
         public bool IsNotifyPreviousPage { get; set; }
         [JsonProperty("isNotifyHiddenPage")]
