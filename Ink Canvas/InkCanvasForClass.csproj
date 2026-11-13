@@ -71,7 +71,6 @@
     <!-- LTSC：独立版本序列。AssemblyVersion 必须四段数字给 CLR 用；
          人看的 "1.0a-ltsc" 放 FileVersion / InformationalVersion。 -->
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>
     <Copyright>© Copyright  CJK_mkp 2025-now</Copyright>
     <PackageProjectUrl>https://inkcanvasforclass.github.io</PackageProjectUrl>
@@ -592,6 +591,11 @@
       <_ShortSha Condition="'$(GitCommitIdShort)' != ''">$(GitCommitIdShort)</_ShortSha>
       <_ShortSha7 Condition="'$(GitCommitIdShort)' != ''">$(_ShortSha.Substring(0, 7))</_ShortSha7>
       <AssemblyInformationalVersion>1.0a-ltsc+$(_ShortSha7)</AssemblyInformationalVersion>
+      <!-- NBGV 用的是 AssemblyFileVersion（不是 FileVersion），
+           且它把 GenerateAssemblyFileVersionAttribute 关了，
+           所以顶层写 <FileVersion> 无效，必须在这里改 AssemblyFileVersion。
+           第四段固定 1 表示 LTSC 序列，前三段跟随上游 version.json。 -->
+      <AssemblyFileVersion>1.0.1.0</AssemblyFileVersion>
     </PropertyGroup>
   </Target>
 </Project>
