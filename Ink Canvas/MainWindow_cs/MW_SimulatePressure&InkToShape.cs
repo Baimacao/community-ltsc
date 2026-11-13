@@ -996,7 +996,6 @@ namespace Ink_Canvas
                 {
                     long ms = (long)((Stopwatch.GetTimestamp() - _strokeCollectTimestamp) * 1000.0 / Stopwatch.Frequency);
                     _strokeCollectTimestamp = 0;
-                    InkPerfProbe.StrokeDone(ms);
                 }
             }
             catch { }

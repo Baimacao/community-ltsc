@@ -186,7 +186,6 @@ namespace Ink_Canvas
             {
                 _touchIdStamp.Remove(id);
                 dec.Remove(id);
-                InkPerfProbe.StalePruned++;
             }
         }
 
@@ -1640,7 +1639,6 @@ namespace Ink_Canvas
                 }
                 dec.Add(e.TouchDevice.Id);
                 _touchIdStamp[e.TouchDevice.Id] = DateTime.UtcNow;
-                InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
                 return;
             }
 
@@ -1653,7 +1651,6 @@ namespace Ink_Canvas
             _touchIdStamp[e.TouchDevice.Id] = DateTime.UtcNow;
             // 进新触摸前先清一次僵尸 id，避免 dec 越滚越大。
             PruneStaleTouchIds();
-            InkPerfProbe.TouchDown(dec.Count, e.TouchDevice.Id);
 
             if (ShouldUseRealtimeVelocityBrushTipForTouch()
                 && inkCanvas.EditingMode != InkCanvasEditingMode.EraseByPoint
@@ -1995,7 +1992,6 @@ namespace Ink_Canvas
             _touchIdStamp.Remove(e.TouchDevice.Id);
             // P2 诊断：ReleaseAllTouchCaptures() 一次放掉全部捕获，
             // 但这里只移除当前指的 ID。若另一指仍在 dec 里，它再也收不到 TouchUp。
-            InkPerfProbe.TouchUp(dec.Count, e.TouchDevice.Id, _releasedCaptureCount);
 
             if (dec.Count <= 1)
                 isMultiTouchTimerActive = false;
@@ -2164,29 +2160,24 @@ namespace Ink_Canvas
         /// </remarks>
         private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
-            InkPerfProbe.Hit(0);
             if (IsCurrentPageFrozen)
             {
                 TryBlockFrozenPageMutation("移动或缩放内容");
                 e.Handled = true;
-                InkPerfProbe.Hit(1);
                 return;
             }
 
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
             {
-                InkPerfProbe.Hit(2);
                 return;
             }
 
             if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture)
             {
-                InkPerfProbe.Hit(3);
                 return;
             }
 
             PruneStaleTouchIds();
-            InkPerfProbe.Hit(4);
             bool hasMultipleManipulators = e.Manipulators.Count() >= 2;
             // LTSC P2 修复（2026-11-11，有闸门数据支撑）：
             // 原来第二项是 !ArePPTControlsVisible。
@@ -2206,11 +2197,6 @@ namespace Ink_Canvas
                                              (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||
                                               !inSlideShow)) ||
                                             isSingleFingerDragMode;
-            if (dec.Count >= 2) InkPerfProbe.Hit(5);
-            if (hasMultipleManipulators) InkPerfProbe.Hit(6);
-            if (!(Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode || !inSlideShow)) InkPerfProbe.Hit(7);
-            InkPerfProbe.TwoFinger(shouldUseTwoFingerGesture);
-            if (shouldUseTwoFingerGesture) InkPerfProbe.Hit(10);
 
             if (shouldUseTwoFingerGesture)
             {

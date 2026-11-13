@@ -438,7 +438,6 @@ namespace Ink_Canvas
         /// 需要区分是性能退化还是触摸状态机被污染，两者修法完全不同。
         /// 探针只记录，不改任何逻辑，测完可整块删掉。
         /// </remarks>
-        private DispatcherTimer _inkPerfProbeTimer;
 
         /// <summary>
         /// LTSC D-13：主悬浮窗的画布空闲减淡。
@@ -578,74 +577,6 @@ namespace Ink_Canvas
             try { _floatingBarIdleFade?.Touch(); } catch { }
         }
 
-        private void StartInkPerfProbe()
-        {
-            try
-            {
-                InkPerfProbe.Reset();
-
-                // LTSC P2（后期迭代）：把触摸层现场状态喂给探针。
-                // 只读，不改任何行为 —— 慢笔发生时探针要用它判断是「多指并发」
-                // 还是「状态机残留」还是「GC 抖动」。
-                InkPerfProbe.ContextProvider = () =>
-                {
-                    try
-                    {
-                        var sb = new System.Text.StringBuilder(96);
-                        sb.Append("dec=").Append(InkPerfProbe.DecCountNow);
-                        sb.Append('/').Append(InkPerfProbe.DecCountMax);
-                        try { sb.Append(" 笔画视觉=").Append(StrokeVisualList?.Count ?? 0); } catch { }
-                        try { sb.Append(" 视觉画布=").Append(VisualCanvasList?.Count ?? 0); } catch { }
-                        try { sb.Append(" 落笔点=").Append(TouchDownPointsList?.Count ?? 0); } catch { }
-                        try { sb.Append(" 僵尸清理=").Append(InkPerfProbe.StalePruned); } catch { }
-                        try { sb.Append(" 静默释放=").Append(InkPerfProbe.SilentReleaseCount); } catch { }
-                        try { sb.Append(" GC=").Append(GC.CollectionCount(0)); } catch { }
-                        try { sb.Append(" 工作集=").Append(Process.GetCurrentProcess().WorkingSet64 / (1024 * 1024)).Append("MB"); } catch { }
-                        return sb.ToString();
-                    }
-                    catch (Exception ex)
-                    {
-                        return "现场采集异常: " + ex.Message;
-                    }
-                };
-
-                _inkPerfProbeTimer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromSeconds(5)
-                };
-                _inkPerfProbeTimer.Tick += (s, e) => InkPerfProbe.Tick(Dispatcher);
-                _inkPerfProbeTimer.Start();
-
-                // LTSC P2-追加（2026-11-13）：用户要的是「帧率更高」，不是「有没有卡顿」。
-                // 之前那套探针测的是落笔→抬笔的人体书写时长，跟渲染帧率毫无关系，
-                // 结果被误读成「慢笔 462ms = 卡顿」，白查了三个方向。
-                //
-                // 真正要看的是 CompositionTarget.Rendering 每秒触发几次——那就是显示帧率。
-                // 这里只数帧，不碰任何渲染逻辑。
-                try
-                {
-                    RenderOptions.ProcessRenderMode = RenderMode.Default; // 不强制软件渲染
-                    System.Windows.Media.CompositionTarget.Rendering += (s2, e2) => InkPerfProbe.FrameTick();
-                    // RenderCapability.Tier 的高 16 位就是档位：0=无加速 1=部分 2=完整。
-                    // 之前写成 (int)Tier >> 16 是对的，但 NoteRenderTier 只在首次调用时记，
-                    // 而首次调用可能在窗口还没建好时发生，读到的 Tier=0。
-                    // 改成延后取：等第一次 P2 汇总时再读，那时渲染管线一定已就绪。
-                    InkPerfProbe.TierProvider = () => (int)RenderCapability.Tier >> 16;
-                    InkPerfProbe.AnimationsEnabled = System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty != null;
-                }
-                catch (Exception rEx)
-                {
-                    LogHelper.WriteLogToFile($"[P2诊断] 帧率探针挂载失败: {rEx.Message}", LogHelper.LogType.Warning);
-                }
-
-                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测；慢笔 >120ms 会额外抓现场；已挂帧率计数）", LogHelper.LogType.Event);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"[P2诊断] 探针启动失败: {ex.Message}", LogHelper.LogType.Warning);
-            }
-        }
-
         public MainWindow()
         {
             /*
@@ -657,7 +588,6 @@ namespace Ink_Canvas
             // LTSC P2：笔迹性能/触摸诊断探针。只观测，不改行为。
             // 必须放在 InitializeComponent 之后——Dispatcher 消息循环此时才可用，
             // 放在前面定时器不会触发（第一次接的时候踩了这个坑）。
-            StartInkPerfProbe();
 
             // LTSC D-13：主悬浮窗空闲减淡。同样必须在 InitializeComponent 之后。
             StartFloatingBarIdleFade();
