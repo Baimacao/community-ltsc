@@ -214,28 +214,17 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
-                <!-- 画布与笔迹（LTSC D-20：原来父级和子项用了同一个标题「画布」，
-                     展开后看到「画布 → 画布」，是明显的层级冗余。父级改成分类名，
-                     子项写清里面到底是什么） -->
+                <!-- 画布与笔迹（LTSC D-21：原来是一个分组，里面只有一项。
+                     点分组本身没反应，必须先展开再点子项——多一次点击，老师会以为是坏的。
+                     分组只有一项就等于没分组，直接提成一级入口。） -->
                 <ui:NavigationViewItem
                     x:Name="CanvasPageItem"
-                    Content="{x:Static props:NavStrings.Nav_CanvasGroup}"
-                    SelectsOnInvoked="False"
-                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasGroup_Tooltip}">
+                    Content="{x:Static props:NavStrings.Nav_CanvasInk}"
+                    Tag="CanvasPage"
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasInk_Tooltip}">
                     <ui:NavigationViewItem.Icon>
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/>
                     </ui:NavigationViewItem.Icon>
-                    <ui:NavigationViewItem.MenuItems>
-                        <ui:NavigationViewItem
-                            x:Name="CanvasSubPageItem"
-                            Content="{x:Static props:NavStrings.Nav_CanvasInk}"
-                            Tag="CanvasPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasInk_Tooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                    </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
                 <!-- 授课（LTSC D-20：PPT、计时、自动化原来是三个平铺的顶级入口，
