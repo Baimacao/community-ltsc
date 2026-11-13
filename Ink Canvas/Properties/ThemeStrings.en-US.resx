@@ -465,4 +465,10 @@
   <data name="Theme_Tips_Title" xml:space="preserve">
     <value>Tips</value>
   </data>
+  <data name="Theme_FloatingIcon_LtscLight" xml:space="preserve">
+    <value>ICC LTSC Light</value>
+  </data>
+  <data name="Theme_FloatingIcon_LtscDark" xml:space="preserve">
+    <value>ICC LTSC Dark</value>
+  </data>
 </root>

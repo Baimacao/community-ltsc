@@ -478,6 +478,24 @@ namespace Ink_Canvas.Helpers
         }
         #endregion
 
+
+        /// <summary>
+        /// LTSC：翻页条深浅强制跟随应用主题，不再读用户各自的「黑色背景」开关。
+        /// 上游这里是 ppt.XXXBlackBackground（四个位置各一个复选框），
+        /// 结果是主题变了翻页条不跟着变，投影上和浮动栏撞色。
+        /// </summary>
+        private bool IsDarkThemeForNavBar()
+        {
+            try
+            {
+                return ThemeHelper.IsSystemThemeLight() == false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         #region Private Methods
         private void UpdateSideButtonStyles()
         {
@@ -489,13 +507,13 @@ namespace Ink_Canvas.Helpers
                 var leftPageButtonVisibility = ppt.PPTLSShowPageNumber ? Visibility.Visible : Visibility.Collapsed;
                 _mainWindow.LeftSidePanelForPPTNavigation.SetPageButtonVisibility(leftPageButtonVisibility);
                 _mainWindow.LeftSidePanelForPPTNavigation.SetBarOpacity(ppt.PPTLSButtonOpacity);
-                _mainWindow.LeftSidePanelForPPTNavigation.ApplyTheme(ppt.PPTLSBlackBackground);
+                _mainWindow.LeftSidePanelForPPTNavigation.ApplyTheme(IsDarkThemeForNavBar());
 
                 // 右侧
                 var rightPageButtonVisibility = ppt.PPTRSShowPageNumber ? Visibility.Visible : Visibility.Collapsed;
                 _mainWindow.RightSidePanelForPPTNavigation.SetPageButtonVisibility(rightPageButtonVisibility);
                 _mainWindow.RightSidePanelForPPTNavigation.SetBarOpacity(ppt.PPTRSButtonOpacity);
-                _mainWindow.RightSidePanelForPPTNavigation.ApplyTheme(ppt.PPTRSBlackBackground);
+                _mainWindow.RightSidePanelForPPTNavigation.ApplyTheme(IsDarkThemeForNavBar());
             }
             catch (Exception ex)
             {
@@ -513,13 +531,13 @@ namespace Ink_Canvas.Helpers
                 var leftBottomPageButtonVisibility = ppt.PPTLBShowPageNumber ? Visibility.Visible : Visibility.Collapsed;
                 _mainWindow.LeftBottomPanelForPPTNavigation.SetPageButtonVisibility(leftBottomPageButtonVisibility);
                 _mainWindow.LeftBottomPanelForPPTNavigation.SetBarOpacity(ppt.PPTLBButtonOpacity);
-                _mainWindow.LeftBottomPanelForPPTNavigation.ApplyTheme(ppt.PPTLBBlackBackground);
+                _mainWindow.LeftBottomPanelForPPTNavigation.ApplyTheme(IsDarkThemeForNavBar());
 
                 // 右下
                 var rightBottomPageButtonVisibility = ppt.PPTRBShowPageNumber ? Visibility.Visible : Visibility.Collapsed;
                 _mainWindow.RightBottomPanelForPPTNavigation.SetPageButtonVisibility(rightBottomPageButtonVisibility);
                 _mainWindow.RightBottomPanelForPPTNavigation.SetBarOpacity(ppt.PPTRBButtonOpacity);
-                _mainWindow.RightBottomPanelForPPTNavigation.ApplyTheme(ppt.PPTRBBlackBackground);
+                _mainWindow.RightBottomPanelForPPTNavigation.ApplyTheme(IsDarkThemeForNavBar());
             }
             catch (Exception ex)
             {

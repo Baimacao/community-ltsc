@@ -65,18 +65,9 @@
                         <ComboBox x:Name="ComboBoxFloatingBarImg"
                                   SelectedIndex="0"
                                   SelectionChanged="ComboBoxFloatingBarImg_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccDefault}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccNoShadow}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccDark}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccDarkBreath}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccWhiteTransparent}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_IccBlackTransparent}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_CoolapkCrossEye}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_CoolapkAbused}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_CoolapkSmile}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_CoolapkUnderwear}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_CoolapkGreenHatDoge}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_TiebaEmoji}" />
+                            <!-- LTSC：只保留 ICC LTSC 的深浅两版（对应用户少选择、少出错） -->
+                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_LtscLight}" />
+                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_FloatingIcon_LtscDark}" />
                         </ComboBox>
                     </ui:SettingsCard>
 

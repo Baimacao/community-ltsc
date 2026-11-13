@@ -302,7 +302,7 @@ namespace Ink_Canvas
         {
             try
             {
-                Settings.Appearance.FloatingBarImg = theme == ThemeLight ? 0 : 3;
+                Settings.Appearance.FloatingBarImg = theme == ThemeLight ? 0 : 1;
                 UpdateFloatingBarIcon();
                 UpdateFloatingBarIconComboBox();
             }

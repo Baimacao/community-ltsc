@@ -326,6 +326,16 @@ namespace Ink_Canvas
                             break;
                     }
 
+                    // LTSC：下拉框精简为「浅色(0) / 深色(1)」两项。
+                    // 老配置里存的可能是上游的 2~11（无阴影/深色呼吸/贴吧表情等），
+                    // 直接夹到 0/1 会让人以为图标被重置了。按「原来是深的还是浅的」折算：
+                    // 上游 2/3 是深色系，映射到 1；其余（0/1/4~11）按浅色处理映射到 0。
+                    if (Settings.Appearance.FloatingBarImg > 1 && Settings.Appearance.FloatingBarImg < 12)
+                    {
+                        Settings.Appearance.FloatingBarImg =
+                            (Settings.Appearance.FloatingBarImg == 2 || Settings.Appearance.FloatingBarImg == 3) ? 1 : 0;
+                    }
+
                     if (Settings.Appearance.FloatingBarImg >= 12 + Settings.Appearance.CustomFloatingBarImgs.Count)
                     {
                         Settings.Appearance.FloatingBarImg = 0;

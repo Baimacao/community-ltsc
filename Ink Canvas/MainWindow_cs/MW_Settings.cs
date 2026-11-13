@@ -246,8 +246,10 @@ namespace Ink_Canvas
             }
             else if (index == 1)
             {
+                // LTSC：下拉框已精简为「浅色 / 深色」两项，索引 1 改为深色图标。
+                // 上游这里是无阴影版（icc-noshadow），精简后不再暴露。
                 FloatingbarHeadIconImg.Source =
-                    CreateBitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc-noshadow.png"));
+                    CreateBitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc-sharpdark.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(0.5);
             }
             else if (index == 2)

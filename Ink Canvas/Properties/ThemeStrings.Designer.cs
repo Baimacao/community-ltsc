@@ -319,5 +319,8 @@ namespace Ink_Canvas.Properties
         public static string Theme_Tips_NameExists => ResourceManager.GetString(nameof(Theme_Tips_NameExists), _resourceCulture);
 
         public static string Theme_Tips_Title => ResourceManager.GetString(nameof(Theme_Tips_Title), _resourceCulture);
+
+        public static string Theme_FloatingIcon_LtscLight => ResourceManager.GetString(nameof(Theme_FloatingIcon_LtscLight), _resourceCulture);
+        public static string Theme_FloatingIcon_LtscDark => ResourceManager.GetString(nameof(Theme_FloatingIcon_LtscDark), _resourceCulture);
     }
 }
