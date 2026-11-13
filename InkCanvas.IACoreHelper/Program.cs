@@ -22,6 +22,13 @@ namespace InkCanvas.IACoreHelper
             string pipeName = string.Format(IpcConstants.PipeName, parentPid);
             string sharedMemoryNamePrefix = string.Format(IpcConstants.SharedMemoryName, parentPid, string.Empty);
 
+            // LTSC（2026-11-13）：看住父进程。
+            // 原来只有主进程通过管道发 CmdShutdown 才会退出；主进程一旦异常退出
+            // （Environment.Exit、崩溃、被任务管理器结束），没人发这条命令，
+            // WaitForConnection() 就永远阻塞，helper 变成僵尸进程，
+            // 锁着 InkCanvas.IACoreHelper.exe，下一次编译直接 MSB3027。
+            StartParentWatchdog(parentPid);
+
             try
             {
                 RunPipeServer(pipeName, sharedMemoryNamePrefix);
@@ -103,6 +110,45 @@ namespace InkCanvas.IACoreHelper
             finally
             {
                 sharedMemory?.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// 后台盯住父进程。父进程消失就立刻退出，不等管道命令。
+        /// LTSC（2026-11-13）：这是 C3「退出后文件锁」的根治。
+        /// 用 WaitForExit 而不是轮询，父进程一死就会被唤醒。
+        /// </summary>
+        private static void StartParentWatchdog(int parentPid)
+        {
+            try
+            {
+                var parent = System.Diagnostics.Process.GetProcessById(parentPid);
+                var t = new System.Threading.Thread(() =>
+                {
+                    try
+                    {
+                        parent.WaitForExit();
+                    }
+                    catch { }
+                    finally
+                    {
+                        try { parent.Dispose(); } catch { }
+                        // 父进程没了，本进程没有存在的理由
+                        Environment.Exit(0);
+                    }
+                });
+                t.IsBackground = true;
+                t.Name = "ICCParentWatchdog";
+                t.Start();
+            }
+            catch (ArgumentException)
+            {
+                // 启动时父进程就已经不在了，直接退
+                Environment.Exit(0);
+            }
+            catch
+            {
+                // 拿不到父进程就退回到原有行为：等管道命令
             }
         }
 
