@@ -204,11 +204,19 @@
                                     <TextBlock Text="{x:Static props:OobeStrings.Oobe_FeedbackDesc}"
                                                Style="{DynamicResource CaptionTextBlockStyle}"
                                                Opacity="0.72" VerticalAlignment="Center" />
-                                    <ui:HyperlinkButton x:Name="LinkZhijiao" Padding="2,0" VerticalAlignment="Center"
-                                                        FontSize="12" Content="智教联盟" Click="LinkZhijiao_Click" />
+                                    <Button x:Name="LinkZhijiao" Focusable="False" IsTabStop="False" Padding="0" Background="Transparent"
+                                            BorderThickness="0" VerticalAlignment="Center"
+                                            FocusVisualStyle="{x:Null}" Cursor="Hand"
+                                            Click="LinkZhijiao_Click">
+                                        <TextBlock Text="智教联盟" FontSize="12" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                                    </Button>
                                     <TextBlock Text="·" Opacity="0.35" FontSize="12" VerticalAlignment="Center" />
-                                    <ui:HyperlinkButton x:Name="LinkGitHub" Padding="2,0" VerticalAlignment="Center"
-                                                        FontSize="12" Content="GitHub" Click="LinkGitHub_Click" />
+                                    <Button x:Name="LinkGitHub" Focusable="False" IsTabStop="False" Padding="0" Background="Transparent"
+                                            BorderThickness="0" VerticalAlignment="Center"
+                                            FocusVisualStyle="{x:Null}" Cursor="Hand"
+                                            Click="LinkGitHub_Click">
+                                        <TextBlock Text="GitHub" FontSize="12" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" />
+                                    </Button>
                                 </ikw:SimpleStackPanel>
                             </Border>
                             </ikw:SimpleStackPanel>

@@ -353,9 +353,44 @@ namespace Ink_Canvas.Windows
         private const string ZhijiaoUrl = "https://forum.smart-teach.cn";
         private const string GitHubUrl = "https://github.com/Baimacao/community-ltsc";
 
-        private void LinkZhijiao_Click(object sender, RoutedEventArgs e) => OpenExternal(ZhijiaoUrl, "智教联盟");
+        /// <summary>OOBE 窗口显示的时刻，用来挡开局误触发。</summary>
+        private static DateTime _shownAt = DateTime.MinValue;
 
-        private void LinkGitHub_Click(object sender, RoutedEventArgs e) => OpenExternal(GitHubUrl, "GitHub");
+        /// <summary>开局多久之内的点击算误触发。日志里那次是 0.5 秒，留一倍余量。</summary>
+        private static readonly TimeSpan LinkGuardWindow = TimeSpan.FromMilliseconds(1200);
+
+        /// <summary>
+        /// 链接点击。用 Click 而不是鼠标事件，是因为老师用触摸屏，
+        /// PreviewMouseLeftButtonUp 只认鼠标，触摸点不开。
+        ///
+        /// 误触发靠时间闸门挡：出现过刚打开 OOBE 就自己打开 GitHub 的情况
+        ///（日志 21:16:19，入场动画开始后 0.5 秒），查不出确定触发源，
+        /// 所以开局 1.2 秒内的点击一律不认，之后正常响应。
+        /// </summary>
+        private static bool ShouldIgnoreClick(string name)
+        {
+            var since = DateTime.UtcNow - _shownAt;
+            if (since < LinkGuardWindow)
+            {
+                LogHelper.WriteLogToFile(
+                    $"{name}链接在 OOBE 刚显示 {since.TotalMilliseconds:F0}ms 时被触发，已忽略（疑似误触发）",
+                    LogHelper.LogType.Warning);
+                return true;
+            }
+            return false;
+        }
+
+        private void LinkZhijiao_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShouldIgnoreClick("智教联盟")) return;
+            OpenExternal(ZhijiaoUrl, "智教联盟");
+        }
+
+        private void LinkGitHub_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShouldIgnoreClick("GitHub")) return;
+            OpenExternal(GitHubUrl, "GitHub");
+        }
 
         private static void OpenExternal(string url, string name)
         {
@@ -367,6 +402,10 @@ namespace Ink_Canvas.Windows
                     return;
                 }
 
+                // 记一笔：这个函数只应在用户主动点击时被调用。
+                // 如果日志里在没有点击的情况下出现这条，说明链接被误触发了，
+                // 拿这份记录去比对触发时机，比凭现象猜快得多。
+                LogHelper.WriteLogToFile($"打开外部链接：{name} -> {url}", LogHelper.LogType.Event);
                 Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
             catch (Exception ex)
@@ -642,6 +681,8 @@ namespace Ink_Canvas.Windows
 
         private void OobeWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            // 记下窗口真正显示的时刻，链接的时间闸门要用。
+            _shownAt = DateTime.UtcNow;
             try
             {
                 // 窗口淡入也走弹簧：和翻步、进度条同一套手感。
