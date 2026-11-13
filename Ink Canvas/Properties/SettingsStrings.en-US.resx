@@ -98,4 +98,175 @@
   <data name="Tb_FlipContentAfterAutoFlipDesc" xml:space="preserve">
     <value>When on, auto flip only moves the drag handle; component content keeps its order. Restart recommended after changing.</value>
   </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Common_Reverse" xml:space="preserve">
+    <value>Invert</value>
+  </data>
+  <data name="Flip_Title" xml:space="preserve">
+    <value>Flip button look &amp; position</value>
+  </data>
+  <data name="Flip_ScopeGlobal" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Flip_ScopeLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="Flip_ScopeRight" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="Flip_ScopeBottomLeft" xml:space="preserve">
+    <value>Bottom left</value>
+  </data>
+  <data name="Flip_ScopeBottomRight" xml:space="preserve">
+    <value>Bottom right</value>
+  </data>
+  <data name="Flip_UseGlobal" xml:space="preserve">
+    <value>Use global settings</value>
+  </data>
+  <data name="Flip_UseGlobalDesc" xml:space="preserve">
+    <value>When on, this position follows the global look. Turn it off to style it separately.</value>
+  </data>
+  <data name="Flip_EnableHere" xml:space="preserve">
+    <value>Show the button here</value>
+  </data>
+  <data name="Flip_EnableHereDesc" xml:space="preserve">
+    <value>Whether the flip button for this position appears on screen.</value>
+  </data>
+  <data name="Flip_ShowPageNumber" xml:space="preserve">
+    <value>Show page number</value>
+  </data>
+  <data name="Flip_ShowPageNumberDesc" xml:space="preserve">
+    <value>Shows the current page and the total in the flip bar.</value>
+  </data>
+  <data name="Flip_BlackBackground" xml:space="preserve">
+    <value>Black background</value>
+  </data>
+  <data name="Flip_BlackBackgroundDesc" xml:space="preserve">
+    <value>Uses a translucent black background instead of the theme's transparent one.</value>
+  </data>
+  <data name="Flip_Offset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="Flip_Opacity" xml:space="preserve">
+    <value>Opacity</value>
+  </data>
+  <data name="Flip_Scale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
+  <data name="Flip_ScaleDesc" xml:space="preserve">
+    <value>Scales the flip buttons at this position.</value>
+  </data>
+  <data name="Flip_GlobalLook" xml:space="preserve">
+    <value>Global look</value>
+  </data>
+  <data name="Flip_PageNumberFontSize" xml:space="preserve">
+    <value>Page number size</value>
+  </data>
+  <data name="Flip_PageNumberFontSizeDesc" xml:space="preserve">
+    <value>Page numbers often wash out on projectors and all-in-ones. Default is 17px, up to 40px.</value>
+  </data>
+  <data name="Flip_AutoFade" xml:space="preserve">
+    <value>Fade the flip bar when idle</value>
+  </data>
+  <data name="Flip_AutoFadeDesc" xml:space="preserve">
+    <value>After a while without input the flip bar fades so it stops covering the board. Touch it and it comes back.</value>
+  </data>
+  <data name="Flip_FadeDelay" xml:space="preserve">
+    <value>Fade after</value>
+  </data>
+  <data name="Flip_FadeDelayDesc" xml:space="preserve">
+    <value>Seconds of stillness before it starts to fade.</value>
+  </data>
+  <data name="Flip_MainBarIdleFade" xml:space="preserve">
+    <value>Dim the main toolbar when idle</value>
+  </data>
+  <data name="Flip_MainBarIdleFadeDesc" xml:space="preserve">
+    <value>While presenting with PowerPoint linked, the bottom toolbar dims after you stop writing and returns the moment you start again. Whiteboard mode is unaffected.</value>
+  </data>
+  <data name="Flip_MainBarFadeDelay" xml:space="preserve">
+    <value>Main toolbar fades after</value>
+  </data>
+  <data name="Flip_MainBarFadeDelayDesc" xml:space="preserve">
+    <value>Seconds after you stop writing before the bottom toolbar starts to dim.</value>
+  </data>
+  <data name="Flip_MainBarFadeOpacity" xml:space="preserve">
+    <value>How faint the main toolbar goes</value>
+  </data>
+  <data name="Flip_MainBarFadeOpacityDesc" xml:space="preserve">
+    <value>Lower is fainter. Keep it at 0.3 or above or the toolbar outline becomes hard to see.</value>
+  </data>
+  <data name="Flip_PressFeedback" xml:space="preserve">
+    <value>Press feedback</value>
+  </data>
+  <data name="Flip_PressFeedbackDesc" xml:space="preserve">
+    <value>Highlights the button you press so you can tell on a projector whether the tap landed.</value>
+  </data>
+  <data name="Auto_AddAutomation" xml:space="preserve">
+    <value>Add automation</value>
+  </data>
+  <data name="Auto_Presets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="Auto_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Auto_RestoreEnabled" xml:space="preserve">
+    <value>Enable restore</value>
+  </data>
+  <data name="Auto_Trigger" xml:space="preserve">
+    <value>Trigger</value>
+  </data>
+  <data name="Auto_Restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="Auto_WhenTriggered" xml:space="preserve">
+    <value>When any of these happen</value>
+  </data>
+  <data name="Auto_AddTrigger" xml:space="preserve">
+    <value>Add trigger</value>
+  </data>
+  <data name="Auto_WhenConditionsMet" xml:space="preserve">
+    <value>And these conditions are met</value>
+  </data>
+  <data name="Auto_ConditionsIgnored" xml:space="preserve">
+    <value>Conditions are ignored while this workflow runs.</value>
+  </data>
+  <data name="Auto_AnyConditionGroup" xml:space="preserve">
+    <value>When any of these condition groups match</value>
+  </data>
+  <data name="Auto_AllConditionGroup" xml:space="preserve">
+    <value>When all of these condition groups match</value>
+  </data>
+  <data name="Auto_AnyCondition" xml:space="preserve">
+    <value>When any of these conditions match</value>
+  </data>
+  <data name="Auto_AllCondition" xml:space="preserve">
+    <value>When all of these conditions match</value>
+  </data>
+  <data name="Auto_AddGroup" xml:space="preserve">
+    <value>Add group</value>
+  </data>
+  <data name="Auto_AddRule" xml:space="preserve">
+    <value>Add rule</value>
+  </data>
+  <data name="Auto_TakeAction" xml:space="preserve">
+    <value>Then do</value>
+  </data>
+  <data name="Auto_AddAction" xml:space="preserve">
+    <value>Add action</value>
+  </data>
+  <data name="Auto_RestoreNote" xml:space="preserve">
+    <value>Actions are reverted automatically once the rule stops matching.</value>
+  </data>
+  <data name="Auto_EmptyHint" xml:space="preserve">
+    <value>Pick or add an automation on the left, then set it up here.</value>
+  </data>
 </root>

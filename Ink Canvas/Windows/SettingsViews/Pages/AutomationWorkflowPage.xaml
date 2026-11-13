@@ -58,7 +58,7 @@
 
             <!-- 添加按钮 -->
             <Button Grid.Row="0" x:Name="BtnAddWorkflow"
-                    Content="添加自动化"
+                    Content="{x:Static props:SettingsStrings.Auto_AddAutomation}"
                     Click="BtnAddWorkflow_Click"
                     Padding="12,6" Margin="0,0,0,8" HorizontalAlignment="Left"/>
 
@@ -100,7 +100,7 @@
                 <ui:ListViewItem x:Name="NavPresetItem">
                     <StackPanel Orientation="Horizontal">
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Settings}" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="预设自动化" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static props:SettingsStrings.Auto_Presets}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </ui:ListViewItem>
                 <!-- 工作流项通过 DataTemplate 渲染 -->
@@ -555,7 +555,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Orientation="Vertical">
-                                <TextBlock Text="名称" FontWeight="Medium" Margin="0,0,0,4"/>
+                                <TextBlock Text="{x:Static props:SettingsStrings.Auto_Name}" FontWeight="Medium" Margin="0,0,0,4"/>
                                 <TextBox x:Name="TextBoxWorkflowName"
                                          Padding="8,6" MinWidth="200"
                                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
@@ -563,12 +563,12 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Right">
-                                <CheckBox x:Name="CheckBoxIsRevertEnabled" Content="启用恢复" Margin="0,0,0,8"
+                                <CheckBox x:Name="CheckBoxIsRevertEnabled" Content="{x:Static props:SettingsStrings.Auto_RestoreEnabled}" Margin="0,0,0,8"
                                           Checked="CheckBoxIsRevertEnabled_Changed"
                                           Unchecked="CheckBoxIsRevertEnabled_Changed"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="BtnInvokeAction" Content="触发" Padding="12,4" Margin="0,0,8,0" Click="BtnInvokeAction_Click"/>
-                                    <Button x:Name="BtnRevertAction" Content="恢复" Padding="12,4" Click="BtnRevertAction_Click"/>
+                                    <Button x:Name="BtnInvokeAction" Content="{x:Static props:SettingsStrings.Auto_Trigger}" Padding="12,4" Margin="0,0,8,0" Click="BtnInvokeAction_Click"/>
+                                    <Button x:Name="BtnRevertAction" Content="{x:Static props:SettingsStrings.Auto_Restore}" Padding="12,4" Click="BtnRevertAction_Click"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -581,7 +581,7 @@
                             <!-- 标题 -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Important}" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="当以下事件触发时" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static props:SettingsStrings.Auto_WhenTriggered}" FontWeight="Medium" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- 触发器列表 -->
@@ -627,7 +627,7 @@
                             </ItemsControl>
 
                             <!-- 添加触发器 -->
-                            <Button Content="添加触发器" Click="BtnAddTrigger_Click"
+                            <Button Content="{x:Static props:SettingsStrings.Auto_AddTrigger}" Click="BtnAddTrigger_Click"
                                     Padding="12,6" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </Border>
@@ -641,12 +641,12 @@
                                 <ui:ToggleSwitch x:Name="ToggleIsConditionEnabled" Margin="0,0,8,0"
                                                  Toggled="ToggleIsConditionEnabled_Toggled"/>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Tag}" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="并且满足以下条件时" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static props:SettingsStrings.Auto_WhenConditionsMet}" FontWeight="Medium" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- 条件禁用提示 -->
                             <TextBlock x:Name="ConditionDisabledHint"
-                                       Text="工作流运行时不会考虑条件。" Opacity="0.5" Margin="0,0,0,8"/>
+                                       Text="{x:Static props:SettingsStrings.Auto_ConditionsIgnored}" Opacity="0.5" Margin="0,0,0,8"/>
 
                             <!-- 条件编辑面板 -->
                             <StackPanel x:Name="ConditionEditorPanel">
@@ -654,14 +654,14 @@
                                 <WrapPanel Orientation="Horizontal" Margin="0,0,0,8">
                                     <ComboBox x:Name="ComboBoxRulesetMode" Padding="8,6" Margin="0,0,8,0"
                                               SelectionChanged="ComboBoxRulesetMode_SelectionChanged">
-                                        <ComboBoxItem Content="当以下任意条件组满足时"/>
-                                        <ComboBoxItem Content="当以下所有条件组满足时"/>
+                                        <ComboBoxItem Content="{x:Static props:SettingsStrings.Auto_AnyConditionGroup}"/>
+                                        <ComboBoxItem Content="{x:Static props:SettingsStrings.Auto_AllConditionGroup}"/>
                                     </ComboBox>
-                                    <CheckBox x:Name="CheckBoxRulesetReversed" Content="反转"
+                                    <CheckBox x:Name="CheckBoxRulesetReversed" Content="{x:Static props:SettingsStrings.Common_Reverse}"
                                               Margin="0,0,8,0" VerticalAlignment="Center"
                                               Checked="CheckBoxRulesetReversed_Changed"
                                               Unchecked="CheckBoxRulesetReversed_Changed"/>
-                                    <Button Content="添加组" Padding="8,4" VerticalAlignment="Center"
+                                    <Button Content="{x:Static props:SettingsStrings.Auto_AddGroup}" Padding="8,4" VerticalAlignment="Center"
                                             Click="BtnAddRuleGroup_Click"/>
                                     <Ellipse x:Name="EllipseRulesetState" Width="10" Height="10"
                                              Margin="8,0,0,0" VerticalAlignment="Center"
@@ -698,14 +698,14 @@
                                                                   SelectedIndex="{Binding Mode, Converter={StaticResource LogicalModeToIntConverter}, Mode=TwoWay}"
                                                                   SelectionChanged="ComboBoxGroupMode_SelectionChanged"
                                                                   Tag="{Binding}">
-                                                            <ComboBoxItem Content="当以下任意条件满足时"/>
-                                                            <ComboBoxItem Content="当以下所有条件满足时"/>
+                                                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Auto_AnyCondition}"/>
+                                                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Auto_AllCondition}"/>
                                                         </ComboBox>
-                                                        <CheckBox Content="反转" IsChecked="{Binding IsReversed}"
+                                                        <CheckBox Content="{x:Static props:SettingsStrings.Common_Reverse}" IsChecked="{Binding IsReversed}"
                                                                   Checked="CheckBoxGroupReversed_Changed"
                                                                   Unchecked="CheckBoxGroupReversed_Changed"
                                                                   Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                                        <Button Content="添加规则" Padding="6,2" Margin="0,0,8,0"
+                                                        <Button Content="{x:Static props:SettingsStrings.Auto_AddRule}" Padding="6,2" Margin="0,0,8,0"
                                                                 VerticalAlignment="Center" Click="BtnAddRuleToGroup_Click"
                                                                 Tag="{Binding}"/>
 
@@ -742,7 +742,7 @@
                                                                     <Ellipse Grid.Column="1" Width="8" Height="8"
                                                                              Margin="0,0,4,0" VerticalAlignment="Center"
                                                                              Style="{StaticResource StateIndicatorStyle}"/>
-                                                                    <CheckBox Grid.Column="2" Content="反转"
+                                                                    <CheckBox Grid.Column="2" Content="{x:Static props:SettingsStrings.Common_Reverse}"
                                                                               IsChecked="{Binding IsReversed}"
                                                                               Checked="CheckBoxRuleReversed_Changed"
                                                                               Unchecked="CheckBoxRuleReversed_Changed"
@@ -779,7 +779,7 @@
                             <!-- 标题 -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}" FontSize="16" Margin="0,0,8,0"/>
-                                <TextBlock Text="触发行动" FontWeight="Medium" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static props:SettingsStrings.Auto_TakeAction}" FontWeight="Medium" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- 行动列表 -->
@@ -831,7 +831,7 @@
                             </ItemsControl>
 
                             <!-- 添加行动 -->
-                            <Button Content="添加行动" Click="BtnAddAction_Click"
+                            <Button Content="{x:Static props:SettingsStrings.Auto_AddAction}" Click="BtnAddAction_Click"
                                     Padding="12,6" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </Border>
@@ -839,7 +839,7 @@
                     <!-- ===== 恢复提示 ===== -->
                     <StackPanel x:Name="RevertHintPanel" Orientation="Horizontal" Margin="0,0,0,16" Opacity="0.6">
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stop}" FontSize="14" Margin="0,0,6,0"/>
-                        <TextBlock Text="当规则不再满足时，将自动恢复行动。" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock Text="{x:Static props:SettingsStrings.Auto_RestoreNote}" FontSize="12" VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -848,7 +848,7 @@
             <StackPanel x:Name="EmptyStatePanel" Visibility="Collapsed"
                         VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Rename}" FontSize="48" HorizontalAlignment="Center" Opacity="0.4"/>
-                <TextBlock Text="在左侧选择或添加一个自动化，然后在此处进行设置。"
+                <TextBlock Text="{x:Static props:SettingsStrings.Auto_EmptyHint}"
                            TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,8,0,0" Opacity="0.6"/>
             </StackPanel>
         </Grid>

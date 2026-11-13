@@ -102,77 +102,77 @@
                         Spacing="{StaticResource SettingsCardSpacing}">
 
                         <!-- Title -->
-                        <TextBlock Text="翻页按钮的外观与位置" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                        <TextBlock Text="{x:Static props:SettingsStrings.Flip_Title}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
                         <!-- TabControl (Pivot) to Select Position -->
                         <TabControl x:Name="TabControlPositionSelect"
                                     Style="{StaticResource TabControlPivotStyle}"
                                     SelectionChanged="TabControlPositionSelect_SelectionChanged">
-                            <TabItem Header="全局" />
-                            <TabItem Header="左侧" />
-                            <TabItem Header="右侧" />
-                            <TabItem Header="左下" />
-                            <TabItem Header="右下" />
+                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeGlobal}" />
+                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeLeft}" />
+                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeRight}" />
+                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeBottomLeft}" />
+                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeBottomRight}" />
                         </TabControl>
 
                         <!-- Position-specific settings -->
                         <ikw:SimpleStackPanel Spacing="{StaticResource SettingsCardSpacing}" Margin="0,12,0,0">
                             <!-- Use Global Settings ToggleSwitch (only visible on position tabs) -->
-                            <ui:SettingsCard x:Name="CardUseGlobalSettings" Header="使用全局设置"
-                                             Description="开启时该位置外观跟随全局默认值，关闭后可独立设置">
+                            <ui:SettingsCard x:Name="CardUseGlobalSettings" Header="{x:Static props:SettingsStrings.Flip_UseGlobal}"
+                                             Description="{x:Static props:SettingsStrings.Flip_UseGlobalDesc}">
                                 <ui:ToggleSwitch x:Name="ToggleSwitchUseGlobalSettings" Toggled="ToggleSwitchUseGlobalSettings_Toggled"/>
                             </ui:SettingsCard>
 
                             <!-- Position settings panel (IsEnabled bound to UseGlobalSettings state) -->
                             <ikw:SimpleStackPanel x:Name="PositionSettingsPanel" Spacing="{StaticResource SettingsCardSpacing}">
                                 <!-- Enable ToggleSwitch (title right side) -->
-                                <ui:SettingsCard x:Name="CardPositionEnabled" Header="启用当前位置按钮"
-                                                 Description="控制该位置的翻页按钮是否显示在屏幕上">
+                                <ui:SettingsCard x:Name="CardPositionEnabled" Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
                                     <ui:ToggleSwitch x:Name="ToggleSwitchPositionEnabled" Toggled="ToggleSwitchPositionEnabled_Toggled"/>
                                 </ui:SettingsCard>
 
                                 <!-- Show Page Number ToggleSwitch -->
-                                <ui:SettingsCard x:Name="CardShowPageNumber" Header="显示页码"
-                                                 Description="在翻页条中显示当前页码和总页数">
+                                <ui:SettingsCard x:Name="CardShowPageNumber" Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
                                     <ui:ToggleSwitch x:Name="ToggleSwitchShowPageNumber" Toggled="ToggleSwitchShowPageNumber_Toggled"/>
                                 </ui:SettingsCard>
 
                                 <!-- Black Background ToggleSwitch -->
-                                <ui:SettingsCard x:Name="CardBlackBackground" Header="黑色背景"
-                                                 Description="使用黑色半透明背景代替默认的主题透明背景">
+                                <ui:SettingsCard x:Name="CardBlackBackground" Header="{x:Static props:SettingsStrings.Flip_BlackBackground}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_BlackBackgroundDesc}">
                                     <ui:ToggleSwitch x:Name="ToggleSwitchBlackBackground" Toggled="ToggleSwitchBlackBackground_Toggled"/>
                                 </ui:SettingsCard>
 
                                 <!-- Offset Slider with Reset Button (Side: 左侧/右侧) -->
-                                <ui:SettingsCard x:Name="CardOffset" Header="偏移">
+                                <ui:SettingsCard x:Name="CardOffset" Header="{x:Static props:SettingsStrings.Flip_Offset}">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock x:Name="TextBlockOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
                                         <Slider x:Name="SliderOffset" Minimum="-500" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
-                                        <Button Content="重置" Click="ButtonResetOffset_Click"/>
+                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
                                     </ikw:SimpleStackPanel>
                                 </ui:SettingsCard>
 
                                 <!-- Offset Slider with Reset Button (Bottom: 左下/右下) -->
-                                <ui:SettingsCard x:Name="CardOffsetBottom" Header="偏移">
+                                <ui:SettingsCard x:Name="CardOffsetBottom" Header="{x:Static props:SettingsStrings.Flip_Offset}">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock x:Name="TextBlockOffsetBottomValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
                                         <Slider x:Name="SliderOffsetBottom" Minimum="-100" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffsetBottom_ValueChanged"/>
-                                        <Button Content="重置" Click="ButtonResetOffsetBottom_Click"/>
+                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffsetBottom_Click"/>
                                     </ikw:SimpleStackPanel>
                                 </ui:SettingsCard>
 
                                 <!-- Opacity Slider with Reset Button -->
-                                <ui:SettingsCard x:Name="CardOpacity" Header="透明度">
+                                <ui:SettingsCard x:Name="CardOpacity" Header="{x:Static props:SettingsStrings.Flip_Opacity}">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
                                         <TextBlock x:Name="TextBlockOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
                                         <Slider x:Name="SliderOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
-                                        <Button Content="重置" Click="ButtonResetOpacity_Click"/>
+                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
                                     </ikw:SimpleStackPanel>
                                 </ui:SettingsCard>
 
                                 <!-- Scale Slider -->
-                                <ui:SettingsCard x:Name="CardScale" Header="缩放大小"
-                                                 Description="调整该位置翻页按钮的大小缩放">
+                                <ui:SettingsCard x:Name="CardScale" Header="{x:Static props:SettingsStrings.Flip_Scale}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
                                     <ui:SettingsCard.HeaderIcon>
                                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Zoom}"/>
                                     </ui:SettingsCard.HeaderIcon>
@@ -185,11 +185,11 @@
                         </ikw:SimpleStackPanel>
 
                         <!-- LTSC P1c：全局外观（不分位置，四项共用） -->
-                        <TextBlock Text="全局外观" Margin="1,24,0,6"
+                        <TextBlock Text="{x:Static props:SettingsStrings.Flip_GlobalLook}" Margin="1,24,0,6"
                                    Style="{StaticResource BodyStrongTextBlockStyle}"/>
 
-                        <ui:SettingsCard Header="页码字号"
-                                         Description="投影和一体机上，后排常常看不清页码。默认 17px，可放大到 40px">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_PageNumberFontSize}"
+                                         Description="{x:Static props:SettingsStrings.Flip_PageNumberFontSizeDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Zoom}"/>
                             </ui:SettingsCard.HeaderIcon>
@@ -199,21 +199,21 @@
                                 <Slider x:Name="SliderPageFont" Minimum="10" Maximum="40"
                                         Width="200" IsSnapToTickEnabled="True" TickFrequency="1"
                                         ValueChanged="SliderPageFont_ValueChanged"/>
-                                <Button Content="重置" Click="ButtonResetPageFont_Click"/>
+                                <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetPageFont_Click"/>
                             </ikw:SimpleStackPanel>
                         </ui:SettingsCard>
 
-                        <ui:SettingsCard Header="翻页条自动淡出"
-                                         Description="静止一段时间后翻页条变淡，不再挡住板书；碰到它就恢复">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_AutoFade}"
+                                         Description="{x:Static props:SettingsStrings.Flip_AutoFadeDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Hide}"/>
                             </ui:SettingsCard.HeaderIcon>
-                            <ui:ToggleSwitch x:Name="ToggleAutoHide" OnContent="开" OffContent="关"
+                            <ui:ToggleSwitch x:Name="ToggleAutoHide" OnContent="{x:Static props:SettingsStrings.Common_On}" OffContent="{x:Static props:SettingsStrings.Common_Off}"
                                           Toggled="ToggleAutoHide_Toggled"/>
                         </ui:SettingsCard>
 
-                        <ui:SettingsCard Header="淡出等待时间"
-                                         Description="静止多少秒后开始变淡">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_FadeDelay}"
+                                         Description="{x:Static props:SettingsStrings.Flip_FadeDelayDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
                             </ui:SettingsCard.HeaderIcon>
@@ -229,17 +229,17 @@
                         <!-- LTSC D-13：主悬浮窗空闲减淡。
                              触摸屏没有鼠标悬停，所以按「画布停笔」计时，
                              落笔就恢复；只在非白板 + PPT 联动放映时生效。 -->
-                        <ui:SettingsCard Header="主工具栏空闲减淡"
-                                         Description="PPT 联动讲课时，停笔一段时间后底部工具栏变淡；一落笔就恢复。白板模式不受影响">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_MainBarIdleFade}"
+                                         Description="{x:Static props:SettingsStrings.Flip_MainBarIdleFadeDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Hide}"/>
                             </ui:SettingsCard.HeaderIcon>
-                            <ui:ToggleSwitch x:Name="ToggleFloatingBarIdleFade" OnContent="开" OffContent="关"
+                            <ui:ToggleSwitch x:Name="ToggleFloatingBarIdleFade" OnContent="{x:Static props:SettingsStrings.Common_On}" OffContent="{x:Static props:SettingsStrings.Common_Off}"
                                           Toggled="ToggleFloatingBarIdleFade_Toggled"/>
                         </ui:SettingsCard>
 
-                        <ui:SettingsCard Header="主工具栏淡出等待时间"
-                                         Description="停笔多少秒后底部工具栏开始变淡">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_MainBarFadeDelay}"
+                                         Description="{x:Static props:SettingsStrings.Flip_MainBarFadeDelayDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
                             </ui:SettingsCard.HeaderIcon>
@@ -252,8 +252,8 @@
                             </ikw:SimpleStackPanel>
                         </ui:SettingsCard>
 
-                        <ui:SettingsCard Header="主工具栏淡到多淡"
-                                         Description="数值越小越透明。建议不要低于 0.3，否则工具栏轮廓会看不清">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_MainBarFadeOpacity}"
+                                         Description="{x:Static props:SettingsStrings.Flip_MainBarFadeOpacityDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.View}"/>
                             </ui:SettingsCard.HeaderIcon>
@@ -266,12 +266,12 @@
                             </ikw:SimpleStackPanel>
                         </ui:SettingsCard>
 
-                        <ui:SettingsCard Header="按下反馈"
-                                         Description="按下翻页按钮时给出明显的高亮，投影下也能看出是否点中">
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_PressFeedback}"
+                                         Description="{x:Static props:SettingsStrings.Flip_PressFeedbackDesc}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}"/>
                             </ui:SettingsCard.HeaderIcon>
-                            <ui:ToggleSwitch x:Name="TogglePressFeedback" OnContent="开" OffContent="关"
+                            <ui:ToggleSwitch x:Name="TogglePressFeedback" OnContent="{x:Static props:SettingsStrings.Common_On}" OffContent="{x:Static props:SettingsStrings.Common_Off}"
                                           Toggled="TogglePressFeedback_Toggled"/>
                         </ui:SettingsCard>
 
