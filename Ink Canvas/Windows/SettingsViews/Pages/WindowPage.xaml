@@ -239,8 +239,8 @@
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}" />
                         </ui:SettingsCard.HeaderIcon>
                         <ui:ToggleSwitch x:Name="ToggleSwitchDisableAllAnimations"
-                                      OnContent="已关闭"
-                                      OffContent="已开启"
+                                      OnContent="{x:Static props:WindowStrings.Window_AnimationsClosed}"
+                                      OffContent="{x:Static props:WindowStrings.Window_AnimationsOpened}"
                                       Toggled="ToggleSwitchDisableAllAnimations_Toggled" />
                     </ui:SettingsCard>
 

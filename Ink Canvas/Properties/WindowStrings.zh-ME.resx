@@ -120,4 +120,10 @@
   <data name="Window_DisableAllAnimationsDesc" xml:space="preserve">
     <value>关闭后可减少动画开销；低配机器或远程桌面下建议关闭。</value>
   </data>
+  <data name="Window_AnimationsClosed" xml:space="preserve">
+    <value>已关闭</value>
+  </data>
+  <data name="Window_AnimationsOpened" xml:space="preserve">
+    <value>已开启</value>
+  </data>
 </root>

@@ -47,5 +47,20 @@ namespace Ink_Canvas.Properties {
         public static string Ppt_FlipAppearanceSectionDesc => ResourceManager.GetString(nameof(Ppt_FlipAppearanceSectionDesc), resourceCulture);
         public static string Ppt_KeepInkInPpt => ResourceManager.GetString(nameof(Ppt_KeepInkInPpt), resourceCulture);
         public static string Ppt_KeepInkInPptDesc => ResourceManager.GetString(nameof(Ppt_KeepInkInPptDesc), resourceCulture);
+
+        public static string TbPos_Title => ResourceManager.GetString(nameof(TbPos_Title), resourceCulture);
+        public static string TbPos_Desc => ResourceManager.GetString(nameof(TbPos_Desc), resourceCulture);
+        public static string TbPos_Right => ResourceManager.GetString(nameof(TbPos_Right), resourceCulture);
+        public static string TbPos_Left => ResourceManager.GetString(nameof(TbPos_Left), resourceCulture);
+        public static string TbPos_Top => ResourceManager.GetString(nameof(TbPos_Top), resourceCulture);
+        public static string TbPos_Bottom => ResourceManager.GetString(nameof(TbPos_Bottom), resourceCulture);
+        public static string Tb_FlipContent => ResourceManager.GetString(nameof(Tb_FlipContent), resourceCulture);
+        public static string Tb_FlipContentDesc => ResourceManager.GetString(nameof(Tb_FlipContentDesc), resourceCulture);
+        public static string Tb_DisableAnim => ResourceManager.GetString(nameof(Tb_DisableAnim), resourceCulture);
+        public static string Tb_DisableAnimDesc => ResourceManager.GetString(nameof(Tb_DisableAnimDesc), resourceCulture);
+        public static string Tb_AutoFlip => ResourceManager.GetString(nameof(Tb_AutoFlip), resourceCulture);
+        public static string Tb_AutoFlipDesc => ResourceManager.GetString(nameof(Tb_AutoFlipDesc), resourceCulture);
+        public static string Tb_FlipContentAfterAutoFlip => ResourceManager.GetString(nameof(Tb_FlipContentAfterAutoFlip), resourceCulture);
+        public static string Tb_FlipContentAfterAutoFlipDesc => ResourceManager.GetString(nameof(Tb_FlipContentAfterAutoFlipDesc), resourceCulture);
     }
 }

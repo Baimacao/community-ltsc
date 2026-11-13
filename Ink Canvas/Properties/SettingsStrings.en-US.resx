@@ -56,4 +56,46 @@
   <data name="Ppt_KeepInkInPptDesc" xml:space="preserve">
     <value>When on, clicking does not hide ink while annotating over a presentation.</value>
   </data>
+  <data name="TbPos_Title" xml:space="preserve">
+    <value>Toolbar position</value>
+  </data>
+  <data name="TbPos_Desc" xml:space="preserve">
+    <value>Where the toolbar sits relative to its drag handle.</value>
+  </data>
+  <data name="TbPos_Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="TbPos_Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="TbPos_Top" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="TbPos_Bottom" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+  <data name="Tb_FlipContent" xml:space="preserve">
+    <value>Flip component content</value>
+  </data>
+  <data name="Tb_FlipContentDesc" xml:space="preserve">
+    <value>Which way the component content faces. Restart recommended after changing.</value>
+  </data>
+  <data name="Tb_DisableAnim" xml:space="preserve">
+    <value>Disable toolbar animations</value>
+  </data>
+  <data name="Tb_DisableAnimDesc" xml:space="preserve">
+    <value>When on, unselected toolbar buttons no longer sink to centre automatically.</value>
+  </data>
+  <data name="Tb_AutoFlip" xml:space="preserve">
+    <value>Auto flip when space runs out</value>
+  </data>
+  <data name="Tb_AutoFlipDesc" xml:space="preserve">
+    <value>Flips the toolbar when dragged against a screen edge without room. Restart recommended after changing.</value>
+  </data>
+  <data name="Tb_FlipContentAfterAutoFlip" xml:space="preserve">
+    <value>Flip content after auto flip</value>
+  </data>
+  <data name="Tb_FlipContentAfterAutoFlipDesc" xml:space="preserve">
+    <value>When on, auto flip only moves the drag handle; component content keeps its order. Restart recommended after changing.</value>
+  </data>
 </root>

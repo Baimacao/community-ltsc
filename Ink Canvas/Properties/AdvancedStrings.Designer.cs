@@ -131,5 +131,31 @@ namespace Ink_Canvas.Properties
         public static string Debug_ResetStartupCount_Desc => ResourceManager.GetString(nameof(Debug_ResetStartupCount_Desc), _resourceCulture);
 
         public static string Debug_ResetStartupCount_Button => ResourceManager.GetString(nameof(Debug_ResetStartupCount_Button), _resourceCulture);
+
+        public static string Adv_AdminLaunch => ResourceManager.GetString(nameof(Adv_AdminLaunch), _resourceCulture);
+        public static string Adv_AdminLaunchDesc => ResourceManager.GetString(nameof(Adv_AdminLaunchDesc), _resourceCulture);
+        public static string Adv_AdminAsk => ResourceManager.GetString(nameof(Adv_AdminAsk), _resourceCulture);
+        public static string Adv_AdminRelaunch => ResourceManager.GetString(nameof(Adv_AdminRelaunch), _resourceCulture);
+        public static string Adv_AdminIgnore => ResourceManager.GetString(nameof(Adv_AdminIgnore), _resourceCulture);
+        public static string Adv_AutoCalibrate => ResourceManager.GetString(nameof(Adv_AutoCalibrate), _resourceCulture);
+        public static string Adv_AutoCalibrateDesc => ResourceManager.GetString(nameof(Adv_AutoCalibrateDesc), _resourceCulture);
+        public static string Adv_CalibrateSteps => ResourceManager.GetString(nameof(Adv_CalibrateSteps), _resourceCulture);
+        public static string Adv_CalibrateIntro => ResourceManager.GetString(nameof(Adv_CalibrateIntro), _resourceCulture);
+        public static string Adv_CalibrateStep1 => ResourceManager.GetString(nameof(Adv_CalibrateStep1), _resourceCulture);
+        public static string Adv_CalibrateStep2 => ResourceManager.GetString(nameof(Adv_CalibrateStep2), _resourceCulture);
+        public static string Adv_CalibrateStep3 => ResourceManager.GetString(nameof(Adv_CalibrateStep3), _resourceCulture);
+        public static string Adv_StartCalibrate => ResourceManager.GetString(nameof(Adv_StartCalibrate), _resourceCulture);
+        public static string Adv_CalibrateIdle => ResourceManager.GetString(nameof(Adv_CalibrateIdle), _resourceCulture);
+        public static string Adv_NibValueUncalibrated => ResourceManager.GetString(nameof(Adv_NibValueUncalibrated), _resourceCulture);
+        public static string Adv_FingerValueUncalibrated => ResourceManager.GetString(nameof(Adv_FingerValueUncalibrated), _resourceCulture);
+        public static string Adv_PalmValueUncalibrated => ResourceManager.GetString(nameof(Adv_PalmValueUncalibrated), _resourceCulture);
+        public static string Adv_CalibrateTapPen => ResourceManager.GetString(nameof(Adv_CalibrateTapPen), _resourceCulture);
+        public static string Adv_CalibrateTapFinger => ResourceManager.GetString(nameof(Adv_CalibrateTapFinger), _resourceCulture);
+        public static string Adv_CalibrateTapPalm => ResourceManager.GetString(nameof(Adv_CalibrateTapPalm), _resourceCulture);
+        public static string Adv_CalibrateDone => ResourceManager.GetString(nameof(Adv_CalibrateDone), _resourceCulture);
+        public static string Adv_NibValueWaiting => ResourceManager.GetString(nameof(Adv_NibValueWaiting), _resourceCulture);
+        public static string Adv_NibValueFormat => ResourceManager.GetString(nameof(Adv_NibValueFormat), _resourceCulture);
+        public static string Adv_FingerValueFormat => ResourceManager.GetString(nameof(Adv_FingerValueFormat), _resourceCulture);
+        public static string Adv_PalmValueFormat => ResourceManager.GetString(nameof(Adv_PalmValueFormat), _resourceCulture);
     }
 }

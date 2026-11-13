@@ -41,17 +41,17 @@
                          Windows UIPI 会隔断不同完整性级别的进程，ICC 以管理员运行时
                          连不上普通权限的 PowerPoint，PPT 联动会整体失效。 -->
                     <ui:SettingsCard x:Name="CardAdminLaunch"
-                                     Header="以管理员权限启动时"
-                                     Description="管理员权限会导致 PPT 联动失效（翻页组件消失、页码读不到）">
+                                     Header="{x:Static props:AdvancedStrings.Adv_AdminLaunch}"
+                                     Description="{x:Static props:AdvancedStrings.Adv_AdminLaunchDesc}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Admin}" />
                         </ui:SettingsCard.HeaderIcon>
                         <ComboBox x:Name="ComboAdminLaunch"
                                   MinWidth="200"
                                   SelectionChanged="ComboAdminLaunch_SelectionChanged">
-                            <ComboBoxItem Content="弹窗提醒"/>
-                            <ComboBoxItem Content="自动以普通权限重启"/>
-                            <ComboBoxItem Content="不做处理"/>
+                            <ComboBoxItem Content="{x:Static props:AdvancedStrings.Adv_AdminAsk}"/>
+                            <ComboBoxItem Content="{x:Static props:AdvancedStrings.Adv_AdminRelaunch}"/>
+                            <ComboBoxItem Content="{x:Static props:AdvancedStrings.Adv_AdminIgnore}"/>
                         </ComboBox>
                     </ui:SettingsCard>
 
@@ -135,38 +135,38 @@
                         Toggled="ToggleSwitchIsQuadIR_Toggled"/>
 
                     <ui:SettingsExpander x:Name="CardAutoCalibrate"
-                                         Header="自动校准触摸参数"
-                                         Description="通过三次触摸自动计算合适的笔尖/手指阈值和触摸倍率"
+                                         Header="{x:Static props:AdvancedStrings.Adv_AutoCalibrate}"
+                                         Description="{x:Static props:AdvancedStrings.Adv_AutoCalibrateDesc}"
                                          IsExpanded="False">
                         <ui:SettingsExpander.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.EaseOfAccess}" />
                         </ui:SettingsExpander.HeaderIcon>
                         <ui:SettingsExpander.Items>
-                            <ui:SettingsCard Header="校准步骤" ContentAlignment="Left">
+                            <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Adv_CalibrateSteps}" ContentAlignment="Left">
                                 <ikw:SimpleStackPanel Spacing="8" Margin="0,4,0,4">
-                                    <TextBlock Text="点击&quot;开始校准&quot;按钮，然后依次在下方区域用："
+                                    <TextBlock Text="{x:Static props:AdvancedStrings.Adv_CalibrateIntro}"
                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                                TextWrapping="Wrap" MaxWidth="420" />
                                     <ikw:SimpleStackPanel Orientation="Vertical" Spacing="4" Margin="8,0,0,0">
-                                        <TextBlock Text="1. 笔尖（触控笔）" />
-                                        <TextBlock Text="2. 手指" />
-                                        <TextBlock Text="3. 手掌（模拟误触）" />
+                                        <TextBlock Text="{x:Static props:AdvancedStrings.Adv_CalibrateStep1}" />
+                                        <TextBlock Text="{x:Static props:AdvancedStrings.Adv_CalibrateStep2}" />
+                                        <TextBlock Text="{x:Static props:AdvancedStrings.Adv_CalibrateStep3}" />
                                     </ikw:SimpleStackPanel>
-                                    <Button x:Name="BtnStartCalibrate" Content="开始校准" Click="BtnStartCalibrate_Click" MinWidth="120" />
+                                    <Button x:Name="BtnStartCalibrate" Content="{x:Static props:AdvancedStrings.Adv_StartCalibrate}" Click="BtnStartCalibrate_Click" MinWidth="120" />
                                     <Border x:Name="BorderCalibrate" Margin="0,0,20,0" CornerRadius="4" Height="64" 
                                             Background="Transparent"
                                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="2"
                                             TouchDown="BorderCalibrate_TouchDown" IsEnabled="False">
                                         <TextBlock x:Name="TextCalibrateHint" 
-                                                   Text="点击上面的按钮开始" 
+                                                   Text="{x:Static props:AdvancedStrings.Adv_CalibrateIdle}" 
                                                    HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center"
                                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                                     </Border>
                                     <ikw:SimpleStackPanel Orientation="Vertical" Spacing="4" Margin="8,0,0,0">
-                                        <TextBlock x:Name="TextNibCalibrated" Text="笔尖值: 未校准" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                        <TextBlock x:Name="TextFingerCalibrated" Text="手指值: 未校准" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                        <TextBlock x:Name="TextPalmCalibrated" Text="手掌值: 未校准" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                        <TextBlock x:Name="TextNibCalibrated" Text="{x:Static props:AdvancedStrings.Adv_NibValueUncalibrated}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                        <TextBlock x:Name="TextFingerCalibrated" Text="{x:Static props:AdvancedStrings.Adv_FingerValueUncalibrated}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                        <TextBlock x:Name="TextPalmCalibrated" Text="{x:Static props:AdvancedStrings.Adv_PalmValueUncalibrated}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                                         <TextBlock x:Name="TextCalibrateResult" Text="" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" FontWeight="SemiBold" />
                                     </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>

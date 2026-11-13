@@ -88,33 +88,33 @@
                     </ikw:SimpleStackPanel>
 
                     <Rectangle Height="16" />
-                    <ui:SettingsCard Header="工具栏位置" Description="设置工具栏相对于拖动图标的显示位置">
+                    <ui:SettingsCard Header="{x:Static props:SettingsStrings.TbPos_Title}" Description="{x:Static props:SettingsStrings.TbPos_Desc}">
                         <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
                             <ComboBox x:Name="ToolbarPositionComboBox" Width="200" SelectionChanged="ToolbarPositionComboBox_SelectionChanged">
-                                <ComboBoxItem Tag="Right" Content="右侧" />
-                                <ComboBoxItem Tag="Left" Content="左侧" />
-                                <ComboBoxItem Tag="Top" Content="上方" />
-                                <ComboBoxItem Tag="Bottom" Content="下方" />
+                                <ComboBoxItem Tag="Right" Content="{x:Static props:SettingsStrings.TbPos_Right}" />
+                                <ComboBoxItem Tag="Left" Content="{x:Static props:SettingsStrings.TbPos_Left}" />
+                                <ComboBoxItem Tag="Top" Content="{x:Static props:SettingsStrings.TbPos_Top}" />
+                                <ComboBoxItem Tag="Bottom" Content="{x:Static props:SettingsStrings.TbPos_Bottom}" />
                             </ComboBox>
                         </ikw:SimpleStackPanel>
                     </ui:SettingsCard>
                     <Rectangle Height="16" />
                     <controls:LabeledSettingsCard x:Name="CardReverseToolbarContent"
-                            Header="翻转组件内容"
-                            Description="翻转组件内容的方向，更改后建议重启应用"
+                            Header="{x:Static props:SettingsStrings.Tb_FlipContent}"
+                            Description="{x:Static props:SettingsStrings.Tb_FlipContentDesc}"
                             SwitchName="ToggleSwitchReverseToolbarContent"
                             Toggled="ReverseToolbarContentToggleSwitch_Toggled" />
 
                     <controls:LabeledSettingsCard x:Name="CardDisableToolbarAnimation"
-                            Header="禁止工具栏动画"
-                            Description="开启后非选定工具栏按钮不会自动下沉居中"
+                            Header="{x:Static props:SettingsStrings.Tb_DisableAnim}"
+                            Description="{x:Static props:SettingsStrings.Tb_DisableAnimDesc}"
                             SwitchName="ToggleSwitchDisableToolbarAnimation"
                             Toggled="DisableToolbarAnimationToggleSwitch_Toggled" />
 
                     <ui:SettingsExpander x:Name="ExpanderAutoFlipWhenSpaceInsufficient"
-                            Header="空间不足时自动翻转" d:IsExpanded="True"
+                            Header="{x:Static props:SettingsStrings.Tb_AutoFlip}" d:IsExpanded="True"
                             IsExpanded="{Binding IsOn, ElementName=ToggleSwitchAutoFlipWhenSpaceInsufficient, Mode=OneWay}"
-                            Description="拖动工具栏到屏幕边缘空间不足时自动翻转方向，更改后建议重启应用">
+                            Description="{x:Static props:SettingsStrings.Tb_AutoFlipDesc}">
                         <ui:SettingsExpander.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Switch}" />
                         </ui:SettingsExpander.HeaderIcon>
@@ -122,8 +122,8 @@
                                 Toggled="AutoFlipWhenSpaceInsufficientToggleSwitch_Toggled" />
                         <ui:SettingsExpander.Items>
                             <ui:SettingsCard x:Name="CardFlipContentOnAutoFlip"
-                                    Header="自动翻转后翻转组件内容"
-                                    Description="开启后自动翻转时仅移动拖动图标位置，组件内容保持原顺序，更改后建议重启应用">
+                                    Header="{x:Static props:SettingsStrings.Tb_FlipContentAfterAutoFlip}"
+                                    Description="{x:Static props:SettingsStrings.Tb_FlipContentAfterAutoFlipDesc}">
                                 <ui:ToggleSwitch x:Name="ToggleSwitchFlipContentOnAutoFlip"
                                         Toggled="FlipContentOnAutoFlipToggleSwitch_Toggled" />
                             </ui:SettingsCard>
