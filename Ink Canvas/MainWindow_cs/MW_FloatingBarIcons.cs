@@ -2512,18 +2512,29 @@ namespace Ink_Canvas
 
             if (MarginFromEdge == 60) MarginFromEdge = 55;
 
+            // LTSC D-21：等值改成"按真实动画时长等"，不再猜 200ms。
+            //
+            // 原来是 `await Task.Delay(200)`，但这条路径上的动画实际是 0.35 秒（350ms）：
+            // 200ms 一到就硬落地，动画最后 150ms 被截断，画面看起来是"跳"到终点的。
+            // 反过来 MW_AutoFold 那条 0.1 秒的路径又要白等 100ms。
+            //
+            // 现在由 ViewboxFloatingBarMarginAnimationCore 回传它真正起的动画时长，
+            // 按那个等；再留 50ms 余量吸收合成层的最后一帧。
+            TimeSpan animationDuration = TimeSpan.Zero;
+
             await Dispatcher.InvokeAsync(() =>
             {
-                if (skipAnimation)
-                {
-                    ViewboxFloatingBarMarginAnimationCore(MarginFromEdge, PosXCaculatedWithTaskbarHeight, false);
-                    return;
-                }
-
-                ViewboxFloatingBarMarginAnimationCore(MarginFromEdge, PosXCaculatedWithTaskbarHeight, true);
+                animationDuration = ViewboxFloatingBarMarginAnimationCore(
+                    MarginFromEdge, PosXCaculatedWithTaskbarHeight, !skipAnimation);
             });
 
-            await Task.Delay(skipAnimation ? 0 : 200);
+            if (!skipAnimation && animationDuration > TimeSpan.Zero)
+            {
+                // 上限 1 秒：万一某个分支给出了异常大的时长，不至于把界面卡住。
+                var wait = animationDuration + TimeSpan.FromMilliseconds(50);
+                if (wait > TimeSpan.FromSeconds(1)) wait = TimeSpan.FromSeconds(1);
+                await Task.Delay(wait);
+            }
 
             await Dispatcher.InvokeAsync(() =>
             {
@@ -2539,7 +2550,8 @@ namespace Ink_Canvas
             });
         }
 
-        private void ViewboxFloatingBarMarginAnimationCore(int MarginFromEdge,
+        /// <returns>本次真正启动的位移动画时长；没有启动动画（纯瞬移）时返回 TimeSpan.Zero。</returns>
+        private TimeSpan ViewboxFloatingBarMarginAnimationCore(int MarginFromEdge,
             bool PosXCaculatedWithTaskbarHeight = false, bool animate = false)
         {
             if (!Topmost)
@@ -2764,22 +2776,30 @@ namespace Ink_Canvas
                 pos.X = screenWidth - MarginFromEdge * ViewboxFloatingBarScaleTransform.ScaleX;
             }
 
+            TimeSpan startedDuration = TimeSpan.Zero;
+
             if (animate)
             {
                 // LTSC D-05：改走合成层。ViewboxFloatingBar 的缩放在 LayoutTransform 上，
                 // RenderTransform 是空位，这里用 TranslateTransform 做位移不会影响缩放。
                 var targetMargin = new Thickness(pos.X, pos.Y, 0, -20);
-                if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                        ViewboxFloatingBar, targetMargin, 0.35, new CircleEase()))
+                if (AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                        ViewboxFloatingBar, targetMargin, 0.35, out startedDuration, new CircleEase()))
                 {
+                    // 合成层动画已起，时长已回传，交给调用方决定等多久
+                }
+                else
+                {
+                    var duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35));
                     var marginAnimation = new ThicknessAnimation
                     {
-                        Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35)),
+                        Duration = duration,
                         From = ViewboxFloatingBar.Margin,
                         To = targetMargin,
                         EasingFunction = new CircleEase()
                     };
                     ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                    startedDuration = duration;
                 }
             }
             else
@@ -2792,6 +2812,8 @@ namespace Ink_Canvas
 
             if (!animate) isViewboxFloatingBarMarginAnimationRunning = false;
             if (!Topmost) ViewboxFloatingBar.Visibility = Visibility.Hidden;
+
+            return startedDuration;
         }
 
         /// <summary>

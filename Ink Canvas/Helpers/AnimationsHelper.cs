@@ -647,8 +647,10 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         /// <returns>true 表示已经改走合成层；false 表示控件不适合，调用方应回退到 ThicknessAnimation。</returns>
         internal static bool TryAnimateMarginOnCompositionLayer(
-            FrameworkElement target, Thickness to, double seconds, IEasingFunction easing = null)
+            FrameworkElement target, Thickness to, double seconds,
+            out TimeSpan actualDuration, IEasingFunction easing = null)
         {
+            actualDuration = TimeSpan.Zero;
             try
             {
                 if (target == null) return false;
@@ -675,6 +677,7 @@ namespace Ink_Canvas.Helpers
                 if (Math.Abs(remainingX) <= 0.01 && Math.Abs(remainingY) <= 0.01) return true;
 
                 var duration = EffectiveDuration(TimeSpan.FromSeconds(seconds));
+                actualDuration = duration;
                 var sb = new Storyboard();
 
                 // 用与 ShowWithSlideFromBottomAndFade / HideWithSlideAndFade 一致的元素属性路径写法，
@@ -707,6 +710,11 @@ namespace Ink_Canvas.Helpers
                 return false;
             }
         }
+
+        /// <summary>不关心动画时长的重载（等价于丢弃 out 参数）。</summary>
+        internal static bool TryAnimateMarginOnCompositionLayer(
+            FrameworkElement target, Thickness to, double seconds, IEasingFunction easing = null)
+            => TryAnimateMarginOnCompositionLayer(target, to, seconds, out _, easing);
 
         /// <summary>
         /// 把位移动画落地：先解绑并归零 TranslateTransform，再硬设最终 Margin。
