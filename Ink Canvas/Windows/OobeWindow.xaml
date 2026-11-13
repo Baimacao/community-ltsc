@@ -504,9 +504,7 @@
 
                 <!-- Footer -->
                 <Border Grid.Row="1"
-                        Padding="40,12,40,16"
-                        BorderThickness="0,1,0,0"
-                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+                        Padding="40,12,40,16">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
