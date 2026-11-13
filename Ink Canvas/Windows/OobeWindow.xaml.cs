@@ -26,8 +26,8 @@ namespace Ink_Canvas.Windows
 
         // 视图状态: -1 = 欢迎; 0..7 = 步骤; 8 = 完成
         private const int WelcomeIndex = -1;
-        private const int FinishIndex = 8;
-        private const int StepCount = 8;
+        private const int FinishIndex = 7;
+        private const int StepCount = 7;
         private const int MaxStepIndex = StepCount - 1;
 
         private int _currentStep = WelcomeIndex;
@@ -35,9 +35,6 @@ namespace Ink_Canvas.Windows
 
         private FrameworkElement[] _stepPanels;
         private NavigationViewItem[] _navItems;
-
-        private static readonly TimeSpan SlideDuration = TimeSpan.FromMilliseconds(280);
-        private static readonly IEasingFunction SlideEase = new CubicEase { EasingMode = EasingMode.EaseOut };
 
         public OobeWindow(Settings settings)
         {
@@ -58,7 +55,6 @@ namespace Ink_Canvas.Windows
                 StepPPTPanel,
                 StepAutomationPanel,
                 StepLuckyRandomPanel,
-                StepAdvancedPanel,
             };
 
             _navItems = new[]
@@ -70,7 +66,6 @@ namespace Ink_Canvas.Windows
                 NavItemPPT,
                 NavItemAutomation,
                 NavItemLuckyRandom,
-                NavItemAdvanced,
             };
 
             InitializeFromSettings();
@@ -539,14 +534,12 @@ namespace Ink_Canvas.Windows
         {
             try
             {
-                var animation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = TimeSpan.FromMilliseconds(260),
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-                };
-                BeginAnimation(OpacityProperty, animation);
+                // 窗口淡入也走弹簧：和翻步、进度条同一套手感。
+                // Smooth 比 Snappy 慢一点、尾巴更软，适合"整扇窗出现"这种大动作。
+                Opacity = 0;
+                SpringAnimator.SyncScalar(this, 0);
+                SpringAnimator.AnimateScalar(this, 1.0, v => Opacity = v,
+                    SpringAnimator.Smooth, null);
             }
             catch
             {
@@ -667,10 +660,6 @@ namespace Ink_Canvas.Windows
                     title = RandomStrings.Random_Title;
                     subtitle = Properties.OobeStrings.Oobe_Step7Subtitle;
                     break;
-                case 7:
-                    title = Properties.OobeStrings.Oobe_Step8Title;
-                    subtitle = Properties.OobeStrings.Oobe_Step8Subtitle;
-                    break;
                 default:
                     title = string.Empty; subtitle = string.Empty;
                     break;
@@ -765,13 +754,9 @@ namespace Ink_Canvas.Windows
                     return;
                 }
 
-                var anim = new DoubleAnimation
-                {
-                    To = targetPercent,
-                    Duration = TimeSpan.FromMilliseconds(320),
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
-                };
-                StepProgressBar.BeginAnimation(System.Windows.Controls.Primitives.RangeBase.ValueProperty, anim);
+                // 进度条也走弹簧：值变了就弹过去，不再用固定 320ms 曲线。
+                SpringAnimator.AnimateScalar(StepProgressBar, targetPercent,
+                    v => StepProgressBar.Value = v, SpringAnimator.Smooth, null);
             }
             catch (Exception ex)
             {
@@ -782,28 +767,22 @@ namespace Ink_Canvas.Windows
         private void AnimateContentSlide(int direction)
         {
             // direction: 1 = 前进 (新内容从右滑入), -1 = 后退 (从左滑入)
+            // 用弹簧引擎，和浮动工具栏同一套物理模型：没有时长、没有曲线，
+            // 只有 response（未阻尼周期）和 damping（临界阻尼比例）。
             double from = direction > 0 ? 36 : -36;
 
+            // 位移从 from 弹回 0。Interactive 是"跟手、几乎不过冲"的那档，
+            // 翻步要的是快速到位，不是弹一下。
+            // 先把弹簧内部值对齐到当前位置，否则它记着上一轮的旧值，会从那儿往过冲。
             StepHostTransform.X = from;
+            SpringAnimator.SyncToTransform(StepHostTransform);
+            SpringAnimator.Animate(StepHostTransform, 0f, (float)StepHostTransform.Y,
+                SpringAnimator.Interactive, null);
+
+            // 透明度单独走弹簧，起始值显式压到 0，避免上一次动画残留。
             StepHost.Opacity = 0;
-
-            var slide = new DoubleAnimation
-            {
-                From = from,
-                To = 0,
-                Duration = SlideDuration,
-                EasingFunction = SlideEase
-            };
-            var fade = new DoubleAnimation
-            {
-                From = 0,
-                To = 1,
-                Duration = SlideDuration,
-                EasingFunction = SlideEase
-            };
-
-            StepHostTransform.BeginAnimation(TranslateTransform.XProperty, slide);
-            StepHost.BeginAnimation(OpacityProperty, fade);
+            SpringAnimator.AnimateScalar(StepHost, 1.0, v => StepHost.Opacity = v,
+                SpringAnimator.Snappy, null);
         }
     }
 }

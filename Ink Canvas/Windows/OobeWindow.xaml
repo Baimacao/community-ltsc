@@ -132,11 +132,6 @@
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.People}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-                <ui:NavigationViewItem x:Name="NavItemAdvanced" Content="{x:Static props:OobeStrings.Oobe_NavAdvanced}" Tag="step7">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Settings}" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
                 <ui:NavigationViewItemSeparator />
                 <ui:NavigationViewItem x:Name="NavItemFinish" Content="{x:Static props:OobeStrings.Oobe_NavFinish}" Tag="finish">
                     <ui:NavigationViewItem.Icon>
@@ -518,12 +513,7 @@
                                                                   Header="{x:Static props:OobeStrings.Oobe_ShowRollCallButtons}"
                                                                   Icon="{x:Static ui:SegoeFluentIcons.People}"
                                                                   SwitchName="ToggleSwitchShowRandomAndSingleDraw" />
-                                </ikw:SimpleStackPanel>
 
-                                <!-- 步骤 8: 高级 -->
-                                <ikw:SimpleStackPanel x:Name="StepAdvancedPanel"
-                                                      Spacing="{StaticResource SettingsCardSpacing}"
-                                                      Visibility="Collapsed">
                                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                                                Text="{x:Static props:OobeStrings.Oobe_Step8Title}" />
 
