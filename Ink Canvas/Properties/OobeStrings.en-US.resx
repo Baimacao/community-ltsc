@@ -377,4 +377,13 @@
   <data name="Oobe_SummaryLogEnabled" xml:space="preserve">
     <value>Enable Logging</value>
   </data>
+  <data name="Oobe_ReRunTitle" xml:space="preserve">
+    <value>Re-run Setup Wizard</value>
+  </data>
+  <data name="Oobe_ReRunDesc" xml:space="preserve">
+    <value>Walk through canvas, gestures, appearance and PPT options again. Your existing settings are kept.</value>
+  </data>
+  <data name="Oobe_ReRunButton" xml:space="preserve">
+    <value>Run again</value>
+  </data>
 </root>

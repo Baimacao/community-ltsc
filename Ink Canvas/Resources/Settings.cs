@@ -199,8 +199,6 @@ namespace Ink_Canvas
         public int InkStyle { get; set; }
         [JsonProperty("eraserSize")]
         public int EraserSize { get; set; } = 2;
-        [JsonProperty("eraserType")]
-        public int EraserType { get; set; } // 0 - 图标切换模式      1 - 面积擦     2 - 线条擦
         [JsonProperty("eraserShapeType")]
         public int EraserShapeType { get; set; } // 0 - 圆形擦  1 - 黑板擦
         [JsonProperty("hideStrokeWhenSelecting")]
@@ -386,8 +384,6 @@ namespace Ink_Canvas
         public bool IsEnableNibMode { get; set; }
         [JsonProperty("isFoldAtStartup")]
         public bool IsFoldAtStartup { get; set; }
-        [JsonProperty("enableFastStartup")]
-        public bool EnableFastStartup { get; set; }
         [JsonProperty("crashAction")]
         public int CrashAction { get; set; } = 2;
         [JsonProperty("telemetryUploadLevel")]
@@ -425,8 +421,6 @@ namespace Ink_Canvas
 
     public class Appearance
     {
-        [JsonProperty("isColorfulViewboxFloatingBar")]
-        public bool IsColorfulViewboxFloatingBar { get; set; }
         [JsonProperty("viewboxFloatingBarScaleTransformValue")]
         public double ViewboxFloatingBarScaleTransformValue { get; set; } = 1.0;
         [JsonProperty("floatingBarImg")]
@@ -461,22 +455,12 @@ namespace Ink_Canvas
         public double BoardToolbarCenterOpacity { get; set; } = 0.77;
         [JsonProperty("boardToolbarRightOpacity")]
         public double BoardToolbarRightOpacity { get; set; } = 0.77;
-        [JsonProperty("isTransparentButtonBackground")]
-        public bool IsTransparentButtonBackground { get; set; } = true;
-        [JsonProperty("isShowExitButton")]
-        public bool IsShowExitButton { get; set; } = true;
-        [JsonProperty("isShowEraserButton")]
-        public bool IsShowEraserButton { get; set; } = true;
         [JsonProperty("enableTimeDisplayInWhiteboardMode")]
         public bool EnableTimeDisplayInWhiteboardMode { get; set; } = true;
         [JsonProperty("enableChickenSoupInWhiteboardMode")]
         public bool EnableChickenSoupInWhiteboardMode { get; set; } = true;
-        [JsonProperty("isShowHideControlButton")]
-        public bool IsShowHideControlButton { get; set; }
         [JsonProperty("unFoldButtonImageType")]
         public int UnFoldButtonImageType { get; set; }
-        [JsonProperty("isShowLRSwitchButton")]
-        public bool IsShowLRSwitchButton { get; set; }
         [JsonProperty("enableSplashScreen")]
         public bool EnableSplashScreen { get; set; } = false;
         [JsonProperty("splashScreenStyle")]
@@ -499,8 +483,6 @@ namespace Ink_Canvas
         public List<TipsScheme> CustomTipsSchemes { get; set; }
         [JsonProperty("enabledPresetTipsSources", NullValueHandling = NullValueHandling.Ignore)]
         public List<string> EnabledPresetTipsSources { get; set; }
-        [JsonProperty("isShowModeFingerToggleSwitch")]
-        public bool IsShowModeFingerToggleSwitch { get; set; } = true;
         [JsonProperty("theme")]
         public int Theme { get; set; } = 2;
         [JsonProperty("windowBackdrop")]
@@ -512,8 +494,6 @@ namespace Ink_Canvas
         [JsonProperty("hideFloatingBarBorder")]
         public bool HideFloatingBarBorder { get; set; } = false;
 
-        [JsonProperty("eraserDisplayOption")]
-        public int EraserDisplayOption { get; set; }
 
         [JsonProperty("isShowQuickColorPalette")]
         public bool IsShowQuickColorPalette { get; set; }
@@ -945,8 +925,6 @@ namespace Ink_Canvas
         [JsonProperty("isAutoFoldInEasiNote")]
         public bool IsAutoFoldInEasiNote { get; set; }
 
-        [JsonProperty("isAutoFoldInEasiNoteIgnoreDesktopAnno")]
-        public bool IsAutoFoldInEasiNoteIgnoreDesktopAnno { get; set; }
 
         [JsonProperty("isAutoFoldInEasiCamera")]
         public bool IsAutoFoldInEasiCamera { get; set; }
@@ -1202,8 +1180,6 @@ namespace Ink_Canvas
         [JsonProperty("isEnableEdgeGestureUtil")]
         public bool IsEnableEdgeGestureUtil { get; set; }
 
-        [JsonProperty("edgeGestureUtilOnlyAffectBlackboardMode")]
-        public bool EdgeGestureUtilOnlyAffectBlackboardMode { get; set; }
 
         [JsonProperty("isEnableForceFullScreen")]
         public bool IsEnableForceFullScreen { get; set; }
@@ -1275,8 +1251,6 @@ namespace Ink_Canvas
         public double LineStraightenSensitivity { get; set; } = 0.20;
         [JsonProperty("lineNormalizationThreshold")]
         public double LineNormalizationThreshold { get; set; } = 0.5;
-        [JsonProperty("handwritingCorrectionFontFamily")]
-        public string HandwritingCorrectionFontFamily { get; set; } = "Ink Free,KaiTi,Segoe Script";
     }
 
     public class RandSettings

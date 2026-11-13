@@ -1,4 +1,5 @@
 using Ink_Canvas.Helpers;
+using Ink_Canvas.Windows.SettingsViews.Helpers;
 using Ink_Canvas.Properties;
 using System;
 using System.Collections.ObjectModel;
@@ -141,5 +142,26 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 TotalUsageTextBlock.Text = AboutStrings.DeviceInfo_Failed;
             }
         }
-    }
+    
+        private void ReRunOobe_Click(object sender, RoutedEventArgs e)
+        {
+            // 重新走一遍引导。OOBE 自己会从 Settings 读当前值，
+            // 所以"重新引导"看到的就是现在的配置，改完直接存回去。
+            try
+            {
+                var settings = SettingsManager.Settings;
+                if (settings == null) return;
+
+                var oobe = new OobeWindow(settings) { Owner = Application.Current.MainWindow };
+                oobe.ShowDialog();
+
+                // OOBE 内部已经写回 Settings，这里补一次落盘。
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+}
 }

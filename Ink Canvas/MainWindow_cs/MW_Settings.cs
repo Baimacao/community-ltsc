@@ -971,7 +971,6 @@ namespace Ink_Canvas
             Settings.Advanced.IsLogEnabled = true;
             Settings.Advanced.IsSecondConfirmWhenShutdownApp = false;
             Settings.Advanced.IsEnableEdgeGestureUtil = false;
-            Settings.Advanced.EdgeGestureUtilOnlyAffectBlackboardMode = false;
             Settings.Advanced.IsEnableFullScreenHelper = false;
             Settings.Advanced.IsEnableAvoidFullScreenHelper = OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows11;
             Settings.Advanced.IsEnableForceFullScreen = false;
@@ -980,15 +979,8 @@ namespace Ink_Canvas
             Settings.Advanced.EnableMultiScreenSupport = true;
             Settings.Advanced.FollowMouseForScreenSelection = true;
 
-            Settings.Appearance.IsColorfulViewboxFloatingBar = false;
             Settings.Appearance.ViewboxFloatingBarScaleTransformValue = 1;
             Settings.Appearance.ViewboxBlackBoardScaleTransformValue = 0.8;
-            Settings.Appearance.IsTransparentButtonBackground = true;
-            Settings.Appearance.IsShowExitButton = true;
-            Settings.Appearance.IsShowEraserButton = true;
-            Settings.Appearance.IsShowHideControlButton = false;
-            Settings.Appearance.IsShowLRSwitchButton = false;
-            Settings.Appearance.IsShowModeFingerToggleSwitch = true;
             Settings.Appearance.IsShowQuickPanel = true;
             Settings.Appearance.Theme = 0;
             Settings.Appearance.EnableChickenSoupInWhiteboardMode = true;
@@ -1001,10 +993,8 @@ namespace Ink_Canvas
             // 浮动栏按钮显示控制默认值
             Settings.Appearance.IsShowQuickColorPalette = false;
             Settings.Appearance.QuickColorPaletteDisplayMode = 1;
-            Settings.Appearance.EraserDisplayOption = 0;
 
             Settings.Automation.IsAutoFoldInEasiNote = true;
-            Settings.Automation.IsAutoFoldInEasiNoteIgnoreDesktopAnno = true;
             Settings.Automation.IsAutoFoldInEasiCamera = true;
             Settings.Automation.IsAutoFoldInEasiNote3C = false;
             Settings.Automation.IsAutoFoldInEasiNote3 = false;
@@ -1056,7 +1046,6 @@ namespace Ink_Canvas
             Settings.Canvas.InkStyle = 0;
             Settings.Canvas.HighlighterWidth = 20;
             Settings.Canvas.EraserSize = 1;
-            Settings.Canvas.EraserType = 0;
             Settings.Canvas.EraserShapeType = 1;
             Settings.Canvas.HideStrokeWhenSelecting = false;
             Settings.Canvas.ClearCanvasAndClearTimeMachine = false;
@@ -1085,7 +1074,6 @@ namespace Ink_Canvas
             Settings.InkToShape.IsInkToShapeTriangle = true;
             Settings.InkToShape.IsInkToShapeRectangle = true;
             Settings.InkToShape.IsInkToShapeRounded = true;
-            Settings.InkToShape.HandwritingCorrectionFontFamily = "Ink Free,KaiTi,Segoe Script";
 
             Settings.Startup.IsEnableNibMode = false;
             Settings.Startup.IsAutoUpdate = true;
@@ -1093,7 +1081,6 @@ namespace Ink_Canvas
             Settings.Startup.AutoUpdateWithSilenceStartTime = "06:00";
             Settings.Startup.AutoUpdateWithSilenceEndTime = "22:00";
             Settings.Startup.IsFoldAtStartup = false;
-            Settings.Startup.EnableFastStartup = false;
         }
 
         /// <summary>

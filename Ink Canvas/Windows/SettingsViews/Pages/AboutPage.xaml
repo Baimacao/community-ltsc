@@ -83,6 +83,15 @@
                         </ui:SettingsExpander.Items>
                     </ui:SettingsExpander>
 
+                    <ui:SettingsCard Header="{x:Static props:OobeStrings.Oobe_ReRunTitle}"
+                                     Description="{x:Static props:OobeStrings.Oobe_ReRunDesc}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Refresh}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <Button Content="{x:Static props:OobeStrings.Oobe_ReRunButton}"
+                                Click="ReRunOobe_Click" />
+                    </ui:SettingsCard>
+
                     <Border Background="{DynamicResource {x:Static ui:ThemeKeys.LayerFillColorDefaultBrushKey}}"
                             BorderBrush="{DynamicResource {x:Static ui:ThemeKeys.CardStrokeColorDefaultBrushKey}}"
                             CornerRadius="4" BorderThickness="1" Padding="12,10" TextElement.FontSize="14">
