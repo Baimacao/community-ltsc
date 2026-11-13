@@ -214,21 +214,23 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
-                <!-- 画板设置 -->
+                <!-- 画布与笔迹（LTSC D-20：原来父级和子项用了同一个标题「画布」，
+                     展开后看到「画布 → 画布」，是明显的层级冗余。父级改成分类名，
+                     子项写清里面到底是什么） -->
                 <ui:NavigationViewItem
                     x:Name="CanvasPageItem"
-                    Content="{x:Static props:CanvasStrings.Canvas_GroupTitle}"
+                    Content="{x:Static props:NavStrings.Nav_CanvasGroup}"
                     SelectsOnInvoked="False"
-                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasAndInk_Tooltip}">
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasGroup_Tooltip}">
                     <ui:NavigationViewItem.Icon>
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/>
                     </ui:NavigationViewItem.Icon>
                     <ui:NavigationViewItem.MenuItems>
                         <ui:NavigationViewItem
                             x:Name="CanvasSubPageItem"
-                            Content="{x:Static props:CanvasStrings.Canvas_GroupTitle}"
+                            Content="{x:Static props:NavStrings.Nav_CanvasInk}"
                             Tag="CanvasPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Canvas_Tooltip}">
+                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_CanvasInk_Tooltip}">
                             <ui:NavigationViewItem.Icon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/>
                             </ui:NavigationViewItem.Icon>

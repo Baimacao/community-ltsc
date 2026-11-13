@@ -181,7 +181,7 @@
     <value>Board</value>
   </data>
   <data name="Nav_Board_Tooltip" xml:space="preserve">
-    <value>Board toolbar &amp; appearance settings</value>
+    <value>Board-mode toolbar, appearance and menu</value>
   </data>
   <data name="Nav_BoardComponents" xml:space="preserve">
     <value>Components</value>
@@ -248,5 +248,17 @@
   </data>
   <data name="Nav_Performance_Tooltip" xml:space="preserve">
     <value>Performance monitoring and device evaluation</value>
+  </data>
+  <data name="Nav_CanvasGroup" xml:space="preserve">
+    <value>Canvas &amp; Ink</value>
+  </data>
+  <data name="Nav_CanvasGroup_Tooltip" xml:space="preserve">
+    <value>Canvas, ink and writing experience</value>
+  </data>
+  <data name="Nav_CanvasInk" xml:space="preserve">
+    <value>Ink &amp; Smoothing</value>
+  </data>
+  <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
+    <value>Ink rendering, smoothing, pressure and eraser</value>
   </data>
 </root>

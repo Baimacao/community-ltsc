@@ -88,6 +88,14 @@ namespace Ink_Canvas.Properties
 
         public static string Nav_General => ResourceManager.GetString(nameof(Nav_General), _resourceCulture);
 
+        public static string Nav_CanvasInk_Tooltip => ResourceManager.GetString(nameof(Nav_CanvasInk_Tooltip), _resourceCulture);
+
+        public static string Nav_CanvasInk => ResourceManager.GetString(nameof(Nav_CanvasInk), _resourceCulture);
+
+        public static string Nav_CanvasGroup_Tooltip => ResourceManager.GetString(nameof(Nav_CanvasGroup_Tooltip), _resourceCulture);
+
+        public static string Nav_CanvasGroup => ResourceManager.GetString(nameof(Nav_CanvasGroup), _resourceCulture);
+
         public static string Nav_General_Tooltip => ResourceManager.GetString(nameof(Nav_General_Tooltip), _resourceCulture);
 
         public static string Nav_Startup_Tooltip => ResourceManager.GetString(nameof(Nav_Startup_Tooltip), _resourceCulture);

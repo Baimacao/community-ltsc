@@ -181,7 +181,7 @@
     <value>白板</value>
   </data>
   <data name="Nav_Board_Tooltip" xml:space="preserve">
-    <value>白板工具栏与外观设置</value>
+    <value>白板模式下的工具栏、外观与菜单</value>
   </data>
   <data name="Nav_BoardComponents" xml:space="preserve">
     <value>组件</value>
@@ -260,5 +260,17 @@
   </data>
   <data name="Nav_Performance_Tooltip" xml:space="preserve">
     <value>性能监测与设备评估</value>
+  </data>
+  <data name="Nav_CanvasGroup" xml:space="preserve">
+    <value>画布与笔迹</value>
+  </data>
+  <data name="Nav_CanvasGroup_Tooltip" xml:space="preserve">
+    <value>画布、笔迹与书写体验</value>
+  </data>
+  <data name="Nav_CanvasInk" xml:space="preserve">
+    <value>笔迹与平滑</value>
+  </data>
+  <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
+    <value>笔迹渲染、平滑、压感与橡皮</value>
   </data>
 </root>

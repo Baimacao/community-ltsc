@@ -366,30 +366,10 @@
                         Padding="14,6"/>
                 </ui:SettingsCard>
 
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                    Text="{x:Static props:AdvancedStrings.Debug_IconSettings}" />
-
-                <ui:SettingsExpander Header="{x:Static props:AdvancedStrings.Debug_SettingsExpanderExample}" IsEnabled="True"
-                    IsExpanded="True"
-                    d:Visibility="Visible" d:IsExpanded="True">
-
-                    <ui:SettingsExpander.HeaderIcon>
-                        <ui:FontIcon Glyph="&#xE91B;"/>
-                    </ui:SettingsExpander.HeaderIcon>
-
-                    <controls:CopyButton Text="You can override the Left indention of a SettingsCard by overriding the SettingsCardLeftIndention"/>
-
-                    <ui:SettingsExpander.Items>
-                        <ui:SettingsCard Description="You can override the Left indention of a SettingsCard by overriding the SettingsCardLeftIndention"
-                            Header="Customization">
-                            <ui:SettingsCard.Resources>
-                                <sys:Double x:Key="SettingsCardLeftIndention">0</sys:Double>
-                            </ui:SettingsCard.Resources>
-                        </ui:SettingsCard>
-                    </ui:SettingsExpander.Items>
-                </ui:SettingsExpander>
-
-                    <Rectangle Height="48" />
+                <!-- LTSC D-20：这里原来是 WPF 控件库模板自带的英文示例
+                     （"You can override the Left indention of a SettingsCard..."、
+                     Header="Customization"），连 CopyButton 都一起搬过来了。
+                     老师看到是一整块读不懂的英文，跟 ICC 没有任何关系，直接删掉。 -->
 
                 </ikw:SimpleStackPanel>
             </Grid>
