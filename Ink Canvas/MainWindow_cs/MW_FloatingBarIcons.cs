@@ -2521,12 +2521,19 @@ namespace Ink_Canvas
             // 现在由 ViewboxFloatingBarMarginAnimationCore 回传它真正起的动画时长，
             // 按那个等；再留 50ms 余量吸收合成层的最后一帧。
             TimeSpan animationDuration = TimeSpan.Zero;
+            bool usedSpring = false;
 
             await Dispatcher.InvokeAsync(() =>
             {
                 animationDuration = ViewboxFloatingBarMarginAnimationCore(
-                    MarginFromEdge, PosXCaculatedWithTaskbarHeight, !skipAnimation);
+                    MarginFromEdge, PosXCaculatedWithTaskbarHeight, !skipAnimation, out usedSpring);
             });
+
+            // LTSC D-24：走弹簧时由它自己的 finished 回调负责落地。
+            // 这里必须直接返回——否则会在弹簧还在跑的时候抢先落地一次：
+            // Margin 被推到目标、tt 被归零，弹簧下一秒又把 tt 推回去，
+            // 视觉位置 = 目标 + 位移，直接冲过头，收尾再弹回来，就是"抽一下"。
+            if (usedSpring) return;
 
             if (!skipAnimation && animationDuration > TimeSpan.Zero)
             {
@@ -2552,8 +2559,9 @@ namespace Ink_Canvas
 
         /// <returns>本次真正启动的位移动画时长；没有启动动画（纯瞬移）时返回 TimeSpan.Zero。</returns>
         private TimeSpan ViewboxFloatingBarMarginAnimationCore(int MarginFromEdge,
-            bool PosXCaculatedWithTaskbarHeight = false, bool animate = false)
+            bool PosXCaculatedWithTaskbarHeight, bool animate, out bool usedSpring)
         {
+            usedSpring = false;
             if (!Topmost)
                 MarginFromEdge = -60;
             else
@@ -2796,6 +2804,7 @@ namespace Ink_Canvas
                 var tt = AnimationsHelper.TryEnsureTranslateTransform(ViewboxFloatingBar);
                 if (tt != null)
                 {
+                    usedSpring = true;
                     // 位移量 = 目标 Margin 相对当前 Margin 的差（考虑对齐方向）
                     double dx = AnimationsHelper.MarginShiftX(from, targetMargin, ViewboxFloatingBar.HorizontalAlignment);
                     double dy = AnimationsHelper.MarginShiftY(from, targetMargin, ViewboxFloatingBar.VerticalAlignment);
@@ -2810,6 +2819,11 @@ namespace Ink_Canvas
                         finished: () =>
                         {
                             AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar, targetMargin);
+                            // 落地把 tt 归零了，弹簧内部缓存也必须跟着归零，
+                            // 否则下次复用时它会从旧值继续推，画面会跳。
+                            SpringAnimator.SyncToTransform(
+                                ViewboxFloatingBar.RenderTransform as TranslateTransform);
+
                             isViewboxFloatingBarMarginAnimationRunning = false;
                             if (!Topmost) ViewboxFloatingBar.Visibility = Visibility.Hidden;
                             if (!string.IsNullOrEmpty(_currentToolMode))

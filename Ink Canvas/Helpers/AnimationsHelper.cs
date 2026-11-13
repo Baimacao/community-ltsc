@@ -735,11 +735,10 @@ namespace Ink_Canvas.Helpers
                     tt.Y = 0;
                 }
 
-                // 2) 再写入最终 Margin（此时若仍有 Margin 动画在跑，动画值优先级更高，
-                //    不会立即触发布局；解绑后本地值直接生效，整个落地只算一次布局）
+                // 2) 再写入最终 Margin
                 target.Margin = finalMargin;
 
-                // 3) 最后解绑 Margin 动画（回退到 ThicknessAnimation 的分支需要这一步）
+                // 3) 最后解绑 Margin 动画
                 target.BeginAnimation(FrameworkElement.MarginProperty, null);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }

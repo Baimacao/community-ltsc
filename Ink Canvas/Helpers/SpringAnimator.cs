@@ -235,6 +235,23 @@ namespace Ink_Canvas.Helpers
                 finished);
         }
 
+        /// <summary>
+        /// 外部已经把 <paramref name="transform"/> 的 X/Y 直接改掉了（例如落地时归零），
+        /// 这里必须把弹簧内部的值也同步过来。
+        ///
+        /// 不同步的后果（实测踩过）：下一次 Animate() 复用缓存里的 Value 时，
+        /// 它还以为自己停在 226.5，于是从 226.5 继续推，把已经归零的 tt 又推上去，
+        /// 视觉位置变成 目标 + 226.5，画面直接跳一下。
+        /// </summary>
+        internal static void SyncToTransform(TranslateTransform transform)
+        {
+            if (transform == null) return;
+            if (!_transformPairs.TryGetValue(transform, out var pair)) return;
+
+            pair.x.Jump((float)transform.X);
+            pair.y.Jump((float)transform.Y);
+        }
+
         /// <summary>停掉某个 Transform 上的弹簧并落位。</summary>
         internal static void Stop(TranslateTransform transform)
         {
