@@ -202,7 +202,7 @@
     <value>VSTO Agent architecture</value>
   </data>
   <data name="PPTAgentArchitectureHint" xml:space="preserve">
-    <value>Use an in-process PowerPoint VSTO add-in and NamedPipe integration, without COM/ROT control in the ICC process.</value>
+    <value>Connects to PowerPoint through a small helper process, which is more stable. No need to touch this.</value>
   </data>
   <data name="PPTAgentNotConnected" xml:space="preserve">
     <value>PPT Agent is not connected</value>

@@ -94,7 +94,7 @@
     <value>切换 WindowChrome 渲染模式需要重启软件才能生效，是否立即重启？</value>
   </data>
   <data name="Window_WindowChromeRenderingHint" xml:space="preserve">
-    <value>使用 DWM/WindowChrome 绘制透明主窗口，通常比 AllowsTransparency 更流畅；需要重启后生效。</value>
+    <value>换一种方式画透明窗口，通常更流畅。需要重启生效。</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>窗口</value>

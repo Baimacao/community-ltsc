@@ -94,7 +94,7 @@
     <value>系统启动时自动运行软件，不用你手动开</value>
   </data>
   <data name="SilentUpdateFullHint" xml:space="preserve">
-    <value>关掉静默更新后，下载完安装包会弹窗问你要不要更新；开启静默更新后，下载完安装包每隔十分钟检测：①在静默更新时间段内 ②没在写字 ③没在画板里。全满足就关软件自动更新，偷偷干活。</value>
+    <value>Off: asks before updating. On: updates automatically when idle at night, as long as you are not writing or in the whiteboard.</value>
   </data>
   <data name="SilentUpdateHint" xml:space="preserve">
     <value>静默更新在软件闲着的时候偷偷装，完全不用你动手，躺平就行</value>

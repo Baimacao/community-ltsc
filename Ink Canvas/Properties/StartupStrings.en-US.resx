@@ -94,7 +94,7 @@
     <value>Automatically run the software when system starts</value>
   </data>
   <data name="SilentUpdateFullHint" xml:space="preserve">
-    <value>Specify the time window for automatic background updates. To prevent interruptions, updates will only install every 10 minutes when the app is idle (not writing or actively using the canvas).</value>
+    <value>Off: asks before updating. On: updates automatically when idle at night, as long as you are not writing or in the whiteboard.</value>
   </data>
   <data name="SilentUpdateHint" xml:space="preserve">
     <value>Silent update installs when the app is idle; no manual action needed.</value>

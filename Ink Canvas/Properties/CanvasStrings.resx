@@ -265,7 +265,7 @@
     <value>WinRT识别转手写体字形</value>
   </data>
   <data name="InkRecog_HandwritingBeautifyHint" xml:space="preserve">
-    <value>开启后，调用墨迹纠正 API 时：先使用 WinRT 识别手写文字，再将识别成功的文字用手写风格字体转成字形轮廓墨迹替换原笔画。需 WinRT。</value>
+    <value>把潦草的手写字识别成字，再换一种好看的字体重新画一遍。</value>
   </data>
   <data name="InkRecog_HandwritingFont" xml:space="preserve">
     <value>手写体字形字体</value>
@@ -274,7 +274,7 @@
     <value>选择用于替换原笔画的手写风格字体。若所选字体不存在，将按列表回退。</value>
   </data>
   <data name="InkRecog_HighPrecisionHint" xml:space="preserve">
-    <value>开启后，当绘制的直线超过设定长度阈值时，将自动调整为完美直线。灵敏度范围 0.05-2.0，越小要求越严格，越弯曲的线条越不容易被拉直；值越大越容易识别为直线。高精度模式下，每隔 10 像素取一个计数点，获取更准确的平均值用于判断。</value>
+    <value>拉直得更准，代价是反应稍慢。灵敏度的值越小越严格、越不容易拉直。</value>
   </data>
   <data name="InkRecog_HighPrecisionStraighten" xml:space="preserve">
     <value>高精度直线拉直</value>
@@ -307,7 +307,7 @@
     <value>自动</value>
   </data>
   <data name="InkRecog_ShapeEngineHint" xml:space="preserve">
-    <value>自动：在 Windows 10+ 使用 WinRT，否则使用 IACore。可强制指定 IACore 或 WinRT。IACore 通过 IPC 辅助进程运行，在 32/64 位主进程下均可用。</value>
+    <value>决定用什么引擎识别笔画。一般保持「自动」就行。</value>
   </data>
   <data name="InkRecog_SnappingDistance" xml:space="preserve">
     <value>吸附距离</value>

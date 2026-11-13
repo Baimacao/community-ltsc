@@ -115,13 +115,13 @@
     <value>Auto kill Seewo PPT tools</value>
   </data>
   <data name="AutoKill_PPTToolsHint" xml:space="preserve">
-    <value>Killing PPT tools disables Seewo classroom helper. Delete Office.dll in its install folder to stop the PPT toolbar without auto kill.</value>
+    <value>Stops Seewo's toolbar from covering your slides. Note: Seewo's classroom assistant will stop working.</value>
   </data>
   <data name="AutoKill_SeewoDesktop2Anno" xml:space="preserve">
     <value>Auto kill Seewo Desktop 2.0 annotation</value>
   </data>
   <data name="AutoKill_SeewoDesktop2AnnoHint" xml:space="preserve">
-    <value>Seewo Desktop 2.0 annotation is 64-bit so ICC (32-bit) cannot inspect it deeply; only process name DesktopAnnotation is matched. If you have another app with the same name, keep this off.</value>
+    <value>Seewo Desktop 2.0's annotation tool is 64-bit, so this app can only match it by process name. Turn this off if another app shares that name.</value>
   </data>
   <data name="AutoKill_Title" xml:space="preserve">
     <value>Auto kill</value>

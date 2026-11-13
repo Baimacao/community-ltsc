@@ -265,7 +265,7 @@
     <value>WinRT recognition to handwriting glyphs</value>
   </data>
   <data name="InkRecog_HandwritingBeautifyHint" xml:space="preserve">
-    <value>When enabled, the ink correction API uses WinRT to recognize handwritten words and replaces original strokes with handwriting-style glyph outlines. (Requires 64-bit Windows and WinRT)</value>
+    <value>Recognises your handwriting and redraws it in a tidier font.</value>
   </data>
   <data name="InkRecog_HandwritingFont" xml:space="preserve">
     <value>Handwriting glyph font</value>
@@ -274,7 +274,7 @@
     <value>Font used to replace original strokes with glyph outlines. Falls back through the list if the chosen font is missing.</value>
   </data>
   <data name="InkRecog_HighPrecisionHint" xml:space="preserve">
-    <value>When enabled, lines longer than the threshold will be straightened. Sensitivity 0.05–2.0: smaller = stricter; larger = easier to treat as straight. High-precision samples every 10px for better judgement.</value>
+    <value>Straighter lines, slightly slower response. Lower sensitivity means stricter straightening.</value>
   </data>
   <data name="InkRecog_HighPrecisionStraighten" xml:space="preserve">
     <value>High-precision straightening</value>
@@ -307,7 +307,7 @@
     <value>Auto</value>
   </data>
   <data name="InkRecog_ShapeEngineHint" xml:space="preserve">
-    <value>Auto: Uses WinRT on Windows 10 or later, otherwise uses IACore. Supports forcing IACore or WinRT. IACore runs via an IPC helper process and is compatible with both 32-bit and 64-bit main processes.</value>
+    <value>Which engine recognises strokes. Leave it on Auto unless something goes wrong.</value>
   </data>
   <data name="InkRecog_SnappingDistance" xml:space="preserve">
     <value>Snapping distance</value>

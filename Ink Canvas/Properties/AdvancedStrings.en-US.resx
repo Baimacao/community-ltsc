@@ -46,7 +46,7 @@
     <value>Enable AvoidFullScreenHelper</value>
   </data>
   <data name="AvoidFullScreenHelperHint" xml:space="preserve">
-    <value>Avoid canvas fullscreen; may fix taskbar not on top and Win11 taskbar unclickable. Can cause floating bar offset with AppBar on left/top. Restart ICC to apply.</value>
+    <value>Fixes an unclickable or non-topmost taskbar. Side effect: the floating toolbar shifts if a dock bar sits on the screen edge. Restart to apply.</value>
   </data>
   <data name="ConfirmExit" xml:space="preserve">
     <value>Confirm before exiting</value>
@@ -55,7 +55,7 @@
     <value>Enable DPIChangeDetection</value>
   </data>
   <data name="DPIChangeDetectionHint" xml:space="preserve">
-    <value>When a system DPI change is detected, it tries to keep FloatingBar visible. If it goes off-screen, it will attempt to move it into the visible area. (Increasing DPI may trigger this; decreasing DPI won&apos;t auto-move—adjust manually.)</value>
+    <value>If the floating toolbar ends up off-screen after increasing display scaling, move it back. Lowering scaling will not move it.</value>
   </data>
   <data name="EdgeGestureUtil" xml:space="preserve">
     <value>Enable EdgeGestureUtil</value>
@@ -79,13 +79,13 @@
     <value>Enable ForceFullScreen</value>
   </data>
   <data name="ForceFullScreenHint" xml:space="preserve">
-    <value>When a window size change is detected, automatically uses Win32 API to set this window size to the primary monitor size (in device pixels). Turn it off if you don&apos;t need it; takes effect immediately.</value>
+    <value>Resizes the window to fill the screen whenever it changes. Turn off if unwanted; applies immediately.</value>
   </data>
   <data name="FullScreenHelper" xml:space="preserve">
     <value>Enable FullScreenHelper</value>
   </data>
   <data name="FullScreenHelperHint" xml:space="preserve">
-    <value>Thanks to lindexi for FullScreenHelper; reduces taskbar pop-up and supports multi-monitor fullscreen. Disable if you see odd issues; restart ICC to apply.</value>
+    <value>Reduces the taskbar popping up over fullscreen apps. Turn it off and restart if a window misbehaves.</value>
   </data>
   <data name="LogByDate" xml:space="preserve">
     <value>Save logs by date</value>
@@ -106,7 +106,7 @@
     <value>Enable ResolutionChangeDetection</value>
   </data>
   <data name="ResolutionChangeDetectionHint" xml:space="preserve">
-    <value>When a screen resolution change is detected, the app checks whether the FloatingBar is still within the visible screen area. If it has moved off-screen, it will try to move it back into view. This is most commonly triggered after lowering the resolution; if the FloatingBar is already visible, its position will not be adjusted automatically.</value>
+    <value>If the floating toolbar ends up off-screen after a resolution change, move it back.</value>
   </data>
   <data name="SpecialScreenMode" xml:space="preserve">
     <value>Special screen mode</value>

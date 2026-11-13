@@ -115,13 +115,13 @@
     <value>自动查杀 希沃 PPT 小工具</value>
   </data>
   <data name="AutoKill_PPTToolsHint" xml:space="preserve">
-    <value>请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。</value>
+    <value>打开 PPT 时不会弹出希沃的工具栏，避免挡住画面。注意：希沃课堂授课助手会因此不能用。</value>
   </data>
   <data name="AutoKill_SeewoDesktop2Anno" xml:space="preserve">
     <value>自动查杀 希沃桌面 2.0 桌面批注</value>
   </data>
   <data name="AutoKill_SeewoDesktop2AnnoHint" xml:space="preserve">
-    <value>由于希沃桌面 2.0 提供的桌面批注是 64 位应用程序，icc是 32 位程序无法访问，所以目前暂不做精准匹配，只匹配进程名称 DesktopAnnotation，后面会考虑封装一套基于 P/Invoke 和 WMI 的综合进程识别方案。如果遇到同进程名的软件直接不开启该选项就行了，见谅！</value>
+    <value>希沃桌面 2.0 的桌面批注是 64 位程序，本程序无法精确识别，只能按进程名匹配。如果电脑上有同名软件，先关掉这个选项。</value>
   </data>
   <data name="AutoKill_Title" xml:space="preserve">
     <value>自动查杀</value>

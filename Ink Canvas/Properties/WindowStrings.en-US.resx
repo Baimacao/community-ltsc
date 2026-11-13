@@ -94,7 +94,7 @@
     <value>Changing WindowChrome rendering requires a restart to take effect. Restart now?</value>
   </data>
   <data name="Window_WindowChromeRenderingHint" xml:space="preserve">
-    <value>Use DWM/WindowChrome for the transparent main window. This is usually smoother than AllowsTransparency and takes effect after restart.</value>
+    <value>A different way of drawing the transparent window, usually smoother. Restart to apply.</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Window</value>

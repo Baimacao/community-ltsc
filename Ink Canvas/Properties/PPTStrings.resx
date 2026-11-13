@@ -202,7 +202,7 @@
     <value>VSTO Agent 架构</value>
   </data>
   <data name="PPTAgentArchitectureHint" xml:space="preserve">
-    <value>通过 PowerPoint 内部 VSTO 插件和 NamedPipe 独立联动，不使用 ICC 进程内 COM/ROT 控制。</value>
+    <value>用独立的辅助程序连接 PPT，比直接控制更稳。正常使用不用管它。</value>
   </data>
   <data name="PPTAgentNotConnected" xml:space="preserve">
     <value>PPT Agent 未连接</value>

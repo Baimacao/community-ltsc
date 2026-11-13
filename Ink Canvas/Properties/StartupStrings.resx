@@ -94,7 +94,7 @@
     <value>系统启动时自动运行软件</value>
   </data>
   <data name="SilentUpdateFullHint" xml:space="preserve">
-    <value>关闭静默更新后，已完成安装包的下载后将会弹窗询问是否进行更新，开启静默更新后将会在安装包下载完成后每隔十分钟进行如下检测：①处于静默更新时间段内 ②未处于书写模式 ③未处于画板内。若以上检测通过即会关闭软件进行自动更新。</value>
+    <value>关闭后更新前会先问你。开启后，晚上空闲时自动更新，条件是不在书写、不在画板里。</value>
   </data>
   <data name="SilentUpdateHint" xml:space="preserve">
     <value>静默更新将在软件不使用时自动安装，无需手动操作</value>
