@@ -263,26 +263,35 @@
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}" />
                         </ui:SettingsExpander.HeaderIcon>
                         <ui:SettingsExpander.Items>
-                    <controls:LabeledSettingsCard x:Name="ToggleSwitchDebugConsole"
-                        Header="{x:Static props:AdvancedStrings.Debug_ShowConsole_Header}"
-                        Description="{x:Static props:AdvancedStrings.Debug_ShowConsole_Desc}"
-                        Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}"
-                        IsOn="False"
-                        Toggled="ToggleSwitchDebugConsole_Toggled"/>
+                            <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Debug_ShowConsole_Header}"
+                                             Description="{x:Static props:AdvancedStrings.Debug_ShowConsole_Desc}">
+                                <ui:SettingsCard.HeaderIcon>
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.DeveloperTools}" />
+                                </ui:SettingsCard.HeaderIcon>
+                                <ui:ToggleSwitch x:Name="ToggleSwitchDebugConsole"
+                                                 IsOn="False"
+                                                 Toggled="ToggleSwitchDebugConsole_Toggled" />
+                            </ui:SettingsCard>
 
-                    <controls:LabeledSettingsCard x:Name="ToggleSwitchPPTComDebugProbe"
-                        Header="{x:Static props:AdvancedStrings.Debug_PPTComProbe_Header}"
-                        Description="{x:Static props:AdvancedStrings.Debug_PPTComProbe_Desc}"
-                        Icon="{x:Static ui:SegoeFluentIcons.Bug}"
-                        IsOn="False"
-                        Toggled="ToggleSwitchPPTComDebugProbe_Toggled"/>
+                            <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Debug_PPTComProbe_Header}"
+                                             Description="{x:Static props:AdvancedStrings.Debug_PPTComProbe_Desc}">
+                                <ui:SettingsCard.HeaderIcon>
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Bug}" />
+                                </ui:SettingsCard.HeaderIcon>
+                                <ui:ToggleSwitch x:Name="ToggleSwitchPPTComDebugProbe"
+                                                 IsOn="False"
+                                                 Toggled="ToggleSwitchPPTComDebugProbe_Toggled" />
+                            </ui:SettingsCard>
 
-                    <controls:LabeledSettingsCard x:Name="ToggleSwitchPPTPageFlipPreview"
-                        Header="{x:Static props:AdvancedStrings.Debug_PPTPreviewVisible_Header}"
-                        Description="{x:Static props:AdvancedStrings.Debug_PPTPreviewVisible_Desc}"
-                        Icon="{x:Static ui:SegoeFluentIcons.View}"
-                        IsOn="False" d:IsOn="True"
-                        Toggled="ToggleSwitchPPTPageFlipPreview_Toggled"/>
+                            <ui:SettingsCard Header="{x:Static props:AdvancedStrings.Debug_PPTPreviewVisible_Header}"
+                                             Description="{x:Static props:AdvancedStrings.Debug_PPTPreviewVisible_Desc}">
+                                <ui:SettingsCard.HeaderIcon>
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.View}" />
+                                </ui:SettingsCard.HeaderIcon>
+                                <ui:ToggleSwitch x:Name="ToggleSwitchPPTPageFlipPreview"
+                                                 IsOn="False"
+                                                 Toggled="ToggleSwitchPPTPageFlipPreview_Toggled" />
+                            </ui:SettingsCard>
 
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:AdvancedStrings.Debug_CrashTest_Section}" />
