@@ -2780,26 +2780,67 @@ namespace Ink_Canvas
 
             if (animate)
             {
-                // LTSC D-05：改走合成层。ViewboxFloatingBar 的缩放在 LayoutTransform 上，
-                // RenderTransform 是空位，这里用 TranslateTransform 做位移不会影响缩放。
+                // LTSC D-22：改走【每帧积分的弹簧动画】，替换原来的 Storyboard + CircleEase。
+                //
+                // 原来的问题：Storyboard 是按固定时长插值，位移曲线是死的；
+                // 拖到一半改目标会从静止重新起步，速度断掉，观感是"一顿"。
+                //
+                // 现在交给 SpringAnimator：
+                //   - 跑在 CompositionTarget.Rendering 上，帧率跟着显示器刷新率走
+                //   - 每次改目标都保留当前速度，拖拽中反手一甩是带着惯性走的
+                //   - 有轻微过冲和回弹，是弹簧的自然手感
+                //   - 全程只动 TranslateTransform，不触发布局传递
+                var from = ViewboxFloatingBar.Margin;
                 var targetMargin = new Thickness(pos.X, pos.Y, 0, -20);
-                if (AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                        ViewboxFloatingBar, targetMargin, 0.35, out startedDuration, new CircleEase()))
+
+                var tt = AnimationsHelper.TryEnsureTranslateTransform(ViewboxFloatingBar);
+                if (tt != null)
                 {
-                    // 合成层动画已起，时长已回传，交给调用方决定等多久
+                    // 位移量 = 目标 Margin 相对当前 Margin 的差（考虑对齐方向）
+                    double dx = AnimationsHelper.MarginShiftX(from, targetMargin, ViewboxFloatingBar.HorizontalAlignment);
+                    double dy = AnimationsHelper.MarginShiftY(from, targetMargin, ViewboxFloatingBar.VerticalAlignment);
+
+                    // 动画期间 Margin 不动，靠 TranslateTransform 视觉位移；
+                    // 弹簧把位移推到目标后，再一次性落地到真实 Margin（只算一次布局）。
+                    // 预设用 SpringAnimator.Default（行与布局位移），带一点轻过冲。
+                    SpringAnimator.Animate(
+                        tt,
+                        (float)dx,
+                        (float)dy,
+                        finished: () =>
+                        {
+                            AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar, targetMargin);
+                            isViewboxFloatingBarMarginAnimationRunning = false;
+                            if (!Topmost) ViewboxFloatingBar.Visibility = Visibility.Hidden;
+                            if (!string.IsNullOrEmpty(_currentToolMode))
+                            {
+                                SetFloatingBarHighlightPosition(_currentToolMode);
+                            }
+                        });
+
+                    // 弹簧没有固定时长，告诉调用方"别按时间等，等 finished 回调"
+                    startedDuration = TimeSpan.Zero;
                 }
                 else
                 {
+                    // 控件不适合走合成层（RenderTransform 已被别人占用），退回插值动画
                     var duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.35));
-                    var marginAnimation = new ThicknessAnimation
+                    if (AnimationsHelper.TryAnimateMarginOnCompositionLayer(
+                            ViewboxFloatingBar, targetMargin, 0.35, out startedDuration, new CircleEase()))
                     {
-                        Duration = duration,
-                        From = ViewboxFloatingBar.Margin,
-                        To = targetMargin,
-                        EasingFunction = new CircleEase()
-                    };
-                    ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
-                    startedDuration = duration;
+                    }
+                    else
+                    {
+                        var marginAnimation = new ThicknessAnimation
+                        {
+                            Duration = duration,
+                            From = from,
+                            To = targetMargin,
+                            EasingFunction = new CircleEase()
+                        };
+                        ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
+                        startedDuration = duration;
+                    }
                 }
             }
             else

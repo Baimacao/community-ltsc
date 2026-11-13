@@ -620,7 +620,7 @@ namespace Ink_Canvas.Helpers
         /// 取 Margin 变化在某个对齐方式下对应的"视觉位移量"。
         /// Left/Top 对齐时位移量与 Margin 同向；Right/Bottom 对齐时反向；Center 时取一半。
         /// </summary>
-        private static double MarginShiftX(Thickness from, Thickness to, HorizontalAlignment align)
+        internal static double MarginShiftX(Thickness from, Thickness to, HorizontalAlignment align)
         {
             switch (align)
             {
@@ -630,7 +630,7 @@ namespace Ink_Canvas.Helpers
             }
         }
 
-        private static double MarginShiftY(Thickness from, Thickness to, VerticalAlignment align)
+        internal static double MarginShiftY(Thickness from, Thickness to, VerticalAlignment align)
         {
             switch (align)
             {
