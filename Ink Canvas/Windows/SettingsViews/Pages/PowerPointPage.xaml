@@ -62,8 +62,8 @@
                     <TextBlock Text="{x:Static props:PPTStrings.FlipButtonsTitle}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
                     <ui:SettingsCard x:Name="CardPPTPageFlipPreviewEntry"
-                            Header="翻页按钮的外观与位置"
-                            Description="自定义各翻页按钮的开启状态、显示页码、黑色背景、偏移与透明度并实时预览"
+                            Header="{x:Static props:SettingsStrings.Ppt_FlipAppearanceSection}"
+                            Description="{x:Static props:SettingsStrings.Ppt_FlipAppearanceSectionDesc}"
                             IsClickEnabled="True"
                             Click="OnCardClicked"
                             IsEnabled="True">
@@ -154,8 +154,8 @@
                          原来的行为由 IsShowStrokeOnSelectInPowerPoint 控制，但该项从未暴露到界面上，
                          默认又是 false，导致老师写完一转向鼠标笔迹就整块消失。 -->
                     <controls:LabeledSettingsCard x:Name="CardKeepStrokeInPowerPoint"
-                            Header="PPT 模式下保留笔迹"
-                            Description="开启后，在 PPT 批注状态下点鼠标时不隐藏笔迹。"
+                            Header="{x:Static props:SettingsStrings.Ppt_KeepInkInPpt}"
+                            Description="{x:Static props:SettingsStrings.Ppt_KeepInkInPptDesc}"
                             Icon="{x:Static ui:SegoeFluentIcons.Hide}"
                             Toggled="ToggleSwitchKeepStrokeInPowerPoint_Toggled"/>
 

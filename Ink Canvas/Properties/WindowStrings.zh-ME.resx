@@ -114,4 +114,10 @@
   <data name="FollowMouseScreenHint" xml:space="preserve">
     <value>默认开启：自动以鼠标所在屏幕为目标屏幕</value>
   </data>
+  <data name="Window_DisableAllAnimations" xml:space="preserve">
+    <value>界面动效</value>
+  </data>
+  <data name="Window_DisableAllAnimationsDesc" xml:space="preserve">
+    <value>关闭后可减少动画开销；低配机器或远程桌面下建议关闭。</value>
+  </data>
 </root>

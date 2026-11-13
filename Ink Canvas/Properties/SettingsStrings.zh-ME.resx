@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
+          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /><xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Clock_Title" xml:space="preserve">
+    <value>时钟</value>
+  </data>
+  <data name="Clock_12Hour" xml:space="preserve">
+    <value>12小时制</value>
+  </data>
+  <data name="Clock_24Hour" xml:space="preserve">
+    <value>24小时制</value>
+  </data>
+  <data name="Menu_ConfigHint" xml:space="preserve">
+    <value>配置{0}工具菜单中显示的项目和顺序，最多 9 个（3×3 布局）。</value>
+  </data>
+  <data name="Menu_Added" xml:space="preserve">
+    <value>已添加的菜单项</value>
+  </data>
+  <data name="Menu_Available" xml:space="preserve">
+    <value>可添加的菜单项</value>
+  </data>
+  <data name="Menu_ResetLayout" xml:space="preserve">
+    <value>恢复默认布局</value>
+  </data>
+  <data name="Menu_FloatingBar" xml:space="preserve">
+    <value>浮动栏</value>
+  </data>
+  <data name="Menu_Board" xml:space="preserve">
+    <value>白板</value>
+  </data>
+  <data name="Ppt_FlipAppearanceSection" xml:space="preserve">
+    <value>翻页按钮的外观与位置</value>
+  </data>
+  <data name="Ppt_FlipAppearanceSectionDesc" xml:space="preserve">
+    <value>自定义各翻页按钮的开启状态、显示页码、黑色背景、偏移与透明度并实时预览</value>
+  </data>
+  <data name="Ppt_KeepInkInPpt" xml:space="preserve">
+    <value>PPT 模式下保留笔迹</value>
+  </data>
+  <data name="Ppt_KeepInkInPptDesc" xml:space="preserve">
+    <value>开启后，在 PPT 批注状态下点鼠标时不隐藏笔迹。</value>
+  </data>
+</root>

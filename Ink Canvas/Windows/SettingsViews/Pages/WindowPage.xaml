@@ -233,8 +233,8 @@
                     </ui:SettingsCard>
 
                     <!-- LTSC D-05: 全局动效开关。开启后全仓动画时长归零（瞬时完成）。 -->
-                    <ui:SettingsCard Header="界面动效"
-                             Description="关闭后可减少动画开销；低配机器或远程桌面下建议关闭。">
+                    <ui:SettingsCard Header="{x:Static props:WindowStrings.Window_DisableAllAnimations}"
+                             Description="{x:Static props:WindowStrings.Window_DisableAllAnimationsDesc}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}" />
                         </ui:SettingsCard.HeaderIcon>

@@ -39,7 +39,7 @@
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="时钟" />
+                        Text="{x:Static props:SettingsStrings.Clock_Title}" />
 
                     <ui:SettingsCard Header="{x:Static props:ThemeStrings.AppearancePanel_24HourTimeFormat}">
                         <ui:SettingsCard.HeaderIcon>
@@ -48,8 +48,8 @@
                         <ComboBox x:Name="ComboBoxTimeFormat"
                                   SelectedIndex="0"
                                   SelectionChanged="ComboBoxTimeFormat_SelectionChanged">
-                            <ComboBoxItem Content="12小时制" />
-                            <ComboBoxItem Content="24小时制" />
+                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Clock_12Hour}" />
+                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Clock_24Hour}" />
                         </ComboBox>
                     </ui:SettingsCard>
 
