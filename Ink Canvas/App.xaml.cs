@@ -124,6 +124,47 @@ namespace Ink_Canvas
         ///   2. 只能靠可执行文件路径区分——本程序路径 != 对方路径，才算原版；
         ///   3. 必须排除自己（GetProcessesByName 会把自己也列进来）。
         /// </summary>
+        /// <summary>
+        /// 判断一个 InvalidOperationException 是不是「跨线程访问 UI 对象」。
+        ///
+        /// LTSC（2026-11-13）为什么不能只看 Message：
+        ///   WPF 的这条异常消息来自系统资源字符串，随系统语言变化。
+        ///   原来的判据写死了中文"调用线程无法访问此对象"和英文
+        ///   "because another thread owns it"，但英文系统实际给的是
+        ///   "because a different thread owns it"——另一个 vs 一个不同，对不上。
+        ///   结果就是：英文环境下这道防护形同虚设。
+        ///
+        /// 可靠判据：WPF 抛这个异常前一定会走 VerifyAccess，
+        /// 而 VerifyAccess 是类型名，不随语言翻译。堆栈里出现下面任一即可。
+        /// </summary>
+        private static bool IsCrossThreadUiAccess(Exception ex)
+        {
+            try
+            {
+                var message = ex?.Message ?? "";
+                var stack = ex?.StackTrace ?? "";
+
+                // 堆栈里的 WPF 内部类型名（语言无关）
+                if (stack.IndexOf("VerifyAccess", StringComparison.Ordinal) >= 0) return true;
+                if (stack.IndexOf("DispatcherObject", StringComparison.Ordinal) >= 0) return true;
+                if (stack.IndexOf("DependencyObject", StringComparison.Ordinal) >= 0 &&
+                    stack.IndexOf("System.Windows.Threading", StringComparison.Ordinal) >= 0) return true;
+
+                // 原来的文本判据保留（能命中的场景别丢），但补上 "a different thread"
+                if (message.Contains("调用线程无法访问此对象")) return true;
+                if (message.Contains("because another thread owns it")) return true;
+                if (message.Contains("because a different thread owns it")) return true;
+                if (message.Contains("cannot access this object because")) return true;
+
+                // InkCanvas 渲染链路的已知调用点
+                if (stack.IndexOf("DynamicRenderer", StringComparison.Ordinal) >= 0) return true;
+                if (stack.IndexOf("CompositionTarget.get_RootVisual", StringComparison.Ordinal) >= 0) return true;
+
+                return false;
+            }
+            catch { return false; }
+        }
+
         private static bool IsUpstreamIccRunning()
         {
             try
@@ -558,22 +599,13 @@ namespace Ink_Canvas
                     return;
                 }
 
-                if (exception is InvalidOperationException invalidOpEx)
+                if (exception is InvalidOperationException invalidOpEx && IsCrossThreadUiAccess(invalidOpEx))
                 {
-                    string exceptionMessage = invalidOpEx.Message ?? "";
-                    string exceptionStackTrace = invalidOpEx.StackTrace ?? "";
-
-                    if (exceptionMessage.Contains("调用线程无法访问此对象") ||
-                        exceptionMessage.Contains("because another thread owns it") ||
-                        exceptionStackTrace.Contains("DynamicRenderer") ||
-                        exceptionStackTrace.Contains("CompositionTarget.get_RootVisual"))
-                    {
-                        LogHelper.WriteLogToFile(
-                            $"检测到DynamicRenderer线程访问异常: {invalidOpEx.Message}",
-                            LogHelper.LogType.Warning
-                        );
-                        return;
-                    }
+                    LogHelper.WriteLogToFile(
+                        $"检测到DynamicRenderer线程访问异常: {invalidOpEx.Message}",
+                        LogHelper.LogType.Warning
+                    );
+                    return;
                 }
 
                 string errorMessage = exception?.ToString() ?? "未知异常";
@@ -910,28 +942,16 @@ namespace Ink_Canvas
             }
 
             // 检查是否是DynamicRenderer线程访问UI对象的已知问题
-            if (e.Exception is InvalidOperationException invalidOpEx)
+            // 检查是否是 DynamicRenderer / 跨线程访问 UI 对象的已知问题。
+            // 判据见 IsCrossThreadUiAccess：只认类型名，不认会随语言变的异常消息。
+            if (e.Exception is InvalidOperationException invalidOpEx && IsCrossThreadUiAccess(invalidOpEx))
             {
-                string exceptionMessage = invalidOpEx.Message ?? "";
-                string exceptionStackTrace = invalidOpEx.StackTrace ?? "";
-
-                // 检查是否是DynamicRenderer相关的线程访问问题
-                if (exceptionMessage.Contains("调用线程无法访问此对象") ||
-                    exceptionMessage.Contains("because another thread owns it") ||
-                    exceptionStackTrace.Contains("DynamicRenderer") ||
-                    exceptionStackTrace.Contains("CompositionTarget.get_RootVisual"))
-                {
-                    // 这是WPF InkCanvas的已知问题，DynamicRenderer的后台线程尝试访问UI对象
-                    // 这个异常不会影响应用程序功能，可以安全地忽略
-                    LogHelper.WriteLogToFile(
-                        $"检测到DynamicRenderer线程访问异常（已安全处理）: {invalidOpEx.Message}",
-                        LogHelper.LogType.Warning
-                    );
-
-                    // 标记为已处理，不显示错误消息，不触发重启
-                    e.Handled = true;
-                    return;
-                }
+                LogHelper.WriteLogToFile(
+                    $"检测到DynamicRenderer线程访问异常（已安全处理）: {invalidOpEx.Message}",
+                    LogHelper.LogType.Warning
+                );
+                e.Handled = true;
+                return;
             }
 
             Ink_Canvas.MainWindow.ShowNewMessage(MainWindowStrings.Main_App_UnexpectedError);
