@@ -1208,9 +1208,6 @@ namespace Ink_Canvas.Properties
             dict["Channel_PrivacyRequiredTitle"] = ("UpdateStrings", "Channel_PrivacyRequiredTitle");
             dict["Channel_TelemetryRequired"] = ("UpdateStrings", "Channel_TelemetryRequired");
             dict["Channel_TelemetryRequiredTitle"] = ("UpdateStrings", "Channel_TelemetryRequiredTitle");
-            dict["Window_WindowChromeRendering"] = ("WindowStrings", "Window_WindowChromeRendering");
-            dict["Window_WindowChromeRendering_RestartRequired"] = ("WindowStrings", "Window_WindowChromeRendering_RestartRequired");
-            dict["Window_WindowChromeRenderingHint"] = ("WindowStrings", "Window_WindowChromeRenderingHint");
             dict["Window_Title"] = ("WindowStrings", "Title");
             dict["Window_WindowSettings"] = ("WindowStrings", "WindowSettings");
             dict["Window_MultiScreenSupport"] = ("WindowStrings", "MultiScreenSupport");

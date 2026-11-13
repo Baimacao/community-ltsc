@@ -615,7 +615,30 @@ namespace Ink_Canvas
                 };
                 _inkPerfProbeTimer.Tick += (s, e) => InkPerfProbe.Tick(Dispatcher);
                 _inkPerfProbeTimer.Start();
-                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测；慢笔 >120ms 会额外抓现场）", LogHelper.LogType.Event);
+
+                // LTSC P2-追加（2026-11-13）：用户要的是「帧率更高」，不是「有没有卡顿」。
+                // 之前那套探针测的是落笔→抬笔的人体书写时长，跟渲染帧率毫无关系，
+                // 结果被误读成「慢笔 462ms = 卡顿」，白查了三个方向。
+                //
+                // 真正要看的是 CompositionTarget.Rendering 每秒触发几次——那就是显示帧率。
+                // 这里只数帧，不碰任何渲染逻辑。
+                try
+                {
+                    RenderOptions.ProcessRenderMode = RenderMode.Default; // 不强制软件渲染
+                    System.Windows.Media.CompositionTarget.Rendering += (s2, e2) => InkPerfProbe.FrameTick();
+                    // RenderCapability.Tier 的高 16 位就是档位：0=无加速 1=部分 2=完整。
+                    // 之前写成 (int)Tier >> 16 是对的，但 NoteRenderTier 只在首次调用时记，
+                    // 而首次调用可能在窗口还没建好时发生，读到的 Tier=0。
+                    // 改成延后取：等第一次 P2 汇总时再读，那时渲染管线一定已就绪。
+                    InkPerfProbe.TierProvider = () => (int)RenderCapability.Tier >> 16;
+                    InkPerfProbe.AnimationsEnabled = System.Windows.Media.Animation.Timeline.DesiredFrameRateProperty != null;
+                }
+                catch (Exception rEx)
+                {
+                    LogHelper.WriteLogToFile($"[P2诊断] 帧率探针挂载失败: {rEx.Message}", LogHelper.LogType.Warning);
+                }
+
+                LogHelper.WriteLogToFile("[P2诊断] 探针已启动（每 5 秒一条，只观测；慢笔 >120ms 会额外抓现场；已挂帧率计数）", LogHelper.LogType.Event);
             }
             catch (Exception ex)
             {

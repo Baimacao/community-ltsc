@@ -13,24 +13,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
 
         public static string SettingsFileName { get; } = Path.Combine("Configs", "Settings.json");
 
-        public static bool ReadEnableWindowChromeRendering()
-        {
-            try
-            {
-                var path = Path.Combine(App.RootPath, SettingsFileName);
-                if (!File.Exists(path)) return Settings?.Startup?.EnableWindowChromeRendering ?? false;
-
-                var json = File.ReadAllText(path);
-                var obj = JObject.Parse(json);
-                return obj.SelectToken("startup.enableWindowChromeRendering")?.Value<bool>() ?? false;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                return Settings?.Startup?.EnableWindowChromeRendering ?? false;
-            }
-        }
-
         public static void SaveSettingsToFile()
         {
             var text = JsonConvert.SerializeObject(Settings, Formatting.Indented);

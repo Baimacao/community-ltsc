@@ -392,8 +392,7 @@ namespace Ink_Canvas
         public bool HasAcceptedTelemetryPrivacy { get; set; } = false;
         [JsonProperty("hasShownOobe")]
         public bool HasShownOobe { get; set; } = false;
-        [JsonProperty("enableWindowChromeRendering")]
-        public bool EnableWindowChromeRendering { get; set; } = false;
+
     }
 
     public enum TrayClickAction

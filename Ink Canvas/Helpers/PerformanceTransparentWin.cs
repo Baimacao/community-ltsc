@@ -10,34 +10,28 @@ using System.Windows.Shell;
 namespace Ink_Canvas.Helpers
 {
     /// <summary>
-    /// Main-window base that can use WindowChrome for DWM-backed transparent rendering.
+    /// Main-window base. WindowChrome 渲染路径已移除，统一走 AllowsTransparency。
     /// </summary>
     public partial class PerformanceTransparentWin : Window
     {
-        private readonly bool _useWindowChromeRendering;
         private readonly bool _dwmEnabled;
         private IntPtr _hwnd;
         private bool _transparentHitThrough;
 
-        public bool IsUsingWindowChromeRendering => _useWindowChromeRendering && _dwmEnabled;
+        /// <summary>永远 false —— WindowChrome 渲染模式已移除（会引发稳定性问题）。</summary>
+        public bool IsUsingWindowChromeRendering => false;
 
         public PerformanceTransparentWin()
         {
             WindowStyle = WindowStyle.None;
             ResizeMode = ResizeMode.NoResize;
 
-            _useWindowChromeRendering = SettingsManager.ReadEnableWindowChromeRendering();
+            // LTSC：WindowChrome 渲染模式已移除（用户实测会导致稳定性问题）。
+            // 统一走 AllowsTransparency，不再保留分支。
             _dwmEnabled = DwmCompositionHelper.IsCompositionEnabled();
 
-            if (IsUsingWindowChromeRendering)
-            {
-                ConfigureWindowChromeRendering();
-            }
-            else
-            {
-                AllowsTransparency = true;
-                Background = Brushes.Transparent;
-            }
+            AllowsTransparency = true;
+            Background = Brushes.Transparent;
         }
 
         private void ConfigureWindowChromeRendering()

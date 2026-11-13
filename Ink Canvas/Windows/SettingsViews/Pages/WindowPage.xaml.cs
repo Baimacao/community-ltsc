@@ -47,7 +47,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 {
                     CardNoFocusMode.IsOn = settings.Advanced.IsNoFocusMode;
                     CardWindowMode.IsOn = settings.Advanced.WindowMode;
-                    CardWindowChromeRendering.IsOn = settings.Startup?.EnableWindowChromeRendering ?? false;
                     CardAvoidFullScreen.IsOn = settings.Advanced.IsEnableAvoidFullScreenHelper;
                     CardMultiScreenSupport.IsOn = settings.Advanced.EnableMultiScreenSupport;
                     CardFollowMouseScreen.IsOn = settings.Advanced.FollowMouseForScreenSelection;
@@ -214,32 +213,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             }
         }
 
-        private void ToggleSwitchWindowChromeRendering_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!_isLoaded) return;
-
-            try
-            {
-                bool newState = CardWindowChromeRendering.IsOn;
-                if (SettingsManager.Settings.Startup == null)
-                    SettingsManager.Settings.Startup = new Startup();
-
-                SettingsManager.Settings.Startup.EnableWindowChromeRendering = newState;
-                SettingsManager.SaveSettingsToFile();
-
-                var msg = WindowStrings.Window_WindowChromeRendering_RestartRequired;
-                var result = MessageBox.Show(msg, "Ink Canvas", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    AppRestartHelper.RestartWithCurrentPrivileges();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置 WindowChrome 渲染时出错: {ex.Message}");
-            }
-        }
 
         private void ToggleSwitchAlwaysOnTop_Toggled(object sender, RoutedEventArgs e)
         {

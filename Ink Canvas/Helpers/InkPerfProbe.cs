@@ -54,6 +54,60 @@ namespace Ink_Canvas.Helpers
         /// <summary>现场快照条数上限，防止长时间运行把日志刷爆。</summary>
         internal const int MaxSlowSnapshots = 40;
 
+        // ===== 帧率探针（LTSC P2-追加：用户要的是「帧率更高」，不是「有没有卡顿」）=====
+        // 说明：CompositionTarget.Rendering 每帧触发一次，用它数帧才是真的显示帧率。
+        // 只观测，不改任何渲染行为。
+        internal static int FrameCount;
+        internal static long _fpsWindowStartMs;
+        internal static int FpsWindowFrames;
+        internal static long ReportedFpsMin = long.MaxValue;
+        internal static long ReportedFpsMax;
+        internal static long ReportedFpsSum;
+        internal static int ReportedFpsSamples;
+        internal static long LastFps;
+        internal static bool RenderTierKnown;
+        internal static int RenderTierValue;
+        internal static bool AnimationsEnabled;
+
+        /// <summary>渲染帧到达时调用（由 MainWindow 挂到 CompositionTarget.Rendering）。</summary>
+        internal static void FrameTick()
+        {
+            FrameCount++;
+            FpsWindowFrames++;
+            long now = _since.ElapsedMilliseconds;
+            if (_fpsWindowStartMs == 0) { _fpsWindowStartMs = now; return; }
+            long elapsed = now - _fpsWindowStartMs;
+            if (elapsed < 1000) return;
+
+            long fps = FpsWindowFrames * 1000L / Math.Max(1, elapsed);
+            LastFps = fps;
+            if (fps > 1)   // 忽略长时间无重绘（窗口最小化/空闲）
+            {
+                if (fps < ReportedFpsMin) ReportedFpsMin = fps;
+                if (fps > ReportedFpsMax) ReportedFpsMax = fps;
+                ReportedFpsSum += fps;
+                ReportedFpsSamples++;
+            }
+            FpsWindowFrames = 0;
+            _fpsWindowStartMs = now;
+        }
+
+        /// <summary>渲染档位提供者，由 MainWindow 注入（延后到渲染管线就绪后取值）。</summary>
+        internal static Func<int> TierProvider;
+
+        /// <summary>取渲染档位：0=无硬件加速 1=部分 2=完整。真正的 0 才是问题。</summary>
+        internal static void RefreshRenderTier()
+        {
+            if (RenderTierKnown || TierProvider == null) return;
+            try
+            {
+                int t = TierProvider();
+                RenderTierValue = t;
+                RenderTierKnown = true;
+            }
+            catch { }
+        }
+
         // 触摸状态
         internal static int DecCountNow;
         internal static int DecCountMax;
@@ -159,6 +213,7 @@ namespace Ink_Canvas.Helpers
         /// <summary>每 5 秒最多打一条汇总。异常自吞并记 Error，不让探针本身拖垮程序。</summary>
         internal static void Tick(Dispatcher dispatcher = null)
         {
+            RefreshRenderTier();
             try { TickCore(); }
             catch (Exception ex)
             {
@@ -188,6 +243,12 @@ namespace Ink_Canvas.Helpers
                 sb.Append(" 峰=").Append(StrokeMaxMs).Append("ms");
             }
             sb.Append(" | dec=").Append(DecCountNow).Append(" 峰=").Append(DecCountMax);
+                sb.Append(" | 帧率 当前=").Append(LastFps).Append(" 均=")
+                  .Append(ReportedFpsSamples > 0 ? (ReportedFpsSum / ReportedFpsSamples) : 0)
+                  .Append(" 低=").Append(ReportedFpsMin == long.MaxValue ? 0 : ReportedFpsMin)
+                  .Append(" 高=").Append(ReportedFpsMax)
+                  .Append(" | 渲染=").Append(!RenderTierKnown ? "未取" : RenderTierValue == 2 ? "完整硬件加速" : RenderTierValue == 1 ? "部分加速" : "无加速(软件)")
+                  .Append(" 动画=").Append(AnimationsEnabled ? "开" : "关");
             if (SilentReleaseCount > 0) sb.Append(" 静默释放=").Append(SilentReleaseCount);
             // 只打非零的闸门，避免刷屏
             {

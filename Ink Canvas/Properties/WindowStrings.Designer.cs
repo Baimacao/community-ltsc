@@ -70,11 +70,8 @@ namespace Ink_Canvas.Properties
 
         public static string Tray_RightClickAction => ResourceManager.GetString(nameof(Tray_RightClickAction), _resourceCulture);
 
-        public static string Window_WindowChromeRendering => ResourceManager.GetString(nameof(Window_WindowChromeRendering), _resourceCulture);
 
-        public static string Window_WindowChromeRendering_RestartRequired => ResourceManager.GetString(nameof(Window_WindowChromeRendering_RestartRequired), _resourceCulture);
 
-        public static string Window_WindowChromeRenderingHint => ResourceManager.GetString(nameof(Window_WindowChromeRenderingHint), _resourceCulture);
 
         public static string Title => ResourceManager.GetString(nameof(Title), _resourceCulture);
 

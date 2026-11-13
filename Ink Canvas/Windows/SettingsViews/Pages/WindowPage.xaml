@@ -92,12 +92,6 @@
                             SwitchName="ToggleSwitchWindowMode"
                             Toggled="ToggleSwitchWindowMode_Toggled" />
 
-                    <controls:LabeledSettingsCard x:Name="CardWindowChromeRendering"
-                            Header="{x:Static props:WindowStrings.Window_WindowChromeRendering}"
-                            Description="{x:Static props:WindowStrings.Window_WindowChromeRenderingHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.SpeedHigh}"
-                            SwitchName="ToggleSwitchWindowChromeRendering"
-                            Toggled="ToggleSwitchWindowChromeRendering_Toggled" />
 
                     <controls:LabeledSettingsCard x:Name="CardAvoidFullScreen"
                             Header="{x:Static props:AdvancedStrings.AvoidFullScreenHelper}"
