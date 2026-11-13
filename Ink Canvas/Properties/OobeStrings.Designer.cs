@@ -123,6 +123,7 @@ namespace Ink_Canvas.Properties
         public static string Oobe_BoolDisabled => ResourceManager.GetString(nameof(Oobe_BoolDisabled), _resourceCulture);
         public static string Oobe_Previous => ResourceManager.GetString(nameof(Oobe_Previous), _resourceCulture);
         public static string Oobe_Next => ResourceManager.GetString(nameof(Oobe_Next), _resourceCulture);
+        public static string Oobe_Skip => ResourceManager.GetString(nameof(Oobe_Skip), _resourceCulture);
         public static string Oobe_SaveAndStart => ResourceManager.GetString(nameof(Oobe_SaveAndStart), _resourceCulture);
         public static string Oobe_StepFormat => ResourceManager.GetString(nameof(Oobe_StepFormat), _resourceCulture);
         public static string Oobe_StepFinishFormat => ResourceManager.GetString(nameof(Oobe_StepFinishFormat), _resourceCulture);

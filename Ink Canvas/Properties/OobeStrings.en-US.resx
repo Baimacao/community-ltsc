@@ -296,6 +296,9 @@
   <data name="Oobe_Next" xml:space="preserve">
     <value>Next</value>
   </data>
+  <data name="Oobe_Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
     <value>Save and Start</value>
   </data>

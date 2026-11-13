@@ -368,6 +368,43 @@ namespace Ink_Canvas.Windows
             NavigateTo(_currentStep - 1, direction: -1);
         }
 
+        /// <summary>
+        /// 跳过引导：直接使用当前设置开始使用。
+        ///
+        /// 为什么可以安全地调 ApplySelection：
+        /// InitializeFromSettings() 在构造函数里就调过，
+        /// 每个控件已经被填成「当前设置」的值。
+        /// 所以 ApplySelection() 写回去的是「用户改过的那些 + 其余原值」，
+        /// 不会把设置清成默认值。
+        ///
+        /// 但有一个例外必须处理：隐私协议（CheckBoxPrivacyAccepted）。
+        /// 那是法律层面的同意，用户没勾就是没同意，跳过不能替他勾。
+        /// 所以跳过时不动它。
+        /// </summary>
+        private void BtnSkipOobe_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // 跳过 = 不看剩下的步骤，但已经改过的照旧生效。
+                // 隐私协议除外：没勾就是没勾，跳过不构成同意。
+                bool privacyAccepted = CheckBoxPrivacyAccepted.IsChecked == true;
+                ApplySelection();
+                if (_settings.Startup != null)
+                {
+                    _settings.Startup.HasAcceptedTelemetryPrivacy = privacyAccepted;
+                }
+
+                LogHelper.WriteLogToFile("用户跳过 OOBE 引导", LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"跳过 OOBE 时出错: {ex.Message}", LogHelper.LogType.Warning);
+            }
+
+            DialogResult = true;
+            Close();
+        }
+
         private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             if (_suppressNavSelection) return;

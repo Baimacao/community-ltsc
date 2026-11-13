@@ -579,6 +579,7 @@
                         BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -595,7 +596,21 @@
                                         Maximum="100"
                                         Value="0" />
 
-                        <TextBlock Grid.Column="1"
+                        <Button x:Name="BtnSkipOobe"
+                                Grid.Column="0"
+                                MinWidth="96"
+                                Height="32"
+                                Margin="0,0,12,0"
+                                Click="BtnSkipOobe_Click"
+                                FocusVisualStyle="{x:Null}"
+                                ToolTip="直接使用当前设置开始，之后可以在设置里重新调整">
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="6">
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Cancel}" FontSize="12" />
+                                <TextBlock Text="{x:Static props:OobeStrings.Oobe_Skip}" />
+                            </ikw:SimpleStackPanel>
+                        </Button>
+
+                        <TextBlock Grid.Column="2"
                                    x:Name="FooterStepText"
                                    VerticalAlignment="Center"
                                    Margin="0,0,16,0"
@@ -604,7 +619,7 @@
                                    Text="" />
 
                         <Button x:Name="BtnPreviousStep"
-                                Grid.Column="2"
+                                Grid.Column="3"
                                 MinWidth="96"
                                 Height="32"
                                 Margin="0,0,8,0"
@@ -616,7 +631,7 @@
                         </Button>
 
                         <Button x:Name="BtnConfirm"
-                                Grid.Column="3"
+                                Grid.Column="4"
                                 MinWidth="140"
                                 Height="32"
                                 Style="{DynamicResource AccentButtonStyle}"
