@@ -9,6 +9,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="{x:Static props:OobeStrings.Oobe_WelcomeTitle}"
+        Icon="/Resources/Icons-png/iccltsc-light-32.png"
         Height="700"
         Width="1080"
         MinHeight="520"

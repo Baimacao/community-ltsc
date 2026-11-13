@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Ink_Canvas</RootNamespace>
     <AssemblyName>InkCanvasForClass</AssemblyName>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net11.0-windows10.0.19041.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
@@ -30,7 +30,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU;x86;x64</Platforms>
-    <LangVersion>10</LangVersion>
+    <LangVersion>14</LangVersion>
     <NoWarn>$(NoWarn);CA1416;NU1701;MSB3270;CS8012;NETSDK1138</NoWarn>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>

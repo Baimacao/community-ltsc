@@ -1518,8 +1518,10 @@ namespace Ink_Canvas
                         // 注意：快捷调色盘的可见性现在完全由工具栏规则集管理
                         // 不需要手动设置，UpdateToolbarComponentVisibility 会处理好
 
-                        if (GridTransparencyFakeBackground.Background != Brushes.Transparent)
-                            BtnHideInkCanvas_Click(null, null);
+                        // LTSC（2026-11-13）：原来靠 BtnHideInkCanvas_Click 顺带清理，
+                        // 但那条路径只在特定状态下生效。这里改成无条件清理，
+                        // 避免透明遮罩残留盖住底部浮动栏。
+                        ResetPptTransparencyOverlay("退出PPT模式");
                         SetCurrentToolMode(InkCanvasEditingMode.None);
 
                         UpdateCurrentToolMode("cursor");
@@ -2333,6 +2335,9 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Visibility = Visibility.Visible;
                         PenIcon_Click(null, null);
+                        // LTSC（2026-11-13）：回到批注态时也要清遮罩，
+                        // 否则这块半透明层继续挡着底部浮动栏。
+                        ResetPptTransparencyOverlay($"回到批注模式（{reason}）");
                         LogHelper.WriteLogToFile($"[PPT导航] 已自动回到批注模式（{reason}）", LogHelper.LogType.Event);
                     }
                     catch (Exception ex)
@@ -2351,6 +2356,40 @@ namespace Ink_Canvas
         internal void CancelPendingPptNavigationRestore()
         {
             _pptNavPendingRestoreAnnotation = false;
+        }
+
+        /// <summary>
+        /// LTSC（2026-11-13）任务栏大小的透明遮罩残留修复。
+        ///
+        /// 复现：PPT 放映中点页码 → OnPPTNavBarPageClickAsync 把
+        /// GridTransparencyFakeBackground 设成 #01FFFFFF（视觉全透明但仍吃点击）
+        /// 并调 SetTransparentNotHitThrough()，把整个窗口变成可拦截状态。
+        /// 如果之后没有走到正常的「退出 PPT / 回到批注」路径，
+        /// 这块遮罩就留在窗口里，盖住底部一条（和任务栏等大），
+        /// 老师看到的就是「浮动栏点不动，那块地方像是被什么挡住了」。
+        ///
+        /// 这个方法是幂等的：不管当前是什么状态，一律恢复到「全透明 + 点击穿透」。
+        /// </summary>
+        internal void ResetPptTransparencyOverlay(string reason)
+        {
+            try
+            {
+                bool wasDirty = GridTransparencyFakeBackground.Background != Brushes.Transparent
+                                || GridTransparencyFakeBackground.Opacity > 0.001;
+
+                GridTransparencyFakeBackground.Opacity = 0;
+                GridTransparencyFakeBackground.Background = Brushes.Transparent;
+                SetTransparentHitThrough();
+
+                if (wasDirty)
+                {
+                    LogHelper.WriteLogToFile($"[PPT遮罩] 已清理透明遮罩（{reason}）", LogHelper.LogType.Event);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"[PPT遮罩] 清理失败（{reason}）: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         #endregion
