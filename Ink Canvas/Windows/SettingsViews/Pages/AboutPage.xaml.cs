@@ -21,10 +21,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
     {
         private DispatcherTimer _usageRefreshTimer;
         private long _savedTotalSeconds;
-        private DateTime _sessionStartTime;
-        // 这一项只统计「打开关于页之后」走过的时长，
-        // 和上面那个整个程序累计的总时长分开算。
-        private DateTime _pageOpenedAt;
+        // 显示用：历史累计总时长（从 usage_stats.enc 读出来的部分）
+        // 实时增量另算：本次启动到现在，起点是 App.appStartTime，
+        // 不是打开关于页的时刻——否则用户开着程序用两小时再点进来，
+        // 这里会显示 0:00:00，和「总使用时长」这个标题对不上。
 
         public AboutPage()
         {
@@ -71,8 +71,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
         private void AboutPage_Loaded(object sender, RoutedEventArgs e)
         {
-            // 计时从这里开始，重新进入页面就重新计。
-            _pageOpenedAt = DateTime.Now;
             LoadSettings();
 
             if (_usageRefreshTimer == null)
@@ -97,9 +95,12 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             try
             {
-                // 只显示从打开这一页开始算的时长。
-                var elapsed = (long)(DateTime.Now - _pageOpenedAt).TotalSeconds;
-                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(elapsed);
+                // 总使用时长 = 历史累计 + 本次启动至今。
+                // 起点用 App.appStartTime（程序启动那一刻），
+                // 不能用打开本页的时刻。
+                var sinceLaunch = (long)(DateTime.Now - App.appStartTime).TotalSeconds;
+                if (sinceLaunch < 0) sinceLaunch = 0;
+                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(_savedTotalSeconds + sinceLaunch);
             }
             catch { }
         }
@@ -140,7 +141,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 var (launchCount, totalSeconds, avgSessionSeconds, _) = DeviceIdentifier.GetUsageStats();
                 _savedTotalSeconds = totalSeconds;
                 LaunchCountTextBlock.Text = launchCount.ToString();
-                // TotalUsageTextBlock 由计时器负责，这里不覆盖。
+                // 立刻显示一次，别等计时器第一跳（否则会空一秒）
+                var sinceLaunch = (long)(DateTime.Now - App.appStartTime).TotalSeconds;
+                if (sinceLaunch < 0) sinceLaunch = 0;
+                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(totalSeconds + sinceLaunch);
             }
             catch (Exception ex)
             {
