@@ -32,6 +32,10 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:CanvasStrings.Canvas_GroupTitle}" />
 
+                    <!-- 分节：光标与压感 -->
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:CanvasStrings.Canvas_SectionCursor}" />
+
                     <!-- 画笔光标：开关 + 展开后选择系统/内置/自定义光标 -->
                     <ui:SettingsExpander x:Name="ExpanderShowPenCursor"
                             Header="{x:Static props:CanvasStrings.Canvas_ShowPenCursor}"
@@ -84,6 +88,10 @@
                             Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}"
                             SwitchName="ToggleSwitchDisablePressure"
                             Toggled="ToggleSwitchDisablePressure_Toggled" />
+
+                    <!-- 分节：笔迹渲染与保存 -->
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:CanvasStrings.Canvas_SectionInk}" />
 
                     <!-- 简单下拉：声明式绑定 -->
                     <ui:SettingsCard Header="{x:Static props:CanvasStrings.Canvas_EraserSize}"
@@ -183,6 +191,10 @@
                             <ComboBoxItem Content="{x:Static props:CanvasStrings.Canvas_AdvancedSmoothing}" Tag="2" />
                         </ComboBox>
                     </ui:SettingsCard>
+
+                    <!-- 分节：画笔自动恢复 -->
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                        Text="{x:Static props:CanvasStrings.Canvas_SectionBrushRestore}" />
 
                     <!-- Expander + ToggleSwitch：ToggleSwitch 用声明式，Expander.IsExpanded 由 XAML Binding 驱动 -->
                     <ui:SettingsExpander x:Name="ExpanderBrushAutoRestore"
@@ -303,10 +315,6 @@
                     </ui:SettingsExpander>
 
                     <!-- LTSC：墨迹识别设置并入本页（原 InkRecognitionPage） -->
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:CanvasStrings.InkRecog_Title}" />
-
-
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:CanvasStrings.InkRecog_Title}" />
 

@@ -255,5 +255,15 @@ namespace Ink_Canvas.Properties
         public static string Canvas_DarkMode => ResourceManager.GetString(nameof(Canvas_DarkMode), _resourceCulture);
 
         public static string Shape_RemoveAsymptote => ResourceManager.GetString(nameof(Shape_RemoveAsymptote), _resourceCulture);
+
+        public static string Canvas_SectionCursor => ResourceManager.GetString(nameof(Canvas_SectionCursor), _resourceCulture);
+
+        public static string Canvas_SectionInk => ResourceManager.GetString(nameof(Canvas_SectionInk), _resourceCulture);
+
+        public static string Canvas_SectionBrushRestore => ResourceManager.GetString(nameof(Canvas_SectionBrushRestore), _resourceCulture);
+
+        public static string Canvas_SectionGesture => ResourceManager.GetString(nameof(Canvas_SectionGesture), _resourceCulture);
+
+        public static string Canvas_SectionInkRecog => ResourceManager.GetString(nameof(Canvas_SectionInkRecog), _resourceCulture);
     }
 }

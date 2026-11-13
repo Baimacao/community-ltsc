@@ -366,4 +366,19 @@
   <data name="Shape_RemoveAsymptote" xml:space="preserve">
     <value>Remove asymptote lines?</value>
   </data>
+  <data name="Canvas_SectionCursor" xml:space="preserve">
+    <value>Cursor &amp; Pressure</value>
+  </data>
+  <data name="Canvas_SectionInk" xml:space="preserve">
+    <value>Ink Rendering &amp; Saving</value>
+  </data>
+  <data name="Canvas_SectionBrushRestore" xml:space="preserve">
+    <value>Brush Auto-restore</value>
+  </data>
+  <data name="Canvas_SectionGesture" xml:space="preserve">
+    <value>Gestures</value>
+  </data>
+  <data name="Canvas_SectionInkRecog" xml:space="preserve">
+    <value>Ink Recognition</value>
+  </data>
 </root>

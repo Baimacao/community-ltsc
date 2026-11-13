@@ -366,4 +366,19 @@
   <data name="Shape_RemoveAsymptote" xml:space="preserve">
     <value>渐近线要不要删掉？</value>
   </data>
+  <data name="Canvas_SectionCursor" xml:space="preserve">
+    <value>光标与压感</value>
+  </data>
+  <data name="Canvas_SectionInk" xml:space="preserve">
+    <value>笔迹渲染与保存</value>
+  </data>
+  <data name="Canvas_SectionBrushRestore" xml:space="preserve">
+    <value>画笔自动恢复</value>
+  </data>
+  <data name="Canvas_SectionGesture" xml:space="preserve">
+    <value>手势</value>
+  </data>
+  <data name="Canvas_SectionInkRecog" xml:space="preserve">
+    <value>墨迹识别</value>
+  </data>
 </root>
