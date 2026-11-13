@@ -1,4 +1,6 @@
 using Ink_Canvas.Helpers;
+using System.Windows.Media.Imaging;
+using iNKORE.UI.WPF.Modern;
 using System.Windows.Threading;
 using System.Diagnostics;
 using Ink_Canvas.Properties;
@@ -655,8 +657,54 @@ namespace Ink_Canvas.Windows
             }
 
             SetMaxSizeAndCenter();
+            UpdateThemedIcons();
             PlayWelcomeIntro();
             RegisterDpiChangedListener();
+        }
+
+
+        // ────────────────────────────────────────────────────────────────
+        // 按当前主题切换 LTSC 图标（深浅两套）
+        //
+        // 为什么不用 XAML 绑定：图标是 png 资源，深浅是两张不同的图，
+        // ThemeManager 的字典替换对 Image.Source 不生效，得手动换。
+        //
+        // 窗口 Icon（任务栏 / Alt-Tab）保持浅色不切 —— 那是系统级图标，
+        // 跟着主题变会让任务栏里同一程序忽深忽浅，反而怪。
+        // ────────────────────────────────────────────────────────────────
+        private void UpdateThemedIcons()
+        {
+            try
+            {
+                bool isLight;
+                try
+                {
+                    var theme = ThemeHelper.GetEffectiveTheme(_settings ?? new Settings());
+                    isLight = theme != ElementTheme.Dark;
+                }
+                catch
+                {
+                    // 拿不到主题就按浅色处理：浅色图标在深色底上也还能看，
+                    // 反过来（深色图标放白底）几乎看不见。
+                    isLight = true;
+                }
+
+                var name = isLight ? "light" : "dark";
+                if (TitleBarIcon != null)
+                {
+                    TitleBarIcon.Source = new BitmapImage(
+                        new Uri($"pack://application:,,,/Resources/Icons-png/iccltsc-{name}-32.png"));
+                }
+                if (WelcomeLogoImage != null)
+                {
+                    WelcomeLogoImage.Source = new BitmapImage(
+                        new Uri($"pack://application:,,,/Resources/Icons-png/iccltsc-{name}-64.png"));
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"OOBE 图标切换失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         private void UpdateView(int animateDirection, bool instant = false)
