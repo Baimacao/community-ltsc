@@ -140,12 +140,19 @@
 
                         <!-- 左：品牌 + 标题 + 主按钮 + 反馈 -->
                         <Grid Grid.Column="0" Margin="0,0,36,0">
-                            <ikw:SimpleStackPanel VerticalAlignment="Center"
+                            <ikw:SimpleStackPanel x:Name="WelcomeLeft" VerticalAlignment="Center"
                                                   HorizontalAlignment="Left"
                                                   Spacing="0">
+                                <ikw:SimpleStackPanel.RenderTransform>
+                                    <TranslateTransform x:Name="WelcomeLeftTransform" X="0" Y="0" />
+                                </ikw:SimpleStackPanel.RenderTransform>
                             <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="13" Margin="0,0,0,34">
-                                <Border Width="52" Height="52" CornerRadius="13"
-                                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                                <Border x:Name="WelcomeLogo" Width="52" Height="52" CornerRadius="13"
+                                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                                        RenderTransformOrigin="0.5,0.5">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform x:Name="WelcomeLogoScale" ScaleX="1" ScaleY="1" />
+                                    </Border.RenderTransform>
                                     <Image Source="\Resources\icc.ico" Width="36"
                                            RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Border>
@@ -158,9 +165,13 @@
                                 </ikw:SimpleStackPanel>
                             </ikw:SimpleStackPanel>
 
-                            <TextBlock Text="{x:Static props:OobeStrings.Oobe_LtscIntroTitle}"
+                            <TextBlock x:Name="WelcomeTitle" Text="{x:Static props:OobeStrings.Oobe_LtscIntroTitle}"
                                        Style="{DynamicResource TitleLargeTextBlockStyle}"
-                                       TextWrapping="Wrap" />
+                                       TextWrapping="Wrap">
+                                <TextBlock.RenderTransform>
+                                    <TranslateTransform X="0" Y="0" />
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
 
                             <TextBlock Text="{x:Static props:OobeStrings.Oobe_LtscIntroDesc}"
                                        Style="{DynamicResource BodyTextBlockStyle}"
@@ -187,14 +198,17 @@
                             <Border Margin="0,34,0,0" Padding="14,11" CornerRadius="8"
                                     HorizontalAlignment="Left"
                                     Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="9">
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
                                     <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.People}" FontSize="14"
                                                  Opacity="0.65" VerticalAlignment="Center" />
                                     <TextBlock Text="{x:Static props:OobeStrings.Oobe_FeedbackDesc}"
                                                Style="{DynamicResource CaptionTextBlockStyle}"
                                                Opacity="0.72" VerticalAlignment="Center" />
                                     <ui:HyperlinkButton x:Name="LinkZhijiao" Padding="2,0" VerticalAlignment="Center"
-                                                     FontSize="12" Content="智教联盟" Click="LinkZhijiao_Click" />
+                                                        FontSize="12" Content="智教联盟" Click="LinkZhijiao_Click" />
+                                    <TextBlock Text="·" Opacity="0.35" FontSize="12" VerticalAlignment="Center" />
+                                    <ui:HyperlinkButton x:Name="LinkGitHub" Padding="2,0" VerticalAlignment="Center"
+                                                        FontSize="12" Content="GitHub" Click="LinkGitHub_Click" />
                                 </ikw:SimpleStackPanel>
                             </Border>
                             </ikw:SimpleStackPanel>
@@ -207,10 +221,13 @@
                                        Style="{DynamicResource SettingsSectionHeaderTextBlockStyle}"
                                        Margin="2,0,0,10" />
 
-                            <Border Padding="16,14" CornerRadius="8"
+                            <Border x:Name="WelcomeCard1" Padding="16,14" CornerRadius="8"
                                     Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
                                     BorderThickness="1"
                                     BorderBrush="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="0" Y="0" />
+                                </Border.RenderTransform>
                                 <ikw:SimpleStackPanel Spacing="2">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="7">
                                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.FastForward}" FontSize="12" Opacity="0.75" />
@@ -223,10 +240,13 @@
                                 </ikw:SimpleStackPanel>
                             </Border>
 
-                            <Border Padding="16,14" CornerRadius="8"
+                            <Border x:Name="WelcomeCard2" Padding="16,14" CornerRadius="8"
                                     Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
                                     BorderThickness="1"
                                     BorderBrush="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="0" Y="0" />
+                                </Border.RenderTransform>
                                 <ikw:SimpleStackPanel Spacing="2">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="7">
                                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.EraseTool}" FontSize="12" Opacity="0.75" />
@@ -239,10 +259,13 @@
                                 </ikw:SimpleStackPanel>
                             </Border>
 
-                            <Border Padding="16,14" CornerRadius="8"
+                            <Border x:Name="WelcomeCard3" Padding="16,14" CornerRadius="8"
                                     Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
                                     BorderThickness="1"
                                     BorderBrush="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="0" Y="0" />
+                                </Border.RenderTransform>
                                 <ikw:SimpleStackPanel Spacing="2">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="7">
                                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Handwriting}" FontSize="12" Opacity="0.75" />

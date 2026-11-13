@@ -1,4 +1,5 @@
 using Ink_Canvas.Helpers;
+using System.Windows.Threading;
 using System.Diagnostics;
 using Ink_Canvas.Properties;
 using iNKORE.UI.WPF.Modern.Common.IconKeys;
@@ -347,27 +348,28 @@ namespace Ink_Canvas.Windows
         /// 拿到 ta 给的地址后，只要把 ZhijiaoUrl 换掉即可，不用再动别处。
         /// 不填假地址：编一个链接比暂时不能点更糟。
         /// </summary>
-        private const string ZhijiaoUrl = "";
+        private const string ZhijiaoUrl = "https://forum.smart-teach.cn";
+        private const string GitHubUrl = "https://github.com/Baimacao/community-ltsc";
 
-        private void LinkZhijiao_Click(object sender, RoutedEventArgs e)
+        private void LinkZhijiao_Click(object sender, RoutedEventArgs e) => OpenExternal(ZhijiaoUrl, "智教联盟");
+
+        private void LinkGitHub_Click(object sender, RoutedEventArgs e) => OpenExternal(GitHubUrl, "GitHub");
+
+        private static void OpenExternal(string url, string name)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(ZhijiaoUrl))
+                if (string.IsNullOrWhiteSpace(url))
                 {
-                    LogHelper.WriteLogToFile("智教联盟反馈链接尚未配置", LogHelper.LogType.Warning);
+                    LogHelper.WriteLogToFile($"{name} 链接尚未配置", LogHelper.LogType.Warning);
                     return;
                 }
 
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = ZhijiaoUrl,
-                    UseShellExecute = true
-                });
+                Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"打开智教联盟链接失败: {ex.Message}", LogHelper.LogType.Warning);
+                LogHelper.WriteLogToFile($"打开{name}链接失败: {ex.Message}", LogHelper.LogType.Warning);
             }
         }
 
@@ -540,6 +542,95 @@ namespace Ink_Canvas.Windows
             return IntPtr.Zero;
         }
 
+        // ────────────────────────────────────────────────────────────────
+        // 首屏入场：错开时间的组合动画
+        //
+        // 单一淡入看不出层级，这里按阅读顺序给三拍：
+        //
+        //   拍1  logo  0.6 → 1.0 弹性放大（Bouncy，damping 0.45 轻微过冲）
+        //   拍2  标题  从下方 24px 弹起（Bouncy）
+        //   拍3  卡片  三张从右侧 28px 依次滑入，间隔 70ms
+        //
+        // 全程约 700ms。过冲只给 logo 和标题——它们是无正文的大色块，过一点自然；
+        // 卡片里有说明文字，过冲会晃眼，所以用 Smooth 不过冲。
+        // ────────────────────────────────────────────────────────────────
+        private void PlayWelcomeIntro()
+        {
+            try
+            {
+                LogHelper.WriteLogToFile("OOBE 入场动画开始（logo→标题→3 张卡片）", LogHelper.LogType.Event);
+                var bouncy = SpringAnimator.Bouncy;
+                var smooth = SpringAnimator.Smooth;
+
+                // 拍1：logo 弹出
+                WelcomeLogo.Opacity = 0;
+                SpringAnimator.SyncScalar(WelcomeLogoScale, 0.6);
+                SpringAnimator.AnimateScalar(WelcomeLogoScale, 1.0,
+                    v => { WelcomeLogoScale.ScaleX = v; WelcomeLogoScale.ScaleY = v; },
+                    bouncy, null);
+                SpringAnimator.AnimateScalar(WelcomeLogo, 1.0,
+                    v => WelcomeLogo.Opacity = v, smooth, null);
+
+                // 拍2：标题从下方弹起
+                WelcomeTitle.Opacity = 0;
+                if (WelcomeTitle.RenderTransform is TranslateTransform titleT)
+                {
+                    titleT.Y = 24;
+                    SpringAnimator.SyncToTransform(titleT);
+                    SpringAnimator.Animate(titleT, 0f, 0f, bouncy, null);
+                }
+                SpringAnimator.AnimateScalar(WelcomeTitle, 1.0,
+                    v => WelcomeTitle.Opacity = v, smooth, null);
+
+                // 拍3：卡片依次滑入
+                var cards = new[] { WelcomeCard1, WelcomeCard2, WelcomeCard3 };
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(220) };
+                timer.Tick += (_, _) =>
+                {
+                    timer.Stop();
+                    for (int i = 0; i < cards.Length; i++)
+                    {
+                        var card = cards[i];
+                        if (card?.RenderTransform is not TranslateTransform t) continue;
+
+                        card.Opacity = 0;
+                        t.X = 28;
+                        SpringAnimator.SyncToTransform(t);
+
+                        var cardTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(i * 70) };
+                        cardTimer.Tick += (_, _) =>
+                        {
+                            cardTimer.Stop();
+                            SpringAnimator.Animate(t, 0f, 0f, smooth, null);
+                            SpringAnimator.AnimateScalar(card, 1.0,
+                                v => card.Opacity = v, smooth, null);
+                        };
+                        cardTimer.Start();
+                    }
+                };
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                // 动画失败不能让首屏黑着：全部复位到可见。
+                LogHelper.WriteLogToFile($"OOBE 入场动画出错: {ex.Message}", LogHelper.LogType.Warning);
+                try
+                {
+                    WelcomeLogo.Opacity = 1;
+                    WelcomeLogoScale.ScaleX = WelcomeLogoScale.ScaleY = 1;
+                    WelcomeTitle.Opacity = 1;
+                    if (WelcomeTitle.RenderTransform is TranslateTransform tt) tt.Y = 0;
+                    foreach (var c in new[] { WelcomeCard1, WelcomeCard2, WelcomeCard3 })
+                    {
+                        if (c == null) continue;
+                        c.Opacity = 1;
+                        if (c.RenderTransform is TranslateTransform ct) ct.X = 0;
+                    }
+                }
+                catch { }
+            }
+        }
+
         #endregion
 
         private void OobeWindow_OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -564,6 +655,7 @@ namespace Ink_Canvas.Windows
             }
 
             SetMaxSizeAndCenter();
+            PlayWelcomeIntro();
             RegisterDpiChangedListener();
         }
 
