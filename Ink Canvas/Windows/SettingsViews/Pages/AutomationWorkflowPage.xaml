@@ -215,7 +215,7 @@
                                 </ui:SettingsExpander.Items>
                             </ui:SettingsExpander>
 
-                            <ui:SettingsExpander Header="{x:Static props:AutomationStrings.AutoFold_Group_Other}" IsExpanded="True">
+                            <ui:SettingsExpander Header="{x:Static props:AutomationStrings.AutoFold_Group_Other}">
                                 <ui:SettingsExpander.HeaderIcon><ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Edit}"/></ui:SettingsExpander.HeaderIcon>
                                 <ui:SettingsExpander.Items>
                                     <ui:SettingsCard Header="{x:Static props:AutomationStrings.AutoFold_App_WenXiangBoard}">
