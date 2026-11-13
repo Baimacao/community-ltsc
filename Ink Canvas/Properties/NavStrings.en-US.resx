@@ -261,4 +261,13 @@
   <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
     <value>Ink rendering, smoothing, pressure and eraser</value>
   </data>
+  <data name="Nav_Lecture" xml:space="preserve">
+    <value>Lecture</value>
+  </data>
+  <data name="Nav_Lecture_Tooltip" xml:space="preserve">
+    <value>Slideshow, timer and automation</value>
+  </data>
+  <data name="Nav_Timer_Tooltip" xml:space="preserve">
+    <value>Classroom timer and countdown</value>
+  </data>
 </root>

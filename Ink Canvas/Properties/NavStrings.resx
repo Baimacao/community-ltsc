@@ -273,4 +273,13 @@
   <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
     <value>笔迹渲染、平滑、压感与橡皮</value>
   </data>
+  <data name="Nav_Lecture" xml:space="preserve">
+    <value>授课</value>
+  </data>
+  <data name="Nav_Lecture_Tooltip" xml:space="preserve">
+    <value>课件放映、计时与自动化</value>
+  </data>
+  <data name="Nav_Timer_Tooltip" xml:space="preserve">
+    <value>课堂计时与倒计时</value>
+  </data>
 </root>

@@ -238,52 +238,62 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
-                <!-- 计时器（LTSC：原混在随机抽选页，抽人移除后独立成页） -->
+                <!-- 授课（LTSC D-20：PPT、计时、自动化原来是三个平铺的顶级入口，
+                     但它们都是"上课时用的工具"，跟"配置界面长什么样"不是一类。
+                     收进一个分组，老师上课前想调东西先进这一组就够了。 -->
                 <ui:NavigationViewItem
-                    x:Name="TimerPageItem"
-                    Content="{x:Static props:TimerStrings.Timer_Title}"
-                    Tag="TimerPage"
-                    ToolTipService.ToolTip="{x:Static props:TimerStrings.Timer_Title}">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-
-                <!-- PPT联动 -->
-                <ui:NavigationViewItem
-                    x:Name="PowerPointPageItem"
-                    Content="{x:Static props:PPTStrings.GroupTitle}"
-                    Tag="PowerPointPage"
-                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_PPT_Tooltip}">
+                    x:Name="LectureItem"
+                    Content="{x:Static props:NavStrings.Nav_Lecture}"
+                    SelectsOnInvoked="False"
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Lecture_Tooltip}">
                     <ui:NavigationViewItem.Icon>
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Slideshow}"/>
                     </ui:NavigationViewItem.Icon>
+                    <ui:NavigationViewItem.MenuItems>
+                        <ui:NavigationViewItem
+                            x:Name="PowerPointPageItem"
+                            Content="{x:Static props:PPTStrings.GroupTitle}"
+                            Tag="PowerPointPage"
+                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_PPT_Tooltip}">
+                            <ui:NavigationViewItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Slideshow}"/>
+                            </ui:NavigationViewItem.Icon>
+                        </ui:NavigationViewItem>
+                        <ui:NavigationViewItem
+                            x:Name="TimerPageItem"
+                            Content="{x:Static props:TimerStrings.Timer_Title}"
+                            Tag="TimerPage"
+                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Timer_Tooltip}">
+                            <ui:NavigationViewItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
+                            </ui:NavigationViewItem.Icon>
+                        </ui:NavigationViewItem>
+                        <ui:NavigationViewItem
+                            x:Name="AutomationPageItem"
+                            Content="{x:Static props:AutomationStrings.Automation_Title}"
+                            Tag="AutomationWorkflowPage"
+                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Automation_Settings}">
+                            <ui:NavigationViewItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Sync}"/>
+                            </ui:NavigationViewItem.Icon>
+                        </ui:NavigationViewItem>
+                    </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
                 <!-- LTSC D-01: 自动更新功能已移除，更新设置页不再出现在导航中。 -->
 
                 <!-- 通知设置（LTSC N-01：公告中心子项已随公告功能一并移除） -->
 
-                <!-- 存储 -->
+                <!-- 存储（LTSC D-20：只有一个页面，原来套了「存储 → 存储」两层，
+                     点进去还得再点一次。降成一级单页。 -->
                 <ui:NavigationViewItem
                     x:Name="StorageItem"
                     Content="{x:Static props:StorageStrings.Storage_NavTitle}"
-                    SelectsOnInvoked="False"
+                    Tag="StoragePage"
                     ToolTipService.ToolTip="{x:Static props:StorageStrings.Storage_NavTooltip}">
                     <ui:NavigationViewItem.Icon>
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.HardDrive}"/>
                     </ui:NavigationViewItem.Icon>
-                    <ui:NavigationViewItem.MenuItems>
-                        <ui:NavigationViewItem
-                            x:Name="StoragePageItem"
-                            Content="{x:Static props:StorageStrings.Storage_Title}"
-                            Tag="StoragePage"
-                            ToolTipService.ToolTip="{x:Static props:StorageStrings.Storage_NavTooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.HardDrive}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                    </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
                 <!-- 工具栏 -->
@@ -366,16 +376,7 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
-                <!-- 自动化 -->
-                <ui:NavigationViewItem
-                    x:Name="AutomationPageItem"
-                    Content="{x:Static props:AutomationStrings.Automation_Title}"
-                    Tag="AutomationWorkflowPage"
-                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Automation_Settings}">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Sync}"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
+
 
                 <!-- 关于 -->
 
