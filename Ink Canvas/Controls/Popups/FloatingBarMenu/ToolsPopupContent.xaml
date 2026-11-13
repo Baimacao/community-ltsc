@@ -38,7 +38,6 @@
                 <controls:ToolMenuButton x:Name="ScreenshotToolBtn" Label="{x:Static props:FloatingBarStrings.Tools_Screenshot}" Visibility="Collapsed" />
                 <controls:ToolMenuButton x:Name="ShapeDrawToolBtn" Label="{x:Static props:FloatingBarStrings.FloatingBar_Geometry}" Visibility="Collapsed" />
                 <controls:ToolMenuButton x:Name="RedoToolBtn" Label="{x:Static props:FloatingBarStrings.Board_Redo}" Visibility="Collapsed" />
-                <controls:ToolMenuButton x:Name="ManualToolBtn" Label="{x:Static props:FloatingBarStrings.Tools_Manual}" Visibility="Collapsed" />
                 <controls:ToolMenuButton x:Name="SettingsToolBtn" Label="{x:Static props:NavStrings.Settings_Title}" Visibility="Collapsed" />
             </ikw:SimpleStackPanel>
         </ContentControl>

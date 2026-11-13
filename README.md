@@ -1,85 +1,104 @@
 # ICC-CE LTSC
 
-> 基于 [InkCanvasForClass Community Edition](https://github.com/InkCanvasForClass/community) 的长期支持分支。
-> 为课堂场景做减法：砍掉干扰授课的功能，把力气花在稳定和顺手上。
+> ICC-CE 的长期支持分支。
+> 目标只有一个：**在教室里稳定跑**。
 
-**版本**：1.0a-ltsc  
-**上游基线**：`083f694e`（CJK_mkp，2026-07-15，上游 version 1.0.0）
+| 项 | 值 |
+|---|---|
+| 版本 | 1.0a-ltsc（FileVersion 1.0.1.0） |
+| 上游基线 | `083f694e`（上游 1.0.0） |
+| 上游仓库 | https://github.com/InkCanvasForClass/community |
+| 本分支仓库 | https://github.com/Baimacao/community-ltsc |
 
 ---
 
-## 这个版本和上游有什么不同
+## 这个版本修了什么
 
-### 我们删掉的
+### 崩溃与泄漏
 
-| 功能 | 为什么删 |
+| 问题 | 影响 |
 |---|---|
-| 点名 / 随机抽选 | 干扰课堂。原实现与抽选耦合，砍掉后计时器独立成页 |
-| 数据上传 / 使用统计 | 本分支**不涉及任何数据获取**，没有需要用户同意的采集行为 |
-| 窗口渲染模式切换（WindowChrome） | 稳定性问题，保留会导致异常 |
-| 设置里的控件库 Demo 残留 | 不是老师需要的东西 |
+| 退出后残留 `InkCanvas.IACoreHelper.exe` | 反复开关会积累多个后台进程 |
+| 跨线程访问 `DynamicRenderer` 的判据只认英文 | 非英文系统上拦不住，可能崩 |
+| 墨迹转形状每笔漏一个内核句柄 | 长时间批注后句柄数持续上涨 |
 
-### 我们改掉的
+### 功能异常
 
-| 改动 | 说明 |
+| 问题 | 影响 |
 |---|---|
-| **OOBE 从 7 步压到 3 步** | 大约 30 秒走完，支持随时跳过 |
-| **全应用弹簧动画** | 18 处动画换成交互式弹簧引擎，手感统一 |
-| **触摸屏滚动** | 设置页支持自然滚动（外层 NavigationView 会吞触摸，已修） |
-| **PPT 模式透明遮罩** | 退出时不再残留一条透明带 |
-| **退出后不留后台进程** | IACoreHelper 加父进程看门狗，主程序退出它跟着退 |
-| **多开不再抢同一份配置** | 任务栏图标和 AppUserModelID 与上游分开，可共存 |
-| **设置页全面中文化** | 109 条硬编码文字改成 resx，支持中英切换 |
-| **图标独立** | LTSC 有自己的图标，深浅两套跟随主题 |
+| 和原版装一起时任务栏合并、配置互相覆盖 | 两个版本不能共存 |
+| 触摸屏滑不动设置页 | 平板上等于没法改设置 |
+| 退出 PPT 放映后留一条半透明遮罩 | 挡着下面的窗口，点不掉 |
+| PPT 翻页栏有时不出现 | 放映时看不到页数 |
+| PPT 连接失败没有任何提示 | 出问题查不到原因 |
 
-### 我们没动的
+### 可用性
 
-上游的批注、画板、PPT 联动核心功能保持原样。本分支的改动集中在**交互稳定性**和**课堂体验**，不重新发明画布。
+- 设置页按使用场景重新归组，调试项收进折叠组
+- 硬编码的英文字符串收进资源文件，支持中英切换
+- 界面动画换成弹簧引擎，连续操作不再跳帧
+- 删掉日志里每 5 秒一条的开发期探针（原占日志一半体积）
+- 首次启动引导的背景样式下拉只显示 3 个常用项
+- 工具栏里点了没反应的「说明书」入口已删除
+
+细节见 [docs/LTSC-CHANGES.md](docs/LTSC-CHANGES.md)。
 
 ---
 
 ## 遇到问题去哪反馈
 
-| 渠道 | 地址 |
-|---|---|
-| **GitHub Issues** | https://github.com/Baimacao/community-ltsc/issues |
-| **智教联盟论坛** | https://forum.smart-teach.cn |
+**先看日志**。出问题时日志里通常有原因：
 
-反馈时请附上日志文件：程序目录下的 `Logs/Log_日期-时间.txt`。
+```
+<程序目录>\Logs\Log_YYYY-MM-DD-HH-mm-ss.txt
+```
 
-日志文件名就是启动时间，挑最新那份即可。
+文件名是启动时间。反馈时把最近一份日志附上，能省很多来回。
+
+反馈渠道：
+
+- 智教联盟：https://forum.smart-teach.cn
+- GitHub Issues：https://github.com/Baimacao/community-ltsc/issues
 
 ---
 
 ## 与上游的关系
 
-- 本分支从上游 `083f694e`（2026-07-15）分出，是针对性重构，不是长期漂移
-- 上游后续如有修复，会评估后回合
-- 本分支的通用改进（弹簧动画引擎、触摸滚动修复等）计划整理后**反哺上游**
+本分支从上游 `083f694e`（2026-07-15）分出，
+只做修复与改进，不改上游的功能设计。
 
-如果你在找原版，请去 [上游仓库](https://github.com/InkCanvasForClass/community)。
+上游如果修了同样的问题，可以直接用；
+本分支修的问题也会整理出来回给上游，见 [docs/LTSC-CHANGES.md](docs/LTSC-CHANGES.md) 第六节。
 
 ---
 
 ## 开发
 
-改动清单见 [LTSC-CHANGES.md](docs/LTSC-CHANGES.md)，基线记录见 [LTSC-BASELINE.md](docs/LTSC-BASELINE.md)。
+| 项 | 值 |
+|---|---|
+| SDK | .NET 11（11.0.100） |
+| TFM | `net11.0-windows10.0.19041.0` |
+| LangVersion | 14 |
+| 平台 | x64 |
 
-**构建环境**：.NET 11 SDK，`net11.0-windows10.0.19041.0`
-
-```
+```bash
 dotnet build "Ink Canvas/InkCanvasForClass.csproj" -c Release -p:Platform=x64
 ```
+
+**注意**：不要用 `--target:Compile`。它会跳过 XAML 代码生成，
+报出假的 `CS5001` 和 `InitializeComponent` 找不到。
+
+基线怎么核对、怎么回合上游的新提交，见 [docs/LTSC-BASELINE.md](docs/LTSC-BASELINE.md)。
 
 ---
 
 ## 致谢
 
-- [InkCanvasForClass](https://github.com/InkCanvasForClass/community) —— 上游
-- 智教联盟 —— 反馈渠道与社区支持
+本分支站在上游 ICC-CE 和 Ink Canvas 的肩膀上。
+所有原作者的贡献见程序内「关于」页。
 
 ---
 
 ## 许可
 
-遵循上游许可。本分支的改动同样开源。
+沿用上游许可证，见仓库根目录 `LICENSE`。

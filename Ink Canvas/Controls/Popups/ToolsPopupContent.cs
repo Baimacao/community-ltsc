@@ -13,7 +13,6 @@ namespace Ink_Canvas.Controls
         public abstract ToolMenuButton ScreenshotBtn { get; }
         public abstract ToolMenuButton ShapeDrawBtn { get; }
         public abstract ToolMenuButton RedoBtn { get; }
-        public abstract ToolMenuButton ManualBtn { get; }
         public abstract ToolMenuButton SettingsBtn { get; }
 
         public abstract Button CloseButtonControl { get; }
@@ -31,7 +30,6 @@ namespace Ink_Canvas.Controls
                 "screenshot" => ScreenshotBtn,
                 "shapeDraw" => ShapeDrawBtn,
                 "redo" => RedoBtn,
-                "manual" => ManualBtn,
                 "settings" => SettingsBtn,
                 _ => null
             };

@@ -16,7 +16,6 @@ namespace Ink_Canvas.Controls
         public override ToolMenuButton ScreenshotBtn => ScreenshotToolBtn;
         public override ToolMenuButton ShapeDrawBtn => ShapeDrawToolBtn;
         public override ToolMenuButton RedoBtn => RedoToolBtn;
-        public override ToolMenuButton ManualBtn => ManualToolBtn;
         public override ToolMenuButton SettingsBtn => SettingsToolBtn;
 
         public override Button CloseButtonControl => Shell?.CloseButtonControl;
@@ -41,7 +40,6 @@ namespace Ink_Canvas.Controls
                 { "screenshot", ScreenshotToolBtn },
                 { "shapeDraw", ShapeDrawToolBtn },
                 { "redo", RedoToolBtn },
-                { "manual", ManualToolBtn },
                 { "settings", SettingsToolBtn },
             };
         }

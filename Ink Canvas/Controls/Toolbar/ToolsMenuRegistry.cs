@@ -40,7 +40,6 @@ namespace Ink_Canvas.Controls.Toolbar
             new ToolsMenuItemInfo { Id = "screenshot", LocalizationKey = "Tools_Screenshot", Description = "截图", IconGeometry = XamlGraphicsIconGeometries.ScreenshotIconGeometry },
             new ToolsMenuItemInfo { Id = "shapeDraw", LocalizationKey = "FloatingBar_Geometry", Description = "几何图形", IconGeometry = XamlGraphicsIconGeometries.ShapesIcon },
             new ToolsMenuItemInfo { Id = "redo", LocalizationKey = "Board_Redo", Description = "重做", IconGeometry = XamlGraphicsIconGeometries.RedoIcon },
-            new ToolsMenuItemInfo { Id = "manual", LocalizationKey = "Tools_Manual", Description = "使用指南", IconGeometry = XamlGraphicsIconGeometries.ManualIconGeometry },
             new ToolsMenuItemInfo { Id = "settings", LocalizationKey = "Settings_Title", Description = "设置", IconGeometry = XamlGraphicsIconGeometries.SettingsIconGeometry },
         };
 

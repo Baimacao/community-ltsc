@@ -110,7 +110,6 @@ namespace Ink_Canvas
         internal ToolMenuButton BoardScreenshotToolBtn => BoardToolsPopupContent?.ScreenshotBtn;
         internal ToolMenuButton BoardShapeDrawToolBtn => BoardToolsPopupContent?.ShapeDrawBtn;
         internal ToolMenuButton BoardRedoToolBtn => BoardToolsPopupContent?.RedoBtn;
-        internal ToolMenuButton BoardManualToolBtn => BoardToolsPopupContent?.ManualBtn;
         internal ToolMenuButton BoardSettingsToolBtn => BoardToolsPopupContent?.SettingsBtn;
 
         // Non-Board buttons: originally XAML auto-generated fields, now delegated to MainToolsPopupContent
@@ -123,7 +122,6 @@ namespace Ink_Canvas
         internal ToolMenuButton ScreenshotToolBtn => MainToolsPopupContent?.ScreenshotBtn;
         internal ToolMenuButton ShapeDrawToolBtn => MainToolsPopupContent?.ShapeDrawBtn;
         internal ToolMenuButton RedoToolBtn => MainToolsPopupContent?.RedoBtn;
-        internal ToolMenuButton ManualToolBtn => MainToolsPopupContent?.ManualBtn;
         internal ToolMenuButton SettingsToolBtn => MainToolsPopupContent?.SettingsBtn;
 
         internal Image LeftUnFoldBtnImgChevron => LeftSidePanel?.ChevronIcon;
@@ -188,8 +186,6 @@ namespace Ink_Canvas
                 content.ShapeDrawBtn.ButtonMouseUp += ImageDrawShape_MouseUp;
             if (content.RedoBtn != null)
                 content.RedoBtn.ButtonMouseUp += SymbolIconRedo_MouseUp;
-            if (content.ManualBtn != null)
-                content.ManualBtn.ButtonMouseUp += OperatingGuideWindowIcon_MouseUp;
             if (content.SettingsBtn != null)
                 content.SettingsBtn.ButtonMouseUp += SymbolIconSettings_Click;
             content.CloseButtonControl.Click += CloseBordertools_Click;

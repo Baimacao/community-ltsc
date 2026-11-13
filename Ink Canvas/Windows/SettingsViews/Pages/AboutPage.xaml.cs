@@ -22,6 +22,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         private DispatcherTimer _usageRefreshTimer;
         private long _savedTotalSeconds;
         private DateTime _sessionStartTime;
+        // 这一项只统计「打开关于页之后」走过的时长，
+        // 和上面那个整个程序累计的总时长分开算。
+        private DateTime _pageOpenedAt;
 
         public AboutPage()
         {
@@ -68,6 +71,8 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
         private void AboutPage_Loaded(object sender, RoutedEventArgs e)
         {
+            // 计时从这里开始，重新进入页面就重新计。
+            _pageOpenedAt = DateTime.Now;
             LoadSettings();
 
             if (_usageRefreshTimer == null)
@@ -92,8 +97,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             try
             {
-                long currentSessionSeconds = (long)(DateTime.Now - _sessionStartTime).TotalSeconds;
-                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(_savedTotalSeconds + currentSessionSeconds);
+                // 只显示从打开这一页开始算的时长。
+                var elapsed = (long)(DateTime.Now - _pageOpenedAt).TotalSeconds;
+                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(elapsed);
             }
             catch { }
         }
@@ -133,9 +139,8 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             {
                 var (launchCount, totalSeconds, avgSessionSeconds, _) = DeviceIdentifier.GetUsageStats();
                 _savedTotalSeconds = totalSeconds;
-                _sessionStartTime = DateTime.Now;
                 LaunchCountTextBlock.Text = launchCount.ToString();
-                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(totalSeconds);
+                // TotalUsageTextBlock 由计时器负责，这里不覆盖。
             }
             catch (Exception ex)
             {

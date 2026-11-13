@@ -204,7 +204,6 @@ namespace Ink_Canvas
                 SetMenuGeometry(ScreenshotToolBtn, XamlGraphicsIconGeometries.ScreenshotIconGeometry);
                 SetMenuGeometry(ShapeDrawToolBtn, XamlGraphicsIconGeometries.ShapesIcon);
                 SetMenuGeometry(RedoToolBtn, XamlGraphicsIconGeometries.RedoIcon);
-                SetMenuGeometry(ManualToolBtn, XamlGraphicsIconGeometries.ManualIconGeometry);
                 SetMenuGeometry(SettingsToolBtn, XamlGraphicsIconGeometries.SettingsIconGeometry);
 
                 SetMenuGeometry(BoardTimerToolBtn, XamlGraphicsIconGeometries.TimerIconGeometry);
@@ -216,7 +215,6 @@ namespace Ink_Canvas
                 SetMenuGeometry(BoardScreenshotToolBtn, XamlGraphicsIconGeometries.ScreenshotIconGeometry);
                 SetMenuGeometry(BoardShapeDrawToolBtn, XamlGraphicsIconGeometries.ShapesIcon);
                 SetMenuGeometry(BoardRedoToolBtn, XamlGraphicsIconGeometries.RedoIcon);
-                SetMenuGeometry(BoardManualToolBtn, XamlGraphicsIconGeometries.ManualIconGeometry);
                 SetMenuGeometry(BoardSettingsToolBtn, XamlGraphicsIconGeometries.SettingsIconGeometry);
 
                 bool isDarkTheme = IsCurrentThemeDark();
