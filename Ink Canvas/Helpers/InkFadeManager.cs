@@ -453,6 +453,21 @@ namespace Ink_Canvas.Helpers
             }
         }
 
+        // LTSC（2026-11-13）C1 决策：本文件（InkFadeManager）刻意保留 Storyboard，不换弹簧引擎。
+        //
+        // 原因不是懒得改，是换了会坏：
+        //   这里的 Completed 回调 → OnAnimationCompleted → 从画布移除墨迹 + RemoveStroke，
+        //   它本身就是资源回收路径，不是纯视觉效果。
+        //   而 SpringAnimator 的完成回调挂在 CompositionTarget.Rendering 上，
+        //   窗口最小化 / 完全被遮挡时 WPF 会降低甚至停止渲染节拍，弹簧走不到停稳，
+        //   回调不触发 —— 墨迹就永远留在画布上，变成泄漏。
+        //   Storyboard 的时间轴由 WPF 内部时钟驱动，不依赖渲染帧，最小化时照样走完。
+        //
+        // 结论：渐隐动画（淡出到 0）的观感用弹簧和用缓动几乎没差别，
+        // 但换成弹簧会引入"墨迹永不清"的泄漏。收益为零，风险为实，所以不换。
+        // 要换的话，必须先补一个 DispatcherTimer 兜底，在 duration + 500ms 后强制调一次
+        // OnAnimationCompleted，不管动画有没有走完。
+
         private void StartUnifiedFadeAnimation(UIElement visual, Stroke stroke, double currentOpacity, int duration)
         {
             try
