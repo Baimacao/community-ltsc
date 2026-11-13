@@ -163,4 +163,14 @@
   <data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve">
     <value>确认取消隐私同意</value>
   </data>
+  <data name="About_LtscTitle" xml:space="preserve">
+    <value>LTSC 长期支持分支</value>
+  </data>
+  <data name="About_LtscBody" xml:space="preserve">
+    <value>这是基于 ICC-CE（InkCanvasForClass Community Edition）的 LTSC 长期支持分支，面向日常授课场景。
+
+和上游的区别：优先保证稳定性，功能改动会先在真机上验证再放出；界面文案按一线教师的使用习惯重写；不追新功能。
+
+遇到问题请先说明是哪个版本（关于页顶部能看到），这样才能判断是上游原有的问题还是本分支改出来的。</value>
+  </data>
 </root>

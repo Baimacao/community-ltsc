@@ -65,9 +65,14 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Title>InkCanvasForClass</Title>
+    <Title>InkCanvasForClass LTSC</Title>
     <Authors>CJK_mkp</Authors>
-    <Product>InkCanvasForClass</Product>
+    <Product>InkCanvasForClass LTSC</Product>
+    <!-- LTSC：独立版本序列。AssemblyVersion 必须四段数字给 CLR 用；
+         人看的 "1.0a-ltsc" 放 FileVersion / InformationalVersion。 -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
     <Copyright>© Copyright  CJK_mkp 2025-now</Copyright>
     <PackageProjectUrl>https://inkcanvasforclass.github.io</PackageProjectUrl>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -566,7 +571,7 @@
       <!-- 如果有GitCommitIdShort，就取前7位 -->
       <_ShortSha Condition="'$(GitCommitIdShort)' != ''">$(GitCommitIdShort)</_ShortSha>
       <_ShortSha7 Condition="'$(GitCommitIdShort)' != ''">$(_ShortSha.Substring(0, 7))</_ShortSha7>
-      <AssemblyInformationalVersion>$(AssemblyVersion).$(_ShortSha7)</AssemblyInformationalVersion>
+      <AssemblyInformationalVersion>1.0a-ltsc+$(_ShortSha7)</AssemblyInformationalVersion>
     </PropertyGroup>
   </Target>
 </Project>

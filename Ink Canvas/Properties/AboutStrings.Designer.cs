@@ -117,5 +117,8 @@ namespace Ink_Canvas.Properties
         public static string Privacy_ConfirmRevokePrivacy_Message => ResourceManager.GetString(nameof(Privacy_ConfirmRevokePrivacy_Message), _resourceCulture);
 
         public static string Privacy_ConfirmRevokePrivacy_Title => ResourceManager.GetString(nameof(Privacy_ConfirmRevokePrivacy_Title), _resourceCulture);
+
+        public static string About_LtscTitle => ResourceManager.GetString(nameof(About_LtscTitle), _resourceCulture);
+        public static string About_LtscBody => ResourceManager.GetString(nameof(About_LtscBody), _resourceCulture);
     }
 }
