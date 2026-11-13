@@ -272,5 +272,65 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         }
 
         #endregion
-    }
+    
+        #region Mini Whiteboard
+
+        private void UpdateMiniWhiteboardSizeText()
+        {
+            if (MiniWhiteboardSizeText == null || MiniWhiteboardWidthSlider == null || MiniWhiteboardHeightSlider == null) return;
+            MiniWhiteboardSizeText.Text = $"{(int)MiniWhiteboardWidthSlider.Value} × {(int)MiniWhiteboardHeightSlider.Value}";
+        }
+
+        private void UpdateMiniWhiteboardOpacityText()
+        {
+            if (MiniWhiteboardOpacityText == null || MiniWhiteboardOpacitySlider == null) return;
+            MiniWhiteboardOpacityText.Text = $"{Math.Round(MiniWhiteboardOpacitySlider.Value * 100):0}%";
+        }
+
+
+        private void ToggleSwitchMiniWhiteboardEnabled_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.MiniWhiteboard ??= new MiniWhiteboardSettings();
+            SettingsManager.Settings.MiniWhiteboard.IsEnabled = ToggleSwitchMiniWhiteboardEnabled.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchMiniWhiteboardSyncPPT_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.MiniWhiteboard ??= new MiniWhiteboardSettings();
+            SettingsManager.Settings.MiniWhiteboard.SyncWithPPTPages = ToggleSwitchMiniWhiteboardSyncPPT.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void MiniWhiteboardWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            UpdateMiniWhiteboardSizeText();
+            if (!_isLoaded) return;
+            SettingsManager.Settings.MiniWhiteboard ??= new MiniWhiteboardSettings();
+            SettingsManager.Settings.MiniWhiteboard.DefaultWidth = MiniWhiteboardWidthSlider.Value;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void MiniWhiteboardHeightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            UpdateMiniWhiteboardSizeText();
+            if (!_isLoaded) return;
+            SettingsManager.Settings.MiniWhiteboard ??= new MiniWhiteboardSettings();
+            SettingsManager.Settings.MiniWhiteboard.DefaultHeight = MiniWhiteboardHeightSlider.Value;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        private void MiniWhiteboardOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            UpdateMiniWhiteboardOpacityText();
+            if (!_isLoaded) return;
+            SettingsManager.Settings.MiniWhiteboard ??= new MiniWhiteboardSettings();
+            SettingsManager.Settings.MiniWhiteboard.DefaultOpacity = MiniWhiteboardOpacitySlider.Value;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        #endregion
+}
 }
