@@ -32,6 +32,72 @@ namespace Ink_Canvas.Helpers
         internal static TimeSpan EffectiveDuration(TimeSpan duration)
             => AnimationsDisabled ? TimeSpan.Zero : duration;
 
+        /// <summary>
+        /// LTSC（2026-11-13）C1：把旧的"固定时长"映射成弹簧预设。
+        ///
+        /// 为什么不是直接删掉 duration：这些方法的公开签名被大量调用方依赖，
+        /// 改成物理参数会波及十几处调用点。这里保留 duration 作为"期望到位时间"，
+        /// 映射成 response（响应时间）——数值上取同一个量，手感比线性缓动更自然。
+        ///
+        /// 阻尼取 0.78：超过 1.0 会过冲（弹过头再回来），太低又会发木。
+        /// 0.78 接近临界阻尼，几乎不过冲，但收尾有弹性。
+        /// </summary>
+        /// <summary>
+        /// LTSC（2026-11-13）C1：无过冲预设，给缩放和弹窗用。
+        ///
+        /// 为什么这两类不能用普通弹簧：
+        ///   - 缩放：ScaleTransform 的中心固定在元素原点，过冲时会先缩到 1 以下再弹回，
+        ///     老师快速连点面板时，这种抖动比线性缓动更明显。
+        ///   - 弹窗：Popup 过冲会让整个窗口边缘抖一下，很扎眼。
+        /// 取 damping = 1.0（临界阻尼），数学上保证不过冲，收尾仍然带弹性。
+        /// </summary>
+        internal static SpringAnimator.SpringPreset NoOvershootPreset(double duration)
+        {
+            var response = (float)Math.Max(0.06, Math.Min(duration, 0.6));
+            return new SpringAnimator.SpringPreset(response, 1.0f);
+        }
+
+        /// <summary>
+        /// 弹簧动画的 key。AnimateScalar 内部是 Dictionary&lt;object, Value&gt;，
+        /// 按 Equals/GetHashCode 查表，所以这里必须实现值相等：
+        /// 同一个元素 + 同一个通道 => 同一把 key（打断时能接上速度）；
+        /// 同一个元素 + 不同通道 => 不同 key（透明度和位移互不干扰）。
+        /// </summary>
+        private sealed class AnimKey : IEquatable<AnimKey>
+        {
+            private readonly object _owner;
+            private readonly string _channel;
+
+            public AnimKey(object owner, string channel)
+            {
+                _owner = owner;
+                _channel = channel;
+            }
+
+            public bool Equals(AnimKey other)
+                => other != null
+                   && ReferenceEquals(_owner, other._owner)
+                   && string.Equals(_channel, other._channel, StringComparison.Ordinal);
+
+            public override bool Equals(object obj) => Equals(obj as AnimKey);
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int h = _owner == null ? 0 : System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(_owner);
+                    return (h * 397) ^ (_channel == null ? 0 : _channel.GetHashCode());
+                }
+            }
+        }
+
+        internal static SpringAnimator.SpringPreset PresetFromDuration(double duration)
+        {
+            // 夹在合理区间：太短会硬弹，太长会拖沓
+            var response = (float)Math.Max(0.06, Math.Min(duration, 0.6));
+            return new SpringAnimator.SpringPreset(response, 0.78f);
+        }
+
         private static readonly IntPtr HWND_TOP = new IntPtr(0);
 
         /// <summary>
@@ -178,22 +244,17 @@ namespace Ink_Canvas.Helpers
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
-            var sb = new Storyboard();
-
-            // 渐变动画
-            var fadeInAnimation = new DoubleAnimation
-            {
-                From = 0.5,
-                To = 1,
-                Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-            };
-            Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-            sb.Children.Add(fadeInAnimation);
-
             element.Visibility = Visibility.Visible;
 
-            sb.Begin((FrameworkElement)element);
+            // C1：改用弹簧。key 用控件本身，重复触发会保留速度，不会从 0.5 重新起步。
+            element.Opacity = 0.5;
+            // key 必须稳定：用元素本身。AnimateScalar 的字典按引用查，
+            // 传 new object[]{...} 每次都新建，既打断不了动画，还会在字典里越积越多。
+            SpringAnimator.AnimateScalar(
+                new AnimKey(element, "opacity"),
+                1.0,
+                v => element.Opacity = v,
+                PresetFromDuration(duration));
         }
 
         public static void ShowWithSlideFromBottomAndFade(UIElement element, double duration = 0.25)
@@ -214,32 +275,15 @@ namespace Ink_Canvas.Helpers
 
                 element.Visibility = Visibility.Visible;
 
-                var sb = new Storyboard();
-
-                var fadeInAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                fadeInAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTarget(fadeInAnimation, target);
-                Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = 20,
-                    To = 0,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                slideAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTarget(slideAnimation, target);
-                Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
-
-                sb.Children.Add(fadeInAnimation);
-                sb.Children.Add(slideAnimation);
-
-                sb.Begin((FrameworkElement)target);
+                // C1：弹簧接管。透明度和位移各一条，key 都挂 target，
+                // 重复触发时保留速度，不会从 20px 处重新起跳。
+                var preset = PresetFromDuration(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(target, "opacity"), 1.0,
+                    v => target.Opacity = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(target, "slideY"), 0.0,
+                    v => initialTransform.Y = v, preset);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -253,33 +297,20 @@ namespace Ink_Canvas.Helpers
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
-
-                // 渐变动画
-                var fadeInAnimation = new DoubleAnimation
-                {
-                    From = 0.5,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-                // 滑动动画
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = element.RenderTransform.Value.OffsetX - 20, // 滑动距离
-                    To = 0,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
-
-                sb.Children.Add(fadeInAnimation);
-                sb.Children.Add(slideAnimation);
-
+                // C1：弹簧。透明度从 0.5 起、位移从 -20 起，
+                // 都挂同一个 translate，两条通道各用各的 key，互不覆盖。
+                var translate = new TranslateTransform(-20, 0);
                 element.Visibility = Visibility.Visible;
-                element.RenderTransform = new TranslateTransform();
+                element.RenderTransform = translate;
+                element.Opacity = 0.5;
 
-                sb.Begin((FrameworkElement)element);
+                var preset = PresetFromDuration(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "opacity"), 1.0,
+                    v => element.Opacity = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "slideX"), 0.0,
+                    v => translate.X = v, preset);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -293,36 +324,18 @@ namespace Ink_Canvas.Helpers
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
-
-                // 水平方向的缩放动画
-                var scaleXAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
-
-                // 垂直方向的缩放动画
-                var scaleYAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                scaleYAnimation.EasingFunction = new CubicEase();
-                scaleXAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
-
-                sb.Children.Add(scaleXAnimation);
-                sb.Children.Add(scaleYAnimation);
-
+                // C1：弹簧缩放。用无过冲预设——
+                // 缩放过冲会先缩到 1 以下再弹回，老师连点面板时比线性更抖。
+                var scale = new ScaleTransform(0, 0);
                 element.Visibility = Visibility.Visible;
                 element.RenderTransformOrigin = new Point(0, 0.5); // 左侧中心点为基准
-                element.RenderTransform = new ScaleTransform(0, 0);
+                element.RenderTransform = scale;
 
-                sb.Begin((FrameworkElement)element);
+                var preset = NoOvershootPreset(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "scaleX"), 1.0, v => scale.ScaleX = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "scaleY"), 1.0, v => scale.ScaleY = v, preset);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -336,37 +349,18 @@ namespace Ink_Canvas.Helpers
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
-
-                // 水平方向的缩放动画
-                var scaleXAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
-
-                // 垂直方向的缩放动画
-                var scaleYAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 1,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
-
-                scaleYAnimation.EasingFunction = new CubicEase();
-                scaleXAnimation.EasingFunction = new CubicEase();
-
-                sb.Children.Add(scaleXAnimation);
-                sb.Children.Add(scaleYAnimation);
-
+                // C1：弹簧缩放。用无过冲预设——
+                // 缩放过冲会先缩到 1 以下再弹回，老师连点面板时比线性更抖。
+                var scale = new ScaleTransform(0, 0);
                 element.Visibility = Visibility.Visible;
                 element.RenderTransformOrigin = new Point(1, 0.5); // 右侧中心点为基准
-                element.RenderTransform = new ScaleTransform(0, 0);
+                element.RenderTransform = scale;
 
-                sb.Begin((FrameworkElement)element);
+                var preset = NoOvershootPreset(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "scaleX"), 1.0, v => scale.ScaleX = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(element, "scaleY"), 1.0, v => scale.ScaleY = v, preset);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -382,37 +376,18 @@ namespace Ink_Canvas.Helpers
 
                 var target = ResolveAnimationTarget(element);
 
-                var sb = new Storyboard();
+                // C1：弹簧淡出+下移。两条通道并行，到位后收起元素。
+                var translate = new TranslateTransform(0, 0);
+                target.RenderTransform = translate;
 
-                var fadeOutAnimation = new DoubleAnimation
-                {
-                    From = 1,
-                    To = 0,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                fadeOutAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 10,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                slideAnimation.EasingFunction = new CubicEase();
-
-                Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
-
-                sb.Children.Add(fadeOutAnimation);
-                sb.Children.Add(slideAnimation);
-
-                sb.Completed += (s, e) =>
-                {
-                    element.Visibility = Visibility.Collapsed;
-                };
-
-                target.RenderTransform = new TranslateTransform();
-                sb.Begin((FrameworkElement)target);
+                var preset = PresetFromDuration(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(target, "opacity"), 0.0,
+                    v => target.Opacity = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(target, "slideY"), 10.0,
+                    v => translate.Y = v, preset,
+                    () => element.Visibility = Visibility.Collapsed);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -424,24 +399,14 @@ namespace Ink_Canvas.Helpers
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
-            var sb = new Storyboard();
-
-            var fadeOutAnimation = new DoubleAnimation
-            {
-                From = 1,
-                To = 0,
-                Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-            };
-            Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-            sb.Children.Add(fadeOutAnimation);
-
-            sb.Completed += (s, e) =>
-            {
-                element.Visibility = Visibility.Collapsed;
-            };
-
-            sb.Begin((FrameworkElement)element);
+            // C1：弹簧淡出。到位后由 finished 回调收起元素——
+            // 这个 Collapsed 收尾不能丢，丢了元素还在，只是透明。
+            SpringAnimator.AnimateScalar(
+                new AnimKey(element, "opacity"),
+                0.0,
+                v => element.Opacity = v,
+                PresetFromDuration(duration),
+                () => element.Visibility = Visibility.Collapsed);
         }
 
         public static void ShowPopupWithSlideAndFade(Popup popup, double duration = 0.15)
@@ -472,30 +437,17 @@ namespace Ink_Canvas.Helpers
                 // 注意：置顶由 PopupManagerHelper 统一管理，
                 // 此处不再调用 BringPopupToFront，避免重复置顶导致闪烁
 
-                var sb = new Storyboard();
+                // C1：弹窗用无过冲预设——过冲会让窗口边缘抖一下，很扎眼。
+                var translate = new TranslateTransform(0, 10);
+                child.RenderTransform = translate;
 
-                var fadeInAnimation = new DoubleAnimation
-                {
-                    From = targetOpacity * 0.5,
-                    To = targetOpacity,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                fadeInAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = 10,
-                    To = 0,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                slideAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
-
-                sb.Children.Add(fadeInAnimation);
-                sb.Children.Add(slideAnimation);
-
-                sb.Begin(child);
+                var preset = NoOvershootPreset(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(child, "opacity"), targetOpacity,
+                    v => child.Opacity = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(child, "slideY"), 0.0,
+                    v => translate.Y = v, preset);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -518,38 +470,24 @@ namespace Ink_Canvas.Helpers
 
                 double targetOpacity = GetPopupTargetOpacity(popup);
 
-                var sb = new Storyboard();
+                // C1：弹窗淡出。收尾必须把透明度和位移复位，
+                // 否则下次打开会带着上次的残留状态（看起来像没弹出来）。
+                var translate = new TranslateTransform(0, 0);
+                child.RenderTransform = translate;
 
-                var fadeOutAnimation = new DoubleAnimation
-                {
-                    From = targetOpacity,
-                    To = 0,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                fadeOutAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
-
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = 0,
-                    To = 10,
-                    Duration = EffectiveDuration(TimeSpan.FromSeconds(duration))
-                };
-                slideAnimation.EasingFunction = new CubicEase();
-                Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
-
-                sb.Children.Add(fadeOutAnimation);
-                sb.Children.Add(slideAnimation);
-
-                sb.Completed += (s, e) =>
-                {
-                    popup.IsOpen = false;
-                    child.Opacity = targetOpacity;
-                    child.RenderTransform = new TranslateTransform();
-                };
-
-                child.RenderTransform = new TranslateTransform();
-                sb.Begin(child);
+                var preset = NoOvershootPreset(duration);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(child, "opacity"), 0.0,
+                    v => child.Opacity = v, preset);
+                SpringAnimator.AnimateScalar(
+                    new AnimKey(child, "slideY"), 10.0,
+                    v => translate.Y = v, preset,
+                    () =>
+                    {
+                        popup.IsOpen = false;
+                        child.Opacity = targetOpacity;
+                        child.RenderTransform = new TranslateTransform();
+                    });
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
         }
@@ -678,30 +616,12 @@ namespace Ink_Canvas.Helpers
 
                 var duration = EffectiveDuration(TimeSpan.FromSeconds(seconds));
                 actualDuration = duration;
-                var sb = new Storyboard();
 
-                // 用与 ShowWithSlideFromBottomAndFade / HideWithSlideAndFade 一致的元素属性路径写法，
-                // 这是本仓库已经在大量使用的成熟模式。
-                // From 取当前位移而不是 0：动画被打断时能从画面当前位置平滑接上，不会先跳回起点。
-                if (Math.Abs(remainingX) > 0.01)
-                {
-                    var ax = new DoubleAnimation { From = currentX, To = targetDx, Duration = duration };
-                    if (easing != null) ax.EasingFunction = easing;
-                    Storyboard.SetTarget(ax, target);
-                    Storyboard.SetTargetProperty(ax, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
-                    sb.Children.Add(ax);
-                }
-
-                if (Math.Abs(remainingY) > 0.01)
-                {
-                    var ay = new DoubleAnimation { From = currentY, To = targetDy, Duration = duration };
-                    if (easing != null) ay.EasingFunction = easing;
-                    Storyboard.SetTarget(ay, target);
-                    Storyboard.SetTargetProperty(ay, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
-                    sb.Children.Add(ay);
-                }
-
-                sb.Begin(target);
+                // C1：改用弹簧驱动。原来的 Storyboard 版靠 From=currentX 实现"打断接续"，
+                // 弹簧天生就带速度，打断时接着走、不会跳回起点，语义更准。
+                // easing 参数保留在签名里是为了不破坏调用方，弹簧下不再使用。
+                var preset = PresetFromDuration(seconds);
+                SpringAnimator.Animate(tt, (float)targetDx, (float)targetDy, preset, preset);
                 return true;
             }
             catch (Exception ex)
