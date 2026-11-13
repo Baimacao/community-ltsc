@@ -515,11 +515,11 @@
                         </Grid.ColumnDefinitions>
 
                         <ui:ProgressBar x:Name="StepProgressBar"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         VerticalAlignment="Center"
                                         Margin="0,0,16,0"
-                                        MaxWidth="420"
-                                        HorizontalAlignment="Stretch"
+                                        HorizontalAlignment="Left"
+                                        Width="180"
                                         Minimum="0"
                                         Maximum="100"
                                         Value="0" />
