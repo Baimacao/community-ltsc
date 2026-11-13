@@ -7,6 +7,7 @@
          xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
          xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
          xmlns:controls="clr-namespace:Ink_Canvas.Controls;assembly=InkCanvas.Controls"
+      xmlns:helpers="clr-namespace:Ink_Canvas.Windows.SettingsViews.Helpers"
          xmlns:c="clr-namespace:Ink_Canvas.Converter"
          xmlns:props="clr-namespace:Ink_Canvas.Properties"
          xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -162,6 +163,17 @@
                         <ikw:SimpleStackPanel MaxWidth="1000"
                                               HorizontalAlignment="Stretch"
                                               Spacing="{StaticResource SettingsCardSpacing}">
+
+                            <!-- LTSC：从「画板」页迁入——白板展台的第三方联动 -->
+                            <TextBlock Text="{x:Static props:CanvasStrings.Canvas_SectionSeewo}"
+                                Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+
+                            <controls:LabeledSettingsCard
+                                    Header="{x:Static props:CanvasStrings.Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth}"
+                                    Description="{x:Static props:CanvasStrings.Canvas_LaunchSeewoVideoShowcaseForWhiteboardBoothHint}"
+                                    Icon="{x:Static ui:SegoeFluentIcons.Video}"
+                                    SwitchName="ToggleSwitchLaunchSeewoVideoShowcaseForWhiteboardBooth"
+                                    helpers:SettingsBinder.PropertyPath="Canvas.LaunchSeewoVideoShowcaseForWhiteboardBooth" />
 
                             <TextBlock Text="{x:Static props:AutomationStrings.Automation_AutoFoldTitle}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 

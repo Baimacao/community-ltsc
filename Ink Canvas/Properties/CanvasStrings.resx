@@ -381,4 +381,13 @@
   <data name="Canvas_SectionInkRecog" xml:space="preserve">
     <value>墨迹识别</value>
   </data>
+  <data name="Canvas_SectionClearBehavior" xml:space="preserve">
+    <value>清空与压缩</value>
+  </data>
+  <data name="Canvas_SectionMouseAndMode" xml:space="preserve">
+    <value>鼠标与模式切换</value>
+  </data>
+  <data name="Canvas_SectionSeewo" xml:space="preserve">
+    <value>希沃视频展台</value>
+  </data>
 </root>

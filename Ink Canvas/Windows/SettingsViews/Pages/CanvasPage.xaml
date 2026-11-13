@@ -111,38 +111,6 @@
                         </ComboBox>
                     </ui:SettingsCard>
 
-                    <!-- 简单开关：声明式绑定 -->
-                    <controls:LabeledSettingsCard
-                            Header="{x:Static props:CanvasStrings.Canvas_HideInkOnExit}"
-                            Description="{x:Static props:CanvasStrings.Canvas_HideStrokeWhenSelectingHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Hide}"
-                            SwitchName="ToggleSwitchHideStrokeWhenSelecting"
-                            helpers:SettingsBinder.PropertyPath="Canvas.HideStrokeWhenSelecting" />
-
-                    <controls:LabeledSettingsCard
-                            Header="{x:Static props:CanvasStrings.Canvas_ClearInkAlsoClearHistory}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Delete}"
-                            SwitchName="ToggleSwitchClearCanvasAndClearTimeMachine"
-                            helpers:SettingsBinder.PropertyPath="Canvas.ClearCanvasAndClearTimeMachine" />
-
-                    <controls:LabeledSettingsCard
-                            Header="{x:Static props:CanvasStrings.Canvas_ClearCanvasAlsoClearImages}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Photo}"
-                            SwitchName="ToggleSwitchClearCanvasAlsoClearImages"
-                            helpers:SettingsBinder.PropertyPath="Canvas.ClearCanvasAlsoClearImages" />
-
-                    <controls:LabeledSettingsCard
-                            Header="{x:Static props:CanvasStrings.Canvas_CompressPicturesUploaded}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Clear}"
-                            SwitchName="ToggleSwitchCompressPicturesUploaded"
-                            helpers:SettingsBinder.PropertyPath="Canvas.IsCompressPicturesUploaded" />
-
-                    <controls:LabeledSettingsCard
-                            Header="{x:Static props:CanvasStrings.Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth}"
-                            Description="{x:Static props:CanvasStrings.Canvas_LaunchSeewoVideoShowcaseForWhiteboardBoothHint}"
-                            Icon="{x:Static ui:SegoeFluentIcons.Video}"
-                            SwitchName="ToggleSwitchLaunchSeewoVideoShowcaseForWhiteboardBooth"
-                            helpers:SettingsBinder.PropertyPath="Canvas.LaunchSeewoVideoShowcaseForWhiteboardBooth" />
 
                     <!-- 简单下拉：声明式绑定 -->
                     <ui:SettingsCard Header="{x:Static props:CanvasStrings.Canvas_KeepAsymptote}"
@@ -251,33 +219,6 @@
                                             helpers:SettingsBinder.ValueRounding="0"
                                             helpers:SettingsBinder.FormatString="{}{0:0}"
                                             helpers:SettingsBinder.TargetTextBlock="{Binding ElementName=BrushAutoRestoreAlphaText}" />
-                                </ikw:SimpleStackPanel>
-                            </ui:SettingsCard>
-                        </ui:SettingsExpander.Items>
-                    </ui:SettingsExpander>
-
-                    <ui:SettingsExpander x:Name="ExpanderEnableEraserAutoSwitchBack"
-                            Header="{x:Static props:CanvasStrings.Canvas_SwitchBackAfterEraser}"
-                            Description="{x:Static props:CanvasStrings.Canvas_SwitchBackAfterEraserHint}"
-                            IsExpanded="{Binding IsOn, ElementName=ToggleSwitchEnableEraserAutoSwitchBack, Mode=OneWay}"
-                            d:Visibility="Visible" d:IsExpanded="True">
-                        <ui:SettingsExpander.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Switch}" />
-                        </ui:SettingsExpander.HeaderIcon>
-                        <ui:ToggleSwitch x:Name="ToggleSwitchEnableEraserAutoSwitchBack"
-                                helpers:SettingsBinder.PropertyPath="Canvas.EnableEraserAutoSwitchBack" />
-                        <ui:SettingsExpander.Items>
-                            <ui:SettingsCard Header="{x:Static props:CanvasStrings.Canvas_SwitchBackDelay}"
-                                    Description="{x:Static props:CanvasStrings.Canvas_SwitchBackDelayHint}">
-                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock x:Name="EraserAutoSwitchBackDelayText"
-                                               VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right"/>
-                                    <Slider x:Name="EraserAutoSwitchBackDelaySlider" Width="200" Minimum="1" Maximum="60"
-                                            Value="10" TickFrequency="1" IsSnapToTickEnabled="True"
-                                            helpers:SettingsBinder.PropertyPath="Canvas.EraserAutoSwitchBackDelaySeconds"
-                                            helpers:SettingsBinder.ValueRounding="0"
-                                            helpers:SettingsBinder.FormatString="{x:Static props:CanvasStrings.Canvas_SecondsFormat}"
-                                            helpers:SettingsBinder.TargetTextBlock="{Binding ElementName=EraserAutoSwitchBackDelayText}" />
                                 </ikw:SimpleStackPanel>
                             </ui:SettingsCard>
                         </ui:SettingsExpander.Items>

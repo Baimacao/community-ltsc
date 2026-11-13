@@ -8,6 +8,7 @@
       xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" xmlns:controls="clr-namespace:Ink_Canvas.Controls;assembly=InkCanvas.Controls"
+      xmlns:helpers="clr-namespace:Ink_Canvas.Windows.SettingsViews.Helpers"
       Title="{x:Static props:StorageStrings.Storage_Title}">
 
     <ScrollViewer PanningMode="VerticalFirst">
@@ -124,6 +125,29 @@
                     <Button x:Name="BtnRefresh" Content="{x:Static props:StorageStrings.Storage_Refresh}" Click="BtnRefresh_Click"/>
                     <Button x:Name="BtnOpenAppFolder" Content="{x:Static props:StorageStrings.Storage_OpenAppFolder}" Click="BtnOpenAppFolder_Click"/>
                 </ikw:SimpleStackPanel>
+
+                <!-- LTSC：从「画板」页迁入——清空画布时的连带行为 -->
+                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                           Text="{x:Static props:CanvasStrings.Canvas_SectionClearBehavior}" />
+
+                <controls:LabeledSettingsCard
+                        Header="{x:Static props:CanvasStrings.Canvas_ClearInkAlsoClearHistory}"
+                        Icon="{x:Static ui:SegoeFluentIcons.Delete}"
+                        SwitchName="ToggleSwitchClearCanvasAndClearTimeMachine"
+                        helpers:SettingsBinder.PropertyPath="Canvas.ClearCanvasAndClearTimeMachine" />
+
+                <controls:LabeledSettingsCard
+                        Header="{x:Static props:CanvasStrings.Canvas_ClearCanvasAlsoClearImages}"
+                        Icon="{x:Static ui:SegoeFluentIcons.Photo}"
+                        SwitchName="ToggleSwitchClearCanvasAlsoClearImages"
+                        helpers:SettingsBinder.PropertyPath="Canvas.ClearCanvasAlsoClearImages" />
+
+                <controls:LabeledSettingsCard
+                        Header="{x:Static props:CanvasStrings.Canvas_CompressPicturesUploaded}"
+                        Icon="{x:Static ui:SegoeFluentIcons.Clear}"
+                        SwitchName="ToggleSwitchCompressPicturesUploaded"
+                        helpers:SettingsBinder.PropertyPath="Canvas.IsCompressPicturesUploaded" />
+
 
                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                            Text="{x:Static props:StorageStrings.Storage_CategoryDetails}" />

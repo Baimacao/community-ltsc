@@ -265,5 +265,11 @@ namespace Ink_Canvas.Properties
         public static string Canvas_SectionGesture => ResourceManager.GetString(nameof(Canvas_SectionGesture), _resourceCulture);
 
         public static string Canvas_SectionInkRecog => ResourceManager.GetString(nameof(Canvas_SectionInkRecog), _resourceCulture);
+
+        public static string Canvas_SectionClearBehavior => ResourceManager.GetString(nameof(Canvas_SectionClearBehavior), _resourceCulture);
+
+        public static string Canvas_SectionMouseAndMode => ResourceManager.GetString(nameof(Canvas_SectionMouseAndMode), _resourceCulture);
+
+        public static string Canvas_SectionSeewo => ResourceManager.GetString(nameof(Canvas_SectionSeewo), _resourceCulture);
     }
 }

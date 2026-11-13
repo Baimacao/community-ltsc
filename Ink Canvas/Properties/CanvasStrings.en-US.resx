@@ -381,4 +381,13 @@
   <data name="Canvas_SectionInkRecog" xml:space="preserve">
     <value>Ink Recognition</value>
   </data>
+  <data name="Canvas_SectionClearBehavior" xml:space="preserve">
+    <value>Clear &amp; Compress</value>
+  </data>
+  <data name="Canvas_SectionMouseAndMode" xml:space="preserve">
+    <value>Mouse &amp; Mode Switch</value>
+  </data>
+  <data name="Canvas_SectionSeewo" xml:space="preserve">
+    <value>Seewo Video Showcase</value>
+  </data>
 </root>
