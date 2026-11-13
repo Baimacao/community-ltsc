@@ -38,7 +38,8 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/CJKmkp.jpg", Name = "CJK_mkp", Role = LocalizationHelper.GetString("About_Dev_ICCCE") },
                 new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/dubi906w.jpg", Name = "Dubi906w", Role = LocalizationHelper.GetString("About_Dev_ICC") },
                 new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/ChangSakura.png", Name = "ChangSakura", Role = LocalizationHelper.GetString("About_Dev_ICA") },
-                new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/WXRIW.png", Name = "WXRIW", Role = LocalizationHelper.GetString("About_Dev_InkCanvas") }
+                new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/WXRIW.png", Name = "WXRIW", Role = LocalizationHelper.GetString("About_Dev_InkCanvas") },
+                new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/DQYJUNIT.png", Name = "DQYJUNIT_白马曹", Role = LocalizationHelper.GetString("About_Dev_ICCLTSC") }
             };
 
             var contributors = new ObservableCollection<AvatarItem>

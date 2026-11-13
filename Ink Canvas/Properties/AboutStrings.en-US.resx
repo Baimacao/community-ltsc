@@ -173,4 +173,7 @@ How it differs from upstream: stability comes first, changes are verified on rea
 
 When reporting a problem, include the version shown at the top of this page so we can tell whether it is an upstream issue or one introduced here.</value>
   </data>
+  <data name="About_Dev_ICCLTSC" xml:space="preserve">
+    <value>ICC LTSC branch</value>
+  </data>
 </root>

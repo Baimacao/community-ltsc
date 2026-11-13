@@ -173,4 +173,7 @@
 
 遇到问题请先说明是哪个版本（关于页顶部能看到），这样才能判断是上游原有的问题还是本分支改出来的。</value>
   </data>
+  <data name="About_Dev_ICCLTSC" xml:space="preserve">
+    <value>ICC LTSC 分支</value>
+  </data>
 </root>
