@@ -137,25 +137,56 @@ namespace Ink_Canvas.Helpers
 
         private void SetTarget(double opacity)
         {
-            // 目标跟当前目标几乎一样 → 不动，避免每 500ms 重启动画
-            if (Math.Abs(_currentTarget - opacity) < 0.01) return;
+            // LTSC D-26：修一个真 bug，同时改走弹簧引擎。
+            //
+            // 原来这两件事被写在同一个判据里：
+            //   if (Math.Abs(_currentTarget - opacity) < 0.01) return;
+            // _currentTarget 是"上次设的目标"，不是"当前实际不透明度"。
+            // 于是动画一旦被打断（ResetNow / 外部改了 Opacity），
+            // 实际值已经偏了，但 _currentTarget 还记着老目标——
+            // 目标再变回老值时判据认为"没变"，直接 return，
+            // 淡出就永远恢复不过来了。这正是 11-12 那次"一直是淡的"的同一个形状。
+            //
+            // 现在拆成两条判据：
+            //   1. 目标没变 → 不动（避免每 500ms 重启）
+            //   2. 目标变了，但实际值已经到位 → 直接拍到位，不启动动画
+            bool targetChanged = Math.Abs(_currentTarget - opacity) >= 0.01;
+            if (!targetChanged) return;
 
             _currentTarget = opacity;
+
+            double actual = 1.0;
+            try { actual = _target?.Opacity ?? 1.0; } catch { }
+
+            // 实际值已经到位就不折腾动画了
+            if (Math.Abs(actual - opacity) < 0.005)
+            {
+                try
+                {
+                    _target.BeginAnimation(UIElement.OpacityProperty, null);
+                    _target.Opacity = opacity;
+                    SpringAnimator.SyncScalar(_target, opacity);
+                }
+                catch { }
+                return;
+            }
+
+            // 淡出走 Smooth（别让人注意到它在动），淡入走 Snappy（要跟手）
             bool fadingOut = opacity < GetBaseOpacity();
-            var duration = TimeSpan.FromMilliseconds(fadingOut ? 180 : 110);
+            var preset = fadingOut ? SpringAnimator.Smooth : SpringAnimator.Snappy;
 
             try
             {
-                var anim = new DoubleAnimation
-                {
-                    To = opacity,
-                    Duration = duration,
-                    EasingFunction = fadingOut
-                        ? (IEasingFunction)new CubicEase { EasingMode = EasingMode.EaseIn }
-                        : new CubicEase { EasingMode = EasingMode.EaseOut },
-                    FillBehavior = FillBehavior.HoldEnd
-                };
-                _target.BeginAnimation(UIElement.OpacityProperty, anim, HandoffBehavior.SnapshotAndReplace);
+                // 先解绑旧的 DoubleAnimation，交给弹簧接管
+                _target.BeginAnimation(UIElement.OpacityProperty, null);
+                _target.Opacity = actual;
+                SpringAnimator.SyncScalar(_target, actual);
+
+                SpringAnimator.AnimateScalar(
+                    _target,
+                    opacity,
+                    v => _target.Opacity = v,
+                    preset);
             }
             catch { }
         }

@@ -235,6 +235,67 @@ namespace Ink_Canvas.Helpers
                 finished);
         }
 
+        // ── 任意标量属性驱动 ────────────────────────────────────
+        // TranslateTransform 是最常见的场景，但淡入淡出、进度、缩放都要用同一套手感。
+        // 这里提供一个通用入口：给一个 setter，弹簧每帧把值推给它。
+
+        private static readonly Dictionary<object, Value> _scalarValues =
+            new Dictionary<object, Value>();
+
+        /// <summary>
+        /// 把一个标量属性挂到弹簧上。
+        /// <paramref name="key"/> 是这个属性的稳定标识（用它自己最合适，例如控件实例），
+        /// 同一个 key 重复调用会**保留当前速度**、只换目标——这正是"打断不断速"的来源。
+        /// </summary>
+        internal static void AnimateScalar(
+            object key,
+            double target,
+            Action<double> setter,
+            SpringPreset? preset = null,
+            Action finished = null)
+        {
+            if (key == null || setter == null) return;
+
+            if (AnimationsHelper.AnimationsDisabled)
+            {
+                setter(target);
+                finished?.Invoke();
+                return;
+            }
+
+            if (!_scalarValues.TryGetValue(key, out var v))
+            {
+                v = new Value(0f);
+                v.SetPrecision(0.001f);   // 0..1 的透明度要用更细的精度
+                _scalarValues[key] = v;
+            }
+
+            v.SetPreset(preset ?? Default);
+            v.Set((float)target);
+
+            Drive(new[] { v },
+                () => setter(v.Current),
+                () =>
+                {
+                    setter(v.Current);
+                    finished?.Invoke();
+                });
+        }
+
+        /// <summary>外部直接改了标量属性之后，把弹簧内部值同步过来（避免下次跳变）。</summary>
+        internal static void SyncScalar(object key, double actual)
+        {
+            if (key == null) return;
+            if (_scalarValues.TryGetValue(key, out var v)) v.Jump((float)actual);
+        }
+
+        /// <summary>停掉某个标量属性的弹簧。</summary>
+        internal static void StopScalar(object key)
+        {
+            if (key == null) return;
+            _scalarValues.Remove(key);
+        }
+
         /// <summary>
         /// 外部已经把 <paramref name="transform"/> 的 X/Y 直接改掉了（例如落地时归零），
         /// 这里必须把弹簧内部的值也同步过来。

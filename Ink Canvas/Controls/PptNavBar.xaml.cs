@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using Ink_Canvas.Helpers;
 
 namespace Ink_Canvas.Controls
 {
@@ -527,30 +528,25 @@ namespace Ink_Canvas.Controls
             try
             {
                 if (RootBorder == null) return;
-
-                // 已经在目标值附近就别再启动动画，省掉无谓的动画时钟
-                if (Math.Abs(RootBorder.Opacity - opacity) < 0.005)
-                {
-                    RootBorder.Opacity = opacity;
-                    return;
-                }
-
+        
+                // LTSC D-25：改走全应用统一的弹簧引擎。
+                //
+                // 原来用 DoubleAnimation + CubicEase，按时长插值：淡出 160ms、淡入 110ms。
+                // 问题是打断时速度断掉——鼠标扫进扫出，淡到一半改目标会从静止重新起步，
+                // 观感是"顿一下"。
+                //
+                // 现在用弹簧：
+                //   - 淡入用 Snappy（0.31/0.8），鼠标来了要跟手
+                //   - 淡出用 Smooth（0.39/0.85），不要让人注意到它在动
+                //   - 打断时保留速度，扫进扫出是连续的
                 bool fadingOut = opacity < RootBorder.Opacity;
-                var duration = TimeSpan.FromMilliseconds(fadingOut ? 160 : 110);
-
-                var easing = fadingOut
-                    ? (IEasingFunction)new CubicEase { EasingMode = EasingMode.EaseIn }
-                    : new CubicEase { EasingMode = EasingMode.EaseOut };
-
-                var anim = new DoubleAnimation
-                {
-                    To = opacity,
-                    Duration = duration,
-                    EasingFunction = easing,
-                    FillBehavior = FillBehavior.HoldEnd
-                };
-
-                RootBorder.BeginAnimation(UIElement.OpacityProperty, anim, HandoffBehavior.SnapshotAndReplace);
+                var preset = fadingOut ? SpringAnimator.Smooth : SpringAnimator.Snappy;
+        
+                SpringAnimator.AnimateScalar(
+                    RootBorder,
+                    opacity,
+                    v => RootBorder.Opacity = v,
+                    preset);
             }
             catch { }
         }
@@ -566,6 +562,7 @@ namespace Ink_Canvas.Controls
                 if (RootBorder == null) return;
                 RootBorder.BeginAnimation(UIElement.OpacityProperty, null);
                 RootBorder.Opacity = opacity;
+                SpringAnimator.SyncScalar(RootBorder, opacity);
             }
             catch { }
         }
