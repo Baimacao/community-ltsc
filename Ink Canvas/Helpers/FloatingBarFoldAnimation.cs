@@ -199,6 +199,15 @@ namespace Ink_Canvas.Helpers
                         t.Opacity = 1;
                     }
 
+                    // 顺序很重要：**先把 IsPlaying 复位，再执行回调**。
+                    //
+                    // 原来是反的（回调在前、复位在后），结果展开动画结束时，
+                    // 回调里调 SetFloatingBarHighlightPosition，而那个方法开头有
+                    //     if (FloatingBarFoldAnimation.IsPlaying || ...) return;
+                    // 守卫看到 IsPlaying 还是 true，直接把高亮拦掉了 ——
+                    // 表现出来就是「折叠再展开后，选中高亮不见了」。
+                    IsPlaying = false;
+
                     // 折叠时动画做完才真正隐藏——这一步由调用方负责（它知道该走哪套 Visibility 规则）
                     onCompleted?.Invoke();
 
@@ -206,7 +215,6 @@ namespace Ink_Canvas.Helpers
                         $"[折叠动画] {(collapsing ? "折叠" : "展开")}完成，{targets.Count} 个内容块，用时 {sw.ElapsedMilliseconds}ms",
                         LogHelper.LogType.Info);
 
-                    IsPlaying = false;
                 });
             }
             catch (Exception ex)

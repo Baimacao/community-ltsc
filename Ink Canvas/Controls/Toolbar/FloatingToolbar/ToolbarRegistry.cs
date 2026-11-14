@@ -451,18 +451,53 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                     var rs = entry.HidingRuleset;
                     if (rs?.Groups != null)
                     {
-                        foreach (var group in rs.Groups)
+                        // ── 先修正被上一版迁移写坏的配置 ──
+                        // 上一版把 isContentCollapsedByUser 塞进了每个已有 group 里，
+                        // 结果和 { NOT isAnnotating } 变成 And，非批注时整条规则失效。
+                        // 这里把「一个 group 里同时出现 isAnnotating 和 isContentCollapsedByUser」
+                        // 的那种污染拆开：删掉那条 Collapse 规则，稍后统一以独立 group 补回。
+                        foreach (var g in rs.Groups)
                         {
-                            if (group?.Rules == null) continue;
-                            bool hasCollapseRule = group.Rules.Any(r =>
-                                string.Equals(r.ConditionId, "isContentCollapsedByUser", StringComparison.OrdinalIgnoreCase));
-                            if (hasCollapseRule) continue;
+                            if (g?.Rules == null) continue;
+                            bool hasAnnotating = g.Rules.Any(r =>
+                                string.Equals(r.ConditionId, "isAnnotating", StringComparison.OrdinalIgnoreCase));
+                            if (!hasAnnotating) continue;
 
-                            group.Rules.Add(new ToolbarRule
+                            int removed = g.Rules.RemoveAll(r =>
+                                string.Equals(r.ConditionId, "isContentCollapsedByUser", StringComparison.OrdinalIgnoreCase));
+                            if (removed > 0) changed = true;
+                        }
+
+                        // 先检查是不是已经有这条规则了（别重复加）
+                        bool already = rs.Groups.Any(g => g?.Rules != null && g.Rules.Any(r =>
+                            string.Equals(r.ConditionId, "isContentCollapsedByUser", StringComparison.OrdinalIgnoreCase)));
+
+                        if (!already)
+                        {
+                            // **必须是新增一个独立 group，不能塞进已有 group。**
+                            //
+                            // 踩过的坑：原来我往每个已有 group 的 rules 里各加一条。
+                            // AnnotationOnly 的 group 是 { NOT isAnnotating }（And 连接），
+                            // 塞进去变成 { NOT isAnnotating AND isContentCollapsedByUser }。
+                            // 非批注时 NOT isAnnotating = true，未折叠时 isContentCollapsedByUser = false，
+                            // And 出来是 false → 不隐藏 → 手势键在非批注模式下也冒出来了。
+                            //
+                            // 正确做法：ruleset 顶层是 Or，新增一个独立 group { isContentCollapsedByUser }，
+                            // 和原来的 { NOT isAnnotating } 平级：任一成立就隐藏。
+                            rs.Groups.Add(new ToolbarRuleGroup
                             {
-                                ConditionId = "isContentCollapsedByUser",
-                                IsReversed = false,
-                                State = 0
+                                Mode = ToolbarLogicalMode.And,
+                                IsEnabled = true,
+                                State = 0,
+                                Rules = new List<ToolbarRule>
+                                {
+                                    new ToolbarRule
+                                    {
+                                        ConditionId = "isContentCollapsedByUser",
+                                        IsReversed = false,
+                                        State = 0
+                                    }
+                                }
                             });
                             changed = true;
                         }

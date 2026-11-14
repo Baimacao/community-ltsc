@@ -851,10 +851,34 @@
                                 BorderBrush="{DynamicResource FloatBarBorderBrush}"
                                 MouseDown="SymbolIconEmoji_MouseDown"
                                 MouseUp="SymbolIconEmoji_MouseUp">
-                            <Image Name="FloatingbarHeadIconImg" Margin="0.5"
-                                   SnapsToDevicePixels="True"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   RenderOptions.BitmapScalingMode="HighQuality" />
+                            <Grid>
+                                <Image Name="FloatingbarHeadIconImg" Margin="0.5"
+                                       SnapsToDevicePixels="True"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       RenderOptions.BitmapScalingMode="HighQuality" />
+
+                                <!-- 折叠态模式角标：收起工具项后，主图标右下角标出当前工具模式。
+                                     只在这一种状态下显示——展开时每个按钮自己会亮，不需要它。 -->
+                                <Border Name="BorderFloatingBarModeBadge"
+                                        Visibility="Collapsed"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Margin="0,0,3,3"
+                                        Width="22" Height="22"
+                                        CornerRadius="11"
+                                        BorderThickness="1.5"
+                                        BorderBrush="{DynamicResource FloatBarBackground}">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="#2563EB"/>
+                                    </Border.Background>
+                                    <Path Name="PathFloatingBarModeBadge"
+                                          Fill="White"
+                                          Stretch="Uniform"
+                                          Width="12" Height="12"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                </Border>
+                            </Grid>
                         </Border>
                     </ikw:SimpleStackPanel>
                     <Canvas Name="CanvasFloatingBarSelection" IsHitTestVisible="False">

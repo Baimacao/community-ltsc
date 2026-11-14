@@ -505,6 +505,7 @@ namespace Ink_Canvas
                         SetFloatingBarContentVisibility(false);
                         UpdateToolbarComponentVisibility();
                         PlaceFloatingBarAfterHeadToggle(headPos, false);
+                        UpdateFloatingBarModeBadge(true);
                         _popupManager?.MarkNeedsUpdate();
 
                         // 折叠完成后强制确认高亮已灭。
@@ -2207,6 +2208,70 @@ namespace Ink_Canvas
                 FloatingBarRootPanel,
                 IsAnnotating,
                 IsInPPTPresentationMode);
+
+            UpdateFloatingBarModeBadge(!visible);
+        }
+
+        /// <summary>
+        /// 折叠态下在主图标右下角显示当前工具模式的角标。
+        ///
+        /// 为什么要这个：内容收起后只剩一个主图标，用户看不出自己现在在笔/橡皮/光标。
+        /// 展开时不需要——每个按钮自己会亮，再叠个角标是重复。
+        /// </summary>
+        private void UpdateFloatingBarModeBadge(bool show)
+        {
+            try
+            {
+                if (BorderFloatingBarModeBadge == null || PathFloatingBarModeBadge == null) return;
+
+                if (!show)
+                {
+                    BorderFloatingBarModeBadge.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                string iconType = null;
+                switch (_currentToolMode)
+                {
+                    case "pen":
+                    case "color":
+                        iconType = "pen";
+                        break;
+                    case "eraser":
+                        iconType = "eraser";
+                        break;
+                    case "eraserByStrokes":
+                        iconType = "eraserByStrokes";
+                        break;
+                    case "select":
+                    case "cursor":
+                        iconType = "cursor";
+                        break;
+                    case "shape":
+                        iconType = "shape";
+                        break;
+                }
+
+                if (string.IsNullOrEmpty(iconType))
+                {
+                    BorderFloatingBarModeBadge.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                var geometry = GetCorrectIcon(iconType, false);
+                if (string.IsNullOrEmpty(geometry))
+                {
+                    BorderFloatingBarModeBadge.Visibility = Visibility.Collapsed;
+                    return;
+                }
+
+                PathFloatingBarModeBadge.Data = Geometry.Parse(geometry);
+                BorderFloatingBarModeBadge.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"更新模式角标失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         private double ClampFloatingBarLeft(double left, double floatingBarWidth, double screenWidth)
