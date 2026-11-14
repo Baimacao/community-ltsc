@@ -32,7 +32,8 @@ namespace Ink_Canvas.Helpers
         internal static bool IsPlaying { get; private set; }
 
         /// <summary>从屏幕下方升起的起始偏移（像素）。</summary>
-        private const double RiseOffset = 90.0;
+        /// <summary>从屏幕下方升起的起始偏移（像素）。App 在 Show() 前要用它预置初始状态。</summary>
+        internal const double RiseOffset = 90.0;
 
         /// <summary>工具项从主图标方向展开的起始偏移（像素）。</summary>
         private const double StaggerOffset = 26.0;

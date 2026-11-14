@@ -47,20 +47,26 @@
                 Margin="0,20,0,0"
                 Padding="16,14"
                 CornerRadius="8"
-                Background="{DynamicResource SubtleFillColorSecondaryBrush}">
+                BorderThickness="1"
+                BorderBrush="{DynamicResource SystemFillColorCautionBrush}">
+            <!-- 浅色主题下 SubtleFillColorSecondaryBrush 是极浅的灰，
+                 和窗口背景几乎分不出来，说明框看着"没有边界"。
+                 现在改用警示色的淡底（12% 不透明度），两种主题下都有明显的框。 -->
+            <Border.Background>
+                <SolidColorBrush Color="#1FF0A020"/>
+            </Border.Background>
             <StackPanel>
                 <TextBlock TextWrapping="Wrap"
                            LineHeight="22"
                            Text="Windows 会隔离不同权限级别的程序。InkCanvasForClass 以管理员身份运行时，无法与普通权限的 PowerPoint 通信，会导致："/>
                 <StackPanel Margin="6,10,0,0">
-                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Opacity="0.85" Text="·  PPT 联动失效，翻页组件不显示"/>
-                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Opacity="0.85" Text="·  从资源管理器拖放文件可能被系统拦截"/>
-                    <TextBlock TextWrapping="Wrap" Opacity="0.85" Text="·  部分快捷键在其他程序上不生效"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Text="·  PPT 联动失效，翻页组件不显示"/>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5" Text="·  从资源管理器拖放文件可能被系统拦截"/>
+                    <TextBlock TextWrapping="Wrap" Text="·  部分快捷键在其他程序上不生效"/>
                 </StackPanel>
                 <TextBlock TextWrapping="Wrap"
                            LineHeight="22"
                            Margin="0,12,0,0"
-                           Opacity="0.85"
                            Text="建议以普通权限重新启动。这只是权限问题，不会影响你的数据。"/>
             </StackPanel>
         </Border>

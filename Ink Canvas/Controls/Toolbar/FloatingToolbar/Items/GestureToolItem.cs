@@ -7,7 +7,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar.Items
     {
         public override string Id => "builtin.gesture";
         public override string LocalizationKey => "FloatingBar_GestureButton";
-        public override ToolbarRuleset DefaultHidingRuleset => ToolbarRuleset.AnnotationOnly();
+        public override ToolbarRuleset DefaultHidingRuleset => ToolbarRuleset.AnnotationOnly().WithHideOnCollapsed();
         public override bool DefaultShowSeparateBorder => true;
         public override bool DefaultPreventHideOnDragClick => true;
         public override string Description => FloatingBarStrings.ToolbarItem_Desc_Gesture;

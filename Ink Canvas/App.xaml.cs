@@ -1355,12 +1355,44 @@ namespace Ink_Canvas
                 LogHelper.WriteLogToFile($"启动时长: {startupStopwatch.Elapsed.TotalSeconds:F2}秒");
             };
 
+            // 入场动画的初始状态必须在 Show() **之前**设好。
+            //
+            // 踩过的坑：原来只在动画里（Show 之后的 Loaded 回调）设 Opacity=0，
+            // 但那时候首帧已经画出来了——用户会看到浮窗在正常位置闪一下，
+            // 然后才消失、再从下面滑上来。
+            // 现在先把整条浮窗藏起来，等动画开始时从"下方 + 透明"起步。
+            bool willPlayIntro = !IsLaunchByFileOrUri(e.Args);
+            if (willPlayIntro)
+            {
+                try
+                {
+                    var fb = mainWindow.ViewboxFloatingBar;
+                    if (fb != null)
+                    {
+                        fb.Opacity = 0;
+                        if (fb.RenderTransform is System.Windows.Media.TranslateTransform tt)
+                        {
+                            tt.X = 0;
+                            tt.Y = FloatingBarIntroAnimation.RiseOffset;
+                        }
+                        else
+                        {
+                            fb.RenderTransform = new System.Windows.Media.TranslateTransform(0, FloatingBarIntroAnimation.RiseOffset);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"入场动画预置状态失败: {ex.Message}", LogHelper.LogType.Warning);
+                }
+            }
+
             mainWindow.Show();
 
             // 浮动工具栏入场动画：主图标先出 → 工具项拉开出现 → 连贯收回正常间距。
             // 挂在 Show() 之后、首帧渲染完成时，此时工具栏完成布局，位置才是准的。
             // 只在真正启动时播一次；RebuildToolbar 之类的重建路径不会触发它。
-            if (!IsLaunchByFileOrUri(e.Args))
+            if (willPlayIntro)
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {

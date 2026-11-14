@@ -263,6 +263,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                     if (bakResult != null)
                     {
                         MigrateConditionIdCasing(bakResult, name);
+                        MigrateGestureHideOnCollapsed(bakResult, name);
                         SaveConfigFile(name, bakResult);
                         LogHelper.WriteLogToFile($"ToolbarRegistry: 从备份恢复配置 [{name}] 成功", LogHelper.LogType.Info);
                     }
@@ -275,6 +276,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
             if (result != null)
             {
                 MigrateConditionIdCasing(result, name);
+                        MigrateGestureHideOnCollapsed(result, name);
                 return result;
             }
 
@@ -286,6 +288,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                 if (bakResult != null)
                 {
                     MigrateConditionIdCasing(bakResult, name);
+                        MigrateGestureHideOnCollapsed(bakResult, name);
                     SaveConfigFile(name, bakResult);
                     LogHelper.WriteLogToFile($"ToolbarRegistry: 从备份恢复配置 [{name}] 成功", LogHelper.LogType.Info);
                 }
@@ -421,6 +424,67 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
             ["isPptAnnotationOnly"] = "isPPTAnnotationOnly",
             ["isAnnotatingOrPptGesture"] = "isAnnotatingOrPPTGesture"
         };
+
+        /// <summary>
+        /// 修正旧版配置里漏掉「折叠时隐藏」的条目。
+        ///
+        /// 背景：builtin.gesture（手势键）早期默认规则是 AnnotationOnly()，
+        /// 没带 WithHideOnCollapsed()，所以批注模式下折叠工具栏时它不跟着收，
+        /// 孤零零留在主图标旁边。
+        ///
+        /// 代码里已经改对了默认值，但**老用户机器上的 default.json 不会自动更新**——
+        /// 那份文件是第一次启动时就写好的，里面存的是旧规则。
+        /// 这里在加载配置时补一条 isContentCollapsedByUser 到它的规则组里。
+        /// </summary>
+        private static void MigrateGestureHideOnCollapsed(ToolbarLayoutSettings layout, string configName)
+        {
+            if (layout?.Components == null) return;
+
+            bool changed = false;
+
+            void Patch(ToolbarComponentEntry entry)
+            {
+                if (entry == null) return;
+
+                if (entry.Id == "builtin.gesture")
+                {
+                    var rs = entry.HidingRuleset;
+                    if (rs?.Groups != null)
+                    {
+                        foreach (var group in rs.Groups)
+                        {
+                            if (group?.Rules == null) continue;
+                            bool hasCollapseRule = group.Rules.Any(r =>
+                                string.Equals(r.ConditionId, "isContentCollapsedByUser", StringComparison.OrdinalIgnoreCase));
+                            if (hasCollapseRule) continue;
+
+                            group.Rules.Add(new ToolbarRule
+                            {
+                                ConditionId = "isContentCollapsedByUser",
+                                IsReversed = false,
+                                State = 0
+                            });
+                            changed = true;
+                        }
+                    }
+                }
+
+                if (entry.Children != null)
+                {
+                    foreach (var c in entry.Children) Patch(c);
+                }
+            }
+
+            foreach (var component in layout.Components) Patch(component);
+
+            if (changed)
+            {
+                SaveConfigFile(configName, layout);
+                LogHelper.WriteLogToFile(
+                    $"ToolbarRegistry: 已给配置 [{configName}] 的手势键补上「折叠时隐藏」规则",
+                    LogHelper.LogType.Info);
+            }
+        }
 
         private static void MigrateConditionIdCasing(ToolbarLayoutSettings layout, string configName)
         {
@@ -1102,7 +1166,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                     new ToolbarComponentEntry { Id = "builtin.whiteboard", HidingRuleset = ToolbarRuleset.AlwaysShow().WithHideOnCollapsed() },
                     new ToolbarComponentEntry { Id = "builtin.tools", HidingRuleset = ToolbarRuleset.AlwaysShow().WithHideOnCollapsed() },
                     new ToolbarComponentEntry { Id = "builtin.fold", HidingRuleset = ToolbarRuleset.AlwaysShow().WithHideOnCollapsed() },
-                    new ToolbarComponentEntry { Id = "builtin.gesture", HidingRuleset = ToolbarRuleset.AnnotationOnly(), ShowSeparateBorder = true },
+                    new ToolbarComponentEntry { Id = "builtin.gesture", HidingRuleset = ToolbarRuleset.AnnotationOnly().WithHideOnCollapsed(), ShowSeparateBorder = true },
                     new ToolbarComponentEntry { Id = "builtin.exit", HidingRuleset = ToolbarRuleset.PPTOnly(), ShowSeparateBorder = true }
                 }
             };
