@@ -22,6 +22,11 @@ namespace Ink_Canvas.Helpers
     internal static class FloatingBarIntroAnimation
     {
         /// <summary>
+        /// 从屏幕下方滑入的起始偏移（像素）。正值 = 从下面升上来。
+        /// </summary>
+        private const double SlideInOffset = 90.0;
+
+        /// <summary>
         /// 正常状态下工具项之间的间距。
         /// 来自 ToolbarRegistry.Populate：非第一个 segment 一律 Margin = (3,0,0,0) 或 (0,3,0,0)。
         /// **不是 0**，恢复时必须还原成这个值，否则工具栏会比平时更紧。
@@ -32,7 +37,7 @@ namespace Ink_Canvas.Helpers
         private const double StartSpacing = 14.0;
 
         /// <summary>工具项依次出现的间隔（毫秒）。只影响透明度起始时间，不阻塞主流程。</summary>
-        private const double ItemStaggerMs = 40.0;
+        private const double ItemStaggerMs = 70.0;
 
         private static readonly Dictionary<object, double> _itemDelays = new Dictionary<object, double>();
 
@@ -42,7 +47,7 @@ namespace Ink_Canvas.Helpers
         /// <param name="head">主图标（BorderFloatingBarMoveControls）</param>
         /// <param name="root">工具项所在的 StackPanel（StackPanelFloatingBarRoot）</param>
         /// <param name="horizontal">工具栏是横排还是竖排</param>
-        public static void Play(FrameworkElement head, Panel root, bool horizontal)
+        public static void Play(FrameworkElement head, Panel root, bool horizontal, FrameworkElement slideTarget = null)
         {
             if (AnimationsHelper.AnimationsDisabled)
             {
@@ -63,18 +68,90 @@ namespace Ink_Canvas.Helpers
                     if (!(head.RenderTransform is ScaleTransform))
                         head.RenderTransform = new ScaleTransform(0.6, 0.6);
 
-                    SpringAnimator.AnimateScalar(head, 1.0, v => head.Opacity = v, SpringAnimator.Interactive);
+                    // 透明度用 Smooth（0.39s）而不是 Interactive（0.14s），
+                    // 慢下来才有"浮现"的感觉，不是"啪一下出现"。
+                    SpringAnimator.AnimateScalar(head, 1.0, v => head.Opacity = v,
+                        new SpringAnimator.SpringPreset(0.6f, 0.9f));
 
                     var scale = head.RenderTransform as ScaleTransform;
                     if (scale != null)
                     {
                         SpringAnimator.SyncScalar(scale, 0.6);
+                        // Bouncy 有回弹，但配上更长的 response 才丝滑；
+                        // 用自定义预设：response 0.55s、damping 0.62（有一点过冲，但不弹跳）。
                         SpringAnimator.AnimateScalar(scale, 1.0, v =>
                         {
                             scale.ScaleX = v;
                             scale.ScaleY = v;
-                        }, SpringAnimator.Bouncy);
+                        }, new SpringAnimator.SpringPreset(0.55f, 0.62f));
                     }
+                }
+
+                // ── 1.5 整条浮动栏从屏幕下方滑入 ──
+                // 用 TranslateTransform 做 Y 偏移，不动 Margin：
+                //   - Margin 是定位锚点，改了会让后续拖动/吸附算错基准
+                //   - RenderTransform 是做视觉位移的标准位置，落地归零即可
+                // 曲线速度靠弹簧的 damping < 1（先快后缓，到位前轻微减速），
+                // 不是线性匀速。
+                if (slideTarget != null)
+                {
+                    if (!(slideTarget.RenderTransform is TranslateTransform slideTt))
+                    {
+                        slideTt = new TranslateTransform(0, SlideInOffset);
+                        slideTarget.RenderTransform = slideTt;
+                    }
+                    else
+                    {
+                        slideTt.Y = SlideInOffset;
+                    }
+
+                    // 起始透明度 0，和滑入同步淡入
+                    slideTarget.Opacity = 0;
+                    SpringAnimator.AnimateScalar(slideTarget, 1.0, v => slideTarget.Opacity = v,
+                        new SpringAnimator.SpringPreset(0.85f, 0.95f));
+
+                    var slideSw = System.Diagnostics.Stopwatch.StartNew();
+                    int slideFrames = 0;
+
+                    // 不用 Animate(transform,...)，改用自己建 Value + Drive：
+                    // Animate 内部用的是共享的 transform pair，无法在 onStep 里采样调试，
+                    // 而且实测它的收敛比预期快得多（392ms vs 模拟 1683ms），需要看清中间过程。
+                    var slideVal = new SpringAnimator.Value((float)SlideInOffset);
+                    // response 0.85s / damping 0.85：
+                    // 实测 1.1s 跑出 2082ms，偏拖；0.85 约 1.4s，仍然是"慢"的范畴。
+                    // damping 0.85 保留一点末端缓停，但把过冲压到肉眼看不见。
+                    slideVal.SetPreset(new SpringAnimator.SpringPreset(0.85f, 0.85f));
+                    slideVal.Set(0f);
+
+                    LogHelper.WriteLogToFile(
+                        $"[入场动画] 滑入开始：Y={SlideInOffset}px -> 0，response 0.85s / damping 0.85",
+                        LogHelper.LogType.Event);
+
+                    SpringAnimator.Drive(new[] { slideVal }, () =>
+                    {
+                        slideFrames++;
+                        if (slideTarget.RenderTransform is TranslateTransform tt)
+                            tt.Y = slideVal.Current;
+                    }, () =>
+                    {
+                        try
+                        {
+                            if (slideTarget.RenderTransform is TranslateTransform t)
+                            {
+                                t.X = 0;
+                                t.Y = 0;
+                            }
+                            slideTarget.Opacity = 1;
+                            LogHelper.WriteLogToFile(
+                                $"[入场动画] 滑入结束，用时 {slideSw.ElapsedMilliseconds}ms，{slideFrames} 帧",
+                                LogHelper.LogType.Event);
+                        }
+                        catch { }
+                    });
+
+                    // 透明度单独驱动
+                    SpringAnimator.AnimateScalar(slideTarget, 1.0, v => slideTarget.Opacity = v,
+                        new SpringAnimator.SpringPreset(0.85f, 0.95f));
                 }
 
                 // ── 2. 工具项：逐个淡入 + 间距从大收到 0 ──
@@ -128,13 +205,15 @@ namespace Ink_Canvas.Helpers
                 foreach (var item in items)
                 {
                     var v = new SpringAnimator.Value((float)StartSpacing);
-                    v.SetPreset(SpringAnimator.Smooth);
+                    // 间距收拢和滑入用接近的节奏，视觉上同步结束，不会"先到位的那半截还在动"。
+                    v.SetPreset(new SpringAnimator.SpringPreset(0.7f, 0.9f));
                     v.Set((float)NormalSpacing);
                     spacingValues[item] = v;
                     drivers.Add(v);
                 }
 
                 int frameNo = 0;
+                var spacingSw = System.Diagnostics.Stopwatch.StartNew();
                 SpringAnimator.Drive(drivers, () =>
                 {
                     frameNo++;
@@ -167,7 +246,7 @@ namespace Ink_Canvas.Helpers
                     RestoreNormal(head, root, horizontal);
                     _itemDelays.Clear();
                     LogHelper.WriteLogToFile(
-                        $"[入场动画] 收尾，共 {frameNo} 帧",
+                        $"[入场动画] 间距收尾，共 {frameNo} 帧，用时 {spacingSw.ElapsedMilliseconds}ms",
                         LogHelper.LogType.Info);
                 });
 

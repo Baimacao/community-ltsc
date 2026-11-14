@@ -1372,7 +1372,9 @@ namespace Ink_Canvas
                         FloatingBarIntroAnimation.Play(
                             mainWindow.BorderFloatingBarMoveControls,
                             mainWindow.StackPanelFloatingBarRoot,
-                            horizontal);
+                            horizontal,
+                            // 整条工具栏从屏幕下方滑入，用 ViewboxFloatingBar 作为位移对象
+                            mainWindow.ViewboxFloatingBar);
                     }
                     catch (Exception ex)
                     {
