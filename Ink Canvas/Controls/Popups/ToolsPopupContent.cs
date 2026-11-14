@@ -5,7 +5,6 @@ namespace Ink_Canvas.Controls
     public abstract class ToolsPopupContent : UserControl
     {
         public abstract ToolMenuButton TimerBtn { get; }
-        public abstract ToolMenuButton RandomDrawBtn { get; }
         public abstract ToolMenuButton SingleDrawBtn { get; }
         public abstract ToolMenuButton SaveBtn { get; }
         public abstract ToolMenuButton OpenBtn { get; }
@@ -22,7 +21,6 @@ namespace Ink_Canvas.Controls
             return itemId switch
             {
                 "timer" => TimerBtn,
-                "randomDraw" => RandomDrawBtn,
                 "singleDraw" => SingleDrawBtn,
                 "save" => SaveBtn,
                 "open" => OpenBtn,

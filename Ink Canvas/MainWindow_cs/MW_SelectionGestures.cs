@@ -38,16 +38,8 @@ namespace Ink_Canvas
         /// </remarks>
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // 如果发送者是 BoardRandomDrawToolBtn 或 BoardSingleDrawToolBtn，且它们被隐藏，则不处理事件
-            if (sender is FrameworkElement element)
-            {
-                if ((BoardRandomDrawToolBtn != null && element == BoardRandomDrawToolBtn ||
-                     BoardSingleDrawToolBtn != null && element == BoardSingleDrawToolBtn) &&
-                    element.Visibility != Visibility.Visible)
-                {
-                    return;
-                }
-            }
+            // 抽人功能（快抽/单抽）已整体移除，这里原本挡的按钮不存在了。
+            // 如果将来加了新的可隐藏按钮，在这里补判断。
 
             lastBorderMouseDownObject = sender;
         }

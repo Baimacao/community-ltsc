@@ -601,21 +601,12 @@ namespace Ink_Canvas
             {
                 Settings.InkToShape = new InkToShape();
             }
-
-            // RandSettings - UI initialization (settings loading moved to RandomDrawPage)
-            if (Settings.RandSettings != null)
-            {
-                if (BoardRandomDrawToolBtn != null)
-                    BoardRandomDrawToolBtn.Visibility = Settings.RandSettings.ShowRandomAndSingleDraw ? Visibility.Visible : Visibility.Collapsed;
-                if (BoardSingleDrawToolBtn != null)
-                    BoardSingleDrawToolBtn.Visibility = Settings.RandSettings.ShowRandomAndSingleDraw ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else
+            // RandSettings：抽人功能已移除，但这个对象还被计时器窗口用着
+            // （EnableOvertimeCountUp / TimerVolume / CustomTimerSoundPath 等），所以保留初始化。
+            if (Settings.RandSettings == null)
             {
                 Settings.RandSettings = new RandSettings();
             }
-
-            // ModeSettings
             if (Settings.ModeSettings == null)
             {
                 Settings.ModeSettings = new ModeSettings();

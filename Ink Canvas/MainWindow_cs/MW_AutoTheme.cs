@@ -196,7 +196,6 @@ namespace Ink_Canvas
                 UpdateInkFreezeButtonState();
 
                 SetMenuGeometry(TimerToolBtn, XamlGraphicsIconGeometries.TimerIconGeometry);
-                SetMenuGeometry(RandomDrawToolBtn, XamlGraphicsIconGeometries.RandomDrawIconGeometry);
                 SetMenuGeometry(SingleDrawToolBtn, XamlGraphicsIconGeometries.SingleDrawIconGeometry);
                 SetMenuGeometry(SaveToolBtn, XamlGraphicsIconGeometries.SaveIconGeometry);
                 SetMenuGeometry(OpenToolBtn, XamlGraphicsIconGeometries.OpenIconGeometry);
@@ -207,7 +206,6 @@ namespace Ink_Canvas
                 SetMenuGeometry(SettingsToolBtn, XamlGraphicsIconGeometries.SettingsIconGeometry);
 
                 SetMenuGeometry(BoardTimerToolBtn, XamlGraphicsIconGeometries.TimerIconGeometry);
-                SetMenuGeometry(BoardRandomDrawToolBtn, XamlGraphicsIconGeometries.RandomDrawIconGeometry);
                 SetMenuGeometry(BoardSingleDrawToolBtn, XamlGraphicsIconGeometries.SingleDrawIconGeometry);
                 SetMenuGeometry(BoardSaveToolBtn, XamlGraphicsIconGeometries.SaveIconGeometry);
                 SetMenuGeometry(BoardOpenToolBtn, XamlGraphicsIconGeometries.OpenIconGeometry);

@@ -1066,7 +1066,6 @@ namespace Ink_Canvas.Helpers
                     new HotkeyConfigItem { Name = "Pen5", Key = Key.D5, Modifiers = ModifierKeys.Alt },
                     new HotkeyConfigItem { Name = "DrawLine", Key = Key.L, Modifiers = ModifierKeys.Alt },
                     new HotkeyConfigItem { Name = "Screenshot", Key = Key.C, Modifiers = ModifierKeys.Alt },
-                    new HotkeyConfigItem { Name = "QuickDraw", Key = Key.K, Modifiers = ModifierKeys.Alt },
                     new HotkeyConfigItem { Name = "Hide", Key = Key.V, Modifiers = ModifierKeys.Alt },
                     new HotkeyConfigItem { Name = "Exit", Key = Key.Escape, Modifiers = ModifierKeys.None }
                 });
@@ -1119,6 +1118,25 @@ namespace Ink_Canvas.Helpers
                     return false;
                 }
 
+                // ── 配置迁移：清掉已废弃的快捷键项 ──
+                // 抽人功能（快抽/单抽）已整体移除，老配置文件里还留着 "QuickDraw"。
+                // 不清理的话每次启动都会刷两条 Warning，而且用户不知道是什么。
+                // 这里直接删掉并回写，只做一次。
+                var deprecated = new[] { "QuickDraw", "RandomDraw", "SingleDraw" };
+                int removed = config.Hotkeys.RemoveAll(h =>
+                    h != null && Array.IndexOf(deprecated, h.Name) >= 0);
+                bool needRewriteConfig = removed > 0;
+                if (removed > 0)
+                {
+                    // 注意：这里**不能**调 SaveHotkeysToConfigFile()。
+                    // 那个方法保存的是 _registeredHotkeys（此刻还没注册，是空的），
+                    // 一调就会把整份配置覆盖成空列表，所有快捷键全失效。
+                    // 正确做法：只改内存里的 config，等全部注册完再回写。
+                    LogHelper.WriteLogToFile(
+                        $"快捷键配置迁移：清掉 {removed} 条已废弃项（抽人功能已移除）",
+                        LogHelper.LogType.Event);
+                }
+
                 // 注册配置中的快捷键
                 int successCount = 0;
                 foreach (var hotkeyConfig in config.Hotkeys)
@@ -1145,18 +1163,19 @@ namespace Ink_Canvas.Helpers
                     }
                 }
 
-                // 旧版 HotkeyConfig.json 无「快抽」项时补注册默认组合，避免升级后无快捷键
-                if (successCount > 0 && !IsHotkeyRegistered("QuickDraw"))
-                {
-                    var quickDrawAction = GetActionByName("QuickDraw");
-                    if (quickDrawAction != null && RegisterHotkey("QuickDraw", Key.K, ModifierKeys.Alt, quickDrawAction))
-                        successCount++;
-                }
 
                 if (successCount > 0)
                 {
                     _hotkeysShouldBeRegistered = true;
                 }
+
+                // 迁移过配置的话，注册完成后再回写。
+                // 此时 _registeredHotkeys 已经有内容，写出去才是对的。
+                if (needRewriteConfig && successCount > 0)
+                {
+                    try { SaveHotkeysToConfigFile(); } catch { }
+                }
+
                 return successCount > 0;
             }
             catch (Exception ex)

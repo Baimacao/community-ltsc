@@ -102,7 +102,6 @@ namespace Ink_Canvas
 
         // Board-prefixed buttons: originally XAML auto-generated fields, now delegated to BoardToolsPopupContent
         internal ToolMenuButton BoardTimerToolBtn => BoardToolsPopupContent?.TimerBtn;
-        internal ToolMenuButton BoardRandomDrawToolBtn => BoardToolsPopupContent?.RandomDrawBtn;
         internal ToolMenuButton BoardSingleDrawToolBtn => BoardToolsPopupContent?.SingleDrawBtn;
         internal ToolMenuButton BoardSaveToolBtn => BoardToolsPopupContent?.SaveBtn;
         internal ToolMenuButton BoardOpenToolBtn => BoardToolsPopupContent?.OpenBtn;
@@ -114,7 +113,6 @@ namespace Ink_Canvas
 
         // Non-Board buttons: originally XAML auto-generated fields, now delegated to MainToolsPopupContent
         internal ToolMenuButton TimerToolBtn => MainToolsPopupContent?.TimerBtn;
-        internal ToolMenuButton RandomDrawToolBtn => MainToolsPopupContent?.RandomDrawBtn;
         internal ToolMenuButton SingleDrawToolBtn => MainToolsPopupContent?.SingleDrawBtn;
         internal ToolMenuButton SaveToolBtn => MainToolsPopupContent?.SaveBtn;
         internal ToolMenuButton OpenToolBtn => MainToolsPopupContent?.OpenBtn;
@@ -1912,14 +1910,6 @@ namespace Ink_Canvas
                     CloseWhiteboardImmediately();
                     LogHelper.WriteLogToFile("Ink Canvas closing converted to exit whiteboard", LogHelper.LogType.Event);
                     return;
-                }
-
-                try
-                {
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"关闭快抽悬浮按钮时出错: {ex.Message}", LogHelper.LogType.Error);
                 }
 
                 try
