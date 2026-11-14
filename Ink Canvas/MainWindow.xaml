@@ -19,7 +19,7 @@
         Background="Transparent"
         ShowInTaskbar="False"
         PreviewMouseDown="Window_PreviewMouseDown"
-        Title="InkCanvasforClass LTSC"
+        Title="ICC CE Lite"
         Topmost="True"
         Closing="Window_Closing"
         Closed="Window_Closed"

@@ -4399,11 +4399,11 @@ namespace Ink_Canvas
         {
             if (Settings.Advanced.IsSecondConfirmWhenShutdownApp)
             {
-                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level1, "ICC LTSC",
+                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level1, "ICC CE Lite",
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel) return;
-                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level2, "ICC LTSC",
+                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level2, "ICC CE Lite",
                         MessageBoxButton.OKCancel, MessageBoxImage.Error) == MessageBoxResult.Cancel) return;
-                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level3, "ICC LTSC",
+                if (MessageBox.Show(Properties.MainWindowStrings.Main_CloseConfirm_Level3, "ICC CE Lite",
                         MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
             }
 

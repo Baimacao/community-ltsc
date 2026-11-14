@@ -1,0 +1,128 @@
+name: 增量需求 | Increment Requirement
+description: 记录一条来自需求文档的增量需求 | Record an increment requirement from the requirements doc
+title: "[R-XX] "
+labels: ["increment", "requirement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 使用说明
+        本模板用于 **ICC CE Lite** 的增量需求管理。
+        每条需求对应需求文档里的一个 R-XX 编号。
+
+        需求文档：[docs/REQUIREMENTS-INCREMENT-2026-11-14.md](../blob/master/docs/REQUIREMENTS-INCREMENT-2026-11-14.md)
+
+        **填写前请确认：需求已经过确认，不是推测。** 未确认项请保持「待确认」状态，不要自行取默认值。
+
+  - type: input
+    id: req-id
+    attributes:
+      label: 关联需求编号 | Requirement ID
+      description: 需求文档里的 R-XX 编号
+      placeholder: 例如 R-04
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: 背景 | Background
+      description: 为什么要做这个？现状是什么问题？
+      placeholder: |
+        描述当前状况、用户遇到的实际问题、或产品的缺口。
+        要求：能追到具体现象或代码位置，不要写推测。
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目标 | Goal
+      description: 做完之后达到什么状态？
+      placeholder: |
+        用可验收的语言描述最终效果。
+        例如「启动后看到主图标先出现，工具项后现，间距放大后收拢」。
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 范围 | Scope
+      description: 涉及哪些文件/模块？明确不做什么。
+      placeholder: |
+        涉及：
+        - Ink Canvas/xxx.cs
+        不涉及：
+        - 不改动 yyy
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: 详细需求 | Detailed Requirements
+      description: 拆分到可执行的程度
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准 | Acceptance Criteria
+      description: 逐条可勾选
+      placeholder: |
+        - [ ] 条件一
+        - [ ] 条件二
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 影响版本 | Affected Version
+      description: 这个需求落在哪个版本
+      placeholder: 例如 0.1a
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-steps
+    attributes:
+      label: 测试步骤 | Test Steps
+      description: 别人照着能复现的步骤
+      placeholder: |
+        1. 编译 Release x64
+        2. 启动程序
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: related
+    attributes:
+      label: 关联需求 | Related Requirements
+      description: 其他相关的需求编号或 Issue
+      placeholder: 例如 R-02, R-03
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: 附件 | Attachments
+      description: 截图、日志、规范文档链接
+      placeholder: 没有就写「无」
+
+  - type: textarea
+    id: pending
+    attributes:
+      label: 待确认 | Pending Decisions
+      description: 还没拍板的问题。**未确认前不要动代码。**
+      placeholder: |
+        - Q4-1 ...
+        - Q4-2 ...
+    validations:
+      required: false

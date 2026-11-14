@@ -1229,7 +1229,7 @@ namespace Ink_Canvas
                                     "检测到原版 InkCanvasForClass（ICC-CE）正在运行。\n\n" +
                                     "两个白板同时开启会争用触控笔，可能出现画不出线、笔迹跑偏等问题。\n\n" +
                                     "ICC LTSC 现在退出。请先关闭原版 ICC，再重新启动 LTSC。",
-                                    "ICC LTSC",
+                                    "ICC CE Lite",
                                     System.Windows.MessageBoxButton.OK,
                                     System.Windows.MessageBoxImage.Warning);
                             }

@@ -164,17 +164,17 @@ Are you sure?</value>
     <value>Confirm Revoke Privacy Agreement</value>
   </data>
   <data name="About_LtscTitle" xml:space="preserve">
-    <value>LTSC branch</value>
+    <value>Lite edition</value>
   </data>
   <data name="About_LtscBody" xml:space="preserve">
-    <value>This is the LTSC branch of ICC-CE (InkCanvasForClass Community Edition), aimed at day-to-day classroom use.
+    <value>This is the Lite edition of ICC-CE (InkCanvasForClass Community Edition), aimed at day-to-day classroom use.
 
 How it differs from upstream: stability comes first, changes are verified on real hardware before release; wording is rewritten for how teachers actually use it; no chasing of new features.
 
 When reporting a problem, include the version shown at the top of this page so we can tell whether it is an upstream issue or one introduced here.</value>
   </data>
   <data name="About_Dev_ICCLTSC" xml:space="preserve">
-    <value>ICC LTSC branch</value>
+    <value>ICC Lite edition</value>
   </data>
   <data name="About_Dev_AI" xml:space="preserve">
     <value>AI collaborator</value>
