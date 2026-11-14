@@ -2837,6 +2837,19 @@ namespace Ink_Canvas
 
             TimeSpan startedDuration = TimeSpan.Zero;
 
+            // 入场动画期间不做位移动画。
+            //
+            // 两者抢同一个 TranslateTransform：入场动画用它做从下往上滑，
+            // 定位动画用它做从当前位置弹到新位置。同时跑会互相覆盖，
+            // 视觉上就是"动了两次"。实测启动瞬间定位动画要落地 6 次，
+            // 全压在入场动画那 1.6 秒里。
+            //
+            // 直接瞬移：入场动画负责"出现"这个观感，定位只需要位置正确。
+            if (animate && FloatingBarIntroAnimation.IsPlaying)
+            {
+                animate = false;
+            }
+
             if (animate)
             {
                 // LTSC D-22：改走【每帧积分的弹簧动画】，替换原来的 Storyboard + CircleEase。
@@ -5446,10 +5459,6 @@ namespace Ink_Canvas
 
                 if (selectionBG == null || indicatorBar == null || container == null) return;
 
-                LogHelper.WriteLogToFile(
-                    $"[高亮] AnimateFloatingBarHighlightTo(mode={mode}) 开始，当前 selectionBG={selectionBG.Visibility}",
-                    LogHelper.LogType.Trace);
-
                 ToolbarImageButton targetButton = null;
 
                 switch (mode)
@@ -5544,6 +5553,12 @@ namespace Ink_Canvas
                     nextBarTop = nextTop + 2 + 43 + 2;
                 }
 
+                // 诊断：记录每次算出的高亮坐标，用来看错位时是否有跳变
+                LogHelper.WriteLogToFile(
+                    $"[高亮定位] mode={mode} btn={targetButton.Name} origin=({nextPos:F1},{nextTop:F1}) " +
+                    $"size={nextWidth:F1}x{nextHeight:F1} bar=({nextBarLeft:F1},{nextBarTop:F1}) vertical={isVertical}",
+                    LogHelper.LogType.Trace);
+
                 bool isFirstShow = _lastHighlightButton == null;
 
                 if (isFirstShow)
@@ -5561,7 +5576,6 @@ namespace Ink_Canvas
                     indicatorBar.Opacity = 1.0;
                     System.Windows.Controls.Canvas.SetLeft(indicatorBar, nextBarLeft);
                     System.Windows.Controls.Canvas.SetTop(indicatorBar, nextBarTop);
-                LogHelper.WriteLogToFile("[高亮] 把 selectionBG 设为 Visible", LogHelper.LogType.Trace);
                 selectionBG.Visibility = Visibility.Visible;
                     if (!Settings.Appearance.DisableToolbarAnimation)
                         targetButton.SetSelectedVisualOffset(true);
@@ -6110,7 +6124,23 @@ namespace Ink_Canvas
         /// <param name="mode">模式名称</param>
         private void UpdateCurrentToolMode(string mode)
         {
+            var oldMode = _currentToolMode;
             _currentToolMode = NormalizeToolModeForFreeze(mode);
+
+            // 模式变了就刷新工具栏可见性。
+            //
+            // 为什么加这里：IsAnnotating 是 _currentToolMode != "cursor" 算出来的，
+            // 而「批注」那组按钮（橡皮/选择/形状/撤销/重做）挂的是 AnnotationOnly 规则。
+            // 原来 UpdateCurrentToolMode 只改字段、不刷新 UI，
+            // 于是点「批注」后 _currentToolMode 已经是 "pen"，
+            // 但那一组按钮仍然是 Collapsed —— 表现出来就是「点批注不展开」。
+            //
+            // 刷新放在这里而不是每个调用点：所有工具模式切换都会走这个方法，
+            // 一处补齐比在每个 onClick 里各补一次可靠。
+            if (!string.Equals(oldMode, _currentToolMode, StringComparison.Ordinal))
+            {
+                UpdateToolbarComponentVisibility();
+            }
 
             // 动态切换 EnablePointerSupport：仅在画笔批注模式下启用 WM_POINTER 触摸栈，
             // 其他模式下禁用以避免 DragMove/DoDragDrop 在模拟触摸屏下假死。
