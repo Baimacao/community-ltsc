@@ -3201,23 +3201,23 @@ namespace Ink_Canvas
                     case 0: // 浅色主题
                         SetTheme("Light", true);
                         // 浅色主题下设置浮动栏为完全不透明
-                        ViewboxFloatingBar.Opacity = 1.0;
+                        if (!Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) ViewboxFloatingBar.Opacity = 1.0;
                         break;
                     case 1: // 深色主题
                         SetTheme("Dark", true);
                         // 深色主题下设置浮动栏为完全不透明
-                        ViewboxFloatingBar.Opacity = 1.0;
+                        if (!Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) ViewboxFloatingBar.Opacity = 1.0;
                         break;
                     case 2: // 跟随系统
                         if (ThemeHelper.IsSystemThemeLight())
                         {
                             SetTheme("Light", true);
-                            ViewboxFloatingBar.Opacity = 1.0;
+                            if (!Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) ViewboxFloatingBar.Opacity = 1.0;
                         }
                         else
                         {
                             SetTheme("Dark", true);
-                            ViewboxFloatingBar.Opacity = 1.0;
+                            if (!Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) ViewboxFloatingBar.Opacity = 1.0;
                         }
                         break;
                 }

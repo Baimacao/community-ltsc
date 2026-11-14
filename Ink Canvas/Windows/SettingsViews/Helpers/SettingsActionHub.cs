@@ -324,14 +324,14 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
         public static void OnFloatingBarOpacityChanged(double value)
         {
             var mw = GetMainWindow();
-            if (mw != null) mw.ViewboxFloatingBar.Opacity = value;
+            if (mw != null && !Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) mw.ViewboxFloatingBar.Opacity = value;
         }
 
         public static void OnFloatingBarOpacityInPPTChanged(double value)
         {
             var mw = GetMainWindow();
             if (mw != null && mw.IsInPPTPresentationMode)
-                mw.ViewboxFloatingBar.Opacity = value;
+                if (!Ink_Canvas.Helpers.FloatingBarIntroAnimation.IsPlaying) mw.ViewboxFloatingBar.Opacity = value;
         }
 
         public static void OnToolbarPositionChanged(ToolbarPosition position)
