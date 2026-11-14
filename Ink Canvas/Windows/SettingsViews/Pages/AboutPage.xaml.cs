@@ -109,18 +109,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             try
             {
-                var version = Assembly.GetExecutingAssembly().GetName().Version;
-                AppVersionTextBlock.Text = version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
-                var informationalVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-                if (informationalVersion != null)
-                {
-                    string infoVersion = informationalVersion.InformationalVersion;
-                    int lastDotIndex = infoVersion.LastIndexOf('.');
-                    if (lastDotIndex >= 0 && lastDotIndex < infoVersion.Length - 7)
-                    {
-                        AppVersionTextBlock.Text += " (" + infoVersion.Substring(lastDotIndex + 1) + ")";
-                    }
-                }
+                // 统一走 App.GetDisplayVersion()：返回 "0.1a" 这种给人看的版本，
+                // 不再自己拼四段数字（NBGV 会覆盖 AssemblyVersion，拼出来对不上）。
+                AppVersionTextBlock.Text = App.GetDisplayVersion();
                 RefreshDeviceInfo();
             }
             catch (Exception ex)

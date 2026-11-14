@@ -177,7 +177,14 @@ namespace Ink_Canvas
                 }
                 if (string.IsNullOrEmpty(selfPath)) return false;
 
-                foreach (var p in Process.GetProcessesByName("InkCanvasForClass"))
+                foreach (var p in (
+                    // 同时检查新名和旧名：
+                    // 新名 = 本程序（改名后）；旧名 = 已经装在机器上的老版本，
+                    // 两者都算「另一个 ICC」，避免改名后失去共存检测。
+                    Process.GetProcessesByName("ICCCELite")
+                        .Concat(Process.GetProcessesByName("InkCanvasForClass"))
+                        .ToArray()
+                ))
                 {
                     try
                     {
@@ -790,6 +797,42 @@ namespace Ink_Canvas
             }
         }
 
+        /// <summary>
+        /// 取给人看的版本号。
+        ///
+        /// 不再用 Assembly.Version 拼——NBGV 会覆盖 AssemblyVersion，
+        /// 拼出来是 1.0.0.28 这种和产品版本对不上的数。
+        /// 直接读 InformationalVersion（形如 0.1a+abc1234），
+        /// 取加号前那一段。
+        /// </summary>
+        internal static string GetDisplayVersion()
+        {
+            try
+            {
+                var info = Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                if (info != null && !string.IsNullOrWhiteSpace(info.InformationalVersion))
+                {
+                    var s = info.InformationalVersion.Trim();
+                    int plus = s.IndexOf('+');
+                    if (plus > 0) s = s.Substring(0, plus);
+                    if (!string.IsNullOrEmpty(s)) return s;
+                }
+            }
+            catch { }
+
+            // 兜底：InformationalVersion 读不到时退回四段数字
+            try
+            {
+                var v = Assembly.GetExecutingAssembly().GetName().Version;
+                if (v != null) return v.Major + "." + v.Minor + "." + v.Build + "." + v.Revision;
+            }
+            catch { }
+
+            return "unknown";
+        }
+
+
         // 设置启动画面消息
         public static void SetSplashMessage(string message)
         {
@@ -1087,19 +1130,9 @@ namespace Ink_Canvas
             }
             RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var informationalVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-            string versionString = version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
-            if (informationalVersion != null)
-            {
-                string infoVersion = informationalVersion.InformationalVersion;
-                int lastDotIndex = infoVersion.LastIndexOf('.');
-                if (lastDotIndex >= 0 && lastDotIndex < infoVersion.Length - 7)
-                {
-                    versionString += " (" + infoVersion.Substring(lastDotIndex + 1) + ")";
-                }
-            }
+            string versionString = GetDisplayVersion();
             LogHelper.NewLog(string.Format("Ink Canvas Starting (Version: {0})", versionString));
+
 
             // LTSC D-09：管理员权限检测。
             // Windows UIPI 会隔断不同完整性级别的进程，ICC 以管理员运行会连不上普通权限的
