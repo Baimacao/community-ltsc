@@ -1706,6 +1706,7 @@ namespace Ink_Canvas
                 UnFoldFloatingBar_MouseUp(new object(), null);
             }
 
+
             // 如果当前不是黑板模式，则切换到黑板模式
             if (currentMode == 0)
             {

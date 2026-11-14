@@ -478,6 +478,12 @@ namespace Ink_Canvas
 
                 if (IsFloatingBarContentVisible())
                 {
+                    // 折叠前先把选中高亮收掉。
+                    // 那个蓝框（SelectionBGFloatingBar）是跟着工具项定位的，
+                    // 内容一收它就成了悬空的一个框，看着像"折完还留了个选中框"。
+                    // HideAllSelectionHighlights 原本只在隐藏/切模式时调，折叠没管过。
+                    HideAllSelectionHighlights();
+
                     // 折叠：先让内容淡出收缩，动画结束再真正切 Visibility。
                     // 直接切 Collapsed 是瞬时的，视觉上"啪"一下就没了。
                     FloatingBarFoldAnimation.PlayCollapse(root, BorderFloatingBarMoveControls, horizontal, () =>
@@ -486,6 +492,13 @@ namespace Ink_Canvas
                         UpdateToolbarComponentVisibility();
                         PlaceFloatingBarAfterHeadToggle(headPos, false);
                         _popupManager?.MarkNeedsUpdate();
+
+                        // 折叠完成后强制确认高亮已灭。
+                        // 日志里能直接读到状态，不用再靠截图猜。
+                        HideAllSelectionHighlights();
+                        LogHelper.WriteLogToFile(
+                            $"[折叠] 完成，selectionBG={SelectionBGFloatingBar?.Visibility} indicatorBar={IndicatorBarFloatingBar?.Visibility} 内容可见={IsFloatingBarContentVisible()}",
+                            LogHelper.LogType.Event);
                     });
                 }
                 else
@@ -497,6 +510,8 @@ namespace Ink_Canvas
                     {
                         PlaceFloatingBarAfterHeadToggle(headPos, true);
                         _popupManager?.MarkNeedsUpdate();
+                        // 展开完成后把高亮按当前工具模式重新定位回去
+                        SetFloatingBarHighlightPosition(_currentToolMode);
                     });
                 }
             }
@@ -509,7 +524,9 @@ namespace Ink_Canvas
                 _popupManager?.MarkNeedsUpdate();
             }
 
-            // 每次点击或拖动结束后都重新定位高光
+            // 每次点击或拖动结束后都重新定位高光。
+            // 折叠/展开动画期间不画（SetFloatingBarHighlightPosition 内部已经挡了），
+            // 展开完成时由动画回调自己补一次。
             SetFloatingBarHighlightPosition(_currentToolMode);
 
             GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
@@ -5289,6 +5306,15 @@ namespace Ink_Canvas
 
         private void SetFloatingBarHighlightPosition(string mode)
         {
+            // 折叠动画进行中不画高亮。
+            //
+            // 踩的坑：一开始只用 IsFloatingBarContentVisible() 判断，但那个值要到
+            // 折叠动画结束（550ms）才变成 false，动画期间一直是 true，
+            // 于是高亮框在整个折叠过程中被反复画出来，最后留在主图标旁边。
+            // 现在再加一条 FloatingBarFoldAnimation.IsPlaying，动画一开始就挡住。
+            if (FloatingBarFoldAnimation.IsPlaying || !IsFloatingBarContentVisible())
+                return;
+
             mode = NormalizeToolModeForFreeze(mode);
 
             ApplyFloatingBarIconHighlightImmediate(mode);
@@ -5395,6 +5421,10 @@ namespace Ink_Canvas
                 var container = GridFloatingBarContainer;
 
                 if (selectionBG == null || indicatorBar == null || container == null) return;
+
+                LogHelper.WriteLogToFile(
+                    $"[高亮] AnimateFloatingBarHighlightTo(mode={mode}) 开始，当前 selectionBG={selectionBG.Visibility}",
+                    LogHelper.LogType.Trace);
 
                 ToolbarImageButton targetButton = null;
 
@@ -5507,8 +5537,8 @@ namespace Ink_Canvas
                     indicatorBar.Opacity = 1.0;
                     System.Windows.Controls.Canvas.SetLeft(indicatorBar, nextBarLeft);
                     System.Windows.Controls.Canvas.SetTop(indicatorBar, nextBarTop);
-
-                    selectionBG.Visibility = Visibility.Visible;
+                LogHelper.WriteLogToFile("[高亮] 把 selectionBG 设为 Visible", LogHelper.LogType.Trace);
+                selectionBG.Visibility = Visibility.Visible;
                     if (!Settings.Appearance.DisableToolbarAnimation)
                         targetButton.SetSelectedVisualOffset(true);
                     _lastHighlightButton = targetButton;
