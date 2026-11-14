@@ -956,7 +956,9 @@ namespace Ink_Canvas
             {
                 if (Settings?.Appearance == null) return;
 
-                var preferredLanguage = Settings.Appearance.Language ?? string.Empty;
+                // 先规范化：旧配置里可能有 "None" 之类的非法值，
+                // 直接丢给 TrySetCulture 会靠异常兜底，这里提前挡掉。
+                var preferredLanguage = LocalizationHelper.NormalizeLanguage(Settings.Appearance.Language);
 
                 if (!string.IsNullOrWhiteSpace(preferredLanguage))
                 {

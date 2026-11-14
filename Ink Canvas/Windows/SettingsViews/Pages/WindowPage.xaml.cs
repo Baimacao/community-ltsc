@@ -399,7 +399,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             _isApplyingLanguageFromSettings = true;
             try
             {
-                var lang = settings.Appearance.Language ?? string.Empty;
+                // 规范化后再映射到下拉索引。
+                // 原来非法值会静默落进最后的 else 得到 0（显示为「系统」），
+                // 但实际语言由 TrySetCulture 的异常兜底决定，两者可能不一致。
+                var lang = LocalizationHelper.NormalizeLanguage(settings.Appearance.Language);
                 int langIndex = string.IsNullOrWhiteSpace(lang) ? 0 :
                     string.Equals(lang, "zh-CN", StringComparison.OrdinalIgnoreCase) ? 1 :
                     string.Equals(lang, "en-US", StringComparison.OrdinalIgnoreCase) ? 2 :

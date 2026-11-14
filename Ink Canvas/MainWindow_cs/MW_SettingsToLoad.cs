@@ -156,7 +156,8 @@ namespace Ink_Canvas
             {
                 if (Settings?.Appearance != null)
                 {
-                    var preferredLanguage = Settings.Appearance.Language ?? string.Empty;
+                    // 同 MainWindow：先规范化，非法值当「跟随系统」处理。
+                    var preferredLanguage = LocalizationHelper.NormalizeLanguage(Settings.Appearance.Language);
                     if (!string.IsNullOrWhiteSpace(preferredLanguage))
                     {
                         LocalizationHelper.TrySetCulture(preferredLanguage);

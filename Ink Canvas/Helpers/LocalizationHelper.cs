@@ -214,6 +214,55 @@ namespace Ink_Canvas.Helpers
             catch { }
         }
 
+        /// <summary>
+        /// 支持的语言码白名单。
+        /// 空字符串 = 跟随系统。
+        /// </summary>
+        private static readonly string[] SupportedLanguages = { "", "zh-CN", "en-US", "zh-ME" };
+
+        /// <summary>
+        /// 把配置里读到的语言码规范成受支持的值。
+        ///
+        /// 为什么需要这个：旧配置文件里出现过 "None" 这种非法值。
+        /// 原来的路径是——调用方判断非空，于是 TrySetCulture("None")，
+        /// 内部 CultureInfo.GetCultureInfo("None") 抛异常，被 catch 吞掉返回 false，
+        /// 语言不生效、后台退回系统默认。**靠异常兜底，不是靠判断。**
+        ///
+        /// 现在统一在这里挡掉：不认识的值一律当"跟随系统"处理，并记一条日志。
+        /// </summary>
+        public static string NormalizeLanguage(string language)
+        {
+            if (language == null) return string.Empty;
+
+            var trimmed = language.Trim();
+            if (trimmed.Length == 0) return string.Empty;
+
+            foreach (var supported in SupportedLanguages)
+            {
+                if (string.Equals(trimmed, supported, StringComparison.OrdinalIgnoreCase))
+                    return supported;
+            }
+
+            LogHelper.WriteLogToFile(
+                $"LocalizationHelper | 配置里的语言码 \"{language}\" 不受支持，已按「跟随系统」处理",
+                LogHelper.LogType.Warning);
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 语言码是否受支持（不做日志，供 UI 判断用）。
+        /// </summary>
+        public static bool IsSupportedLanguage(string language)
+        {
+            if (string.IsNullOrWhiteSpace(language)) return true;
+            foreach (var supported in SupportedLanguages)
+            {
+                if (string.Equals(language.Trim(), supported, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
+
         public static bool TrySetCulture(string cultureName)
         {
             try
