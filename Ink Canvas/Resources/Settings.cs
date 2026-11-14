@@ -667,7 +667,8 @@ namespace Ink_Canvas
         /// 默认关闭，保持和改造前一致的行为。
         /// </summary>
         [JsonProperty("pptNavBarAutoHide")]
-        public bool PPTNavBarAutoHide { get; set; } = false;
+        /// <summary>翻页组件自动淡出。默认开启——老师上课时不希望它一直挡在 PPT 上。</summary>
+        public bool PPTNavBarAutoHide { get; set; } = true;
 
         /// <summary>自动淡出前的静止时间（秒）。默认 3 秒。</summary>
         [JsonProperty("pptNavBarAutoHideDelaySeconds")]

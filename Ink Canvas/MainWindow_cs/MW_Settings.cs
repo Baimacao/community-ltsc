@@ -1299,7 +1299,12 @@ namespace Ink_Canvas
 
         #endregion
 
-        public double QuickPanelUnfoldedMargin => 8.0;
+        /// <summary>
+        /// 快捷面板展开后距左边缘的距离。
+        /// 原来是 8.0——展开后和屏幕左边留 8px 缝，看着没贴边。
+        /// 改成 0：展开后紧贴屏幕左边。
+        /// </summary>
+        public double QuickPanelUnfoldedMargin => 0.0;
         public double QuickPanelFoldedMargin => -60.0;
 
         public void ApplySidePanelSettings()

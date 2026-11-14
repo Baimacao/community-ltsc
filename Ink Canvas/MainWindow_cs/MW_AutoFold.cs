@@ -25,6 +25,17 @@ namespace Ink_Canvas
         private int _sidePanelAnimVersion = 0;
 
         /// <summary>
+        /// 侧边栏展开时距屏幕边缘的边距。
+        ///
+        /// 原来是 -10（半展开，还藏在屏幕外 10px），实测看起来"没有贴着屏幕边缘"。
+        /// 改成 0：展开后左侧栏左边距为 0，紧贴屏幕左边。
+        /// </summary>
+        private const int UnfoldedSideMargin = 0;
+
+        /// <summary>侧边栏完全折叠时的边距（藏到屏幕外）。</summary>
+        private const int FoldedSideMargin = -50;
+
+        /// <summary>
         /// 自动收起侧栏计时器
         /// </summary>
         private DispatcherTimer _autoCollapseTimer;
@@ -149,7 +160,7 @@ namespace Ink_Canvas
                 GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
                 ViewboxFloatingBarMarginAnimation(-60);
                 HideSubPanels("cursor");
-                SidePannelMarginAnimation(-10);
+                SidePannelMarginAnimation(UnfoldedSideMargin);
             });
 
             // 新增：如果开启了彻底隐藏，则隐藏主窗口
@@ -177,27 +188,30 @@ namespace Ink_Canvas
         {
             if (Settings.Appearance.IsShowQuickPanel)
             {
-                SidePannelMarginAnimation(-50);
+                SidePannelMarginAnimation(FoldedSideMargin);
                 HideRightQuickPanel();
                 LeftUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
                 await Dispatcher.InvokeAsync(() =>
                 {
                     // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
+                    //
+                    // 时长原来是 0.1 秒——太快了，视觉上等于「直接出现」，没有滑出感。
+                    // 现在 0.28 秒 + QuinticEase(EaseOut)，前段快、尾段缓，滑出来看得出动。
                     var targetMargin = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
                     if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                            LeftUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
+                            LeftUnFoldButtonQuickPanel, targetMargin, 0.28, new QuinticEase { EasingMode = EasingMode.EaseOut }))
                     {
                         var marginAnimation = new ThicknessAnimation
                         {
-                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.28)),
                             From = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
-                            To = targetMargin
+                            To = targetMargin,
+                            EasingFunction = new QuinticEase { EasingMode = EasingMode.EaseOut }
                         };
-                        marginAnimation.EasingFunction = new CubicEase();
                         LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
                     }
                 });
-                await Task.Delay(100);
+                await Task.Delay(280);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -229,7 +243,7 @@ namespace Ink_Canvas
         {
             if (Settings.Appearance.IsShowQuickPanel)
             {
-                SidePannelMarginAnimation(-50);
+                SidePannelMarginAnimation(FoldedSideMargin);
                 HideLeftQuickPanel();
                 RightUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
                 await Dispatcher.InvokeAsync(() =>
@@ -237,11 +251,11 @@ namespace Ink_Canvas
                     // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
                     var targetMargin = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
                     if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                            RightUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
+                            RightUnFoldButtonQuickPanel, targetMargin, 0.22, new CubicEase { EasingMode = EasingMode.EaseIn }))
                     {
                         var marginAnimation = new ThicknessAnimation
                         {
-                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.22)),
                             From = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
                             To = targetMargin
                         };
@@ -249,7 +263,7 @@ namespace Ink_Canvas
                         RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
                     }
                 });
-                await Task.Delay(100);
+                await Task.Delay(220);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -284,11 +298,11 @@ namespace Ink_Canvas
                     // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
                     var targetMargin = new Thickness(QuickPanelFoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
                     if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                            LeftUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
+                            LeftUnFoldButtonQuickPanel, targetMargin, 0.22, new CubicEase { EasingMode = EasingMode.EaseIn }))
                     {
                         var marginAnimation = new ThicknessAnimation
                         {
-                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.22)),
                             From = new Thickness(QuickPanelUnfoldedMargin, 0, 0, Settings.Appearance.QuickPanelBottomOffset),
                             To = targetMargin
                         };
@@ -296,7 +310,7 @@ namespace Ink_Canvas
                         LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
                     }
                 });
-                await Task.Delay(100);
+                await Task.Delay(220);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -325,11 +339,11 @@ namespace Ink_Canvas
                     // LTSC D-05：改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
                     var targetMargin = new Thickness(0, 0, QuickPanelFoldedMargin, Settings.Appearance.QuickPanelBottomOffset);
                     if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
-                            RightUnFoldButtonQuickPanel, targetMargin, 0.1, new CubicEase()))
+                            RightUnFoldButtonQuickPanel, targetMargin, 0.22, new CubicEase { EasingMode = EasingMode.EaseIn }))
                     {
                         var marginAnimation = new ThicknessAnimation
                         {
-                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.1)),
+                            Duration = AnimationsHelper.EffectiveDuration(TimeSpan.FromSeconds(0.22)),
                             From = new Thickness(0, 0, QuickPanelUnfoldedMargin, Settings.Appearance.QuickPanelBottomOffset),
                             To = targetMargin
                         };
@@ -337,7 +351,7 @@ namespace Ink_Canvas
                         RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
                     }
                 });
-                await Task.Delay(100);
+                await Task.Delay(220);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -363,7 +377,7 @@ namespace Ink_Canvas
             StopAutoCollapseQuickPanelTimer();
             HideLeftQuickPanel();
             HideRightQuickPanel();
-            SidePannelMarginAnimation(-10);
+            SidePannelMarginAnimation(UnfoldedSideMargin);
         }
 
         /// <summary>
@@ -478,11 +492,15 @@ namespace Ink_Canvas
                     ViewboxFloatingBar.Arrange(new Rect(ViewboxFloatingBar.DesiredSize));
 
                     if (IsInPPTPresentationMode)
+                    {
                         ViewboxFloatingBarMarginAnimation(60);
+                    }
                     else
+                    {
                         PureViewboxFloatingBarMarginAnimationInDesktopMode();
+                    }
                 }
-                SidePannelMarginAnimation(-50, !unfoldFloatingBarByUser);
+                SidePannelMarginAnimation(FoldedSideMargin, !unfoldFloatingBarByUser);
             });
 
             await Dispatcher.InvokeAsync(async () =>
@@ -490,7 +508,7 @@ namespace Ink_Canvas
                 try
                 {
                     // 等待UI完全更新
-                    await Task.Delay(100);
+                    await Task.Delay(220);
 
                     // 获取当前选中的模式并重新设置高光位置
                     string selectedToolMode = GetCurrentSelectedMode();
@@ -510,11 +528,11 @@ namespace Ink_Canvas
         /// <summary>
         /// 执行侧边栏边距动画，用于折叠或展开侧边栏。
         /// </summary>
-        /// <param name="MarginFromEdge">侧边栏距边缘的边距值。可能的值：-50（完全折叠）, -10（半展开）</param>
+        /// <param name="MarginFromEdge">侧边栏距边缘的边距值。目前是 FoldedSideMargin（完全折叠）或 UnfoldedSideMargin（展开贴边）</param>
         /// <param name="isNoAnimation">是否禁用动画效果。</param>
         /// <remarks>
         /// 操作包括：
-        /// 1. 如果边距值为-10（半展开），则显示左侧边栏
+        /// 1. 如果边距值为 UnfoldedSideMargin（展开），则显示左侧边栏
         /// 2. 创建并执行左侧边栏的边距动画
         /// 3. 创建并执行右侧边栏的边距动画
         /// 4. 等待600毫秒让动画完成
@@ -522,7 +540,7 @@ namespace Ink_Canvas
         /// 6. 如果边距值为-50（完全折叠），则隐藏左侧边栏
         /// 7. 重置浮动栏正在改变隐藏模式的标志为false
         /// </remarks>
-        private async void SidePannelMarginAnimation(int MarginFromEdge, bool isNoAnimation = false) // Possible value: -50, -10
+        private async void SidePannelMarginAnimation(int MarginFromEdge, bool isNoAnimation = false)
         {
             int thisVersion = ++_sidePanelAnimVersion;
 
@@ -538,7 +556,7 @@ namespace Ink_Canvas
             {
             await Dispatcher.InvokeAsync(() =>
             {
-                if (MarginFromEdge == -10)
+                if (MarginFromEdge == UnfoldedSideMargin)
                 {
                     if (isFloatingBarFolded)
                         LeftSidePanel.Visibility = Visibility.Visible;
@@ -589,7 +607,7 @@ namespace Ink_Canvas
                 AnimationsHelper.LandMarginOnCompositionLayer(RightSidePanel,
                     new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset));
 
-                if (MarginFromEdge == -50) LeftSidePanel.Visibility = Visibility.Collapsed;
+                if (MarginFromEdge == FoldedSideMargin) LeftSidePanel.Visibility = Visibility.Collapsed;
             });
             }
             finally
@@ -658,7 +676,7 @@ namespace Ink_Canvas
             {
                 HideLeftQuickPanel();
                 HideRightQuickPanel();
-                SidePannelMarginAnimation(-10);
+                SidePannelMarginAnimation(UnfoldedSideMargin);
             }
         }
 

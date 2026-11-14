@@ -6205,6 +6205,14 @@ namespace Ink_Canvas
             if (!string.Equals(oldMode, _currentToolMode, StringComparison.Ordinal))
             {
                 UpdateToolbarComponentVisibility();
+
+                // 折叠态下角标也要跟着换。
+                // 之前只在折叠/展开时更新角标，切工具模式不更新——
+                // 所以折叠着的时候切到面积擦/圈套，角标还是旧的。
+                if (!IsFloatingBarContentVisible())
+                {
+                    UpdateFloatingBarModeBadge(true);
+                }
             }
 
             // 动态切换 EnablePointerSupport：仅在画笔批注模式下启用 WM_POINTER 触摸栈，
