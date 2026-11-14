@@ -27,10 +27,15 @@ namespace Ink_Canvas
         /// <summary>
         /// 侧边栏展开时距屏幕边缘的边距。
         ///
-        /// 原来是 -10（半展开，还藏在屏幕外 10px），实测看起来"没有贴着屏幕边缘"。
-        /// 改成 0：展开后左侧栏左边距为 0，紧贴屏幕左边。
+        /// 为什么是 -15 而不是 0：
+        /// SidePanelToggle 内部是 Grid Width=80，可见抓手 PanelBorder 只有 24 宽，
+        /// 而且带 15px 的左内边距（左侧栏）。所以 Margin=0 时，
+        /// 抓手实际距屏幕左边 15px —— 看起来就是"露出太多、没贴边"。
+        /// 设 -15 把那段内边距抵掉，抓手正好齐屏幕左边缘。
+        ///
+        /// 原值 -10 是"半展开"，还藏在屏幕外 10px，抓手几乎看不见。
         /// </summary>
-        private const int UnfoldedSideMargin = 0;
+        private const int UnfoldedSideMargin = -15;
 
         /// <summary>侧边栏完全折叠时的边距（藏到屏幕外）。</summary>
         private const int FoldedSideMargin = -50;
@@ -137,6 +142,19 @@ namespace Ink_Canvas
                 AnimationsHelper.HideWithFadeOut(BorderInkReplayToolBox);
                 isStopInkReplay = true;
             });
+
+            // 折叠前先把当前的【正常位置】记下来，供下次展开时恢复。
+            //
+            // 为什么在这里：折叠会把浮窗移到屏幕外（y≈1110），
+            // 这个隐藏位置会被 SaveFloatingBarPositionPoint 之类的地方
+            // 存进 pointDesktop。等下次展开时，定位逻辑看到
+            // pointDesktop 与目标位置差 >50，就把 pos 覆盖成那个隐藏位置，
+            // 结果浮窗出现在"默认位置上面"——就是它折叠时的那个高度。
+            // 现在在移动之前先把真实位置存好，覆盖掉脏数据。
+            if (!IsInPPTPresentationMode)
+            {
+                pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
+            }
 
             await Dispatcher.InvokeAsync(() =>
             {

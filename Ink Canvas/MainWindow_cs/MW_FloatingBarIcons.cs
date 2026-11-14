@@ -2884,7 +2884,10 @@ namespace Ink_Canvas
                 }
                 else
                 {
-                    if (pointDesktop.X != -1 || pointDesktop.Y != -1)
+                    // 同另一处：屏幕外的 pointDesktop（折叠时的隐藏位）不能用来恢复位置。
+                    if ((pointDesktop.X != -1 || pointDesktop.Y != -1) &&
+                        pointDesktop.Y >= 0 && pointDesktop.Y < screenHeight &&
+                        pointDesktop.X >= 0 && pointDesktop.X < screenWidth)
                     {
                         if (Math.Abs(pointDesktop.Y - pos.Y) > 50)
                             pos = pointDesktop;
@@ -3113,7 +3116,16 @@ namespace Ink_Canvas
                     pos.X = NormalizeFloatingBarLeftForScreen(pos.X, floatingBarWidth, screenWidth);
                 }
 
-                if (pointDesktop.X != -1 || pointDesktop.Y != -1)
+                // 只有 pointDesktop 落在屏幕内才用它恢复位置。
+                //
+                // 原来是无条件比：只要和算出来的 pos 差超过 50 就用 pointDesktop。
+                // 但浮窗折叠时会被移到屏幕外（y 大于屏幕高度），那个隐藏位置
+                // 如果被存进 pointDesktop，展开时就会把浮窗放回隐藏位置 ——
+                // 表现出来就是「从侧栏展开后，浮窗出现在默认位置上面」。
+                // 加一条范围检查：屏幕外的坐标直接不认。
+                if ((pointDesktop.X != -1 || pointDesktop.Y != -1) &&
+                    pointDesktop.Y >= 0 && pointDesktop.Y < screenHeight &&
+                    pointDesktop.X >= 0 && pointDesktop.X < screenWidth)
                 {
                     if (Math.Abs(pointDesktop.Y - pos.Y) > 50)
                         pos = pointDesktop;
