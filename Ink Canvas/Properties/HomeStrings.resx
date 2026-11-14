@@ -55,7 +55,7 @@
     <value>重启应用程序</value>
   </data>
   <data name="Home_AboutApp" xml:space="preserve">
-    <value>关于 ICC LTSC</value>
+    <value>关于 ICC CE Lite</value>
   </data>
   <data name="Home_Basic" xml:space="preserve">
     <value>基本</value>
@@ -121,6 +121,6 @@
     <value>赞助及友链</value>
   </data>
   <data name="Splash_Starting" xml:space="preserve">
-    <value>正在启动 ICC LTSC...</value>
+    <value>正在启动 ICC CE Lite...</value>
   </data>
 </root>

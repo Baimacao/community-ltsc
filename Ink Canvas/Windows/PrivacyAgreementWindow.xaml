@@ -7,7 +7,7 @@
         xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="隐私说明 - ICC LTSC"
+        Title="隐私说明 - ICC CE Lite"
         Height="640" Width="720"
         MinHeight="420" MinWidth="520"
         WindowStartupLocation="CenterScreen"

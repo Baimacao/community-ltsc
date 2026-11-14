@@ -217,7 +217,7 @@
     <value>外挂调教</value>
   </data>
   <data name="Nav_AboutInkCanvas" xml:space="preserve">
-    <value>关于 ICC LTSC</value>
+    <value>关于 ICC CE Lite</value>
   </data>
   <data name="Nav_NavigateError" xml:space="preserve">
     <value>导航翻车了: {0}</value>

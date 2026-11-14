@@ -463,9 +463,9 @@
     <value>已存在同名方案，请更换名称</value>
   </data>
   <data name="Theme_FloatingIcon_LtscLight" xml:space="preserve">
-    <value>ICC LTSC 浅色</value>
+    <value>ICC CE Lite 浅色</value>
   </data>
   <data name="Theme_FloatingIcon_LtscDark" xml:space="preserve">
-    <value>ICC LTSC 深色</value>
+    <value>ICC CE Lite 深色</value>
   </data>
 </root>

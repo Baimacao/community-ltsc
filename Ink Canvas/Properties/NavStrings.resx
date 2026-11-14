@@ -91,7 +91,7 @@
     <value>设置</value>
   </data>
   <data name="Nav_SettingsWindow_Title" xml:space="preserve">
-    <value>ICC LTSC 设置</value>
+    <value>ICC CE Lite 设置</value>
   </data>
   <data name="Nav_AppSettings" xml:space="preserve">
     <value>应用设置</value>
@@ -229,7 +229,7 @@
     <value>插件设置</value>
   </data>
   <data name="Nav_AboutInkCanvas" xml:space="preserve">
-    <value>关于 ICC LTSC</value>
+    <value>关于 ICC CE Lite</value>
   </data>
   <data name="Nav_NavigateError" xml:space="preserve">
     <value>导航到页面时出错: {0}</value>

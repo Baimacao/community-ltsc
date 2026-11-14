@@ -52,7 +52,7 @@
     <value>Restart application</value>
   </data>
   <data name="Home_AboutApp" xml:space="preserve">
-    <value>About ICC LTSC</value>
+    <value>About ICC CE Lite</value>
   </data>
   <data name="Home_Basic" xml:space="preserve">
     <value>Basic</value>
@@ -118,6 +118,6 @@
     <value>Sponsors and friendly links</value>
   </data>
   <data name="Splash_Starting" xml:space="preserve">
-    <value>Starting ICC LTSC...</value>
+    <value>Starting ICC CE Lite...</value>
   </data>
 </root>

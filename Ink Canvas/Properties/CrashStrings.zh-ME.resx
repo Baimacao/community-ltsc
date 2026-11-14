@@ -58,10 +58,10 @@
     <value>崩了之后怎么办</value>
   </data>
   <data name="CrashWindowTitle" xml:space="preserve">
-    <value>崩溃详情 - ICC LTSC</value>
+    <value>崩溃详情 - ICC CE Lite</value>
   </data>
   <data name="CrashWindowHeader" xml:space="preserve">
-    <value>ICC LTSC 翻车了，破防了</value>
+    <value>ICC CE Lite 翻车了，破防了</value>
   </data>
   <data name="CrashWindowDescription" xml:space="preserve">
     <value>以下是本次翻车的详细信息，复制发给开发者让他们修~</value>

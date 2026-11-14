@@ -58,10 +58,10 @@
     <value>崩溃后操作</value>
   </data>
   <data name="CrashWindowTitle" xml:space="preserve">
-    <value>崩溃详情 - ICC LTSC</value>
+    <value>崩溃详情 - ICC CE Lite</value>
   </data>
   <data name="CrashWindowHeader" xml:space="preserve">
-    <value>ICC LTSC 发生了未处理异常</value>
+    <value>ICC CE Lite 发生了未处理异常</value>
   </data>
   <data name="CrashWindowDescription" xml:space="preserve">
     <value>以下是本次崩溃的详细信息。你可以复制内容并反馈给开发者。</value>
