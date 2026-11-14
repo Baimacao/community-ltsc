@@ -93,8 +93,12 @@ namespace Ink_Canvas
         /// 9. 执行浮动栏和侧边栏的动画
         /// 10. 如果开启了彻底隐藏，则隐藏主窗口
         /// </remarks>
+        private static System.Diagnostics.Stopwatch _foldSw;
+
         public async Task FoldFloatingBar(object sender, bool isAutoFoldCommand = false)
         {
+            _foldSw = System.Diagnostics.Stopwatch.StartNew();
+            LogHelper.WriteLogToFile("[折叠] 开始", LogHelper.LogType.Event);
 
             // FloatingBarIcons_MouseUp_New(sender);
             if (sender == null)
@@ -135,7 +139,9 @@ namespace Ink_Canvas
                 CursorWithDelIcon_Click(sender, null);
             });
 
+            LogHelper.WriteLogToFile($"[折叠] 前置完成，开始等待 300ms（t={_foldSw?.ElapsedMilliseconds ?? 0}ms）", LogHelper.LogType.Event);
             await Task.Delay(300);
+            LogHelper.WriteLogToFile($"[折叠] 300ms 等待结束，开始位移动画（t={_foldSw?.ElapsedMilliseconds ?? 0}ms）", LogHelper.LogType.Event);
 
             await Dispatcher.InvokeAsync(() =>
             {

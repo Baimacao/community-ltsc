@@ -469,17 +469,35 @@ namespace Ink_Canvas
             if (isClick)
             {
                 var headPos = IsVerticalToolbar ? GetCurrentFloatingBarHeadTop() : GetCurrentFloatingBarHeadLeft();
+                var horizontal = !IsVerticalToolbar;
+                var root = FloatingBarRootPanel;
+
+                LogHelper.WriteLogToFile(
+                    $"[折叠] 主图标点击，当前内容可见={IsFloatingBarContentVisible()}",
+                    LogHelper.LogType.Event);
+
                 if (IsFloatingBarContentVisible())
                 {
-                    SetFloatingBarContentVisibility(false);
-                    UpdateToolbarComponentVisibility();
-                    PlaceFloatingBarAfterHeadToggle(headPos, false);
+                    // 折叠：先让内容淡出收缩，动画结束再真正切 Visibility。
+                    // 直接切 Collapsed 是瞬时的，视觉上"啪"一下就没了。
+                    FloatingBarFoldAnimation.PlayCollapse(root, BorderFloatingBarMoveControls, horizontal, () =>
+                    {
+                        SetFloatingBarContentVisibility(false);
+                        UpdateToolbarComponentVisibility();
+                        PlaceFloatingBarAfterHeadToggle(headPos, false);
+                        _popupManager?.MarkNeedsUpdate();
+                    });
                 }
                 else
                 {
+                    // 展开：先把 Visibility 切回来（否则动画看不到东西），再展开。
                     SetFloatingBarContentVisibility(true);
                     UpdateToolbarComponentVisibility();
-                    PlaceFloatingBarAfterHeadToggle(headPos, true);
+                    FloatingBarFoldAnimation.PlayExpand(root, BorderFloatingBarMoveControls, horizontal, () =>
+                    {
+                        PlaceFloatingBarAfterHeadToggle(headPos, true);
+                        _popupManager?.MarkNeedsUpdate();
+                    });
                 }
             }
             else
