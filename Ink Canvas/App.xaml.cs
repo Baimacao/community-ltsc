@@ -1461,6 +1461,30 @@ namespace Ink_Canvas
 
             mainWindow.Show();
 
+            // 浮动工具栏入场动画：主图标先出 → 工具项拉开出现 → 连贯收回正常间距。
+            // 挂在 Show() 之后、首帧渲染完成时，此时工具栏完成布局，位置才是准的。
+            // 只在真正启动时播一次；RebuildToolbar 之类的重建路径不会触发它。
+            if (!IsLaunchByFileOrUri(e.Args))
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        var pos = SettingsManager.Settings?.Appearance?.ToolbarPosition
+                                  ?? ToolbarPosition.Left;
+                        var horizontal = pos == ToolbarPosition.Left || pos == ToolbarPosition.Right;
+                        FloatingBarIntroAnimation.Play(
+                            mainWindow.BorderFloatingBarMoveControls,
+                            mainWindow.StackPanelFloatingBarRoot,
+                            horizontal);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"启动入场动画异常: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Loaded);
+            }
+
             if (IsFastStartupEnabled)
             {
                 _ = RunFastStartupPostRenderTasksAsync(mainWindow);
