@@ -138,10 +138,7 @@ namespace Ink_Canvas
                 lastBorderMouseDownObject = sender;
                 CursorWithDelIcon_Click(sender, null);
             });
-
-            LogHelper.WriteLogToFile($"[折叠] 前置完成，开始等待 300ms（t={_foldSw?.ElapsedMilliseconds ?? 0}ms）", LogHelper.LogType.Event);
             await Task.Delay(300);
-            LogHelper.WriteLogToFile($"[折叠] 300ms 等待结束，开始位移动画（t={_foldSw?.ElapsedMilliseconds ?? 0}ms）", LogHelper.LogType.Event);
 
             await Dispatcher.InvokeAsync(() =>
             {

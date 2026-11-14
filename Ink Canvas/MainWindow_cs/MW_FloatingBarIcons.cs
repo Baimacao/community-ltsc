@@ -189,6 +189,20 @@ namespace Ink_Canvas
         /// 用于记录上次在桌面时的坐标
         /// </summary>
         internal Point pointDesktop = new Point(-1, -1);
+
+        /// <summary>
+        /// 浮动栏定位动画的世代号。
+        ///
+        /// 为什么需要：展开/折叠会连续发起多次定位动画（启动流程一次就发了 6 次），
+        /// 每次的弹簧 finished 回调各自落地自己的 targetMargin，**执行顺序不保证**。
+        /// 实测：展开动画在 17.287 发起，折叠在 17.432 发起，
+        /// 结果折叠先落地（17.591），展开的旧回调晚 1ms 才到（17.592），
+        /// 把位置又覆盖回展开态——表现出来就是「折叠完浮窗还留在屏幕上」，
+        /// 启动收纳校验于是又折一次，用户看到的是折了两次。
+        ///
+        /// 现在每次发起动画都 ++，回调里比对；不是最新一代就丢弃，不落地。
+        /// </summary>
+        private int _floatingBarPosVersion = 0;
         /// <summary>
         /// 用于记录上次在PPT中的坐标
         /// </summary>
@@ -2819,6 +2833,8 @@ namespace Ink_Canvas
                 pos.X = screenWidth - MarginFromEdge * ViewboxFloatingBarScaleTransform.ScaleX;
             }
 
+            int myVersion = ++_floatingBarPosVersion;
+
             TimeSpan startedDuration = TimeSpan.Zero;
 
             if (animate)
@@ -2853,6 +2869,14 @@ namespace Ink_Canvas
                         (float)dy,
                         finished: () =>
                         {
+                            // 不是最新一代就丢弃：旧动画的回调不能覆盖新动画已经落好的位置。
+                            if (myVersion != _floatingBarPosVersion)
+                            {
+                                LogHelper.WriteLogToFile(
+                                    $"[定位] 丢弃过期落地 v{myVersion}（当前 v{_floatingBarPosVersion}）targetMargin={targetMargin}",
+                                    LogHelper.LogType.Info);
+                                return;
+                            }
                             AnimationsHelper.LandMarginOnCompositionLayer(ViewboxFloatingBar, targetMargin);
                             // 落地把 tt 归零了，弹簧内部缓存也必须跟着归零，
                             // 否则下次复用时它会从旧值继续推，画面会跳。
