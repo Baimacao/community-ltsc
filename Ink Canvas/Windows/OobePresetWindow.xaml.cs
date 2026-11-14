@@ -174,7 +174,6 @@ namespace Ink_Canvas.Windows
             // 个性化
             settings.Appearance.Theme = 2;
             settings.Appearance.WindowBackdrop = "Acrylic";
-            settings.Appearance.EnableSplashScreen = true;
             settings.Appearance.EnableTrayIcon = true;
             settings.Appearance.IsShowQuickPanel = true;
             settings.Appearance.EnableHotkeysInMouseMode = false;
@@ -244,7 +243,6 @@ namespace Ink_Canvas.Windows
             // 个性化
             settings.Appearance.Theme = 2; // 跟随系统
             settings.Appearance.WindowBackdrop = "None";
-            settings.Appearance.EnableSplashScreen = false;
             settings.Appearance.EnableTrayIcon = true;
             settings.Appearance.IsShowQuickPanel = false;
             settings.Appearance.EnableHotkeysInMouseMode = false;

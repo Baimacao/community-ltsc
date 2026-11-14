@@ -419,11 +419,6 @@
                                         </ComboBox>
                                     </ui:SettingsCard>
 
-                                    <controls:LabeledSettingsCard x:Name="CardEnableSplashScreen"
-                                                                  Header="{x:Static props:ThemeStrings.Theme_EnableSplash}"
-                                                                  Description="{x:Static props:OobeStrings.Oobe_ShowSplashScreenDesc}"
-                                                                  Icon="{x:Static ui:SegoeFluentIcons.Photo}"
-                                                                  SwitchName="ToggleSwitchEnableSplashScreen" />
 
                                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                                                Margin="1,18,0,6"

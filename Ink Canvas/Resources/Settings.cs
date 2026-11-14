@@ -461,12 +461,22 @@ namespace Ink_Canvas
         [JsonProperty("unFoldButtonImageType")]
         public int UnFoldButtonImageType { get; set; }
         [JsonProperty("enableSplashScreen")]
+        /// <summary>
+        /// 【已废弃】启动画面（SplashScreen）已整体移除，改为浮动工具栏入场动画。
+        ///
+        /// 字段保留只是为了旧配置文件能正常反序列化——直接删掉会让老配置文件里
+        /// 的这个键无处可去，Newtonsoft 虽然会忽略未知键，但留着更明确。
+        /// 代码里不要再读它，读了也不会生效。
+        /// </summary>
         public bool EnableSplashScreen { get; set; } = false;
         [JsonProperty("splashScreenStyle")]
+        /// <summary>【已废弃】启动画面已移除，保留字段仅为兼容旧配置文件，读取不会生效。</summary>
         public int SplashScreenStyle { get; set; } = 1; // 0-随机, 1-跟随四季, 2-春季, 3-夏季, 4-秋季, 5-冬季, 6-马年限定 
         [JsonProperty("customSplashImagePath")]
+        /// <summary>【已废弃】启动画面已移除，保留字段仅为兼容旧配置文件，读取不会生效。</summary>
         public string CustomSplashImagePath { get; set; } = string.Empty;
         [JsonProperty("customSplashTextPosition")]
+        /// <summary>【已废弃】启动画面已移除，保留字段仅为兼容旧配置文件，读取不会生效。</summary>
         public int CustomSplashTextPosition { get; set; } = 1; // 0-左下, 1-中下, 2-右下
         [JsonProperty("isShowQuickPanel")]
         public bool IsShowQuickPanel { get; set; } = true;

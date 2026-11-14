@@ -328,8 +328,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
                     "ToggleSwitchEnableTrayIcon",
                     "ComboBoxFloatingBarImg",
                     "ComboBoxUnFoldBtnImg",
-                    "ComboBoxSplashScreenStyle",
-                    "ToggleSwitchEnableSplashScreen",
                     "ViewboxFloatingBarScaleTransformValueSlider",
                     "ViewboxFloatingBarOpacityValueSlider",
                     "ViewboxFloatingBarOpacityInPPTValueSlider",

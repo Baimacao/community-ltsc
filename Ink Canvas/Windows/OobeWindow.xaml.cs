@@ -122,7 +122,6 @@ namespace Ink_Canvas.Windows
                     if (themeIndex < 0 || themeIndex > 2) themeIndex = 2;
                     ComboBoxTheme.SelectedIndex = themeIndex;
                     SelectComboBoxItemByTag(ComboBoxWindowBackdrop, _settings.Appearance.WindowBackdrop);
-                    CardEnableSplashScreen.IsOn = _settings.Appearance.EnableSplashScreen;
                     CardEnableTrayIcon.IsOn = _settings.Appearance.EnableTrayIcon;
                     CardShowQuickPanel.IsOn = _settings.Appearance.IsShowQuickPanel;
                     CardEnableHotkeysInMouseMode.IsOn = _settings.Appearance.EnableHotkeysInMouseMode;
@@ -213,7 +212,6 @@ namespace Ink_Canvas.Windows
                     if (themeIndex < 0) themeIndex = 2;
                     _settings.Appearance.Theme = themeIndex;
                     _settings.Appearance.WindowBackdrop = GetSelectedComboBoxTag(ComboBoxWindowBackdrop, "None");
-                    _settings.Appearance.EnableSplashScreen = CardEnableSplashScreen.IsOn;
                     _settings.Appearance.EnableTrayIcon = CardEnableTrayIcon.IsOn;
                     _settings.Appearance.IsShowQuickPanel = CardShowQuickPanel.IsOn;
                     _settings.Appearance.EnableHotkeysInMouseMode = CardEnableHotkeysInMouseMode.IsOn;

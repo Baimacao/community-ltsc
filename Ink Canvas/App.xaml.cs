@@ -22,7 +22,6 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
-using SplashScreen = Ink_Canvas.Windows.SplashScreen;
 using Timer = System.Threading.Timer;
 
 namespace Ink_Canvas
@@ -105,11 +104,8 @@ namespace Ink_Canvas
         private bool mainWindowDestroyedLogged;
         private WinEventDelegate processDestroyHookCallback;
         // 新增：启动画面相关
-        private static SplashScreen _splashScreen;
-        private static bool _isSplashScreenShown = false;
         // _pendingLocalizedResourceSet removed - using Strings.LoadAllToResources
         private static readonly Stopwatch startupStopwatch = new Stopwatch();
-        private static readonly Stopwatch splashStopwatch = new Stopwatch();
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int SetCurrentProcessExplicitAppUserModelID(string appId);
@@ -746,56 +742,8 @@ namespace Ink_Canvas
                 : "采样不足";
         }
 
-        public static void ShowSplashScreen()
-        {
-            if (_isSplashScreenShown)
-            {
-                LogHelper.WriteLogToFile("启动画面已经显示，跳过重复显示");
-                return;
-            }
 
-            try
-            {
-                LogHelper.WriteLogToFile("开始创建启动画面...");
-                _splashScreen = new SplashScreen();
-                LogHelper.WriteLogToFile("启动画面对象创建成功，准备显示...");
-                _splashScreen.Show();
-                _isSplashScreenShown = true;
-                splashScreenStartTime = DateTime.Now;
-                splashStopwatch.Restart();
-                LogHelper.WriteLogToFile("启动画面已显示");
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"显示启动画面失败: {ex.Message}", LogHelper.LogType.Error);
-                LogHelper.WriteLogToFile($"异常堆栈: {ex.StackTrace}", LogHelper.LogType.Error);
-            }
-        }
 
-        // 关闭启动画面
-        public static void CloseSplashScreen()
-        {
-            if (!_isSplashScreenShown || _splashScreen == null) return;
-
-            try
-            {
-                _splashScreen.CloseSplashScreen();
-                _isSplashScreenShown = false;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"关闭启动画面失败: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        // 设置启动画面进度
-        public static void SetSplashProgress(int progress)
-        {
-            if (_splashScreen != null)
-            {
-                _splashScreen.SetProgress(progress);
-            }
-        }
 
         /// <summary>
         /// 取给人看的版本号。
@@ -833,14 +781,6 @@ namespace Ink_Canvas
         }
 
 
-        // 设置启动画面消息
-        public static void SetSplashMessage(string message)
-        {
-            if (_splashScreen != null)
-            {
-                _splashScreen.SetLoadingMessage(message);
-            }
-        }
 
         private static bool IsLaunchByFileOrUri(string[] args)
         {
@@ -1116,18 +1056,8 @@ namespace Ink_Canvas
 
             TryApplyPreferredLanguageFromParsedSettings(parsedSettings);
 
-            // 根据设置决定是否显示启动画面（复用已解析的设置对象）
-            if (ShouldShowSplashScreenFromParsed(parsedSettings) && !IsLaunchByFileOrUri(e.Args))
-            {
-                // 注入缓存 JSON 给 SplashScreen，避免其构造期间重复读取 + 解析 Settings.json
-                SplashScreen.CachedSettingsJson = CachedSettingsJson;
-                ShowSplashScreen();
-                SetSplashMessage("正在启动 Ink Canvas...");
-                SetSplashProgress(25);
-
-                // 强制刷新UI，确保启动画面显示
-                Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.Render);
-            }
+            // 启动画面（SplashScreen）已整体移除，改为浮动工具栏入场动画。
+            // 原来这里有一段「是否显示启动画面」的判断，连同设置项一起删掉了。
             RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
             string versionString = GetDisplayVersion();
@@ -1166,11 +1096,6 @@ namespace Ink_Canvas
                 LogHelper.WriteLogToFile("App | 检测到最终应用启动（更新后的应用）");
             }
 
-            if (_isSplashScreenShown)
-            {
-                SetSplashMessage("正在加载配置...");
-                SetSplashProgress(50);
-            }
 
             // 处理更新模式启动
             bool isUpdateMode = AutoUpdateHelper.HandleUpdateModeStartup(e.Args);
@@ -1398,11 +1323,6 @@ namespace Ink_Canvas
             StartArgs = e.Args;
 
             // 在非更新模式下创建主窗口
-            if (_isSplashScreenShown)
-            {
-                SetSplashMessage("正在初始化主界面...");
-                SetSplashProgress(75);
-            }
             var mainWindow = new MainWindow();
             MainWindow = mainWindow;
 
@@ -1431,32 +1351,8 @@ namespace Ink_Canvas
                 // 不清零；跑够 StableRunBeforeReset 才清。
                 _ = ResetStartupCountWhenStable();
 
-                if (_isSplashScreenShown && splashStopwatch.IsRunning)
-                {
-                    LogHelper.WriteLogToFile($"启动完成心跳已记录，启动画面显示时长: {splashStopwatch.Elapsed.TotalSeconds:F2}秒");
-                }
-                else
-                {
-                    LogHelper.WriteLogToFile($"启动完成心跳已记录");
-                }
+                LogHelper.WriteLogToFile($"启动完成心跳已记录");
                 LogHelper.WriteLogToFile($"启动时长: {startupStopwatch.Elapsed.TotalSeconds:F2}秒");
-
-                if (_isSplashScreenShown)
-                {
-                    SetSplashMessage("启动完成！");
-                    SetSplashProgress(100);
-                    Task.Delay(100).ContinueWith(_ =>
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            // 延迟关闭启动画面，让用户看到完成消息
-                            Task.Delay(100).ContinueWith(__ =>
-                            {
-                                Dispatcher.Invoke(() => CloseSplashScreen());
-                            });
-                        });
-                    });
-                }
             };
 
             mainWindow.Show();
@@ -1748,22 +1644,6 @@ namespace Ink_Canvas
             }
         }
 
-        private static bool ShouldShowSplashScreenFromParsed(dynamic parsedSettings)
-        {
-            try
-            {
-                if (parsedSettings?["appearance"]?["enableSplashScreen"] != null)
-                {
-                    return (bool)parsedSettings["appearance"]["enableSplashScreen"];
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"检查启动动画设置失败: {ex.Message}", LogHelper.LogType.Warning);
-                return false;
-            }
-        }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -1912,7 +1792,6 @@ namespace Ink_Canvas
         private static Timer watchdogTimer;
         private static bool isStartupComplete = false;
         private static DateTime startupCompleteHeartbeat = DateTime.MinValue;
-        private static DateTime splashScreenStartTime = DateTime.MinValue;
         private static DateTime appStartupStartTime = DateTime.MinValue;
         private static volatile bool isAppExiting = false;
 
@@ -1968,14 +1847,12 @@ namespace Ink_Canvas
 
                 if (!isStartupComplete && appStartupStartTime != DateTime.MinValue)
                 {
-                    DateTime startTime = _isSplashScreenShown && splashScreenStartTime != DateTime.MinValue
-                        ? splashScreenStartTime
-                        : appStartupStartTime;
+                    // 启动画面已移除，计时起点统一用 appStartupStartTime。
+                    DateTime startTime = appStartupStartTime;
                     TimeSpan elapsedSinceStart = DateTime.Now - startTime;
                     if (elapsedSinceStart.TotalMinutes >= 2)
                     {
-                        string timeType = _isSplashScreenShown ? "启动画面已显示" : "应用启动开始";
-                        string restartReason = $"检测到启动假死：{timeType}{elapsedSinceStart.TotalMinutes:F2}分钟，但未收到启动完成心跳，自动重启。";
+                        string restartReason = $"检测到启动假死：应用启动开始{elapsedSinceStart.TotalMinutes:F2}分钟，但未收到启动完成心跳，自动重启。";
                         LogHelper.WriteLogToFile(restartReason, LogHelper.LogType.Error);
                         WriteCrashLog(restartReason);
                         SyncCrashActionFromSettings();
