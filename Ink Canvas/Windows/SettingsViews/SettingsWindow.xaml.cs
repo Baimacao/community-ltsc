@@ -41,7 +41,8 @@ namespace Ink_Canvas.Windows.SettingsViews
             { "FriendlyLinksPage", typeof(FriendlyLinksPage) },
             { "AboutPage", typeof(AboutPage) },
             { "Settings", typeof(SettingsPage) },
-            { "PPTPageFlipPreviewPage", typeof(PPTPageFlipPreviewPage) }
+            { "PPTPageFlipPreviewPage", typeof(PPTPageFlipPreviewPage) },
+            { "PresenterKeyPage", typeof(PresenterKeyPage) },
         };
         private readonly Dictionary<string, object> _pages = new Dictionary<string, object>();
 

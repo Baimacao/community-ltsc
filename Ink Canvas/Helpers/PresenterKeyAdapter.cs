@@ -23,23 +23,85 @@ namespace Ink_Canvas.Helpers
     internal static class PresenterKeyAdapter
     {
         /// <summary>按键与功能的配对。</summary>
+        /// <summary>
+        /// 一个按键与功能的配对。
+        ///
+        /// 这是**可编辑的配置项**：老师可以在设置页里改键（Q4-7）。
+        /// `DefaultKey` / `DefaultModifiers` 记住出厂值，供「恢复默认」用。
+        /// </summary>
         internal sealed class Binding
         {
-            public Key Key;
-            public ModifierKeys Modifiers;
-            public string Feature;      // 功能标识
-            public string DisplayName;  // 给人看的名字
-            public bool ShouldWarn;     // 误触要不要弹提示（ta 裁决 Q4-6：只有影响上课的才弹）
+            public Key Key { get; set; }
+            public ModifierKeys Modifiers { get; set; }
+            public Key DefaultKey { get; set; }
+            public ModifierKeys DefaultModifiers { get; set; }
+            public string Feature { get; set; } = "";
+            public string DisplayName { get; set; } = "";
+            public string Hint { get; set; } = "";
+            public bool ShouldWarn { get; set; }
+
+            /// <summary>给人看的按键文本，例如「Ctrl+P」「B」。</summary>
+            public string KeyText
+            {
+                get
+                {
+                    if (Key == Key.None) return "（未设置）";
+                    return Modifiers == ModifierKeys.None
+                        ? Key.ToString()
+                        : $"{Modifiers}+{Key}";
+                }
+            }
+
+            /// <summary>恢复出厂配对。</summary>
+            public void ResetToDefault()
+            {
+                Key = DefaultKey;
+                Modifiers = DefaultModifiers;
+            }
         }
 
-        /// <summary>默认配对（需求文档 R-04 定的）。</summary>
-        internal static readonly List<Binding> DefaultBindings = new List<Binding>
+        /// <summary>
+        /// 当前的按键配对。设置页会直接改这个列表里的项。
+        ///
+        /// 默认值来自需求文档 R-04；老师可以在设置页里改键（Q4-7）。
+        /// </summary>
+        internal static readonly List<Binding> Bindings = new List<Binding>
         {
-            new Binding { Key = Key.P, Modifiers = ModifierKeys.Control, Feature = "annotate",  DisplayName = "打开批注", ShouldWarn = false },
-            new Binding { Key = Key.E, Modifiers = ModifierKeys.None,    Feature = "clear",     DisplayName = "清空笔迹", ShouldWarn = false },
-            new Binding { Key = Key.B, Modifiers = ModifierKeys.None,    Feature = "blackout",  DisplayName = "黑屏",     ShouldWarn = true  },
-            new Binding { Key = Key.F5, Modifiers = ModifierKeys.Shift,  Feature = "slideshow", DisplayName = "开始/退出放映", ShouldWarn = true },
-            new Binding { Key = Key.Escape, Modifiers = ModifierKeys.None, Feature = "exit",    DisplayName = "退出放映", ShouldWarn = true  },
+            new Binding
+            {
+                Key = Key.P, Modifiers = ModifierKeys.Control,
+                DefaultKey = Key.P, DefaultModifiers = ModifierKeys.Control,
+                Feature = "annotate", DisplayName = "打开批注",
+                Hint = "进入批注模式，可以直接在白板上写", ShouldWarn = false
+            },
+            new Binding
+            {
+                Key = Key.E, Modifiers = ModifierKeys.None,
+                DefaultKey = Key.E, DefaultModifiers = ModifierKeys.None,
+                Feature = "clear", DisplayName = "清空笔迹",
+                Hint = "清掉当前这一页的批注", ShouldWarn = false
+            },
+            new Binding
+            {
+                Key = Key.B, Modifiers = ModifierKeys.None,
+                DefaultKey = Key.B, DefaultModifiers = ModifierKeys.None,
+                Feature = "blackout", DisplayName = "黑屏",
+                Hint = "把屏幕变黑，用来让学生注意力回到黑板", ShouldWarn = true
+            },
+            new Binding
+            {
+                Key = Key.F5, Modifiers = ModifierKeys.Shift,
+                DefaultKey = Key.F5, DefaultModifiers = ModifierKeys.Shift,
+                Feature = "slideshow", DisplayName = "开始/退出放映",
+                Hint = "开始 PowerPoint 放映；放映中按会退出", ShouldWarn = true
+            },
+            new Binding
+            {
+                Key = Key.Escape, Modifiers = ModifierKeys.None,
+                DefaultKey = Key.Escape, DefaultModifiers = ModifierKeys.None,
+                Feature = "exit", DisplayName = "退出放映",
+                Hint = "立刻结束 PowerPoint 放映", ShouldWarn = true
+            },
         };
 
         private static LowLevelKeyboardHook _hook;
@@ -135,7 +197,7 @@ namespace Ink_Canvas.Helpers
 
         private static Binding FindBinding(Key key, ModifierKeys modifiers)
         {
-            foreach (var b in DefaultBindings)
+            foreach (var b in Bindings)
             {
                 if (b.Key == key && b.Modifiers == modifiers) return b;
             }
@@ -177,6 +239,12 @@ namespace Ink_Canvas.Helpers
             LogHelper.WriteLogToFile("翻页笔适配已开启", LogHelper.LogType.Event);
         }
 
+        /// <summary>关闭适配（回到「只拦截、不响应」）。</summary>
+        internal static void DisableAdapter()
+        {
+            IsEnabled = false;
+            LogHelper.WriteLogToFile("翻页笔适配已关闭", LogHelper.LogType.Event);
+        }
         /// <summary>用户在提示框里选了「继续拦截」——保持关闭，但不影响已经提示过的事实。</summary>
         internal static void KeepBlocking()
         {

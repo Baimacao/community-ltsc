@@ -1,0 +1,79 @@
+<ui:Page x:Class="Ink_Canvas.Windows.SettingsViews.Pages.PresenterKeyPage"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:d="http://schemas.microsoft.com/expression/blend"
+         xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+         xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+         mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,12,24,24">
+        <ikw:SimpleStackPanel Spacing="12" MaxWidth="900" HorizontalAlignment="Left">
+
+            <!-- 总开关 -->
+            <ui:SettingsCard Header="启用翻页笔适配"
+                             Description="开启后，下面配对的功能按键会正常工作；关闭时只拦截、不响应，防止误触。">
+                <ui:ToggleSwitch x:Name="ToggleEnableAdapter"
+                                 OnContent="开" OffContent="关"
+                                 Toggled="ToggleEnableAdapter_Toggled"/>
+            </ui:SettingsCard>
+
+            <!-- 说明 -->
+            <Border CornerRadius="8" Padding="14,12"
+                    BorderThickness="1" BorderBrush="#40F0A020">
+                <Border.Background>
+                    <SolidColorBrush Color="#1FF0A020"/>
+                </Border.Background>
+                <ikw:SimpleStackPanel Spacing="6">
+                    <TextBlock FontWeight="SemiBold" Text="只在 PPT 联动放映时生效"/>
+                    <TextBlock TextWrapping="Wrap" LineHeight="20" FontSize="12.5" Opacity="0.85"
+                               Text="其他模式（批注、白板、桌面）下这些键完全不受影响，走系统原有逻辑。退出放映时会立刻卸载键盘钩子。"/>
+                </ikw:SimpleStackPanel>
+            </Border>
+
+            <!-- 配对表 -->
+            <TextBlock Text="按键配对" FontWeight="SemiBold" Margin="0,8,0,0"/>
+            <TextBlock Text="点击右边的按键框，然后按下你想用的键（或组合键）。点「恢复默认」回到出厂配对。"
+                       TextWrapping="Wrap" Opacity="0.7" FontSize="12.5"/>
+
+            <ItemsControl x:Name="BindingsItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                CornerRadius="6" Padding="12" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding DisplayName}" FontWeight="Medium"/>
+                                    <TextBlock Text="{Binding Hint}" FontSize="12" Opacity="0.65" Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="1" Content="{Binding KeyText}"
+                                        MinWidth="120" Padding="10,6" Margin="8,0"
+                                        Click="CaptureButton_Click" Tag="{Binding}"/>
+
+                                <Button Grid.Column="2" Content="恢复默认"
+                                        Padding="10,6" Click="ResetButton_Click" Tag="{Binding}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- 冲突提示 -->
+            <Border x:Name="BorderConflict" CornerRadius="6" Padding="12,10"
+                    BorderThickness="1" BorderBrush="#40D02020" Visibility="Collapsed">
+                <Border.Background>
+                    <SolidColorBrush Color="#1FD02020"/>
+                </Border.Background>
+                <TextBlock x:Name="TextBlockConflict" TextWrapping="Wrap" FontSize="12.5"/>
+            </Border>
+
+        </ikw:SimpleStackPanel>
+    </ScrollViewer>
+</ui:Page>

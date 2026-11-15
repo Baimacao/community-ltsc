@@ -252,6 +252,15 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                         <ui:NavigationViewItem
+                            x:Name="PresenterKeyPageItem"
+                            Content="翻页笔适配"
+                            Tag="PresenterKeyPage"
+                            ToolTipService.ToolTip="配置翻页笔的特殊键，防止课堂上误触黑屏/退出放映">
+                            <ui:NavigationViewItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}"/>
+                            </ui:NavigationViewItem.Icon>
+                        </ui:NavigationViewItem>
+                        <ui:NavigationViewItem
                             x:Name="TimerPageItem"
                             Content="{x:Static props:TimerStrings.Timer_Title}"
                             Tag="TimerPage"

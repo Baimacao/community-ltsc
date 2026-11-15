@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Ink_Canvas.Helpers;
 
@@ -127,7 +128,7 @@ namespace Ink_Canvas
         /// 「本次会话不再弹」由 PresenterKeyAdapter 的 _warnedFeatures 保证（ta 裁决 Q4-4）：
         /// 关掉软件再打开会重新提示一次。
         /// </summary>
-        private void ShowPresenterKeyWarning(PresenterKeyAdapter.Binding binding)
+        private async void ShowPresenterKeyWarning(PresenterKeyAdapter.Binding binding)
         {
             try
             {
@@ -135,19 +136,45 @@ namespace Ink_Canvas
                     ? binding.Key.ToString()
                     : $"{binding.Modifiers}+{binding.Key}";
 
-                var msg = $"检测到你按下了 {keyText}（{binding.DisplayName}）。\n\n" +
-                          "这个键会直接影响放映状态，可能是误触翻页笔的特殊键，" +
-                          "或者按压到了翻页键。\n\n" +
-                          "选择「是」继续拦截这个键；选择「否」启用翻页笔适配，让它按正常功能工作。";
+                // 用 iNKORE ContentDialog，和项目其余对话框保持同一套视觉（Q4-5）。
+                // 原来临时用的 MessageBox 样式不统一，而且在触摸屏上按钮偏小。
+                var content = new System.Windows.Controls.StackPanel();
 
-                var result = MessageBox.Show(
-                    msg,
-                    "ICC CE Lite",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question,
-                    MessageBoxResult.Yes);
+                content.Children.Add(new TextBlock
+                {
+                    Text = $"检测到你按下了 {keyText}（{binding.DisplayName}）。",
+                    TextWrapping = TextWrapping.Wrap
+                });
 
-                if (result == MessageBoxResult.Yes)
+                content.Children.Add(new TextBlock
+                {
+                    Text = "这个键会直接影响放映状态，可能是误触翻页笔的特殊键，或者按压到了翻页键。",
+                    TextWrapping = TextWrapping.Wrap,
+                    Opacity = 0.85
+                });
+
+                content.Children.Add(new TextBlock
+                {
+                    Text = "「继续拦截」= 这个键保持不响应；「启用适配」= 让它按正常功能工作（之后可以在设置里改）。",
+                    TextWrapping = TextWrapping.Wrap,
+                    FontSize = 12
+                    ,
+                    Opacity = 0.7
+                });
+
+                var dialog = new iNKORE.UI.WPF.Modern.Controls.ContentDialog
+                {
+                    Title = "翻页笔按键提示",
+                    Content = content,
+                    PrimaryButtonText = "继续拦截",
+                    SecondaryButtonText = "启用适配",
+                    DefaultButton = iNKORE.UI.WPF.Modern.Controls.ContentDialogButton.Primary,
+                    Owner = this
+                };
+
+                var result = await dialog.ShowAsync();
+
+                if (result == iNKORE.UI.WPF.Modern.Controls.ContentDialogResult.Primary)
                 {
                     PresenterKeyAdapter.KeepBlocking();
                 }
