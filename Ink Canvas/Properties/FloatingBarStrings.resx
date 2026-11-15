@@ -343,7 +343,7 @@
     <value>边距</value>
   </data>
   <data name="ToolbarPage_MarginHint" xml:space="preserve">
-    <value>左, 上, 右, 下</value>
+    <value>左、上、右、下</value>
   </data>
   <data name="ToolbarPage_ResetComponentSettings" xml:space="preserve">
     <value>重置组件设置</value>

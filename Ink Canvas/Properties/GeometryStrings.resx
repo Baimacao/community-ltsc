@@ -94,7 +94,7 @@
     <value>双曲线</value>
   </data>
   <data name="DrawHyperbolaWithFocal" xml:space="preserve">
-    <value>双曲线(焦点)</value>
+    <value>双曲线（焦点）</value>
   </data>
   <data name="DrawLine" xml:space="preserve">
     <value>画直线</value>
@@ -106,7 +106,7 @@
     <value>抛物线2</value>
   </data>
   <data name="DrawParabolaWithFocal" xml:space="preserve">
-    <value>抛物线(焦点)</value>
+    <value>抛物线（焦点）</value>
   </data>
   <data name="DrawParallelLines" xml:space="preserve">
     <value>4平行线</value>

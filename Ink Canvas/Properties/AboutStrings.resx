@@ -43,7 +43,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Copyright" xml:space="preserve">
-    <value>© 2025-2026 CJK_mkp 版权所有</value>
+    <value>InkCanvasForClass · ICA · ICC · ICC-CE 的延续</value>
   </data>
   <data name="DevelopersLabel" xml:space="preserve">
     <value>开发者：</value>
@@ -61,13 +61,13 @@
     <value>启动次数：</value>
   </data>
   <data name="LicenseBody" xml:space="preserve">
-    <value>本强许可协议的许可条件是，在相同许可协议下，提供许可作品的完整源代码和修改，包括使用许可作品的大型作品。版权和许可声明必须保留。贡献者明确授予专利权。</value>
+    <value>本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
   </data>
   <data name="LicenseTitle" xml:space="preserve">
     <value>本软件和 ICA，Ink Canvas 均基于许可证开源</value>
   </data>
   <data name="OpenSourceSlogan" xml:space="preserve">
-    <value>我们永远热爱开源！</value>
+    <value>开源不是施舍，是把自己踩过的坑填平，让后面的人少陷一次。</value>
   </data>
   <data name="PhigrosCr" xml:space="preserve">
     <value>部分内容取自 Phigros</value>

@@ -54,16 +54,16 @@
     <value>欢迎使用 ICC CE Lite</value>
   </data>
   <data name="Oobe_WelcomeDesc" xml:space="preserve">
-    <value>一款面向课堂场景的批注与白板工具。下面的向导将帮助你快速完成首次配置,所有选项都可以稍后在「设置」中修改。</value>
+    <value>面向课堂的批注与白板工具。接下来几步帮你把常用项配好，所有设置之后都能在「设置」里改。</value>
   </data>
   <data name="Oobe_StepCount" xml:space="preserve">
-    <value>共 3 步 · 大约 30 秒</value>
+    <value>共 4 步 · 大约 1 分钟</value>
   </data>
   <data name="Oobe_StartStepByStep" xml:space="preserve">
-    <value>开始逐步配置</value>
+    <value>开始配置</value>
   </data>
   <data name="Oobe_UsePreset" xml:space="preserve">
-    <value>使用预设配置</value>
+    <value>用预设配置</value>
   </data>
   <data name="Oobe_NavWelcome" xml:space="preserve">
     <value>欢迎</value>
@@ -90,16 +90,16 @@
     <value>完成</value>
   </data>
   <data name="Oobe_Step1Title" xml:space="preserve">
-    <value>启动与隐私</value>
+    <value>画板与墨迹</value>
   </data>
   <data name="Oobe_Step1Subtitle" xml:space="preserve">
-    <value>遥测、隐私协议、自动更新与崩溃处理。</value>
+    <value>光标、压感、墨迹显示与形状纠正。</value>
   </data>
   <data name="Oobe_PrivacyTitle" xml:space="preserve">
     <value>匿名使用数据与隐私</value>
   </data>
   <data name="Oobe_PrivacyDesc" xml:space="preserve">
-    <value>完全匿名的使用统计,仅用于改进软件稳定性与性能。</value>
+    <value>完全匿名的使用统计，仅用于改进软件稳定性与性能。</value>
   </data>
   <data name="Oobe_AgreePrivacy" xml:space="preserve">
     <value>我已阅读并同意</value>
@@ -117,10 +117,10 @@
     <value>不上传任何匿名使用数据</value>
   </data>
   <data name="Oobe_TelemetryBasic" xml:space="preserve">
-    <value>基础(崩溃信息、版本与系统信息)</value>
+    <value>基础（崩溃信息、版本与系统信息）</value>
   </data>
   <data name="Oobe_TelemetryOptional" xml:space="preserve">
-    <value>可选(功能使用频率等)</value>
+    <value>可选（功能使用频率等）</value>
   </data>
   <data name="Oobe_StartupCrashTitle" xml:space="preserve">
     <value>启动与崩溃处理</value>
@@ -141,22 +141,22 @@
     <value>可在 设置 → 启动 中修改。</value>
   </data>
   <data name="Oobe_CrashSilentRestart" xml:space="preserve">
-    <value>静默重启软件(推荐)</value>
+    <value>静默重启软件（推荐）</value>
   </data>
   <data name="Oobe_CrashNoAction" xml:space="preserve">
-    <value>无操作(仅记录日志)</value>
+    <value>无操作（仅记录日志）</value>
   </data>
   <data name="Oobe_CrashShowDialog" xml:space="preserve">
-    <value>弹出崩溃详情窗口(不重启)</value>
+    <value>弹出崩溃详情窗口（不重启）</value>
   </data>
   <data name="Oobe_Step2Title" xml:space="preserve">
-    <value>画板与墨迹</value>
+    <value>手势操作</value>
   </data>
   <data name="Oobe_ShowPenCursorDesc" xml:space="preserve">
     <value>绘制时显示光标位置。</value>
   </data>
   <data name="Oobe_IgnorePressureDesc" xml:space="preserve">
-    <value>所有笔画统一粗细,不再受压力影响。</value>
+    <value>所有笔画统一粗细，不再受压力影响。</value>
   </data>
   <data name="Oobe_HideInkOnExit" xml:space="preserve">
     <value>退出画板模式时隐藏墨迹</value>
@@ -168,7 +168,7 @@
     <value>手绘图形自动转为标准形状。</value>
   </data>
   <data name="Oobe_Step3Title" xml:space="preserve">
-    <value>手势操作</value>
+    <value>外观与快捷键</value>
   </data>
   <data name="Oobe_EnableTwoFingerZoom" xml:space="preserve">
     <value>启用双指缩放</value>
@@ -213,7 +213,7 @@
     <value>具体快捷键可在 设置 → 个性化 中调整。</value>
   </data>
   <data name="Oobe_Step5Title" xml:space="preserve">
-    <value>PowerPoint 联动</value>
+    <value>完成</value>
   </data>
   <data name="Oobe_EnablePPTLink" xml:space="preserve">
     <value>启用与 PowerPoint / WPS 的联动</value>
@@ -252,7 +252,7 @@
     <value>定时将墨迹保存到本地。</value>
   </data>
   <data name="Oobe_FloatingInterceptorDesc" xml:space="preserve">
-    <value>拦截希沃、鸿合等课堂软件的悬浮窗,避免遮挡画板。</value>
+    <value>拦截希沃、鸿合等课堂软件的悬浮窗，避免遮挡画板。</value>
   </data>
   <data name="Oobe_ScreenshotTitle" xml:space="preserve">
     <value>截图与屏幕捕捉</value>
@@ -300,10 +300,10 @@
     <value>跳过引导</value>
   </data>
   <data name="Oobe_LtscIntroTitle" xml:space="preserve">
-    <value>为课堂而改的版本</value>
+    <value>为课堂而改</value>
   </data>
   <data name="Oobe_LtscIntroDesc" xml:space="preserve">
-    <value>这是 ICC-CE 的长期支持分支。去掉了干扰课堂的功能，重做了一批容易卡顿、容易出错的地方，把力量花在稳定和顺手上面。</value>
+    <value>ICC-CE 的长期支持分支。去掉了干扰课堂的功能，重写了一批容易卡顿、容易出错的地方，力气花在稳定和顺手上面。</value>
   </data>
   <data name="Oobe_WhatChanged" xml:space="preserve">
     <value>这一版做了什么</value>
@@ -330,7 +330,7 @@
     <value>遇到问题或有建议，来这里反馈</value>
   </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
-    <value>保存并开始使用</value>
+    <value>保存并开始</value>
   </data>
   <data name="Oobe_StepFormat" xml:space="preserve">
     <value>步骤 {0} / {1}</value>
@@ -375,16 +375,16 @@
     <value>应用并开始使用</value>
   </data>
   <data name="Oobe_Step2Subtitle" xml:space="preserve">
-    <value>光标、压感、墨迹显示与墨迹纠正。</value>
+    <value>双指缩放平移、手掌擦除等触摸操作。</value>
   </data>
   <data name="Oobe_Step3Subtitle" xml:space="preserve">
-    <value>双指缩放/平移、手掌擦等。</value>
+    <value>主题、托盘、快速面板与快捷键。</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value>主题、启动动画、托盘、快速面板与快捷键。</value>
+    <value>防止翻页笔的特殊键在课堂上误触黑屏或退出放映。</value>
   </data>
   <data name="Oobe_Step5Subtitle" xml:space="preserve">
-    <value>放映联动、墨迹与截屏自动保存、时间胶囊。</value>
+    <value>确认一下，就可以开始用了。</value>
   </data>
   <data name="Oobe_Step6Subtitle" xml:space="preserve">
     <value>自动收纳、墨迹自动保存、悬浮窗拦截与截图保存。</value>
@@ -418,5 +418,32 @@
   </data>
   <data name="Oobe_ReRunButton" xml:space="preserve">
     <value>重新引导</value>
+  </data>
+  <data name="Oobe_NavPresenter" xml:space="preserve">
+    <value>翻页笔与语言</value>
+  </data>
+  <data name="Oobe_Step4Title" xml:space="preserve">
+    <value>翻页笔与语言</value>
+  </data>
+  <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
+    <value>翻页笔适配</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
+    <value>启用翻页笔适配</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
+    <value>开启后，配对的功能键会正常工作；关闭时只拦截不响应，用来防止误触。</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
+    <value>只在 PPT 联动放映时生效</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
+    <value>其他模式下这些键完全不受影响，走系统原有逻辑。退出放映时会立刻卸载键盘钩子。之后可以在「设置 → PPT → 翻页笔适配」里改键。</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>开</value>
+  </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>关</value>
   </data>
 </root>

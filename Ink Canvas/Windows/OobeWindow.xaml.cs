@@ -30,12 +30,13 @@ namespace Ink_Canvas.Windows
 
         // 视图状态: -1 = 欢迎; 0..7 = 步骤; 8 = 完成
         private const int WelcomeIndex = -1;
-        private const int FinishIndex = 3;
-        private const int StepCount = 3;
+        private const int FinishIndex = 4;
+        private const int StepCount = 4;
         private const int MaxStepIndex = StepCount - 1;
 
         private int _currentStep = WelcomeIndex;
         private bool _suppressNavSelection;
+        private bool _suppressLanguageChange;
 
         private FrameworkElement[] _stepPanels;
         private NavigationViewItem[] _navItems;
@@ -55,6 +56,7 @@ namespace Ink_Canvas.Windows
                 StepCanvasPanel,
                 StepGesturesPanel,
                 StepAppearancePanel,
+                StepPresenterPanel,
             };
 
             _navItems = new[]
@@ -62,6 +64,7 @@ namespace Ink_Canvas.Windows
                 NavItemCanvas,
                 NavItemGestures,
                 NavItemAppearance,
+                NavItemPresenter,
             };
 
             InitializeFromSettings();
@@ -125,6 +128,14 @@ namespace Ink_Canvas.Windows
                     CardEnableTrayIcon.IsOn = _settings.Appearance.EnableTrayIcon;
                     CardShowQuickPanel.IsOn = _settings.Appearance.IsShowQuickPanel;
                     CardEnableHotkeysInMouseMode.IsOn = _settings.Appearance.EnableHotkeysInMouseMode;
+
+                    // 语言：回填当前设置。初次启动时是空字符串 = 跟随系统。
+                    _suppressLanguageChange = true;
+                    SelectComboBoxItemByTag(ComboBoxOobeLanguage, _settings.Appearance.Language ?? "");
+                    _suppressLanguageChange = false;
+
+                    // 翻页笔适配：回填当前开关状态。
+                    ToggleSwitchPresenterAdapter.IsOn = PresenterKeyAdapter.IsEnabled;
                 }
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
@@ -214,6 +225,16 @@ namespace Ink_Canvas.Windows
                     _settings.Appearance.WindowBackdrop = GetSelectedComboBoxTag(ComboBoxWindowBackdrop, "None");
                     _settings.Appearance.EnableTrayIcon = CardEnableTrayIcon.IsOn;
                     _settings.Appearance.IsShowQuickPanel = CardShowQuickPanel.IsOn;
+
+                    // 语言：空字符串 = 跟随系统
+                    var langTag = GetSelectedComboBoxTag(ComboBoxOobeLanguage, "");
+                    _settings.Appearance.Language = langTag;
+
+                    // 翻页笔适配：开关状态写入运行时适配器。
+                    // 不进 Settings —— 它是会话级状态（ta 裁决 Q4-4：关掉重开会重新提示），
+                    // 但 OOBE 里老师明确选了「开」，那就该在本次会话立刻生效。
+                    if (ToggleSwitchPresenterAdapter.IsOn)
+                        PresenterKeyAdapter.EnableAdapter();
                     _settings.Appearance.EnableHotkeysInMouseMode = CardEnableHotkeysInMouseMode.IsOn;
                 }
             }
@@ -307,6 +328,37 @@ namespace Ink_Canvas.Windows
 
             DialogResult = true;
             Close();
+        }
+
+        /// <summary>
+        /// 欢迎页的语言切换。
+        ///
+        /// 行为：立即改运行时的 UI 语言并记住选择，但**不重启文本**。
+        /// 已经在屏幕上的控件不会立刻变成新语言（WPF 的静态资源是编译期绑定的），
+        /// 所以这里只保存设置，让下次启动生效 —— 和设置页的口径一致。
+        ///
+        /// 老师的实际体验：第一屏选中文/English，之后每一步的标题会按新语言显示，
+        /// 这是因为在切步骤时会重新读一次文案；已经在屏幕上的那部分要重启才变。
+        /// </summary>
+        private void ComboBoxOobeLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_suppressLanguageChange) return;
+
+            try
+            {
+                var tag = GetSelectedComboBoxTag(ComboBoxOobeLanguage, "");
+                _settings.Appearance.Language = tag;
+
+                // 立即应用：后续创建的控件会用新语言
+                Ink_Canvas.Windows.SettingsViews.Helpers.SettingsActionHub.OnLanguageChanged(tag);
+
+                // 重新读一遍当前步骤的标题/副标题，让这一步立刻能看到变化
+                ApplyStepMeta(_currentStep);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"OOBE 切换语言失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         private void BtnConfirm_Click(object sender, RoutedEventArgs e)
@@ -806,24 +858,14 @@ namespace Ink_Canvas.Windows
                     subtitle = Properties.OobeStrings.Oobe_Step2Subtitle;
                     break;
                 case 2:
-                    title = Properties.OobeStrings.Oobe_Step3Title;
+                    // 第 3 步是「外观」，标题沿用主题页的分组名
+                    title = ThemeStrings.Theme_GroupTitle;
                     subtitle = Properties.OobeStrings.Oobe_Step3Subtitle;
                     break;
                 case 3:
-                    title = ThemeStrings.Theme_GroupTitle;
+                    // 第 4 步是「翻页笔与语言」
+                    title = Properties.OobeStrings.Oobe_Step4Title;
                     subtitle = Properties.OobeStrings.Oobe_Step4Subtitle;
-                    break;
-                case 4:
-                    title = Properties.OobeStrings.Oobe_Step5Title;
-                    subtitle = Properties.OobeStrings.Oobe_Step5Subtitle;
-                    break;
-                case 5:
-                    title = Properties.OobeStrings.Oobe_Step6Title;
-                    subtitle = Properties.OobeStrings.Oobe_Step6Subtitle;
-                    break;
-                case 6:
-                    title = RandomStrings.Random_Title;
-                    subtitle = Properties.OobeStrings.Oobe_Step7Subtitle;
                     break;
                 default:
                     title = string.Empty; subtitle = string.Empty;

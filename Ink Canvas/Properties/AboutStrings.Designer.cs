@@ -41,6 +41,7 @@ namespace Ink_Canvas.Properties
         }
 
         public static string Copyright => ResourceManager.GetString(nameof(Copyright), _resourceCulture);
+        public static string LicenseBody => ResourceManager.GetString(nameof(LicenseBody), _resourceCulture);
 
         public static string DevelopersLabel => ResourceManager.GetString(nameof(DevelopersLabel), _resourceCulture);
 
@@ -52,7 +53,6 @@ namespace Ink_Canvas.Properties
 
         public static string LaunchCountLabel => ResourceManager.GetString(nameof(LaunchCountLabel), _resourceCulture);
 
-        public static string LicenseBody => ResourceManager.GetString(nameof(LicenseBody), _resourceCulture);
 
         public static string LicenseTitle => ResourceManager.GetString(nameof(LicenseTitle), _resourceCulture);
 

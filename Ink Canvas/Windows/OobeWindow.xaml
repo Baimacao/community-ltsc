@@ -113,6 +113,11 @@
                         <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Personalize}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+                <ui:NavigationViewItem x:Name="NavItemPresenter" Content="{x:Static props:OobeStrings.Oobe_NavPresenter}" Tag="step4">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.LocaleLanguage}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
                 <ui:NavigationViewItemSeparator />
                 <ui:NavigationViewItem x:Name="NavItemFinish" Content="{x:Static props:OobeStrings.Oobe_NavFinish}" Tag="finish">
                     <ui:NavigationViewItem.Icon>
@@ -177,6 +182,21 @@
                                        Style="{DynamicResource BodyTextBlockStyle}"
                                        TextWrapping="Wrap" Opacity="0.8"
                                        Margin="0,14,0,0" LineHeight="24" />
+
+                            <!-- 语言选择放在第一屏：老师第一眼要能看懂页面，
+                                 否则后面每一页对他都是天书。
+                                 这一项必须在欢迎页，不能挪进后续步骤。 -->
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0,26,0,0"
+                                                  VerticalAlignment="Center">
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.LocaleLanguage}"
+                                             FontSize="15" Opacity="0.7" VerticalAlignment="Center" />
+                                <ComboBox x:Name="ComboBoxOobeLanguage" MinWidth="180" Height="34"
+                                          SelectionChanged="ComboBoxOobeLanguage_SelectionChanged">
+                                    <ComboBoxItem Content="简体中文" Tag="zh-CN" />
+                                    <ComboBoxItem Content="English" Tag="en-US" />
+                                    <ComboBoxItem Content="繁體中文" Tag="zh-ME" />
+                                </ComboBox>
+                            </ikw:SimpleStackPanel>
 
                             <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="10" Margin="0,38,0,0">
                                 <Button x:Name="BtnStartWelcome" MinWidth="176" Height="38"
@@ -445,6 +465,40 @@
                                                                   Description="{x:Static props:OobeStrings.Oobe_EnableGlobalHotkeysDesc}"
                                                                   Icon="{x:Static ui:SegoeFluentIcons.PenWorkspace}"
                                                                   SwitchName="ToggleSwitchEnableHotkeysInMouseMode" />
+                                </ikw:SimpleStackPanel>
+
+                                <!-- 步骤 4: 翻页笔与语言 -->
+                                <ikw:SimpleStackPanel x:Name="StepPresenterPanel"
+                                                      Spacing="{StaticResource SettingsCardSpacing}"
+                                                      Visibility="Collapsed">
+
+                                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                                               Margin="1,18,0,6"
+                                               Text="{x:Static props:OobeStrings.Oobe_Step4SectionPresenter}" />
+
+                                    <ui:SettingsCard Header="{x:Static props:OobeStrings.Oobe_Step4PresenterEnable}"
+                                                     Description="{x:Static props:OobeStrings.Oobe_Step4PresenterEnableDesc}">
+                                        <ui:SettingsCard.HeaderIcon>
+                                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}" />
+                                        </ui:SettingsCard.HeaderIcon>
+                                        <ui:ToggleSwitch x:Name="ToggleSwitchPresenterAdapter"
+                                                         OnContent="{x:Static props:OobeStrings.Common_On}"
+                                                         OffContent="{x:Static props:OobeStrings.Common_Off}" />
+                                    </ui:SettingsCard>
+
+                                    <Border CornerRadius="8" Padding="14,12"
+                                            BorderThickness="1" BorderBrush="#40F0A020">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#1FF0A020"/>
+                                        </Border.Background>
+                                        <ikw:SimpleStackPanel Spacing="6">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       Text="{x:Static props:OobeStrings.Oobe_Step4PresenterNoteTitle}" />
+                                            <TextBlock TextWrapping="Wrap" LineHeight="20" FontSize="12.5" Opacity="0.85"
+                                                       Text="{x:Static props:OobeStrings.Oobe_Step4PresenterNoteBody}" />
+                                        </ikw:SimpleStackPanel>
+                                    </Border>
+
                                 </ikw:SimpleStackPanel>
 
                                 <!-- 步骤 5: PowerPoint -->

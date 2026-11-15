@@ -43,7 +43,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Copyright" xml:space="preserve">
-    <value>© 2025-2026 CJK_mkp. All rights reserved.</value>
+    <value>A continuation of InkCanvasForClass · ICA · ICC · ICC-CE</value>
   </data>
   <data name="DevelopersLabel" xml:space="preserve">
     <value>Developers:</value>
@@ -61,13 +61,13 @@
     <value>Launch count:</value>
   </data>
   <data name="LicenseBody" xml:space="preserve">
-    <value>The strong copyleft license requires that complete source code and modifications of the licensed work (including large works using it) be provided under the same license. Copyright and license notices must be retained. Contributors explicitly grant patent rights.</value>
+    <value>Released under GNU GPL v3. All upstream contributor credits and license notices are retained in full; any modification is likewise released under GPL v3.</value>
   </data>
   <data name="LicenseTitle" xml:space="preserve">
     <value>The following software, ICA, and Ink Canvas are open-source projects:</value>
   </data>
   <data name="OpenSourceSlogan" xml:space="preserve">
-    <value>We love open-source forever!</value>
+    <value>Open source is not charity. It is filling in the pits you fell into, so the next person falls one time fewer.</value>
   </data>
   <data name="PhigrosCr" xml:space="preserve">
     <value>Some content is taken from Phigros</value>

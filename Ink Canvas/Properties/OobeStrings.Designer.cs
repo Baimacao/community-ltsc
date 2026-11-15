@@ -41,6 +41,15 @@ namespace Ink_Canvas.Properties
         }
 
         public static string Oobe_WelcomeTitle => ResourceManager.GetString(nameof(Oobe_WelcomeTitle), _resourceCulture);
+        public static string Common_Off => ResourceManager.GetString(nameof(Common_Off), _resourceCulture);
+        public static string Common_On => ResourceManager.GetString(nameof(Common_On), _resourceCulture);
+        public static string Oobe_Step4PresenterNoteBody => ResourceManager.GetString(nameof(Oobe_Step4PresenterNoteBody), _resourceCulture);
+        public static string Oobe_Step4PresenterNoteTitle => ResourceManager.GetString(nameof(Oobe_Step4PresenterNoteTitle), _resourceCulture);
+        public static string Oobe_Step4PresenterEnableDesc => ResourceManager.GetString(nameof(Oobe_Step4PresenterEnableDesc), _resourceCulture);
+        public static string Oobe_Step4PresenterEnable => ResourceManager.GetString(nameof(Oobe_Step4PresenterEnable), _resourceCulture);
+        public static string Oobe_Step4SectionPresenter => ResourceManager.GetString(nameof(Oobe_Step4SectionPresenter), _resourceCulture);
+        public static string Oobe_Step4Title => ResourceManager.GetString(nameof(Oobe_Step4Title), _resourceCulture);
+        public static string Oobe_NavPresenter => ResourceManager.GetString(nameof(Oobe_NavPresenter), _resourceCulture);
         public static string Oobe_WelcomeDesc => ResourceManager.GetString(nameof(Oobe_WelcomeDesc), _resourceCulture);
         public static string Oobe_StepCount => ResourceManager.GetString(nameof(Oobe_StepCount), _resourceCulture);
         public static string Oobe_StartStepByStep => ResourceManager.GetString(nameof(Oobe_StartStepByStep), _resourceCulture);

@@ -274,7 +274,7 @@
     <value>使用 ROT 联动</value>
   </data>
   <data name="PPT_RememberLastPage_Prompt" xml:space="preserve">
-    <value>上次播放到了第 {0} 页, 是否立即跳转</value>
+    <value>上次播放到了第 {0} 页，是否立即跳转</value>
   </data>
   <data name="PPT_HiddenSlides_Detected" xml:space="preserve">
     <value>检测到此演示文档中包含隐藏的幻灯片，是否取消隐藏？</value>

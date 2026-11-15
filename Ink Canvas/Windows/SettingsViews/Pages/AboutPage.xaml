@@ -184,7 +184,9 @@
                     <Separator Margin="0,8" />
 
                     <ikw:SimpleStackPanel Spacing="3" Orientation="Vertical" Margin="0,0,0,24">
-                        <TextBlock Text="{x:Static props:AboutStrings.Copyright}" FontWeight="Bold" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Static props:AboutStrings.Copyright}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                        <TextBlock Text="{x:Static props:AboutStrings.LicenseBody}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12.5" />
                         <TextBlock Text="{x:Static props:AboutStrings.PhigrosCr}" FontWeight="Bold" TextWrapping="Wrap" />
                         <TextBlock Text="{x:Static props:AboutStrings.OpenSourceSlogan}" FontWeight="Bold"
                                    TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />

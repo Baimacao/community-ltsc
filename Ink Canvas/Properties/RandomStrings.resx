@@ -54,7 +54,7 @@
     <value>背景选择：</value>
   </data>
   <data name="Random_BackgroundSettingsTitle" xml:space="preserve">
-    <value>点名窗口背景设置(仅老版点名UI有效)</value>
+    <value>点名窗口背景设置（仅老版点名 UI 有效）</value>
   </data>
   <data name="Random_EnableButtons" xml:space="preserve">
     <value>启用随机抽和单次抽按钮</value>
