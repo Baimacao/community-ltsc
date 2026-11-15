@@ -27,15 +27,26 @@ namespace Ink_Canvas
         /// <summary>
         /// 侧边栏展开时距屏幕边缘的边距。
         ///
-        /// 为什么是 -15 而不是 0：
-        /// SidePanelToggle 内部是 Grid Width=80，可见抓手 PanelBorder 只有 24 宽，
-        /// 而且带 15px 的左内边距（左侧栏）。所以 Margin=0 时，
-        /// 抓手实际距屏幕左边 15px —— 看起来就是"露出太多、没贴边"。
-        /// 设 -15 把那段内边距抵掉，抓手正好齐屏幕左边缘。
+        /// 这个值必须按**外观类型**区分，因为两种外观的内部结构完全不同：
         ///
-        /// 原值 -10 是"半展开"，还藏在屏幕外 10px，抓手几乎看不见。
+        ///   极简外观（UnFoldButtonImageType == 2）
+        ///     PanelBorder 宽 24，带 Margin=15 的左内边距（左侧），
+        ///     Grid 宽 80 → 抓手实际从 15 到 39。
+        ///     要让抓手贴边，Margin 得设 -15 把内边距抵掉。
+        ///
+        ///   经典外观（其他值，默认）
+        ///     ClassicViewbox 宽 32，HorizontalAlignment=Left，没有内边距。
+        ///     Margin 设 0 时 viewbox 从 0 到 32，已经贴边。
+        ///     再设 -15 反而会把它推出屏幕 15px。
+        ///
+        /// 之前我把它硬编码成 -15，结果经典外观下露出来的是 32+15=47 宽，
+        /// 看起来"多弹出一部分"。现在按外观取值。
         /// </summary>
-        private const int UnfoldedSideMargin = -15;
+        private int GetUnfoldedSideMargin()
+        {
+            // 极简外观抵掉 15px 内边距；经典外观贴 0。
+            return Settings.Appearance.UnFoldButtonImageType == 2 ? -15 : 0;
+        }
 
         /// <summary>侧边栏完全折叠时的边距（藏到屏幕外）。</summary>
         private const int FoldedSideMargin = -50;
@@ -178,7 +189,7 @@ namespace Ink_Canvas
                 GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
                 ViewboxFloatingBarMarginAnimation(-60);
                 HideSubPanels("cursor");
-                SidePannelMarginAnimation(UnfoldedSideMargin);
+                SidePannelMarginAnimation(GetUnfoldedSideMargin());
             });
 
             // 新增：如果开启了彻底隐藏，则隐藏主窗口
@@ -395,7 +406,7 @@ namespace Ink_Canvas
             StopAutoCollapseQuickPanelTimer();
             HideLeftQuickPanel();
             HideRightQuickPanel();
-            SidePannelMarginAnimation(UnfoldedSideMargin);
+            SidePannelMarginAnimation(GetUnfoldedSideMargin());
         }
 
         /// <summary>
@@ -574,7 +585,7 @@ namespace Ink_Canvas
             {
             await Dispatcher.InvokeAsync(() =>
             {
-                if (MarginFromEdge == UnfoldedSideMargin)
+                if (MarginFromEdge == GetUnfoldedSideMargin())
                 {
                     if (isFloatingBarFolded)
                         LeftSidePanel.Visibility = Visibility.Visible;
@@ -694,7 +705,7 @@ namespace Ink_Canvas
             {
                 HideLeftQuickPanel();
                 HideRightQuickPanel();
-                SidePannelMarginAnimation(UnfoldedSideMargin);
+                SidePannelMarginAnimation(GetUnfoldedSideMargin());
             }
         }
 

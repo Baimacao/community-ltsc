@@ -1709,6 +1709,8 @@ namespace Ink_Canvas
             
 
             
+
+            
             // 自动收纳到侧边栏（若通过 --board 进入白板模式或 --show 参数则跳过收纳）
             if (Settings.Startup.IsFoldAtStartup && !App.StartWithBoardMode && !App.StartWithShowMode)
             {

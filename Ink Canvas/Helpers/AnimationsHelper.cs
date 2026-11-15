@@ -649,10 +649,23 @@ namespace Ink_Canvas.Helpers
                 // 1) 先解绑并归零位移，让控件回到"旧 Margin"的基准位置
                 if (target.RenderTransform is TranslateTransform tt)
                 {
+                    // **必须先把弹簧停掉再归零。**
+                    //
+                    // TryAnimateMarginOnCompositionLayer 是用 SpringAnimator 驱动 tt 的，
+                    // 它是异步的：归零之后弹簧还在 CompositionTarget.Rendering 里跑，
+                    // 下一帧又把 tt 推回去。实测折叠→展开后 tt=(0,-121)，
+                    // Margin.Top=989 但屏幕实际 T=868 —— 差了整整 121px，
+                    // 就是「从侧栏恢复后浮窗高出默认位置一节」。
+                    //
+                    // Stop 会把弹簧落位到它自己的 target（也就是那个 -121），
+                    // 所以顺序是：先 Stop 冻结，再手动归零。
+                    SpringAnimator.Stop(tt);
+
                     tt.BeginAnimation(TranslateTransform.XProperty, null);
                     tt.BeginAnimation(TranslateTransform.YProperty, null);
                     tt.X = 0;
                     tt.Y = 0;
+                    SpringAnimator.SyncToTransform(tt);
                 }
 
                 // 2) 再写入最终 Margin
