@@ -512,15 +512,56 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             }
         }
 
+        /// <summary>
+        /// 新建自动化。
+        ///
+        /// 默认填入一个能直接用的模板：「进程检测 → 折叠工具栏」。
+        ///
+        /// 为什么这么填：原来新建出来是一条全空的自动化——没有触发器、没有动作、
+        /// 只有一个空规则组。老师得自己从下拉框里挑类型、再挑动作、再填参数，
+        /// 三四处都不能错，任何一处漏了这条自动化就永远不触发，也没有任何提示。
+        ///
+        /// 现在默认给出最常见的那条：某个程序一开，浮动栏就收起来。
+        /// 用户只需要在触发器设置里选一个程序，其余都是配好的。
+        /// 不想要这个模板也可以直接改触发器类型或动作。
+        /// </summary>
         private void BtnAddWorkflow_Click(object sender, RoutedEventArgs e)
         {
             var workflow = new Workflow();
             workflow.ActionSet.Name = $"自定义自动化 {Service.Workflows.Count + 1}";
-            // 初始化一个默认规则组
+
+            // 默认触发器：进程检测
+            var triggerInfo = AutomationRegistry.RegisteredTriggers
+                .FirstOrDefault(t => t.Id == "inkcanvas.processdetected");
+            if (triggerInfo != null)
+            {
+                workflow.Triggers.Add(new TriggerSettings
+                {
+                    Id = triggerInfo.Id,
+                    Settings = AutomationWorkflowPage.EnsureSettingsInstance(null, triggerInfo.SettingsType)
+                });
+            }
+
+            // 默认动作：折叠工具栏（也就是「隐藏」）
+            var actionInfo = AutomationRegistry.RegisteredActions.TryGetValue("inkcanvas.fold", out var foldInfo)
+                ? foldInfo
+                : default;
+            var foldAction = new Ink_Canvas.WorkflowAutomation.Models.Action
+            {
+                Id = actionInfo?.Id ?? "inkcanvas.fold",
+                Settings = AutomationWorkflowPage.EnsureSettingsInstance(null, actionInfo?.SettingsType)
+            };
+            workflow.ActionSet.Actions.Add(foldAction);
+
+            // 自动恢复：程序关掉后把浮动栏放回来
+            workflow.ActionSet.IsRevertEnabled = true;
+
+            // 初始化一个默认规则组（不填任何条件 = 无条件满足）
             workflow.Ruleset.Groups.Add(new RuleGroup
             {
                 Rules = new ObservableCollection<Rule> { new Rule() }
             });
+
             Service.Workflows.Add(workflow);
             Service.SaveConfig("AddWorkflow");
             RefreshWorkflowList();
