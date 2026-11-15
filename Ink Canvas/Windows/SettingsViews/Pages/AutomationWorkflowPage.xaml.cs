@@ -3,6 +3,7 @@ using Ink_Canvas.Properties;
 using Ink_Canvas.Windows.SettingsViews.Helpers;
 using Ink_Canvas.WorkflowAutomation;
 using Ink_Canvas.WorkflowAutomation.Enums;
+using Ink_Canvas.WorkflowAutomation.Abstractions;
 using Ink_Canvas.WorkflowAutomation.Models;
 using Ink_Canvas.WorkflowAutomation.Services;
 using Newtonsoft.Json.Linq;
@@ -909,6 +910,11 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             Service.SaveConfig("ActionSettingsChanged");
         }
 
+        private void TriggerSettingsPresenter_SettingsChanged(object sender, EventArgs e)
+        {
+            Service.SaveConfig("TriggerSettingsChanged");
+        }
+
         internal static object EnsureSettingsInstance(object settings, Type settingsType)
         {
             if (settingsType == null) return null;
@@ -1006,6 +1012,22 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             {
                 Visibility = Visibility.Collapsed;
                 Content = null;
+                return;
+            }
+
+            // ── 优先使用注册时指定的自定义设置控件 ──
+            //
+            // 原来这里只有一条路：反射拿设置类的所有属性，给每个属性生成一个输入框。
+            // 结果是「进程检测」只能让用户手打进程名——没人知道要打什么，
+            // 打错了也不报错，看起来配好了但永远不触发。
+            //
+            // 现在先看这个规则/触发器有没有注册自定义控件（SettingsControlType），
+            // 有就用它，没有才退回反射自动生成。
+            var customControl = TryCreateCustomSettingsControl(context);
+            if (customControl != null)
+            {
+                Visibility = Visibility.Visible;
+                Content = customControl;
                 return;
             }
 
@@ -1164,16 +1186,51 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     if (!AutomationRegistry.RegisteredRules.TryGetValue(rule.Id, out var ruleInfo) || ruleInfo.SettingsType == null)
                         return null;
                     rule.Settings = AutomationWorkflowPage.EnsureSettingsInstance(rule.Settings, ruleInfo.SettingsType);
-                    return new SettingsContext(rule.Settings!, ruleInfo.SettingsType);
+                    return new SettingsContext(rule.Settings!, ruleInfo.SettingsType, ruleInfo.SettingsControlType);
 
                 case Ink_Canvas.WorkflowAutomation.Models.Action action:
                     if (!AutomationRegistry.RegisteredActions.TryGetValue(action.Id, out var actionInfo) || actionInfo.SettingsType == null)
                         return null;
                     action.Settings = AutomationWorkflowPage.EnsureSettingsInstance(action.Settings, actionInfo.SettingsType);
-                    return new SettingsContext(action.Settings!, actionInfo.SettingsType);
+                    return new SettingsContext(action.Settings!, actionInfo.SettingsType, actionInfo.SettingsControlType);
+
+                // 触发器也需要设置界面。原来漏了这一支——
+                // 触发器选完类型就没了，像「进程检测」这种要填参数的完全配不了。
+                case TriggerSettings trigger:
+                    var triggerInfo = AutomationRegistry.RegisteredTriggers
+                        .FirstOrDefault(t => string.Equals(t.Id, trigger.Id, StringComparison.Ordinal));
+                    if (triggerInfo?.SettingsType == null) return null;
+                    trigger.Settings = AutomationWorkflowPage.EnsureSettingsInstance(trigger.Settings, triggerInfo.SettingsType);
+                    return new SettingsContext(trigger.Settings!, triggerInfo.SettingsType, triggerInfo.SettingsControlType);
 
                 default:
                     return null;
+            }
+        }
+
+        /// <summary>
+        /// 如果这个设置注册了自定义控件，就创建它；否则返回 null 让调用方退回自动生成。
+        /// </summary>
+        private object TryCreateCustomSettingsControl(SettingsContext context)
+        {
+            if (context?.SettingsControlType == null) return null;
+            if (!typeof(TriggerSettingsControlBase).IsAssignableFrom(context.SettingsControlType)) return null;
+
+            try
+            {
+                var control = (TriggerSettingsControlBase)Activator.CreateInstance(context.SettingsControlType);
+                control.Settings = context.SettingsObject;
+                LogHelper.WriteLogToFile(
+                    $"[自动化] 使用自定义设置控件 {context.SettingsControlType.Name}",
+                    LogHelper.LogType.Info);
+                return control;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(
+                    $"创建自定义设置控件 {context.SettingsControlType.Name} 失败: {ex.Message}",
+                    LogHelper.LogType.Warning);
+                return null;
             }
         }
 
@@ -1200,7 +1257,11 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private sealed record SettingsContext(object SettingsObject, Type SettingsType);
+        /// <summary>
+        /// 设置上下文。SettingsControlType 非空时优先用它渲染自定义界面，
+        /// 否则退回反射自动生成。
+        /// </summary>
+        private sealed record SettingsContext(object SettingsObject, Type SettingsType, Type SettingsControlType = null);
     }
 
     /// <summary>

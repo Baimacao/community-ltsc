@@ -72,7 +72,10 @@ namespace Ink_Canvas.WorkflowAutomation
             services.AddSingleton<IRulesetService, RulesetService>();
 
             // 3. 注册触发器（对齐 ClassIsland 的 AddTrigger<T>()）
-            services.AddTrigger<ProcessDetectedTrigger>();
+            // 用带自定义设置控件的重载：这个触发器需要「从运行中的程序选」的界面，
+            // 自动生成的默认界面只有输入框，老师不知道要打什么。
+            services.AddTrigger<ProcessDetectedTrigger,
+                Ink_Canvas.WorkflowAutomation.SettingsControls.ProcessDetectedSettingsControl>();
             services.AddTrigger<PPTSlideShowTrigger>();
             services.AddTrigger<TimerTrigger>();
             services.AddTrigger<WindowFocusChangedTrigger>();

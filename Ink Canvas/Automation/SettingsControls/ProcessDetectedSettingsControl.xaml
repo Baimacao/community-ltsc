@@ -1,0 +1,38 @@
+<local:TriggerSettingsControlBase x:Class="Ink_Canvas.WorkflowAutomation.SettingsControls.ProcessDetectedSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Ink_Canvas.WorkflowAutomation.Abstractions"
+             xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf">
+    <StackPanel>
+
+        <TextBlock Text="监控程序" FontWeight="SemiBold" Margin="0,0,0,6"/>
+        <TextBlock x:Name="TextBlockCurrent" Opacity="0.85" Margin="0,0,0,10"
+                   Text="（未选择）"/>
+
+        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <ComboBox x:Name="ComboBoxRunningApps" Width="320"
+                      SelectionChanged="ComboBoxRunningApps_SelectionChanged"/>
+            <Button x:Name="ButtonRefresh" Content="刷新" Click="ButtonRefresh_Click"/>
+        </ikw:SimpleStackPanel>
+
+        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <TextBox x:Name="TextBoxManual" Width="320"
+                     TextChanged="TextBoxManual_TextChanged"/>
+            <TextBlock Text="或手动输入进程名（不含 .exe）" VerticalAlignment="Center"
+                       Opacity="0.65" FontSize="12"/>
+        </ikw:SimpleStackPanel>
+
+        <Border x:Name="BorderHint" CornerRadius="6" Padding="12,10"
+                BorderThickness="1" BorderBrush="#40F0A020"
+                Visibility="Collapsed" Margin="0,0,0,10">
+            <Border.Background>
+                <SolidColorBrush Color="#1FF0A020"/>
+            </Border.Background>
+            <TextBlock x:Name="TextBlockHint" TextWrapping="Wrap"
+                       LineHeight="20" FontSize="12.5"/>
+        </Border>
+
+        <TextBlock TextWrapping="Wrap" LineHeight="20" FontSize="12.5" Opacity="0.7"
+                   Text="程序启动后约 1 秒内会被检测到。如果配置时该程序已经在运行，需要先关掉再打开才会触发。"/>
+    </StackPanel>
+</local:TriggerSettingsControlBase>

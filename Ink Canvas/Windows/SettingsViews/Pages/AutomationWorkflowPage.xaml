@@ -592,6 +592,7 @@
                                     <DataTemplate>
                                         <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                                                 CornerRadius="4" Padding="8" Margin="0,2">
+                                            <StackPanel>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -621,6 +622,16 @@
                                                           Tag="{Binding}" Padding="8,6" MinWidth="150"
                                                           VerticalAlignment="Center"/>
                                             </Grid>
+
+                                            <!-- 触发器设置区。
+                                                 原来这里什么都没有——触发器选完类型就没了，
+                                                 像「进程检测」这种需要填参数的触发器根本配不了。
+                                                 现在挂一个 Presenter，由代码决定渲染什么。 -->
+                                            <local:AutomationSettingsPresenter
+                                                Margin="0,6,0,0"
+                                                Item="{Binding}"
+                                                SettingsChanged="TriggerSettingsPresenter_SettingsChanged"/>
+                                            </StackPanel>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
