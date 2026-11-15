@@ -417,7 +417,7 @@
                                         </ui:SettingsCard.HeaderIcon>
                                         <ComboBox x:Name="ComboBoxTheme">
                                             <ComboBoxItem Content="{x:Static props:OobeStrings.Oobe_ThemeLight}" />
-                                            <ComboBoxItem Content="{x:Static props:FloatingBarStrings.OldUI_Dark}" />
+                                            <ComboBoxItem Content="{x:Static props:FloatingBarStrings.Theme_Dark}" />
                                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_System}" />
                                         </ComboBox>
                                     </ui:SettingsCard>

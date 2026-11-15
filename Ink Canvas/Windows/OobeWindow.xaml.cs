@@ -885,7 +885,7 @@ namespace Ink_Canvas.Windows
             switch (ComboBoxTheme.SelectedIndex)
             {
                 case 0: themeText = Properties.OobeStrings.Oobe_ThemeLight; break;
-                case 1: themeText = FloatingBarStrings.OldUI_Dark; break;
+                case 1: themeText = FloatingBarStrings.Theme_Dark; break;
                 default: themeText = ThemeStrings.Theme_System; break;
             }
 

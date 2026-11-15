@@ -152,7 +152,7 @@
                                    DefaultKey="V"
                                    DefaultModifiers="Alt" />
                     <hk:HotkeyItem x:Name="ExitHotkey"
-                                   Title="{x:Static props:FloatingBarStrings.OldUI_Exit}"
+                                   Title="{x:Static props:FloatingBarStrings.Action_Exit}"
                                    Description="{x:Static props:HotkeyStrings.Hotkey_ExitDesc}"
                                    DefaultKey="Escape"
                                    DefaultModifiers="None" />

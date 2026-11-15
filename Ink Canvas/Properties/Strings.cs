@@ -713,9 +713,9 @@ namespace Ink_Canvas.Properties
             dict["Notification_UrgentDurationHint"] = ("NotificationStrings", "UrgentDurationHint");
             dict["Notification_ViewDetails"] = ("NotificationStrings", "ViewDetails");
             dict["Notification_ViewHistory"] = ("NotificationStrings", "ViewHistory");
-            dict["OldUI_Dark"] = ("FloatingBarStrings", "OldUI_Dark");
-            dict["OldUI_Exit"] = ("FloatingBarStrings", "OldUI_Exit");
-            dict["OldUI_Thickness"] = ("FloatingBarStrings", "OldUI_Thickness");
+            dict["Theme_Dark"] = ("FloatingBarStrings", "Theme_Dark");
+            dict["Action_Exit"] = ("FloatingBarStrings", "Action_Exit");
+            dict["Pen_Thickness"] = ("FloatingBarStrings", "Pen_Thickness");
             dict["PPT_AutoSaveStrokes"] = ("PPTStrings", "AutoSaveStrokes");
             dict["PPT_AutoSaveStrokesHint"] = ("PPTStrings", "AutoSaveStrokesHint");
             dict["PPT_AutoScreenshot"] = ("PPTStrings", "AutoScreenshot");

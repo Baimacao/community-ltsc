@@ -5,7 +5,7 @@ namespace Ink_Canvas.Controls.Toolbar.BoardToolbar.Items
     internal sealed class BoardExitToolItem : BoardToolbarImageButtonItemBase
     {
         public override string Id => "board.exit";
-        public override string LocalizationKey => "OldUI_Exit";
+        public override string LocalizationKey => "Action_Exit";
         public override string Description => "退出";
         public override ButtonPosition DefaultPosition => ButtonPosition.Last;
 

@@ -128,11 +128,11 @@ namespace Ink_Canvas.Properties
 
         public static string FloatingBar_Whiteboard => ResourceManager.GetString(nameof(FloatingBar_Whiteboard), _resourceCulture);
 
-        public static string OldUI_Dark => ResourceManager.GetString(nameof(OldUI_Dark), _resourceCulture);
+        public static string Theme_Dark => ResourceManager.GetString(nameof(Theme_Dark), _resourceCulture);
 
-        public static string OldUI_Exit => ResourceManager.GetString(nameof(OldUI_Exit), _resourceCulture);
+        public static string Action_Exit => ResourceManager.GetString(nameof(Action_Exit), _resourceCulture);
 
-        public static string OldUI_Thickness => ResourceManager.GetString(nameof(OldUI_Thickness), _resourceCulture);
+        public static string Pen_Thickness => ResourceManager.GetString(nameof(Pen_Thickness), _resourceCulture);
 
         public static string QuickPanel_ExitShow => ResourceManager.GetString(nameof(QuickPanel_ExitShow), _resourceCulture);
 

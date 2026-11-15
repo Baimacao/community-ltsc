@@ -52,7 +52,7 @@ mc:Ignorable="d">
                     </ikw:SimpleStackPanel>
                     <!--粗细-->
                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                        <Label Margin="0,0,10,0" Content="{x:Static props:FloatingBarStrings.OldUI_Thickness}" FontWeight="Bold"
+                        <Label Margin="0,0,10,0" Content="{x:Static props:FloatingBarStrings.Pen_Thickness}" FontWeight="Bold"
                                FontSize="17" VerticalAlignment="Center" Visibility="Hidden" />
                         <UniformGrid Rows="1" Columns="5" Width="245">
                             <Button Tag="2" Click="PenWidthPresetButton_Click" Padding="8,2" Margin="0,0,6,0" MinWidth="40" ToolTip="1"
@@ -78,7 +78,7 @@ mc:Ignorable="d">
                         </UniformGrid>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <Label Margin="0,0,10,0" Content="{x:Static props:FloatingBarStrings.OldUI_Thickness}" FontWeight="Bold"
+                        <Label Margin="0,0,10,0" Content="{x:Static props:FloatingBarStrings.Pen_Thickness}" FontWeight="Bold"
                                FontSize="17" VerticalAlignment="Center" />
                         <Slider x:Name="_PenWidthSlider" Minimum="1"
                                 Maximum="45" Width="200"

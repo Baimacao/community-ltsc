@@ -177,13 +177,13 @@
   <data name="FloatingBar_Whiteboard" xml:space="preserve">
     <value>Board</value>
   </data>
-  <data name="OldUI_Dark" xml:space="preserve">
+  <data name="Theme_Dark" xml:space="preserve">
     <value>Dark</value>
   </data>
-  <data name="OldUI_Exit" xml:space="preserve">
+  <data name="Action_Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="OldUI_Thickness" xml:space="preserve">
+  <data name="Pen_Thickness" xml:space="preserve">
     <value>Thickness</value>
   </data>
   <data name="QuickPanel_ExitShow" xml:space="preserve">

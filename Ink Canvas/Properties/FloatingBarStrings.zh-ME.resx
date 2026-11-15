@@ -177,13 +177,13 @@
   <data name="FloatingBar_Whiteboard" xml:space="preserve">
     <value>白板</value>
   </data>
-  <data name="OldUI_Dark" xml:space="preserve">
+  <data name="Theme_Dark" xml:space="preserve">
     <value>深色</value>
   </data>
-  <data name="OldUI_Exit" xml:space="preserve">
+  <data name="Action_Exit" xml:space="preserve">
     <value>溜了</value>
   </data>
-  <data name="OldUI_Thickness" xml:space="preserve">
+  <data name="Pen_Thickness" xml:space="preserve">
     <value>粗细</value>
   </data>
   <data name="QuickPanel_ExitShow" xml:space="preserve">
