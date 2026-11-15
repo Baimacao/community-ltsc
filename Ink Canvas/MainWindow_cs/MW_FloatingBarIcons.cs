@@ -2230,6 +2230,11 @@ namespace Ink_Canvas
                     return;
                 }
 
+                // 注意：GetCorrectIcon 只认这五个名字——
+                //   cursor / pen / eraserStroke / eraserCircle / lassoSelect
+                // 传别的名字它会 return ""，几何串空，Path.Data 设不上，
+                // 角标就变成「Visibility=Visible 但什么也看不见」。
+                // 这正是一开始面积擦/线擦/圈套看不到角标的原因。
                 string iconType = null;
                 switch (_currentToolMode)
                 {
@@ -2238,17 +2243,22 @@ namespace Ink_Canvas
                         iconType = "pen";
                         break;
                     case "eraser":
-                        iconType = "eraser";
+                        // 面积擦 = 圆擦
+                        iconType = "eraserCircle";
                         break;
                     case "eraserByStrokes":
-                        iconType = "eraserByStrokes";
+                        // 线擦 = 笔画擦（沿笔画擦）
+                        iconType = "eraserStroke";
                         break;
                     case "select":
-                    case "cursor":
-                        iconType = "cursor";
+                        // 圈套选 = 套索
+                        iconType = "lassoSelect";
                         break;
+                    case "cursor":
                     case "shape":
-                        iconType = "shape";
+                        // 形状没有独立几何，用 cursor 顶上，
+                        // 至少能看出「当前不是笔/橡皮/选择」。
+                        iconType = "cursor";
                         break;
                 }
 
