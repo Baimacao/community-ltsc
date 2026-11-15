@@ -135,12 +135,6 @@
         "resolved": "4.1.0",
         "contentHash": "SenUSY0CRDAz8ncuyJadTKs+m7gbHj8hq6t+sHmNcgp50ibIqKWXf3xOLB2HjC55CoLo42Qy+IgUXfTNAlk13A=="
       },
-      "System.Management": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "s6c9x2Kghd+ncEDnT6ApYVOacDXr/Y57oSUSx6wjegMOfKxhtrXn3PdASPNU59y3kB9OJ1yb3l5k6uKr3bhqew=="
-      },
       "WebDav.Client": {
         "type": "Direct",
         "requested": "[2.9.0, )",
@@ -186,29 +180,8 @@
         "type": "Project"
       }
     },
-    "net11.0-windows10.0.19041/win-arm64": {
-      "System.Management": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "s6c9x2Kghd+ncEDnT6ApYVOacDXr/Y57oSUSx6wjegMOfKxhtrXn3PdASPNU59y3kB9OJ1yb3l5k6uKr3bhqew=="
-      }
-    },
-    "net11.0-windows10.0.19041/win-x64": {
-      "System.Management": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "s6c9x2Kghd+ncEDnT6ApYVOacDXr/Y57oSUSx6wjegMOfKxhtrXn3PdASPNU59y3kB9OJ1yb3l5k6uKr3bhqew=="
-      }
-    },
-    "net11.0-windows10.0.19041/win-x86": {
-      "System.Management": {
-        "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "s6c9x2Kghd+ncEDnT6ApYVOacDXr/Y57oSUSx6wjegMOfKxhtrXn3PdASPNU59y3kB9OJ1yb3l5k6uKr3bhqew=="
-      }
-    }
+    "net11.0-windows10.0.19041/win-arm64": {},
+    "net11.0-windows10.0.19041/win-x64": {},
+    "net11.0-windows10.0.19041/win-x86": {}
   }
 }

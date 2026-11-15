@@ -278,7 +278,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 }
 
                 SettingsManager.Settings.Startup.UpdateChannel = UpdateChannel.Release;
-                DeviceIdentifier.UpdateUsageChannel(UpdateChannel.Release);
             }
 
             if (newLevel != TelemetryUploadLevel.None && !SettingsManager.Settings.Startup.HasAcceptedTelemetryPrivacy)
@@ -405,7 +404,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 if (SettingsManager.Settings.Startup.UpdateChannel != UpdateChannel.Release)
                 {
                     SettingsManager.Settings.Startup.UpdateChannel = UpdateChannel.Release;
-                    DeviceIdentifier.UpdateUsageChannel(UpdateChannel.Release);
                 }
 
                 SettingsManager.Settings.Startup.HasAcceptedTelemetryPrivacy = false;

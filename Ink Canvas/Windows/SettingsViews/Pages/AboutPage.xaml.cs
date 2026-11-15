@@ -19,23 +19,10 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
     public partial class AboutPage : iNKORE.UI.WPF.Modern.Controls.Page
     {
-        private DispatcherTimer _usageRefreshTimer;
-        private long _savedTotalSeconds;
-        // 显示用：历史累计总时长（从 usage_stats.enc 读出来的部分）
-        // 实时增量另算：本次启动到现在，起点是 App.appStartTime，
-        // 不是打开关于页的时刻——否则用户开着程序用两小时再点进来，
-        // 这里会显示 0:00:00，和「总使用时长」这个标题对不上。
 
         public AboutPage()
         {
             InitializeComponent();
-            Loaded += AboutPage_Loaded;
-            Unloaded += AboutPage_Unloaded;
-            InitializeAvatarData();
-        }
-
-        private void InitializeAvatarData()
-        {
             var developers = new ObservableCollection<AvatarItem>
             {
                 new AvatarItem { AvatarPath = "/Resources/DeveloperAvatars/DQYJUNIT.png", Name = "Baimacao", Role = LocalizationHelper.GetString("About_Dev_ICCLTSC") },
@@ -73,37 +60,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             LoadSettings();
 
-            if (_usageRefreshTimer == null)
-            {
-                _usageRefreshTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-                _usageRefreshTimer.Tick += UsageRefreshTimer_Tick;
-            }
-            _usageRefreshTimer.Start();
         }
 
-        private void AboutPage_Unloaded(object sender, RoutedEventArgs e)
-        {
-            if (_usageRefreshTimer != null)
-            {
-                _usageRefreshTimer.Stop();
-                _usageRefreshTimer.Tick -= UsageRefreshTimer_Tick;
-                _usageRefreshTimer = null;
-            }
-        }
 
-        private void UsageRefreshTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                // 总使用时长 = 历史累计 + 本次启动至今。
-                // 起点用 App.appStartTime（程序启动那一刻），
-                // 不能用打开本页的时刻。
-                var sinceLaunch = (long)(DateTime.Now - App.appStartTime).TotalSeconds;
-                if (sinceLaunch < 0) sinceLaunch = 0;
-                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(_savedTotalSeconds + sinceLaunch);
-            }
-            catch { }
-        }
 
         private void LoadSettings()
         {
@@ -112,7 +71,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 // 统一走 App.GetDisplayVersion()：返回 "0.1a" 这种给人看的版本，
                 // 不再自己拼四段数字（NBGV 会覆盖 AssemblyVersion，拼出来对不上）。
                 AppVersionTextBlock.Text = App.GetDisplayVersion();
-                RefreshDeviceInfo();
             }
             catch (Exception ex)
             {
@@ -120,30 +78,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             }
         }
 
-        private void RefreshDeviceInfo_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshDeviceInfo();
-        }
 
-        private void RefreshDeviceInfo()
-        {
-            try
-            {
-                var (launchCount, totalSeconds, avgSessionSeconds, _) = DeviceIdentifier.GetUsageStats();
-                _savedTotalSeconds = totalSeconds;
-                LaunchCountTextBlock.Text = launchCount.ToString();
-                // 立刻显示一次，别等计时器第一跳（否则会空一秒）
-                var sinceLaunch = (long)(DateTime.Now - App.appStartTime).TotalSeconds;
-                if (sinceLaunch < 0) sinceLaunch = 0;
-                TotalUsageTextBlock.Text = DeviceIdentifier.FormatDuration(totalSeconds + sinceLaunch);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"刷新设备信息失败: {ex.Message}", LogHelper.LogType.Error);
-                LaunchCountTextBlock.Text = AboutStrings.DeviceInfo_Failed;
-                TotalUsageTextBlock.Text = AboutStrings.DeviceInfo_Failed;
-            }
-        }
     
         private void ReRunOobe_Click(object sender, RoutedEventArgs e)
         {

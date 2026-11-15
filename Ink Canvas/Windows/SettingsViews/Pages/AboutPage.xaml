@@ -63,25 +63,6 @@
                         <TextBlock x:Name="AppVersionTextBlock" Text="1.X.X.X" FontWeight="Bold" VerticalAlignment="Center" />
                     </ui:SettingsCard>
 
-                    <ui:SettingsExpander Header="{x:Static props:AboutStrings.DeviceInfo}"
-                            IsExpanded="True"
-                            d:Visibility="Visible" d:IsExpanded="True">
-                        <ui:SettingsExpander.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Devices}" />
-                        </ui:SettingsExpander.HeaderIcon>
-                        <ui:SettingsExpander.Items>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.LaunchCountLabel}">
-                                <TextBlock x:Name="LaunchCountTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
-                            </ui:SettingsCard>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.TotalUsageLabel}">
-                                <TextBlock x:Name="TotalUsageTextBlock" Text="{x:Static props:AboutStrings.DeviceInfo_Loading}" />
-                            </ui:SettingsCard>
-                            <ui:SettingsCard Header="">
-                                <Button x:Name="RefreshDeviceInfoButton" Content="{x:Static props:AboutStrings.RefreshDeviceInfo}"
-                                        Click="RefreshDeviceInfo_Click" />
-                            </ui:SettingsCard>
-                        </ui:SettingsExpander.Items>
-                    </ui:SettingsExpander>
 
                     <ui:SettingsCard Header="{x:Static props:OobeStrings.Oobe_ReRunTitle}"
                                      Description="{x:Static props:OobeStrings.Oobe_ReRunDesc}">

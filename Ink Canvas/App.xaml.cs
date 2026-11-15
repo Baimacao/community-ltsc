@@ -537,7 +537,6 @@ namespace Ink_Canvas
                 WriteCrashLog("PowerPoint模块等待WPF会话结束事件清理");
             }
 
-            DeviceIdentifier.SaveUsageStatsOnShutdown();
         }
 
         private void App_SessionEnding(object sender, System.Windows.SessionEndingCancelEventArgs e)
@@ -1589,19 +1588,10 @@ namespace Ink_Canvas
                     LogHelper.WriteLogToFile($"启动IPC监听器时出错: {ex.Message}", LogHelper.LogType.Error);
                 }
 
-                try
-                {
-                    DeviceIdentifier.RecordAppLaunch();
-                    var systemVersion = DeviceIdentifier.GetSystemVersion();
-                    LogHelper.WriteLogToFile($"App | 系统版本: {systemVersion}");
-                    LogHelper.WriteLogToFile($"App | 设备ID: {DeviceIdentifier.GetDeviceId()}");
-                    LogHelper.WriteLogToFile($"App | 使用频率: {DeviceIdentifier.GetUsageFrequency()}");
-                    LogHelper.WriteLogToFile($"App | 更新优先级: {DeviceIdentifier.GetUpdatePriority()}");
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"App | 初始化设备统计与遥测标签失败: {ex.Message}", LogHelper.LogType.Warning);
-                }
+                // 记一条系统环境，排查兼容性问题时有用（不上报，只写本地日志）
+                LogHelper.WriteLogToFile(
+                    $"App | 系统: {Environment.OSVersion.VersionString} ({RuntimeInformation.OSArchitecture})，.NET {Environment.Version}");
+
             }
             catch (Exception ex)
             {
@@ -2060,16 +2050,8 @@ namespace Ink_Canvas
                     LogHelper.WriteLogToFile($"保存性能监测数据失败: {perfEx.Message}", LogHelper.LogType.Warning);
                 }
 
-                // 记录应用退出（设备标识符）
-                try
-                {
-                    DeviceIdentifier.RecordAppExit();
-                    LogHelper.WriteLogToFile($"App | 应用运行时长: {(DateTime.Now - appStartTime).TotalMinutes:F1}分钟");
-                }
-                catch (Exception deviceEx)
-                {
-                    LogHelper.WriteLogToFile($"记录设备标识符退出信息失败: {deviceEx.Message}", LogHelper.LogType.Error);
-                }
+                // 记录本次运行时长（排查卡顿/泄漏时有用）
+                LogHelper.WriteLogToFile($"App | 应用运行时长: {(DateTime.Now - appStartTime).TotalMinutes:F1}分钟");
 
                 if (IsAppExitByUser)
                 {

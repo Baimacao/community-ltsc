@@ -51,15 +51,6 @@
   <data name="DeviceIdLabel" xml:space="preserve">
     <value>Device ID:</value>
   </data>
-  <data name="DeviceInfo" xml:space="preserve">
-    <value>Device information</value>
-  </data>
-  <data name="DeviceInfo_Loading" xml:space="preserve">
-    <value>Loading...</value>
-  </data>
-  <data name="LaunchCountLabel" xml:space="preserve">
-    <value>Launch count:</value>
-  </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>Released under GNU GPL v3. All upstream contributor credits and license notices are retained in full; any modification is likewise released under GPL v3.</value>
   </data>
@@ -77,9 +68,6 @@
   </data>
   <data name="PrivacyAndTelemetry" xml:space="preserve">
     <value>Privacy &amp; Telemetry</value>
-  </data>
-  <data name="RefreshDeviceInfo" xml:space="preserve">
-    <value>Refresh device info</value>
   </data>
   <data name="Telemetry_Basic" xml:space="preserve">
     <value>Upload basic data</value>
@@ -99,41 +87,11 @@
   <data name="Title" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="TotalUsageLabel" xml:space="preserve">
-    <value>Total usage time:</value>
-  </data>
-  <data name="UpdatePriorityLabel" xml:space="preserve">
-    <value>Update priority:</value>
-  </data>
-  <data name="UsageFrequencyLabel" xml:space="preserve">
-    <value>Usage frequency:</value>
-  </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>Version:</value>
   </data>
-  <data name="DeviceInfo_Failed" xml:space="preserve">
-    <value>Failed to retrieve</value>
-  </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
-  </data>
-  <data name="UpdatePriority_High" xml:space="preserve">
-    <value>High priority (updates pushed first)</value>
-  </data>
-  <data name="UpdatePriority_Low" xml:space="preserve">
-    <value>Low priority (delayed updates)</value>
-  </data>
-  <data name="UpdatePriority_Medium" xml:space="preserve">
-    <value>Medium priority (normal updates)</value>
-  </data>
-  <data name="UsageFrequency_High" xml:space="preserve">
-    <value>High frequency user</value>
-  </data>
-  <data name="UsageFrequency_Low" xml:space="preserve">
-    <value>Low frequency user</value>
-  </data>
-  <data name="UsageFrequency_Medium" xml:space="preserve">
-    <value>Medium frequency user</value>
   </data>
   <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
     <value>After disabling anonymous usage data upload, you will not be able to continue using the preview/test channel. The system will automatically switch to the Release channel.
