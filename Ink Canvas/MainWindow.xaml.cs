@@ -125,7 +125,7 @@ namespace Ink_Canvas
         internal Image LeftUnFoldBtnImgChevron => LeftSidePanel?.ChevronIcon;
         internal Image RightUnFoldBtnImgChevron => RightSidePanel?.ChevronIcon;
 
-        internal bool IsInPPTPresentationMode { get; set; }
+        internal bool IsInPPTPresentationMode { get => _isInPPTPresentationMode; set => SetPowerPointMode(value); }
         internal bool ArePPTControlsVisible { get; set; }
 
         internal static readonly DependencyProperty IsUndoEnabledProperty =
@@ -1695,6 +1695,9 @@ namespace Ink_Canvas
             }
 
             SystemEvents.DisplaySettingsChanged += SystemEventsOnDisplaySettingsChanged;
+
+            // 翻页笔适配：接上功能映射和误触提示（实现在 MW_PresenterKey.cs）
+            InitializePresenterKeyAdapter();
 
             
 
