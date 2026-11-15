@@ -124,13 +124,13 @@
     <value>Select File</value>
   </data>
   <data name="Timer_NewUI" xml:space="preserve">
-    <value>New Style</value>
+    <value>Standard (windowed, numeric progress)</value>
   </data>
   <data name="Timer_UseLegacyButtons" xml:space="preserve">
-    <value>Legacy Buttons</value>
+    <value>Compact (borderless, ring progress)</value>
   </data>
   <data name="Timer_UIStyle" xml:space="preserve">
-    <value>Timer UI Style</value>
+    <value>Timer UI</value>
   </data>
   <data name="Timer_SelectSound" xml:space="preserve">
     <value>Select Sound</value>

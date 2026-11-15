@@ -124,13 +124,13 @@
     <value>选个文件</value>
   </data>
   <data name="Timer_NewUI" xml:space="preserve">
-    <value>ICC CE 版 UI</value>
+    <value>標準版（視窗，數字進度）</value>
   </data>
   <data name="Timer_UseLegacyButtons" xml:space="preserve">
-    <value>ICC 版 UI</value>
+    <value>簡潔版（無邊框，環形進度）</value>
   </data>
   <data name="Timer_UIStyle" xml:space="preserve">
-    <value>计时器样式</value>
+    <value>計時器介面</value>
   </data>
   <data name="Timer_SelectSound" xml:space="preserve">
     <value>选择提示音</value>

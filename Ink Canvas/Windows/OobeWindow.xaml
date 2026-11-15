@@ -467,7 +467,7 @@
                                                                   SwitchName="ToggleSwitchEnableHotkeysInMouseMode" />
                                 </ikw:SimpleStackPanel>
 
-                                <!-- 步骤 4: 翻页笔与语言 -->
+                                <!-- 步骤 4: 翻页笔适配 -->
                                 <ikw:SimpleStackPanel x:Name="StepPresenterPanel"
                                                       Spacing="{StaticResource SettingsCardSpacing}"
                                                       Visibility="Collapsed">

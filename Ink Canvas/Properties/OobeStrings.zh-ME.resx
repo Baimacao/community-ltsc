@@ -381,7 +381,7 @@
     <value>双指缩放/平移、手掌擦等，搓手党狂喜。</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value>主题、启动动画、托盘、快速面板与快捷键，颜值即正义。</value>
+    <value>防止翻頁筆的特殊鍵在課堂上誤觸黑屏或退出放映。</value>
   </data>
   <data name="Oobe_Step5Subtitle" xml:space="preserve">
     <value>放映联动、墨迹与截屏自动保存、时间胶囊，PPT 党福音。</value>
@@ -418,5 +418,11 @@
   </data>
   <data name="Oobe_ReRunButton" xml:space="preserve">
     <value>重新引导</value>
+  </data>
+  <data name="Oobe_Step4Title" xml:space="preserve">
+    <value>翻頁筆適配</value>
+  </data>
+  <data name="Oobe_NavPresenter" xml:space="preserve">
+    <value>翻頁筆</value>
   </data>
 </root>

@@ -64,9 +64,6 @@ namespace Ink_Canvas.Properties
 
         public static string Random_ML_Weight => ResourceManager.GetString(nameof(Random_ML_Weight), _resourceCulture);
 
-        public static string Random_NewUI_Enable => ResourceManager.GetString(nameof(Random_NewUI_Enable), _resourceCulture);
-
-        public static string Random_NewUI_Title => ResourceManager.GetString(nameof(Random_NewUI_Title), _resourceCulture);
 
         public static string Random_OnceCloseDelay => ResourceManager.GetString(nameof(Random_OnceCloseDelay), _resourceCulture);
 

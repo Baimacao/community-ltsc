@@ -803,8 +803,7 @@ namespace Ink_Canvas.Properties
             dict["Random_ML_Hint"] = ("RandomStrings", "Random_ML_Hint");
             dict["Random_ML_HistoryCount"] = ("RandomStrings", "Random_ML_HistoryCount");
             dict["Random_ML_Weight"] = ("RandomStrings", "Random_ML_Weight");
-            dict["Random_NewUI_Enable"] = ("RandomStrings", "Random_NewUI_Enable");
-            dict["Random_NewUI_Title"] = ("RandomStrings", "Random_NewUI_Title");
+
             dict["Random_OnceCloseDelay"] = ("RandomStrings", "Random_OnceCloseDelay");
             dict["Random_OnceMaxStudents"] = ("RandomStrings", "Random_OnceMaxStudents");
             dict["Random_ShowEditNamesButton"] = ("RandomStrings", "Random_ShowEditNamesButton");

@@ -381,7 +381,7 @@
     <value>Two-finger zoom/pan, palm eraser, etc.</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value>Theme, startup animation, tray, quick panel, and hotkeys.</value>
+    <value>Prevent presenter remote keys from accidentally blacking out the screen or exiting the slideshow during class.</value>
   </data>
   <data name="Oobe_Step5Subtitle" xml:space="preserve">
     <value>Slideshow integration, auto-save ink &amp; screenshots, time capsule.</value>
@@ -418,5 +418,11 @@
   </data>
   <data name="Oobe_ReRunButton" xml:space="preserve">
     <value>Run again</value>
+  </data>
+  <data name="Oobe_Step4Title" xml:space="preserve">
+    <value>Presenter Remote</value>
+  </data>
+  <data name="Oobe_NavPresenter" xml:space="preserve">
+    <value>Presenter</value>
   </data>
 </root>

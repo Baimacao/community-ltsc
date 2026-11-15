@@ -420,10 +420,10 @@
     <value>重新引导</value>
   </data>
   <data name="Oobe_NavPresenter" xml:space="preserve">
-    <value>翻页笔与语言</value>
+    <value>翻页笔</value>
   </data>
   <data name="Oobe_Step4Title" xml:space="preserve">
-    <value>翻页笔与语言</value>
+    <value>翻页笔适配</value>
   </data>
   <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
     <value>翻页笔适配</value>

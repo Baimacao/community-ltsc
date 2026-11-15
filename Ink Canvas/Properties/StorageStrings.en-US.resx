@@ -208,7 +208,7 @@
     <value>Storage</value>
   </data>
   <data name="Storage_NavTooltip" xml:space="preserve">
-    <value>View and clean storage used by ICC CE</value>
+    <value>View and clean storage used by ICC CE Lite</value>
   </data>
   <data name="Storage_OpenAppFolder" xml:space="preserve">
     <value>Open app folder</value>
@@ -244,7 +244,7 @@
     <value>Storage</value>
   </data>
   <data name="Storage_TotalUsage" xml:space="preserve">
-    <value>ICC CE total usage</value>
+    <value>ICC CE Lite total usage</value>
   </data>
   <data name="Storage_Update_Desc" xml:space="preserve">
     <value>Installer packages and download cache under AutoUpdate. Refreshed each release.</value>
