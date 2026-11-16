@@ -1373,8 +1373,15 @@ namespace Ink_Canvas.Windows
         private Point _foldPressPoint;
         private bool _foldPressStarted;
 
-        /// <summary>拖动位移超过这个距离就算拖动，不算点击。</summary>
+        /// <summary>
+        /// 拖动位移超过这个距离就算拖动，不算点击。
+        ///
+        /// 鼠标和触摸分开：手指按下去本身就会有抖动，用鼠标的 6px 会让
+        /// 「想点一下」在触摸屏上大概率被判成拖动，点了没反应。
+        /// Windows 自身触摸轻扫的默认阈值也在 16px 附近。
+        /// </summary>
         private const double FoldClickThreshold = 6;
+        private const double FoldTouchClickThreshold = 16;
 
         /// <summary>
         /// 本窗口用过的弹簧标量 key。
@@ -1433,6 +1440,9 @@ namespace Ink_Canvas.Windows
 
                 // 大数字：放大 + 居中
                 AnimateDigitLayout(true);
+
+                // 冒号的像素补偿在缩放后会错位，折叠态归零
+                ApplyColonOffset(true);
             }
             catch (Exception ex)
             {
@@ -1465,6 +1475,8 @@ namespace Ink_Canvas.Windows
                     0, 0, true, SpringAnimator.Snappy);
 
                 AnimateDigitLayout(false);
+
+                ApplyColonOffset(false);
             }
             catch (Exception ex)
             {
@@ -1600,12 +1612,16 @@ namespace Ink_Canvas.Windows
         /// <summary>是否处于瘦窗态。</summary>
         private bool _isSlimMode;
 
-        /// <summary>瘦窗尺寸。</summary>
-        private const double SlimWindowWidth = 240;
-        private const double SlimWindowHeight = 86;
+        /// <summary>
+        /// 瘦窗尺寸：原窗口的一半。
+        /// 860/2=430，520/2=260。但瘦窗里只留数字，高度按数字实际需要收紧到一半左右即可，
+        /// 留 260 会有一条空白，所以高度取 260 的 0.8 倍。
+        /// </summary>
+        private const double SlimWindowWidth = 430;
+        private const double SlimWindowHeight = 208;
 
         /// <summary>瘦窗态的缩放比例。240 宽装下 500 宽的数字区，约 0.46。</summary>
-        private const double SlimDigitScale = 0.44;
+        private const double SlimDigitScale = 0.78;
 
         /// <summary>进瘦窗之前记住原尺寸与位置，退出时还原。</summary>
         private Rect _rectBeforeSlim;
@@ -1640,16 +1656,22 @@ namespace Ink_Canvas.Windows
                 FoldAdjustPanel();
                 StopAdjustIdleCountdown();
 
+                // 去掉标题栏和边框：瘦窗是整个窗口直接拖动，
+                // 留着标题栏既占地方又让人以为要去拖那一小条。
+                iNKORE.UI.WPF.Modern.Controls.Helpers.WindowHelper.SetUseModernWindowStyle(this, false);
+                WindowStyle = WindowStyle.None;
+
                 // 缩窗口
                 MinWidth = 120;
                 MinHeight = 60;
                 Width = SlimWindowWidth;
                 Height = SlimWindowHeight;
 
-                // 贴到工作区右下角，留一点边距
+                // 贴到屏幕上边缘居中。
+                // 放上面是为了让后排同学也看得见 —— 屏幕下方通常被讲台/人挡住。
                 var workArea = SystemParameters.WorkArea;
-                Left = workArea.Right - SlimWindowWidth - 24;
-                Top = workArea.Bottom - SlimWindowHeight - 24;
+                Left = workArea.Left + (workArea.Width - SlimWindowWidth) / 2;
+                Top = workArea.Top + 8;
 
                 // 数字缩到能塞进小窗
                 AnimateDigitScale(SlimDigitScale);
@@ -1671,6 +1693,10 @@ namespace Ink_Canvas.Windows
             try
             {
                 _isSlimMode = false;
+
+                // 恢复标题栏和边框
+                iNKORE.UI.WPF.Modern.Controls.Helpers.WindowHelper.SetUseModernWindowStyle(this, true);
+                WindowStyle = WindowStyle.SingleBorderWindow;
 
                 MinWidth = 220;
                 MinHeight = 70;
@@ -1695,6 +1721,25 @@ namespace Ink_Canvas.Windows
             catch (Exception ex)
             {
                 LogHelper.WriteLogToFile($"退出瘦窗态失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// 切换冒号的上移补偿。
+        ///
+        /// 展开态冒号靠 Margin 的 -55 上移对齐数字中线；
+        /// 折叠态整体等比缩放，-55 会被放大成 -55*scale，冒号就飘到数字上方。
+        /// 折叠时归零，让缩放自己带位置；展开时还原。
+        /// </summary>
+        private void ApplyColonOffset(bool folded)
+        {
+            double top = folded ? 0 : -55;
+
+            foreach (var name in new[] { "Colon1Display", "Colon2Display" })
+            {
+                if (!(FindName(name) is System.Windows.Controls.TextBlock colon)) continue;
+                var m = colon.Margin;
+                colon.Margin = new Thickness(m.Left, top, m.Right, m.Bottom);
             }
         }
 
@@ -1741,42 +1786,98 @@ namespace Ink_Canvas.Windows
         // 拖动实现直接用窗口自带的 DragMove()，行为和拖标题栏一致，
         // 不自己算 Win32 SetWindowPos —— 那套在多屏 + DPI 缩放下容易偏。
 
+        // ── 折叠态 / 瘦窗的点击与拖动 ──────────────────────────────
+        //
+        // 瘦窗没有标题栏，所以必须整窗可拖；折叠态也是同一套手势。
+        //
+        // 判据是位移阈值：按下后移动超过 FoldClickThreshold 算拖动，
+        // 否则算点击。不这么分，拖动结束时必然触发一次恢复。
+        //
+        // 鼠标和触摸各走一套事件 —— 触摸屏不会产生 MouseMove，
+        // 只接鼠标的话老师在白板上根本拖不动。
+
         private void MainBorder_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!_isAdjustPanelFolded && !_isSlimMode) return;
-
             _foldPressPoint = e.GetPosition(this);
             _foldPressStarted = true;
         }
 
         private void MainBorder_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if ((!_isAdjustPanelFolded && !_isSlimMode) || !_foldPressStarted) return;
+            if (!_foldPressStarted) return;
+            if (!_isAdjustPanelFolded && !_isSlimMode) return;
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
-            var now = e.GetPosition(this);
-            if (Math.Abs(now.X - _foldPressPoint.X) < FoldClickThreshold &&
-                Math.Abs(now.Y - _foldPressPoint.Y) < FoldClickThreshold)
-            {
-                return;
-            }
-
-            // 超过阈值 = 拖动。先结束这次手势，再走系统拖动。
-            _foldPressStarted = false;
-            try { DragMove(); }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"折叠态拖动窗口失败: {ex.Message}", LogHelper.LogType.Warning);
-            }
+            TryStartDrag(e.GetPosition(this), FoldClickThreshold);
         }
 
         private void MainBorder_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (!_foldPressStarted) return;
+            _foldPressStarted = false;
+            HandleTap();
+        }
 
+        // ── 触摸路径 ──
+
+        private void MainBorder_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            if (!_isAdjustPanelFolded && !_isSlimMode) return;
+            _foldPressPoint = e.GetTouchPoint(this).Position;
+            _foldPressStarted = true;
+        }
+
+        private void MainBorder_PreviewTouchMove(object sender, TouchEventArgs e)
+        {
+            if (!_foldPressStarted) return;
+            if (!_isAdjustPanelFolded && !_isSlimMode) return;
+
+            if (TryStartDrag(e.GetTouchPoint(this).Position, FoldTouchClickThreshold))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void MainBorder_PreviewTouchUp(object sender, TouchEventArgs e)
+        {
+            if (!_foldPressStarted) return;
+            _foldPressStarted = false;
+            HandleTap();
+        }
+
+        /// <summary>
+        /// 位移超过阈值就进入拖动。返回是否已开始拖动。
+        /// DragMove 是阻塞的 —— 它会一直跑到鼠标松开，所以返回后手势已经结束。
+        /// </summary>
+        private bool TryStartDrag(Point now, double threshold)
+        {
+            if (Math.Abs(now.X - _foldPressPoint.X) < threshold &&
+                Math.Abs(now.Y - _foldPressPoint.Y) < threshold)
+            {
+                return false;
+            }
+
+            // 先清标记：DragMove 阻塞期间不会再进这里
             _foldPressStarted = false;
 
-            // 瘦窗里点一下 = 回大窗（ExitSlimMode 内部会展开）
+            try
+            {
+                DragMove();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // DragMove 在没有按下鼠标时调用会抛 InvalidOperationException，
+                // 属于「手势已经结束」的正常情况，记 Warning 就够。
+                LogHelper.WriteLogToFile($"计时器拖动窗口失败: {ex.Message}", LogHelper.LogType.Warning);
+                return false;
+            }
+        }
+
+        /// <summary>没拖动过就是一次点击：瘦窗回大窗，折叠态回调时间。</summary>
+        private void HandleTap()
+        {
             if (_isSlimMode)
             {
                 ExitSlimMode();
@@ -1788,6 +1889,5 @@ namespace Ink_Canvas.Windows
                 UnfoldAdjustPanel();
             }
         }
-
     }
 }

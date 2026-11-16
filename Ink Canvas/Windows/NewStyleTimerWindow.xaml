@@ -29,7 +29,10 @@
     <Border x:Name="MainBorder" Background="Transparent" MouseLeftButtonDown="MainBorder_MouseLeftButtonDown"
             PreviewMouseLeftButtonDown="MainBorder_PreviewMouseLeftButtonDown"
             PreviewMouseMove="MainBorder_PreviewMouseMove"
-            PreviewMouseLeftButtonUp="MainBorder_PreviewMouseLeftButtonUp">
+            PreviewMouseLeftButtonUp="MainBorder_PreviewMouseLeftButtonUp"
+            PreviewTouchDown="MainBorder_PreviewTouchDown"
+            PreviewTouchMove="MainBorder_PreviewTouchMove"
+            PreviewTouchUp="MainBorder_PreviewTouchUp">
         <Grid>
             <Viewbox x:Name="MainViewController" StretchDirection="DownOnly" MaxWidth="860" MaxHeight="520">
                 <Grid Width="900" Height="400">
@@ -94,11 +97,8 @@
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
-                                <Grid Height="166" Margin="-20,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock x:Name="Colon1Display" Text=":" FontSize="48" FontWeight="Bold"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               Foreground="{DynamicResource NewTimerWindowDigitForeground}"/>
-                                </Grid>
+                                <TextBlock x:Name="Colon1Display" Text=":" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource NewTimerWindowDigitForeground}" Margin="-20,-55,0,0"/>
                                 <!-- MM group -->
                                 <Grid Margin="0,0,20,0" Width="120">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -134,11 +134,8 @@
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
-                                <Grid Height="166" Margin="-20,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock x:Name="Colon2Display" Text=":" FontSize="48" FontWeight="Bold"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                               Foreground="{DynamicResource NewTimerWindowDigitForeground}"/>
-                                </Grid>
+                                <TextBlock x:Name="Colon2Display" Text=":" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource NewTimerWindowDigitForeground}" Margin="-20,-55,0,0"/>
                                 <!-- SS group -->
                                 <Grid Width="120">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
