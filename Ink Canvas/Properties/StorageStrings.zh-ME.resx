@@ -1,47 +1,55 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="AutoSave_Title" xml:space="preserve">
     <value>自动保存（防手滑神器）</value>
   </data>
@@ -52,7 +60,7 @@
     <value>定期自动备份（稳如老狗）</value>
   </data>
   <data name="Backup_Interval" xml:space="preserve">
-    <value xml:space="preserve">多久备一次</value>
+    <value>多久备一次</value>
   </data>
   <data name="Backup_Interval_14Days" xml:space="preserve">
     <value>14 天</value>
@@ -70,7 +78,7 @@
     <value>7 天</value>
   </data>
   <data name="Backup_Interval_DefaultHint" xml:space="preserve">
-    <value xml:space="preserve">（默认为 7 天）</value>
+    <value>（默认为 7 天）</value>
   </data>
   <data name="Backup_Manual" xml:space="preserve">
     <value>手动备份（我来！）</value>
@@ -85,13 +93,13 @@
     <value>定期自动清理过期的墨迹和截图文件（断舍离）</value>
   </data>
   <data name="Storage_AutoSaveInk" xml:space="preserve">
-    <value xml:space="preserve">定时自动存墨迹</value>
+    <value>定时自动存墨迹</value>
   </data>
   <data name="Storage_AutoSaveInkOnScreenshot" xml:space="preserve">
-    <value xml:space="preserve">截图的时候顺手存墨迹</value>
+    <value>截图的时候顺手存墨迹</value>
   </data>
   <data name="Storage_AutoSaveInterval" xml:space="preserve">
-    <value xml:space="preserve">存一次隔多久</value>
+    <value>存一次隔多久</value>
   </data>
   <data name="Storage_AutoSaveInterval_10Min" xml:space="preserve">
     <value>10 分钟</value>
@@ -115,7 +123,7 @@
     <value>位于 Backups 目录的设置/配置备份（.json / .zip）</value>
   </data>
   <data name="Storage_Backups_Header" xml:space="preserve">
-    <value xml:space="preserve">备份</value>
+    <value>备份</value>
   </data>
   <data name="Storage_CalculateFailed" xml:space="preserve">
     <value>算不出来，破防了</value>
@@ -124,7 +132,7 @@
     <value>算力全开中…</value>
   </data>
   <data name="Storage_CategoryDetails" xml:space="preserve">
-    <value xml:space="preserve">看看各类占多少</value>
+    <value>看看各类占多少</value>
   </data>
   <data name="Storage_Clean" xml:space="preserve">
     <value>清理（大扫除）</value>
@@ -143,43 +151,43 @@
     <value>二次确认（别冲动）</value>
   </data>
   <data name="Storage_Confirm_Title" xml:space="preserve">
-    <value xml:space="preserve">确认清理</value>
+    <value>确认清理</value>
   </data>
   <data name="Storage_Core_Desc" xml:space="preserve">
-    <value xml:space="preserve">程序本体、配置文件和运行数据。删了就打不开了。</value>
+    <value>程序本体、配置文件和运行数据。删了就打不开了。</value>
   </data>
   <data name="Storage_Core_NotCleanable" xml:space="preserve">
     <value>核心文件不能删！删了软件就寄了！</value>
   </data>
   <data name="Storage_Custom_Desc" xml:space="preserve">
-    <value xml:space="preserve">自定义图标和点名背景图（icons / backgrounds 里的 .png）</value>
+    <value>自定义图标和点名背景图（icons / backgrounds 里的 .png）</value>
   </data>
   <data name="Storage_Custom_Hint" xml:space="preserve">
     <value>自定义文件是你自己加的，不会自动清理，想删去对应管理界面手动操作。</value>
   </data>
   <data name="Storage_DiskPercent" xml:space="preserve">
-    <value xml:space="preserve">占了磁盘多少</value>
+    <value>占了磁盘多少</value>
   </data>
   <data name="Storage_Ink_Desc" xml:space="preserve">
-    <value xml:space="preserve">Saves 目录里的 .icstk / .xml / 截图 .png 这些墨迹文件</value>
+    <value>Saves 目录里的 .icstk / .xml / 截图 .png 这些墨迹文件</value>
   </data>
   <data name="Storage_Ink_Header" xml:space="preserve">
-    <value xml:space="preserve">墨迹</value>
+    <value>墨迹</value>
   </data>
   <data name="Storage_Legend_Backups" xml:space="preserve">
-    <value xml:space="preserve">备份</value>
+    <value>备份</value>
   </data>
   <data name="Storage_Legend_Core" xml:space="preserve">
-    <value xml:space="preserve">核心文件</value>
+    <value>核心文件</value>
   </data>
   <data name="Storage_Legend_Custom" xml:space="preserve">
-    <value xml:space="preserve">自定义</value>
+    <value>自定义</value>
   </data>
   <data name="Storage_Legend_Ink" xml:space="preserve">
-    <value xml:space="preserve">墨迹</value>
+    <value>墨迹</value>
   </data>
   <data name="Storage_Legend_Other" xml:space="preserve">
-    <value xml:space="preserve">其他</value>
+    <value>其他</value>
   </data>
   <data name="Storage_Logs_Desc" xml:space="preserve">
     <value>位于 Logs / Crashes 目录下的 .txt 日志与崩溃报告，可以清理</value>
@@ -188,10 +196,10 @@
     <value>日志（案发现场）</value>
   </data>
   <data name="Storage_NavTitle" xml:space="preserve">
-    <value xml:space="preserve">存哪儿</value>
+    <value>存哪儿</value>
   </data>
   <data name="Storage_NavTooltip" xml:space="preserve">
-    <value xml:space="preserve">看看 ICC CE Lite 占了多少地方，顺手清一清</value>
+    <value>看看 ICC CE Lite 占了多少地方，顺手清一清</value>
   </data>
   <data name="Storage_OpenAppFolder" xml:space="preserve">
     <value>打开应用目录（老巢）</value>
@@ -200,10 +208,10 @@
     <value>没归到上面那些的其他文件</value>
   </data>
   <data name="Storage_Refresh" xml:space="preserve">
-    <value xml:space="preserve">刷一下</value>
+    <value>刷一下</value>
   </data>
   <data name="Storage_SaveAsXml" xml:space="preserve">
-    <value xml:space="preserve">存成 XML</value>
+    <value>存成 XML</value>
   </data>
   <data name="Storage_SaveFullPageStrokes" xml:space="preserve">
     <value>墨迹全页面保存（打包带走）</value>
@@ -221,7 +229,7 @@
     <value>备份到手，稳如老狗</value>
   </data>
   <data name="Backup_SuccessMsg" xml:space="preserve">
-    <value xml:space="preserve">设置备好了，放在这儿:
+    <value>设置备好了，放在这儿:
 {0}</value>
   </data>
   <data name="Backup_FailedTitle" xml:space="preserve">
@@ -237,7 +245,7 @@
     <value>没找到备份文件，先创建一个备份吧！</value>
   </data>
   <data name="Restore_FilterLabel" xml:space="preserve">
-    <value xml:space="preserve">设置备份文件</value>
+    <value>设置备份文件</value>
   </data>
   <data name="Restore_AllJsonFilter" xml:space="preserve">
     <value>所有 JSON 文件</value>

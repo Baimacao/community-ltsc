@@ -1,43 +1,43 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -51,51 +51,51 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Home_ExitApp" xml:space="preserve">
-    <value xml:space="preserve">溜了溜了</value>
+    <value>溜了溜了</value>
   </data>
   <data name="Home_ResetSettings" xml:space="preserve">
-    <value xml:space="preserve">一键恢复出厂</value>
+    <value>一键恢复出厂</value>
   </data>
   <data name="Home_RestartApp" xml:space="preserve">
-    <value xml:space="preserve">重启一下</value>
+    <value>重启一下</value>
   </data>
   <data name="Home_AboutApp" xml:space="preserve">
-    <value xml:space="preserve">关于 ICC CE Lite</value>
+    <value>关于 ICC CE Lite</value>
   </data>
   <data name="Home_Basic" xml:space="preserve">
-    <value xml:space="preserve">基础操作</value>
+    <value>基础操作</value>
   </data>
   <data name="Home_CanvasSettings" xml:space="preserve">
-    <value xml:space="preserve">画板调教</value>
+    <value>画板调教</value>
   </data>
   <data name="Home_InkRecognitionSettings" xml:space="preserve">
-    <value xml:space="preserve">墨迹纠正调教</value>
+    <value>墨迹纠正调教</value>
   </data>
   <data name="Home_MainUI" xml:space="preserve">
-    <value xml:space="preserve">主界面</value>
+    <value>主界面</value>
   </data>
   <data name="Home_PPTSettings" xml:space="preserve">
-    <value xml:space="preserve">PPT 联动调教</value>
+    <value>PPT 联动调教</value>
   </data>
   <data name="Home_Title" xml:space="preserve">
-    <value xml:space="preserve">大本营</value>
+    <value>大本营</value>
   </data>
   <data name="Home_Window" xml:space="preserve">
-    <value xml:space="preserve">窗口</value>
+    <value>窗口</value>
   </data>
   <data name="Home_WindowSettings" xml:space="preserve">
-    <value xml:space="preserve">窗口调教</value>
+    <value>窗口调教</value>
   </data>
   <data name="Home_ClockSettings" xml:space="preserve">
-    <value xml:space="preserve">时钟显示调教</value>
+    <value>时钟显示调教</value>
   </data>
   <data name="Home_BackupSettings" xml:space="preserve">
-    <value xml:space="preserve">设置和数据备份</value>
+    <value>设置和数据备份</value>
   </data>
   <data name="Home_FriendlyLinks" xml:space="preserve">
-    <value xml:space="preserve">赞助及友链</value>
+    <value>赞助及友链</value>
   </data>
   <data name="Home_Reset" xml:space="preserve">
-    <value xml:space="preserve">重置一下</value>
+    <value>重置一下</value>
   </data>
 </root>

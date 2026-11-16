@@ -1,261 +1,294 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata"><xs:complexType><xs:sequence><xs:element name="value" type="xsd:string" minOccurs="0" /></xs:sequence><xs:attribute name="name" use="required" type="xsd:string" /><xs:attribute name="type" type="xsd:string" /><xs:attribute name="mimetype" type="xsd:string" /><xs:attribute ref="xml:space" /></xs:complexType></xs:element>
-          <xs:element name="assembly"><xs:complexType><xs:attribute name="alias" type="xsd:string" /><xs:attribute name="name" type="xsd:string" /></xs:complexType></xs:element>
-          <xs:element name="data"><xs:complexType><xs:sequence><xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" /><xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" /></xs:sequence><xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" /><xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" /><xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" /><xs:attribute ref="xml:space" /></xs:complexType></xs:element>
-          <xs:element name="resheader"><xs:complexType><xs:sequence><xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" /></xs:sequence><xs:attribute name="name" type="xsd:string" use="required" /></xs:complexType></xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Clock_Title" xml:space="preserve">
-    <value xml:space="preserve">时钟</value>
+    <value>时钟</value>
   </data>
   <data name="Clock_12Hour" xml:space="preserve">
-    <value xml:space="preserve">12 小时制</value>
+    <value>12 小时制</value>
   </data>
   <data name="Clock_24Hour" xml:space="preserve">
-    <value xml:space="preserve">24 小时制</value>
+    <value>24 小时制</value>
   </data>
   <data name="Menu_ConfigHint" xml:space="preserve">
-    <value xml:space="preserve">配置{0}工具菜单里显示哪些、按什么顺序，最多 9 个（3×3 排布）。</value>
+    <value>配置{0}工具菜单里显示哪些、按什么顺序，最多 9 个（3×3 排布）。</value>
   </data>
   <data name="Menu_Added" xml:space="preserve">
-    <value xml:space="preserve">已经放上去的</value>
+    <value>已经放上去的</value>
   </data>
   <data name="Menu_Available" xml:space="preserve">
-    <value xml:space="preserve">还能加的</value>
+    <value>还能加的</value>
   </data>
   <data name="Menu_ResetLayout" xml:space="preserve">
-    <value xml:space="preserve">恢复默认排布</value>
+    <value>恢复默认排布</value>
   </data>
   <data name="Ppt_FlipAppearanceSection" xml:space="preserve">
-    <value xml:space="preserve">翻页按钮长什么样、放哪</value>
+    <value>翻页按钮长什么样、放哪</value>
   </data>
   <data name="Ppt_FlipAppearanceSectionDesc" xml:space="preserve">
-    <value xml:space="preserve">每个位置都能单独调开关、页码、偏移和透明度，边调边看效果</value>
+    <value>每个位置都能单独调开关、页码、偏移和透明度，边调边看效果</value>
   </data>
   <data name="Ppt_KeepInkInPpt" xml:space="preserve">
-    <value xml:space="preserve">PPT 下留着笔迹</value>
+    <value>PPT 下留着笔迹</value>
   </data>
   <data name="Ppt_KeepInkInPptDesc" xml:space="preserve">
-    <value xml:space="preserve">开了之后，在 PPT 批注状态点鼠标不会把笔迹藏起来。</value>
+    <value>开了之后，在 PPT 批注状态点鼠标不会把笔迹藏起来。</value>
   </data>
   <data name="TbPos_Title" xml:space="preserve">
-    <value xml:space="preserve">工具栏放哪边</value>
+    <value>工具栏放哪边</value>
   </data>
   <data name="TbPos_Desc" xml:space="preserve">
-    <value xml:space="preserve">工具栏相对拖动图标显示在哪个方向</value>
+    <value>工具栏相对拖动图标显示在哪个方向</value>
   </data>
   <data name="TbPos_Right" xml:space="preserve">
-    <value xml:space="preserve">右边</value>
+    <value>右边</value>
   </data>
   <data name="TbPos_Left" xml:space="preserve">
-    <value xml:space="preserve">左边</value>
+    <value>左边</value>
   </data>
   <data name="TbPos_Top" xml:space="preserve">
-    <value xml:space="preserve">上面</value>
+    <value>上面</value>
   </data>
   <data name="TbPos_Bottom" xml:space="preserve">
-    <value xml:space="preserve">下面</value>
+    <value>下面</value>
   </data>
   <data name="Tb_FlipContent" xml:space="preserve">
-    <value xml:space="preserve">把内容翻过来</value>
+    <value>把内容翻过来</value>
   </data>
   <data name="Tb_FlipContentDesc" xml:space="preserve">
-    <value xml:space="preserve">组件内容的排列方向反过来，改完建议重启一下</value>
+    <value>组件内容的排列方向反过来，改完建议重启一下</value>
   </data>
   <data name="Tb_DisableAnim" xml:space="preserve">
-    <value xml:space="preserve">关掉工具栏动画</value>
+    <value>关掉工具栏动画</value>
   </data>
   <data name="Tb_DisableAnimDesc" xml:space="preserve">
-    <value xml:space="preserve">开了之后，没选中的按钮不会自动沉下去居中</value>
+    <value>开了之后，没选中的按钮不会自动沉下去居中</value>
   </data>
   <data name="Tb_AutoFlip" xml:space="preserve">
-    <value xml:space="preserve">贴边放不下时自动翻面</value>
+    <value>贴边放不下时自动翻面</value>
   </data>
   <data name="Tb_AutoFlipDesc" xml:space="preserve">
-    <value xml:space="preserve">拖到屏幕边缘空间不够时自动换个方向，改完建议重启一下</value>
+    <value>拖到屏幕边缘空间不够时自动换个方向，改完建议重启一下</value>
   </data>
   <data name="Tb_FlipContentAfterAutoFlip" xml:space="preserve">
-    <value xml:space="preserve">自动翻面时连内容一起翻</value>
+    <value>自动翻面时连内容一起翻</value>
   </data>
   <data name="Tb_FlipContentAfterAutoFlipDesc" xml:space="preserve">
-    <value xml:space="preserve">开了只挪拖动图标的位置，内容保持原顺序，改完建议重启一下</value>
+    <value>开了只挪拖动图标的位置，内容保持原顺序，改完建议重启一下</value>
   </data>
   <data name="Common_Reset" xml:space="preserve">
-    <value xml:space="preserve">重置</value>
+    <value>重置</value>
   </data>
   <data name="Common_On" xml:space="preserve">
-    <value xml:space="preserve">开</value>
+    <value>开</value>
   </data>
   <data name="Common_Off" xml:space="preserve">
-    <value xml:space="preserve">关</value>
+    <value>关</value>
   </data>
   <data name="Common_Reverse" xml:space="preserve">
-    <value xml:space="preserve">反过来</value>
+    <value>反过来</value>
   </data>
   <data name="Flip_Title" xml:space="preserve">
-    <value xml:space="preserve">翻页按钮长什么样、放哪</value>
+    <value>翻页按钮长什么样、放哪</value>
   </data>
   <data name="Flip_ScopeGlobal" xml:space="preserve">
-    <value xml:space="preserve">全部</value>
+    <value>全部</value>
   </data>
   <data name="Flip_ScopeLeft" xml:space="preserve">
-    <value xml:space="preserve">左边</value>
+    <value>左边</value>
   </data>
   <data name="Flip_ScopeRight" xml:space="preserve">
-    <value xml:space="preserve">右边</value>
+    <value>右边</value>
   </data>
   <data name="Flip_ScopeBottomLeft" xml:space="preserve">
-    <value xml:space="preserve">左下</value>
+    <value>左下</value>
   </data>
   <data name="Flip_ScopeBottomRight" xml:space="preserve">
-    <value xml:space="preserve">右下</value>
+    <value>右下</value>
   </data>
   <data name="Flip_UseGlobal" xml:space="preserve">
-    <value xml:space="preserve">跟着全局走</value>
+    <value>跟着全局走</value>
   </data>
   <data name="Flip_UseGlobalDesc" xml:space="preserve">
-    <value xml:space="preserve">开着就跟全局默认值一致，关掉可以单独调</value>
+    <value>开着就跟全局默认值一致，关掉可以单独调</value>
   </data>
   <data name="Flip_EnableHere" xml:space="preserve">
-    <value xml:space="preserve">这个位置要不要显示</value>
+    <value>这个位置要不要显示</value>
   </data>
   <data name="Flip_EnableHereDesc" xml:space="preserve">
-    <value xml:space="preserve">不管它就不出现在屏幕上</value>
+    <value>不管它就不出现在屏幕上</value>
   </data>
   <data name="Flip_ShowPageNumber" xml:space="preserve">
-    <value xml:space="preserve">显示页码</value>
+    <value>显示页码</value>
   </data>
   <data name="Flip_ShowPageNumberDesc" xml:space="preserve">
-    <value xml:space="preserve">在翻页条上标出当前第几页、一共几页</value>
+    <value>在翻页条上标出当前第几页、一共几页</value>
   </data>
   <data name="Flip_Offset" xml:space="preserve">
-    <value xml:space="preserve">挪一挪</value>
+    <value>挪一挪</value>
   </data>
   <data name="Flip_Opacity" xml:space="preserve">
-    <value xml:space="preserve">透明度</value>
+    <value>透明度</value>
   </data>
   <data name="Flip_Scale" xml:space="preserve">
-    <value xml:space="preserve">缩放</value>
+    <value>缩放</value>
   </data>
   <data name="Flip_ScaleDesc" xml:space="preserve">
-    <value xml:space="preserve">这个位置的翻页按钮放多大</value>
+    <value>这个位置的翻页按钮放多大</value>
   </data>
   <data name="Flip_GlobalLook" xml:space="preserve">
-    <value xml:space="preserve">整体外观</value>
+    <value>整体外观</value>
   </data>
   <data name="Flip_PageNumberFontSize" xml:space="preserve">
-    <value xml:space="preserve">页码字号</value>
+    <value>页码字号</value>
   </data>
   <data name="Flip_PageNumberFontSizeDesc" xml:space="preserve">
-    <value xml:space="preserve">投影和一体机上后排常看不清页码。默认 17px，最大能到 40px</value>
+    <value>投影和一体机上后排常看不清页码。默认 17px，最大能到 40px</value>
   </data>
   <data name="Flip_AutoFade" xml:space="preserve">
-    <value xml:space="preserve">翻页条自己隐身</value>
+    <value>翻页条自己隐身</value>
   </data>
   <data name="Flip_AutoFadeDesc" xml:space="preserve">
-    <value xml:space="preserve">静止一会儿就变淡，不挡板书；碰一下就回来</value>
+    <value>静止一会儿就变淡，不挡板书；碰一下就回来</value>
   </data>
   <data name="Flip_FadeDelay" xml:space="preserve">
-    <value xml:space="preserve">多久后开始淡</value>
+    <value>多久后开始淡</value>
   </data>
   <data name="Flip_FadeDelayDesc" xml:space="preserve">
-    <value xml:space="preserve">停手多少秒开始变淡</value>
+    <value>停手多少秒开始变淡</value>
   </data>
   <data name="Flip_MainBarIdleFade" xml:space="preserve">
-    <value xml:space="preserve">主工具栏也会隐身</value>
+    <value>主工具栏也会隐身</value>
   </data>
   <data name="Flip_MainBarIdleFadeDesc" xml:space="preserve">
-    <value xml:space="preserve">PPT 联动讲课时停笔一会儿它就淡下去，一落笔就回来。白板模式不受影响</value>
+    <value>PPT 联动讲课时停笔一会儿它就淡下去，一落笔就回来。白板模式不受影响</value>
   </data>
   <data name="Flip_MainBarFadeDelay" xml:space="preserve">
-    <value xml:space="preserve">主工具栏多久后淡</value>
+    <value>主工具栏多久后淡</value>
   </data>
   <data name="Flip_MainBarFadeDelayDesc" xml:space="preserve">
-    <value xml:space="preserve">停笔多久后底部工具栏开始变淡</value>
+    <value>停笔多久后底部工具栏开始变淡</value>
   </data>
   <data name="Flip_MainBarFadeOpacity" xml:space="preserve">
-    <value xml:space="preserve">主工具栏能淡到多淡</value>
+    <value>主工具栏能淡到多淡</value>
   </data>
   <data name="Flip_MainBarFadeOpacityDesc" xml:space="preserve">
-    <value xml:space="preserve">数字越小越透。别低于 0.3，不然轮廓都看不清了</value>
+    <value>数字越小越透。别低于 0.3，不然轮廓都看不清了</value>
   </data>
   <data name="Flip_PressFeedback" xml:space="preserve">
-    <value xml:space="preserve">按下有反馈</value>
+    <value>按下有反馈</value>
   </data>
   <data name="Flip_PressFeedbackDesc" xml:space="preserve">
-    <value xml:space="preserve">按翻页按钮时给个明显高亮，投影下也能看出点没点中</value>
+    <value>按翻页按钮时给个明显高亮，投影下也能看出点没点中</value>
   </data>
   <data name="Auto_AddAutomation" xml:space="preserve">
-    <value xml:space="preserve">加一条自动化</value>
+    <value>加一条自动化</value>
   </data>
   <data name="Auto_Presets" xml:space="preserve">
-    <value xml:space="preserve">现成的自动化</value>
+    <value>现成的自动化</value>
   </data>
   <data name="Auto_Name" xml:space="preserve">
-    <value xml:space="preserve">叫它什么</value>
+    <value>叫它什么</value>
   </data>
   <data name="Auto_RestoreEnabled" xml:space="preserve">
-    <value xml:space="preserve">自动恢复</value>
+    <value>自动恢复</value>
   </data>
   <data name="Auto_Trigger" xml:space="preserve">
-    <value xml:space="preserve">试一下</value>
+    <value>试一下</value>
   </data>
   <data name="Auto_Restore" xml:space="preserve">
-    <value xml:space="preserve">撤回来</value>
+    <value>撤回来</value>
   </data>
   <data name="Auto_WhenTriggered" xml:space="preserve">
-    <value xml:space="preserve">什么时候触发</value>
+    <value>什么时候触发</value>
   </data>
   <data name="Auto_AddTrigger" xml:space="preserve">
-    <value xml:space="preserve">加个触发条件</value>
+    <value>加个触发条件</value>
   </data>
   <data name="Auto_WhenConditionsMet" xml:space="preserve">
-    <value xml:space="preserve">并且满足这些条件</value>
+    <value>并且满足这些条件</value>
   </data>
   <data name="Auto_ConditionsIgnored" xml:space="preserve">
-    <value xml:space="preserve">这条工作流跑起来不看条件。</value>
+    <value>这条工作流跑起来不看条件。</value>
   </data>
   <data name="Auto_AnyConditionGroup" xml:space="preserve">
-    <value xml:space="preserve">任意一组条件满足时</value>
+    <value>任意一组条件满足时</value>
   </data>
   <data name="Auto_AllConditionGroup" xml:space="preserve">
-    <value xml:space="preserve">所有条件组都满足时</value>
+    <value>所有条件组都满足时</value>
   </data>
   <data name="Auto_AnyCondition" xml:space="preserve">
-    <value xml:space="preserve">任意一个条件满足时</value>
+    <value>任意一个条件满足时</value>
   </data>
   <data name="Auto_AllCondition" xml:space="preserve">
-    <value xml:space="preserve">所有条件都满足时</value>
+    <value>所有条件都满足时</value>
   </data>
   <data name="Auto_AddGroup" xml:space="preserve">
-    <value xml:space="preserve">加一组</value>
+    <value>加一组</value>
   </data>
   <data name="Auto_AddRule" xml:space="preserve">
-    <value xml:space="preserve">加个条件</value>
+    <value>加个条件</value>
   </data>
   <data name="Auto_TakeAction" xml:space="preserve">
-    <value xml:space="preserve">然后做什么</value>
+    <value>然后做什么</value>
   </data>
   <data name="Auto_AddAction" xml:space="preserve">
-    <value xml:space="preserve">加个动作</value>
+    <value>加个动作</value>
   </data>
   <data name="Auto_RestoreNote" xml:space="preserve">
-    <value xml:space="preserve">条件不再满足时，会自动把动作撤回来。</value>
+    <value>条件不再满足时，会自动把动作撤回来。</value>
   </data>
   <data name="Auto_EmptyHint" xml:space="preserve">
-    <value xml:space="preserve">在左边选一条或新建一条，再来这里设置。</value>
+    <value>在左边选一条或新建一条，再来这里设置。</value>
   </data>
   <data name="PresenterKey_EnableHeader" xml:space="preserve">
     <value>开翻页笔适配</value>

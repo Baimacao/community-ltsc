@@ -1,45 +1,110 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Delete" xml:space="preserve"><value>刪除配置檔案</value></data><data name="Desc" xml:space="preserve"><value>選擇配置檔案即切換并熱重載；另存為可將當前配置儲存為新配置檔案</value></data><data name="Label" xml:space="preserve"><value>配置檔案：</value></data><data name="SaveAs" xml:space="preserve"><value>另存為配置檔案</value></data><data name="Title" xml:space="preserve"><value>配置檔案切換與熱重載</value></data><data name="ProfileNameLabel" xml:space="preserve"><value>方案名稱</value></data><data name="SaveAsProfileTitle" xml:space="preserve"><value>另存為方案</value></data><data name="SaveAs_EnterName" xml:space="preserve"><value>請輸入方案名稱。</value></data><data name="SavedAsProfile" xml:space="preserve"><value>已另存為方案：{0}</value></data><data name="SaveAs_Failed" xml:space="preserve"><value>儲存失敗，請查看日志。</value></data><data name="SaveAs_FailedMsg" xml:space="preserve"><value>儲存失敗: {0}</value></data><data name="Delete_SelectFirst" xml:space="preserve"><value>請先選擇要刪除的配置檔案。</value></data><data name="Delete_ConfirmTitle" xml:space="preserve"><value>確認刪除</value></data><data name="Delete_ConfirmMsg" xml:space="preserve"><value>確定要刪除配置檔案「{0}」嗎？</value></data><data name="Delete_Failed" xml:space="preserve"><value>刪除配置檔案失敗，請查看日志。</value></data><data name="Delete_FailedMsg" xml:space="preserve"><value>刪除配置檔案失敗: {0}</value></data><data name="SwitchedToProfile" xml:space="preserve"><value>已切換至方案「{0}」</value></data><data name="DeletedAndSwitched" xml:space="preserve"><value>已刪除方案「{0}」，已切換至「{1}」</value></data><data name="DeletedProfile" xml:space="preserve"><value>已刪除方案：{0}</value></data></root>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Delete" xml:space="preserve">
+    <value>刪除配置檔案</value>
+  </data>
+  <data name="Desc" xml:space="preserve">
+    <value>選擇配置檔案即切換并熱重載；另存為可將當前配置儲存為新配置檔案</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>配置檔案：</value>
+  </data>
+  <data name="SaveAs" xml:space="preserve">
+    <value>另存為配置檔案</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>配置檔案切換與熱重載</value>
+  </data>
+  <data name="ProfileNameLabel" xml:space="preserve">
+    <value>方案名稱</value>
+  </data>
+  <data name="SaveAsProfileTitle" xml:space="preserve">
+    <value>另存為方案</value>
+  </data>
+  <data name="SaveAs_EnterName" xml:space="preserve">
+    <value>請輸入方案名稱。</value>
+  </data>
+  <data name="SavedAsProfile" xml:space="preserve">
+    <value>已另存為方案：{0}</value>
+  </data>
+  <data name="SaveAs_Failed" xml:space="preserve">
+    <value>儲存失敗，請查看日志。</value>
+  </data>
+  <data name="SaveAs_FailedMsg" xml:space="preserve">
+    <value>儲存失敗: {0}</value>
+  </data>
+  <data name="Delete_SelectFirst" xml:space="preserve">
+    <value>請先選擇要刪除的配置檔案。</value>
+  </data>
+  <data name="Delete_ConfirmTitle" xml:space="preserve">
+    <value>確認刪除</value>
+  </data>
+  <data name="Delete_ConfirmMsg" xml:space="preserve">
+    <value>確定要刪除配置檔案「{0}」嗎？</value>
+  </data>
+  <data name="Delete_Failed" xml:space="preserve">
+    <value>刪除配置檔案失敗，請查看日志。</value>
+  </data>
+  <data name="Delete_FailedMsg" xml:space="preserve">
+    <value>刪除配置檔案失敗: {0}</value>
+  </data>
+  <data name="SwitchedToProfile" xml:space="preserve">
+    <value>已切換至方案「{0}」</value>
+  </data>
+  <data name="DeletedAndSwitched" xml:space="preserve">
+    <value>已刪除方案「{0}」，已切換至「{1}」</value>
+  </data>
+  <data name="DeletedProfile" xml:space="preserve">
+    <value>已刪除方案：{0}</value>
+  </data>
+</root>

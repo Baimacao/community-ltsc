@@ -1,43 +1,43 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -51,7 +51,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Copyright" xml:space="preserve">
-    <value xml:space="preserve">InkCanvasForClass · ICA · ICC · ICC-CE 的延续</value>
+    <value>InkCanvasForClass · ICA · ICC · ICC-CE 的延续</value>
   </data>
   <data name="DevelopersLabel" xml:space="preserve">
     <value>大佬们：</value>
@@ -69,13 +69,13 @@
     <value>Ink Canvas 的大佬</value>
   </data>
   <data name="LicenseBody" xml:space="preserve">
-    <value xml:space="preserve">本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
+    <value>本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
   </data>
   <data name="LicenseTitle" xml:space="preserve">
     <value>本软件和 ICA，Ink Canvas 都是开源的 yyds！</value>
   </data>
   <data name="OpenSourceSlogan" xml:space="preserve">
-    <value xml:space="preserve">开源不是施舍，是把自己踩过的坑填平，让后面的人少陷一次。</value>
+    <value>开源不是施舍，是把自己踩过的坑填平，让后面的人少陷一次。</value>
   </data>
   <data name="PhigrosCr" xml:space="preserve">
     <value>部分内容偷师于 Phigros</value>
@@ -87,7 +87,7 @@
     <value>感谢下列大佬的贡献：</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value xml:space="preserve">关于</value>
+    <value>关于</value>
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>版本号：</value>
@@ -106,6 +106,6 @@
     <value>ICC Lite 精簡版</value>
   </data>
   <data name="About_Dev_AI" xml:space="preserve">
-    <value xml:space="preserve">AI 搭子</value>
+    <value>AI 搭子</value>
   </data>
 </root>

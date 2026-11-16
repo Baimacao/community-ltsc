@@ -1,49 +1,57 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Board_Background" xml:space="preserve">
-    <value xml:space="preserve">背景</value>
+    <value>背景</value>
   </data>
   <data name="Board_ClearInk" xml:space="preserve">
     <value>一键清空墨迹</value>
@@ -55,88 +63,88 @@
     <value>送走这页</value>
   </data>
   <data name="Board_Eraser" xml:space="preserve">
-    <value xml:space="preserve">橡皮</value>
+    <value>橡皮</value>
   </data>
   <data name="Board_EraserOptions" xml:space="preserve">
-    <value xml:space="preserve">橡皮怎么擦</value>
+    <value>橡皮怎么擦</value>
   </data>
   <data name="Board_EraserShape_Blackboard" xml:space="preserve">
-    <value xml:space="preserve">黑板擦</value>
+    <value>黑板擦</value>
   </data>
   <data name="Board_EraserShape_Circle" xml:space="preserve">
-    <value xml:space="preserve">圆擦</value>
+    <value>圆擦</value>
   </data>
   <data name="Board_Gesture" xml:space="preserve">
     <value>结印施法</value>
   </data>
   <data name="Board_Highlighter" xml:space="preserve">
-    <value xml:space="preserve">荧光笔</value>
+    <value>荧光笔</value>
   </data>
   <data name="Board_InsertImage" xml:space="preserve">
-    <value xml:space="preserve">插个文件</value>
+    <value>插个文件</value>
   </data>
   <data name="Board_LaserPen" xml:space="preserve">
-    <value xml:space="preserve">激光笔</value>
+    <value>激光笔</value>
   </data>
   <data name="Board_NewPage" xml:space="preserve">
     <value>新开一页</value>
   </data>
   <data name="Board_NextPage" xml:space="preserve">
-    <value xml:space="preserve">下一页</value>
+    <value>下一页</value>
   </data>
   <data name="Board_Page" xml:space="preserve">
-    <value xml:space="preserve">页码</value>
+    <value>页码</value>
   </data>
   <data name="Board_Pen" xml:space="preserve">
-    <value xml:space="preserve">笔</value>
+    <value>笔</value>
   </data>
   <data name="Board_PreviousPage" xml:space="preserve">
-    <value xml:space="preserve">上一页</value>
+    <value>上一页</value>
   </data>
   <data name="Board_Redo" xml:space="preserve">
-    <value xml:space="preserve">重做</value>
+    <value>重做</value>
   </data>
   <data name="Board_Screenshot" xml:space="preserve">
-    <value xml:space="preserve">截个图</value>
+    <value>截个图</value>
   </data>
   <data name="Board_Select" xml:space="preserve">
-    <value xml:space="preserve">选择</value>
+    <value>选择</value>
   </data>
   <data name="Board_SelectImage" xml:space="preserve">
-    <value xml:space="preserve">插个文件</value>
+    <value>插个文件</value>
   </data>
   <data name="Board_Shape" xml:space="preserve">
-    <value xml:space="preserve">图形</value>
+    <value>图形</value>
   </data>
   <data name="Board_Size" xml:space="preserve">
-    <value xml:space="preserve">大小</value>
+    <value>大小</value>
   </data>
   <data name="Board_StrokeEraser" xml:space="preserve">
-    <value xml:space="preserve">线擦</value>
+    <value>线擦</value>
   </data>
   <data name="Board_Tools" xml:space="preserve">
-    <value xml:space="preserve">工具</value>
+    <value>工具</value>
   </data>
   <data name="Board_TwoFingerMove" xml:space="preserve">
     <value>双指平移</value>
   </data>
   <data name="Board_Undo" xml:space="preserve">
-    <value xml:space="preserve">撤销</value>
+    <value>撤销</value>
   </data>
   <data name="Board_VideoBooth" xml:space="preserve">
-    <value xml:space="preserve">视频展台</value>
+    <value>视频展台</value>
   </data>
   <data name="FloatingBar_Annotate" xml:space="preserve">
-    <value xml:space="preserve">批注</value>
+    <value>批注</value>
   </data>
   <data name="FloatingBar_AreaEraser" xml:space="preserve">
-    <value xml:space="preserve">面积擦</value>
+    <value>面积擦</value>
   </data>
   <data name="FloatingBar_Clear" xml:space="preserve">
     <value>一键清空</value>
   </data>
   <data name="FloatingBar_ClearAndMouse" xml:space="preserve">
-    <value xml:space="preserve">清完换鼠标</value>
+    <value>清完换鼠标</value>
   </data>
   <data name="FloatingBar_ExitButton" xml:space="preserve">
     <value>溜了</value>
@@ -145,16 +153,16 @@
     <value>墨迹封印术</value>
   </data>
   <data name="FloatingBar_Geometry" xml:space="preserve">
-    <value xml:space="preserve">几何</value>
+    <value>几何</value>
   </data>
   <data name="FloatingBar_Gesture_MultiTouchWriting" xml:space="preserve">
     <value>多指齐写</value>
   </data>
   <data name="FloatingBar_Gesture_TwoFingerRotate" xml:space="preserve">
-    <value xml:space="preserve">双指转</value>
+    <value>双指转</value>
   </data>
   <data name="FloatingBar_Gesture_TwoFingerZoom" xml:space="preserve">
-    <value xml:space="preserve">双指缩放</value>
+    <value>双指缩放</value>
   </data>
   <data name="FloatingBar_GestureButton" xml:space="preserve">
     <value>结印施法</value>
@@ -166,70 +174,70 @@
     <value>套马杆</value>
   </data>
   <data name="FloatingBar_Mouse" xml:space="preserve">
-    <value xml:space="preserve">鼠标</value>
+    <value>鼠标</value>
   </data>
   <data name="FloatingBar_StrokeEraser" xml:space="preserve">
-    <value xml:space="preserve">线擦</value>
+    <value>线擦</value>
   </data>
   <data name="FloatingBar_Unfreeze" xml:space="preserve">
     <value>解封</value>
   </data>
   <data name="FloatingBar_Whiteboard" xml:space="preserve">
-    <value xml:space="preserve">白板</value>
+    <value>白板</value>
   </data>
   <data name="Theme_Dark" xml:space="preserve">
-    <value xml:space="preserve">暗黑</value>
+    <value>暗黑</value>
   </data>
   <data name="Action_Exit" xml:space="preserve">
     <value>溜了</value>
   </data>
   <data name="Pen_Thickness" xml:space="preserve">
-    <value xml:space="preserve">粗细</value>
+    <value>粗细</value>
   </data>
   <data name="QuickPanel_ExitShow" xml:space="preserve">
-    <value xml:space="preserve">退出放映</value>
+    <value>退出放映</value>
   </data>
   <data name="QuickPanel_Show" xml:space="preserve">
-    <value xml:space="preserve">批注栏</value>
+    <value>批注栏</value>
   </data>
   <data name="QuickPanel_SingleDraw" xml:space="preserve">
-    <value xml:space="preserve">单抽一个</value>
+    <value>单抽一个</value>
   </data>
   <data name="QuickPanel_Timer" xml:space="preserve">
-    <value xml:space="preserve">计时器</value>
+    <value>计时器</value>
   </data>
   <data name="Tools_MoreFeaturesTitle" xml:space="preserve">
     <value>更多花活</value>
   </data>
   <data name="Tools_Open" xml:space="preserve">
-    <value xml:space="preserve">打开…</value>
+    <value>打开…</value>
   </data>
   <data name="Tools_Replay" xml:space="preserve">
-    <value xml:space="preserve">重播</value>
+    <value>重播</value>
   </data>
   <data name="Tools_Save" xml:space="preserve">
     <value>存好了</value>
   </data>
   <data name="Tools_Screenshot" xml:space="preserve">
-    <value xml:space="preserve">截屏</value>
+    <value>截屏</value>
   </data>
   <data name="ToolbarPage_ConfigProfiles" xml:space="preserve">
     <value>配置方案</value>
   </data>
   <data name="ToolbarPage_NewProfile" xml:space="preserve">
-    <value xml:space="preserve">新建一套</value>
+    <value>新建一套</value>
   </data>
   <data name="ToolbarPage_DuplicateProfile" xml:space="preserve">
-    <value xml:space="preserve">照这套复制</value>
+    <value>照这套复制</value>
   </data>
   <data name="ToolbarPage_DeleteProfile" xml:space="preserve">
     <value>送走</value>
   </data>
   <data name="ToolbarPage_RefreshProfile" xml:space="preserve">
-    <value xml:space="preserve">刷新一下</value>
+    <value>刷新一下</value>
   </data>
   <data name="ToolbarPage_OpenConfigFolder" xml:space="preserve">
-    <value xml:space="preserve">打开配置文件夹</value>
+    <value>打开配置文件夹</value>
   </data>
   <data name="ToolbarPage_AddedComponentsHint" xml:space="preserve">
     <value>以下组件会出现在装备栏上，从组件库拖过来就能添加。</value>
@@ -238,13 +246,13 @@
     <value>已装备组件</value>
   </data>
   <data name="ToolbarPage_GroupChildren" xml:space="preserve">
-    <value xml:space="preserve">分组里有啥</value>
+    <value>分组里有啥</value>
   </data>
   <data name="ToolbarPage_GroupChildrenHint" xml:space="preserve">
     <value>把组件库里的组件拖过来添加，或者拖动已有组件排序。</value>
   </data>
   <data name="ToolbarPage_ComponentLibrary" xml:space="preserve">
-    <value xml:space="preserve">组件库</value>
+    <value>组件库</value>
   </data>
   <data name="ToolbarPage_ComponentLibraryHint" xml:space="preserve">
     <value>把组件拖到上面的已装备列表或分组内就能添加到装备栏。</value>
@@ -253,88 +261,88 @@
     <value>组件调教</value>
   </data>
   <data name="ToolbarPage_ComponentProperties" xml:space="preserve">
-    <value xml:space="preserve">这个组件怎么设</value>
+    <value>这个组件怎么设</value>
   </data>
   <data name="ToolbarPage_SeparateBorder" xml:space="preserve">
-    <value xml:space="preserve">单独加个边框</value>
+    <value>单独加个边框</value>
   </data>
   <data name="ToolbarPage_SeparateBorderDesc" xml:space="preserve">
     <value>给这个组件套个独立边框</value>
   </data>
   <data name="ToolbarPage_DisplayMode" xml:space="preserve">
-    <value xml:space="preserve">怎么显示</value>
+    <value>怎么显示</value>
   </data>
   <data name="ToolbarPage_QuickPaletteDisplayModeDesc" xml:space="preserve">
     <value>选调色盘的颜色数量</value>
   </data>
   <data name="ToolbarPage_Size" xml:space="preserve">
-    <value xml:space="preserve">尺寸</value>
+    <value>尺寸</value>
   </data>
   <data name="ToolbarPage_FixedWidth" xml:space="preserve">
-    <value xml:space="preserve">宽度固定</value>
+    <value>宽度固定</value>
   </data>
   <data name="ToolbarPage_FixedHeight" xml:space="preserve">
-    <value xml:space="preserve">高度固定</value>
+    <value>高度固定</value>
   </data>
   <data name="ToolbarPage_MinWidth" xml:space="preserve">
-    <value xml:space="preserve">最窄多少</value>
+    <value>最窄多少</value>
   </data>
   <data name="ToolbarPage_MaxWidth" xml:space="preserve">
-    <value xml:space="preserve">最宽多少</value>
+    <value>最宽多少</value>
   </data>
   <data name="ToolbarPage_MinHeight" xml:space="preserve">
-    <value xml:space="preserve">最矮多少</value>
+    <value>最矮多少</value>
   </data>
   <data name="ToolbarPage_MaxHeight" xml:space="preserve">
-    <value xml:space="preserve">最高多少</value>
+    <value>最高多少</value>
   </data>
   <data name="ToolbarPage_Alignment" xml:space="preserve">
-    <value xml:space="preserve">怎么对齐</value>
+    <value>怎么对齐</value>
   </data>
   <data name="ToolbarPage_HorizontalAlignment" xml:space="preserve">
-    <value xml:space="preserve">左右怎么对</value>
+    <value>左右怎么对</value>
   </data>
   <data name="ToolbarPage_VerticalAlignment" xml:space="preserve">
-    <value xml:space="preserve">上下怎么对</value>
+    <value>上下怎么对</value>
   </data>
   <data name="ToolbarPage_Left" xml:space="preserve">
-    <value xml:space="preserve">左</value>
+    <value>左</value>
   </data>
   <data name="ToolbarPage_Center" xml:space="preserve">
-    <value xml:space="preserve">居中</value>
+    <value>居中</value>
   </data>
   <data name="ToolbarPage_Right" xml:space="preserve">
-    <value xml:space="preserve">右</value>
+    <value>右</value>
   </data>
   <data name="ToolbarPage_Top" xml:space="preserve">
-    <value xml:space="preserve">上</value>
+    <value>上</value>
   </data>
   <data name="ToolbarPage_Bottom" xml:space="preserve">
-    <value xml:space="preserve">下</value>
+    <value>下</value>
   </data>
   <data name="ToolbarPage_Stretch" xml:space="preserve">
-    <value xml:space="preserve">拉满</value>
+    <value>拉满</value>
   </data>
   <data name="ToolbarPage_Appearance" xml:space="preserve">
-    <value xml:space="preserve">长什么样</value>
+    <value>长什么样</value>
   </data>
   <data name="ToolbarPage_FontSize" xml:space="preserve">
-    <value xml:space="preserve">字多大</value>
+    <value>字多大</value>
   </data>
   <data name="ToolbarPage_IconSize" xml:space="preserve">
-    <value xml:space="preserve">图标多大</value>
+    <value>图标多大</value>
   </data>
   <data name="ToolbarPage_Opacity" xml:space="preserve">
-    <value xml:space="preserve">透明度</value>
+    <value>透明度</value>
   </data>
   <data name="ToolbarPage_RedStyle" xml:space="preserve">
-    <value xml:space="preserve">红色醒目</value>
+    <value>红色醒目</value>
   </data>
   <data name="ToolbarPage_RedStyleDesc" xml:space="preserve">
-    <value xml:space="preserve">把这组件的图标和文字都弄成红的</value>
+    <value>把这组件的图标和文字都弄成红的</value>
   </data>
   <data name="ToolbarPage_Margin" xml:space="preserve">
-    <value xml:space="preserve">离多远</value>
+    <value>离多远</value>
   </data>
   <data name="ToolbarPage_MarginHint" xml:space="preserve">
     <value>左, 上, 右, 下</value>
@@ -349,43 +357,43 @@
     <value>当规则满足时这个组件就隐身。</value>
   </data>
   <data name="ToolbarPage_AnyConditionGroupMet" xml:space="preserve">
-    <value xml:space="preserve">任意一组条件满足时</value>
+    <value>任意一组条件满足时</value>
   </data>
   <data name="ToolbarPage_AllConditionGroupsMet" xml:space="preserve">
-    <value xml:space="preserve">所有条件组都满足时</value>
+    <value>所有条件组都满足时</value>
   </data>
   <data name="ToolbarPage_Reverse" xml:space="preserve">
-    <value xml:space="preserve">反过来</value>
+    <value>反过来</value>
   </data>
   <data name="ToolbarPage_AddGroup" xml:space="preserve">
     <value>加个组</value>
   </data>
   <data name="ToolbarPage_AnyConditionMet" xml:space="preserve">
-    <value xml:space="preserve">任意一个条件满足时</value>
+    <value>任意一个条件满足时</value>
   </data>
   <data name="ToolbarPage_AllConditionsMet" xml:space="preserve">
-    <value xml:space="preserve">所有条件都满足时</value>
+    <value>所有条件都满足时</value>
   </data>
   <data name="ToolbarPage_Rule" xml:space="preserve">
-    <value xml:space="preserve">规则</value>
+    <value>规则</value>
   </data>
   <data name="ToolbarPage_EnableConditionGroup" xml:space="preserve">
-    <value xml:space="preserve">启用这组条件</value>
+    <value>启用这组条件</value>
   </data>
   <data name="ToolbarPage_ResetLayout" xml:space="preserve">
-    <value xml:space="preserve">恢复默认排布</value>
+    <value>恢复默认排布</value>
   </data>
   <data name="ToolbarPage_AddToAdded" xml:space="preserve">
     <value>添加到已装备组件</value>
   </data>
   <data name="ToolbarPage_Duplicate" xml:space="preserve">
-    <value xml:space="preserve">复制一份</value>
+    <value>复制一份</value>
   </data>
   <data name="ToolbarPage_NewConfig" xml:space="preserve">
-    <value xml:space="preserve">新建一套配置</value>
+    <value>新建一套配置</value>
   </data>
   <data name="ToolbarPage_CopyConfig" xml:space="preserve">
-    <value xml:space="preserve">复制这套配置</value>
+    <value>复制这套配置</value>
   </data>
   <data name="ToolbarPage_EnterConfigName" xml:space="preserve">
     <value>给配置起个名：</value>
@@ -448,7 +456,7 @@
     <value>溜了溜了</value>
   </data>
   <data name="ToolbarItem_Desc_QuickColorPalette" xml:space="preserve">
-    <value xml:space="preserve">快速选色的面板</value>
+    <value>快速选色的面板</value>
   </data>
   <data name="ToolbarItem_Desc_Group" xml:space="preserve">
     <value>把多个工具打包在一起</value>
@@ -457,111 +465,111 @@
     <value>楚河汉界</value>
   </data>
   <data name="FloatingBar_QuickPaletteMode" xml:space="preserve">
-    <value xml:space="preserve">快捷调色盘</value>
+    <value>快捷调色盘</value>
   </data>
   <data name="ToolbarCondition_Annotating" xml:space="preserve">
-    <value xml:space="preserve">批注模式</value>
+    <value>批注模式</value>
   </data>
   <data name="ToolbarCondition_PPTMode" xml:space="preserve">
-    <value xml:space="preserve">PPT 模式</value>
+    <value>PPT 模式</value>
   </data>
   <data name="ToolbarCondition_Collapsed" xml:space="preserve">
     <value>装备栏已收纳</value>
   </data>
   <data name="FloatingBar_PenTipStyle" xml:space="preserve">
-    <value xml:space="preserve">笔锋</value>
+    <value>笔锋</value>
   </data>
   <data name="FloatingBar_PenStyle_RealTime" xml:space="preserve">
-    <value xml:space="preserve">实时笔锋</value>
+    <value>实时笔锋</value>
   </data>
   <data name="FloatingBar_PenStyle_PointSet" xml:space="preserve">
-    <value xml:space="preserve">按点算</value>
+    <value>按点算</value>
   </data>
   <data name="FloatingBar_PenStyle_Velocity" xml:space="preserve">
-    <value xml:space="preserve">按速度算</value>
+    <value>按速度算</value>
   </data>
   <data name="FloatingBar_PenStyle_Off" xml:space="preserve">
-    <value xml:space="preserve">不要笔锋</value>
+    <value>不要笔锋</value>
   </data>
   <data name="FloatingBar_HighlighterOverlap" xml:space="preserve">
-    <value xml:space="preserve">重叠会更深</value>
+    <value>重叠会更深</value>
   </data>
   <data name="FloatingBar_Opacity" xml:space="preserve">
-    <value xml:space="preserve">透明度</value>
+    <value>透明度</value>
   </data>
   <data name="FloatingBar_FadeDelay" xml:space="preserve">
-    <value xml:space="preserve">多久后开始淡</value>
+    <value>多久后开始淡</value>
   </data>
   <data name="FloatingBar_FadeSpeed" xml:space="preserve">
-    <value xml:space="preserve">淡得多快</value>
+    <value>淡得多快</value>
   </data>
   <data name="FloatingBar_ColorThemeLight" xml:space="preserve">
-    <value xml:space="preserve">亮色系</value>
+    <value>亮色系</value>
   </data>
   <data name="BoardToolbarPage_ConfigProfiles" xml:space="preserve">
-    <value xml:space="preserve">配置方案</value>
+    <value>配置方案</value>
   </data>
   <data name="BoardToolbarPage_DeleteProfile" xml:space="preserve">
-    <value xml:space="preserve">删掉这套</value>
+    <value>删掉这套</value>
   </data>
   <data name="BoardToolbarPage_Areas" xml:space="preserve">
-    <value xml:space="preserve">按区域分</value>
+    <value>按区域分</value>
   </data>
   <data name="BoardToolbarPage_LeftArea" xml:space="preserve">
-    <value xml:space="preserve">左边那块</value>
+    <value>左边那块</value>
   </data>
   <data name="BoardToolbarPage_CenterArea" xml:space="preserve">
-    <value xml:space="preserve">中间那块</value>
+    <value>中间那块</value>
   </data>
   <data name="BoardToolbarPage_RightArea" xml:space="preserve">
-    <value xml:space="preserve">右边那块</value>
+    <value>右边那块</value>
   </data>
   <data name="BoardToolbarPage_AddGroup2" xml:space="preserve">
-    <value xml:space="preserve">新建一组</value>
+    <value>新建一组</value>
   </data>
   <data name="BoardToolbarPage_ResetDefault" xml:space="preserve">
-    <value xml:space="preserve">恢复默认排布</value>
+    <value>恢复默认排布</value>
   </data>
   <data name="BoardToolbarPage_AreaGroups" xml:space="preserve">
-    <value xml:space="preserve">这块里有哪些组</value>
+    <value>这块里有哪些组</value>
   </data>
   <data name="BoardToolbarPage_GroupNavigation" xml:space="preserve">
-    <value xml:space="preserve">翻页</value>
+    <value>翻页</value>
   </data>
   <data name="BoardToolbarPage_GroupVideoBooth" xml:space="preserve">
-    <value xml:space="preserve">视频展台</value>
+    <value>视频展台</value>
   </data>
   <data name="BoardToolbarPage_GroupGesture" xml:space="preserve">
-    <value xml:space="preserve">手势和背景</value>
+    <value>手势和背景</value>
   </data>
   <data name="BoardToolbarPage_GroupTools" xml:space="preserve">
-    <value xml:space="preserve">批注工具</value>
+    <value>批注工具</value>
   </data>
   <data name="BoardToolbarPage_GroupSystem" xml:space="preserve">
-    <value xml:space="preserve">系统</value>
+    <value>系统</value>
   </data>
   <data name="BoardToolbarPage_GroupAddPage" xml:space="preserve">
-    <value xml:space="preserve">加一页</value>
+    <value>加一页</value>
   </data>
   <data name="BoardToolbarPage_Title" xml:space="preserve">
-    <value xml:space="preserve">白板工具栏</value>
+    <value>白板工具栏</value>
   </data>
   <data name="FloatingBar_MiniWhiteboard" xml:space="preserve">
-    <value xml:space="preserve">小白板</value>
+    <value>小白板</value>
   </data>
   <data name="MiniWhiteboard_Clear" xml:space="preserve">
-    <value xml:space="preserve">全清</value>
+    <value>全清</value>
   </data>
   <data name="MiniWhiteboard_Settings_DefaultSize" xml:space="preserve">
-    <value xml:space="preserve">默认多大</value>
+    <value>默认多大</value>
   </data>
   <data name="MiniWhiteboard_Settings_Enable" xml:space="preserve">
-    <value xml:space="preserve">打开小白板</value>
+    <value>打开小白板</value>
   </data>
   <data name="MiniWhiteboard_Settings_Opacity" xml:space="preserve">
-    <value xml:space="preserve">透明度</value>
+    <value>透明度</value>
   </data>
   <data name="MiniWhiteboard_Settings_SyncPPT" xml:space="preserve">
-    <value xml:space="preserve">跟 PPT 页面一起翻</value>
+    <value>跟 PPT 页面一起翻</value>
   </data>
 </root>

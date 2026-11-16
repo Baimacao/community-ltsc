@@ -1,47 +1,55 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="EnableNibMode" xml:space="preserve">
     <value>笔尖模式（只听笔的话）</value>
   </data>
@@ -64,7 +72,7 @@
     <value>隐藏窗口边框，沉浸感拉满</value>
   </data>
   <data name="NoFocusMode" xml:space="preserve">
-    <value xml:space="preserve">窗口不抢焦点模式</value>
+    <value>窗口不抢焦点模式</value>
   </data>
   <data name="NoFocusModeHint" xml:space="preserve">
     <value>窗口失去焦点时照样能接收输入，不抛弃不放弃</value>
@@ -76,10 +84,10 @@
     <value>系统启动时自动运行软件，不用你手动开</value>
   </data>
   <data name="Start" xml:space="preserve">
-    <value xml:space="preserve">启动</value>
+    <value>启动</value>
   </data>
   <data name="Startup_Behavior" xml:space="preserve">
-    <value xml:space="preserve">行为</value>
+    <value>行为</value>
   </data>
   <data name="TopMost" xml:space="preserve">
     <value>窗口置顶（永远C位）</value>
@@ -88,10 +96,10 @@
     <value>盖住任务栏和全屏窗口。需要管理员权限或 UIAccess；用管理员会搞坏 PPT 联动。</value>
   </data>
   <data name="TopMostMode" xml:space="preserve">
-    <value xml:space="preserve">置顶模式</value>
+    <value>置顶模式</value>
   </data>
   <data name="TopMostMode_Normal" xml:space="preserve">
-    <value xml:space="preserve">普通置顶</value>
+    <value>普通置顶</value>
   </data>
   <data name="TopMostMode_Normal_RestartRequired" xml:space="preserve">
     <value>切换到普通置顶模式需要重启软件才生效，现在重启吗？</value>
@@ -100,24 +108,24 @@
     <value>当前是拥有 UIA 权限的降权进程</value>
   </data>
   <data name="TopMostMode_RestartAsNormal" xml:space="preserve">
-    <value xml:space="preserve">切回非管理员模式</value>
+    <value>切回非管理员模式</value>
   </data>
   <data name="TopMostMode_UIA" xml:space="preserve">
-    <value xml:space="preserve">UIA 置顶（要一次 UAC 授权）</value>
+    <value>UIA 置顶（要一次 UAC 授权）</value>
   </data>
   <data name="TopMostMode_UIA_RestartRequired" xml:space="preserve">
     <value>切换到 UIA 置顶模式需要弹出 UAC 授权并重启成普通用户 UIA 进程，现在继续吗？</value>
   </data>
   <data name="UIAMode_Label" xml:space="preserve">
-    <value xml:space="preserve">UIA 方案</value>
+    <value>UIA 方案</value>
   </data>
   <data name="UIAMode_UserToken" xml:space="preserve">
-    <value xml:space="preserve">照用户令牌来</value>
+    <value>照用户令牌来</value>
   </data>
   <data name="UIAMode_ProcessToken" xml:space="preserve">
-    <value xml:space="preserve">照原进程令牌来</value>
+    <value>照原进程令牌来</value>
   </data>
   <data name="UIAMode_Description" xml:space="preserve">
-    <value xml:space="preserve">选 UIA 置顶怎么拿令牌。用户令牌从 explorer.exe 拿；原进程令牌从原进程复制一份。</value>
+    <value>选 UIA 置顶怎么拿令牌。用户令牌从 explorer.exe 拿；原进程令牌从原进程复制一份。</value>
   </data>
 </root>

@@ -1,52 +1,60 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="AvoidFullScreenHelper" xml:space="preserve">
     <value>开启 AvoidFullScreenHelper 防全屏术</value>
   </data>
   <data name="AvoidFullScreenHelperHint" xml:space="preserve">
-    <value xml:space="preserve">治任务栏点不动、不置顶的毛病。副作用：屏幕边缘要是有 Dock 栏，浮动工具栏会偏位。重启后生效。</value>
+    <value>治任务栏点不动、不置顶的毛病。副作用：屏幕边缘要是有 Dock 栏，浮动工具栏会偏位。重启后生效。</value>
   </data>
   <data name="ConfirmExit" xml:space="preserve">
     <value>关软件前再确认一下（防手滑）</value>
@@ -55,7 +63,7 @@
     <value>开启 DPI 变化雷达</value>
   </data>
   <data name="DPIChangeDetectionHint" xml:space="preserve">
-    <value xml:space="preserve">缩放调大后浮动工具栏跑到屏幕外，自动把它拽回来。调小不会动它，得手动拖。</value>
+    <value>缩放调大后浮动工具栏跑到屏幕外，自动把它拽回来。调小不会动它，得手动拖。</value>
   </data>
   <data name="EdgeGestureUtil" xml:space="preserve">
     <value>开启 EdgeGestureUtil 边缘手势拦截</value>
@@ -67,7 +75,7 @@
     <value>BoundsWidth 参数当接触面积的分界线</value>
   </data>
   <data name="EraserBindTouchMultiplier" xml:space="preserve">
-    <value xml:space="preserve">橡皮擦绑的触摸大小倍数</value>
+    <value>橡皮擦绑的触摸大小倍数</value>
   </data>
   <data name="Experimental" xml:space="preserve">
     <value>🧪 实验性选项（小白鼠专区）</value>
@@ -79,13 +87,13 @@
     <value>开启 ForceFullScreen 强制全屏</value>
   </data>
   <data name="ForceFullScreenHint" xml:space="preserve">
-    <value xml:space="preserve">窗口尺寸一变就自动铺满屏幕。不需要就关掉，实时生效。</value>
+    <value>窗口尺寸一变就自动铺满屏幕。不需要就关掉，实时生效。</value>
   </data>
   <data name="FullScreenHelper" xml:space="preserve">
     <value>开启 FullScreenHelper 全屏助手</value>
   </data>
   <data name="FullScreenHelperHint" xml:space="preserve">
-    <value xml:space="preserve">让任务栏别在全屏时冒出来捣乱。要是碰上窗口显示不正常，关掉它再重启。</value>
+    <value>让任务栏别在全屏时冒出来捣乱。要是碰上窗口显示不正常，关掉它再重启。</value>
   </data>
   <data name="LogByDate" xml:space="preserve">
     <value>日志按日期归档</value>
@@ -100,22 +108,22 @@
     <value>笔尖模式 BoundsWidth</value>
   </data>
   <data name="QuadIRMode" xml:space="preserve">
-    <value xml:space="preserve">四边红外模式</value>
+    <value>四边红外模式</value>
   </data>
   <data name="ResolutionChangeDetection" xml:space="preserve">
     <value>开启分辨率变化雷达</value>
   </data>
   <data name="ResolutionChangeDetectionHint" xml:space="preserve">
-    <value xml:space="preserve">改完分辨率后浮动工具栏跑到屏幕外，自动把它拽回来。</value>
+    <value>改完分辨率后浮动工具栏跑到屏幕外，自动把它拽回来。</value>
   </data>
   <data name="SpecialScreenMode" xml:space="preserve">
-    <value xml:space="preserve">特殊屏幕模式</value>
+    <value>特殊屏幕模式</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>高级设置（大佬专区）</value>
   </data>
   <data name="TouchMultiplier" xml:space="preserve">
-    <value xml:space="preserve">触摸倍数</value>
+    <value>触摸倍数</value>
   </data>
   <data name="TouchMultiplierCalibrateHint" xml:space="preserve">
     <value>在下方区域用笔尖戳一下来估算触摸大小倍数</value>
@@ -142,10 +150,10 @@
     <value>开了之后PPT翻页按钮设置页面左边会冒出一个内嵌预览（默认是藏起来的）。</value>
   </data>
   <data name="Debug_PPTPreviewVisible_Header" xml:space="preserve">
-    <value xml:space="preserve">显示 PPT 翻页按钮预览</value>
+    <value>显示 PPT 翻页按钮预览</value>
   </data>
   <data name="Debug_CrashTest_Section" xml:space="preserve">
-    <value xml:space="preserve">崩溃重启测试</value>
+    <value>崩溃重启测试</value>
   </data>
   <data name="Debug_SimulateCrash_Header" xml:space="preserve">
     <value>模拟崩溃（砰！）</value>
@@ -163,90 +171,90 @@
     <value>点一下把心跳计时器干掉，下一轮守护检查发现没心跳就会触发重启。</value>
   </data>
   <data name="Debug_SimulateHeartbeatTimeout_Button" xml:space="preserve">
-    <value xml:space="preserve">掐掉心跳</value>
+    <value>掐掉心跳</value>
   </data>
   <data name="Debug_ResetStartupCount_Header" xml:space="preserve">
-    <value xml:space="preserve">重置熔断计数器</value>
+    <value>重置熔断计数器</value>
   </data>
   <data name="Debug_ResetStartupCount_Desc" xml:space="preserve">
     <value>清掉 startup-count 文件，解锁连环崩导致的熔断封锁。</value>
   </data>
   <data name="Debug_ResetStartupCount_Button" xml:space="preserve">
-    <value xml:space="preserve">重置计数</value>
+    <value>重置计数</value>
   </data>
   <data name="Adv_AdminLaunch" xml:space="preserve">
-    <value xml:space="preserve">用管理员权限开的时候</value>
+    <value>用管理员权限开的时候</value>
   </data>
   <data name="Adv_AdminLaunchDesc" xml:space="preserve">
-    <value xml:space="preserve">管理员权限会让 PPT 联动失效（翻页组件不见了、页码读不到）</value>
+    <value>管理员权限会让 PPT 联动失效（翻页组件不见了、页码读不到）</value>
   </data>
   <data name="Adv_AdminAsk" xml:space="preserve">
-    <value xml:space="preserve">弹窗提醒一下</value>
+    <value>弹窗提醒一下</value>
   </data>
   <data name="Adv_AdminRelaunch" xml:space="preserve">
-    <value xml:space="preserve">自动用普通权限重开</value>
+    <value>自动用普通权限重开</value>
   </data>
   <data name="Adv_AdminIgnore" xml:space="preserve">
-    <value xml:space="preserve">不管</value>
+    <value>不管</value>
   </data>
   <data name="Adv_AutoCalibrate" xml:space="preserve">
-    <value xml:space="preserve">自动摸清触摸参数</value>
+    <value>自动摸清触摸参数</value>
   </data>
   <data name="Adv_AutoCalibrateDesc" xml:space="preserve">
-    <value xml:space="preserve">摸三次就能算出来合适的笔尖/手指阈值和触摸倍率</value>
+    <value>摸三次就能算出来合适的笔尖/手指阈值和触摸倍率</value>
   </data>
   <data name="Adv_CalibrateSteps" xml:space="preserve">
-    <value xml:space="preserve">校准咋做</value>
+    <value>校准咋做</value>
   </data>
   <data name="Adv_CalibrateIntro" xml:space="preserve">
-    <value xml:space="preserve">先点「开始校准」，然后照着下面依次点：</value>
+    <value>先点「开始校准」，然后照着下面依次点：</value>
   </data>
   <data name="Adv_CalibrateStep1" xml:space="preserve">
-    <value xml:space="preserve">1. 笔尖（触控笔）</value>
+    <value>1. 笔尖（触控笔）</value>
   </data>
   <data name="Adv_CalibrateStep2" xml:space="preserve">
-    <value xml:space="preserve">2. 手指</value>
+    <value>2. 手指</value>
   </data>
   <data name="Adv_CalibrateStep3" xml:space="preserve">
-    <value xml:space="preserve">3. 手掌（假装误触）</value>
+    <value>3. 手掌（假装误触）</value>
   </data>
   <data name="Adv_StartCalibrate" xml:space="preserve">
-    <value xml:space="preserve">开始校准</value>
+    <value>开始校准</value>
   </data>
   <data name="Adv_CalibrateIdle" xml:space="preserve">
-    <value xml:space="preserve">点上面那个按钮开始</value>
+    <value>点上面那个按钮开始</value>
   </data>
   <data name="Adv_NibValueUncalibrated" xml:space="preserve">
-    <value xml:space="preserve">笔尖值: 还没校准</value>
+    <value>笔尖值: 还没校准</value>
   </data>
   <data name="Adv_FingerValueUncalibrated" xml:space="preserve">
-    <value xml:space="preserve">手指值: 还没校准</value>
+    <value>手指值: 还没校准</value>
   </data>
   <data name="Adv_PalmValueUncalibrated" xml:space="preserve">
-    <value xml:space="preserve">手掌值: 还没校准</value>
+    <value>手掌值: 还没校准</value>
   </data>
   <data name="Adv_CalibrateTapPen" xml:space="preserve">
-    <value xml:space="preserve">拿笔尖点这里</value>
+    <value>拿笔尖点这里</value>
   </data>
   <data name="Adv_CalibrateTapFinger" xml:space="preserve">
-    <value xml:space="preserve">拿手指点这里</value>
+    <value>拿手指点这里</value>
   </data>
   <data name="Adv_CalibrateTapPalm" xml:space="preserve">
-    <value xml:space="preserve">拿手掌点这里（假装误触）</value>
+    <value>拿手掌点这里（假装误触）</value>
   </data>
   <data name="Adv_CalibrateDone" xml:space="preserve">
-    <value xml:space="preserve">校准好了！点按钮可以重校</value>
+    <value>校准好了！点按钮可以重校</value>
   </data>
   <data name="Adv_NibValueWaiting" xml:space="preserve">
-    <value xml:space="preserve">笔尖值: 等校准…</value>
+    <value>笔尖值: 等校准…</value>
   </data>
   <data name="Adv_NibValueFormat" xml:space="preserve">
-    <value xml:space="preserve">笔尖值: {0:F2}</value>
+    <value>笔尖值: {0:F2}</value>
   </data>
   <data name="Adv_FingerValueFormat" xml:space="preserve">
-    <value xml:space="preserve">手指值: {0:F2}</value>
+    <value>手指值: {0:F2}</value>
   </data>
   <data name="Adv_PalmValueFormat" xml:space="preserve">
-    <value xml:space="preserve">手掌值: {0:F2}</value>
+    <value>手掌值: {0:F2}</value>
   </data>
 </root>

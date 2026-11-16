@@ -1,73 +1,81 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="AppearancePanel_24HourTimeFormat" xml:space="preserve">
     <value>用24小时制看时间</value>
   </data>
   <data name="Theme_BlackboardScale80" xml:space="preserve">
-    <value xml:space="preserve">白板界面缩放</value>
+    <value>白板界面缩放</value>
   </data>
   <data name="Theme_BoardToolbarOpacity" xml:space="preserve">
-    <value xml:space="preserve">白板工具栏透多少</value>
+    <value>白板工具栏透多少</value>
   </data>
   <data name="Theme_BoardToolbarOpacityLeft" xml:space="preserve">
-    <value xml:space="preserve">左下那角透明度</value>
+    <value>左下那角透明度</value>
   </data>
   <data name="Theme_BoardToolbarOpacityCenter" xml:space="preserve">
-    <value xml:space="preserve">中间透明度</value>
+    <value>中间透明度</value>
   </data>
   <data name="Theme_BoardToolbarOpacityRight" xml:space="preserve">
-    <value xml:space="preserve">右下那角透明度</value>
+    <value>右下那角透明度</value>
   </data>
   <data name="Theme_BoardScaleLeft" xml:space="preserve">
-    <value xml:space="preserve">左下那角缩放</value>
+    <value>左下那角缩放</value>
   </data>
   <data name="Theme_BoardScaleCenter" xml:space="preserve">
-    <value xml:space="preserve">中间缩放</value>
+    <value>中间缩放</value>
   </data>
   <data name="Theme_BoardScaleRight" xml:space="preserve">
-    <value xml:space="preserve">右下那角缩放</value>
+    <value>右下那角缩放</value>
   </data>
   <data name="Theme_CustomFloatingIconLabel" xml:space="preserve">
     <value>自定义装备栏图标</value>
@@ -94,10 +102,10 @@
     <value>装备栏缩放倍数</value>
   </data>
   <data name="Theme_GroupTitle" xml:space="preserve">
-    <value xml:space="preserve">装扮</value>
+    <value>装扮</value>
   </data>
   <data name="Theme_SidebarGroupTitle" xml:space="preserve">
-    <value xml:space="preserve">侧边栏</value>
+    <value>侧边栏</value>
   </data>
   <data name="Theme_Label" xml:space="preserve">
     <value>皮肤</value>
@@ -129,19 +137,19 @@
     <value>待会儿</value>
   </data>
   <data name="Theme_LanguageLabel" xml:space="preserve">
-    <value xml:space="preserve">界面用啥语言</value>
+    <value>界面用啥语言</value>
   </data>
   <data name="Theme_Light" xml:space="preserve">
     <value>亮亮模式</value>
   </data>
   <data name="Theme_Manage" xml:space="preserve">
-    <value xml:space="preserve">管一管</value>
+    <value>管一管</value>
   </data>
   <data name="Theme_QuickPalette_DoubleRow" xml:space="preserve">
-    <value xml:space="preserve">排两行（8 个颜色）</value>
+    <value>排两行（8 个颜色）</value>
   </data>
   <data name="Theme_QuickPalette_SingleRow" xml:space="preserve">
-    <value xml:space="preserve">排一行（6 个颜色）</value>
+    <value>排一行（6 个颜色）</value>
   </data>
   <data name="Theme_QuickPanelBottomOffset" xml:space="preserve">
     <value>展开钮跟侧边栏的位置差</value>
@@ -153,10 +161,10 @@
     <value>信仰の源出自 Where？</value>
   </data>
   <data name="Theme_ShowQuoteInWhiteboard" xml:space="preserve">
-    <value xml:space="preserve">白板上摆信仰の源 1（好喝的和毒的）</value>
+    <value>白板上摆信仰の源 1（好喝的和毒的）</value>
   </data>
   <data name="Theme_QuotePosition" xml:space="preserve">
-    <value xml:space="preserve">信仰の源摆白板哪儿</value>
+    <value>信仰の源摆白板哪儿</value>
   </data>
   <data name="Theme_QuotePosition_TopLeft" xml:space="preserve">
     <value>左上角</value>
@@ -171,31 +179,31 @@
     <value>右下角</value>
   </data>
   <data name="Theme_ShowTimeInWhiteboard" xml:space="preserve">
-    <value xml:space="preserve">白板上挂个时间和日期</value>
+    <value>白板上挂个时间和日期</value>
   </data>
   <data name="Theme_System" xml:space="preserve">
     <value>跟着系统走</value>
   </data>
   <data name="Theme_UnfoldButtonIcon" xml:space="preserve">
-    <value xml:space="preserve">展开钮长啥样</value>
+    <value>展开钮长啥样</value>
   </data>
   <data name="Theme_UnfoldIcon_ClassicArrow" xml:space="preserve">
-    <value xml:space="preserve">半圆（箭头）</value>
+    <value>半圆（箭头）</value>
   </data>
   <data name="Theme_UnfoldIcon_ClassicPen" xml:space="preserve">
-    <value xml:space="preserve">半圆（画笔）</value>
+    <value>半圆（画笔）</value>
   </data>
   <data name="Theme_UnfoldIcon_Stripe" xml:space="preserve">
-    <value xml:space="preserve">一长条</value>
+    <value>一长条</value>
   </data>
   <data name="Theme_AllowDragSidePanel" xml:space="preserve">
     <value>允许拽住展开钮拖动偏移</value>
   </data>
   <data name="Theme_Upload" xml:space="preserve">
-    <value xml:space="preserve">传上去</value>
+    <value>传上去</value>
   </data>
   <data name="Theme_ShowPenColorOnFloatingBarIcon" xml:space="preserve">
-    <value xml:space="preserve">批注图标跟着画笔变色</value>
+    <value>批注图标跟着画笔变色</value>
   </data>
   <data name="Theme_CompactFloatingBar" xml:space="preserve">
     <value>装备栏省空间模式</value>
@@ -210,7 +218,7 @@
     <value>打开后把装备栏边框厚度调成 0，白边就没了。</value>
   </data>
   <data name="Theme_WindowBackdrop" xml:space="preserve">
-    <value xml:space="preserve">窗口背景咋整</value>
+    <value>窗口背景咋整</value>
   </data>
   <data name="Theme_WindowBackdrop_Acrylic" xml:space="preserve">
     <value>亚克力</value>
@@ -228,79 +236,79 @@
     <value>云母</value>
   </data>
   <data name="Theme_WindowBackdrop_None" xml:space="preserve">
-    <value xml:space="preserve">不搞背景效果</value>
+    <value>不搞背景效果</value>
   </data>
   <data name="Theme_WindowBackdrop_Tabbed" xml:space="preserve">
-    <value xml:space="preserve">分页标签背景</value>
+    <value>分页标签背景</value>
   </data>
   <data name="Theme_WindowBackdrop_Transient" xml:space="preserve">
-    <value xml:space="preserve">临时的窗口背景</value>
+    <value>临时的窗口背景</value>
   </data>
   <data name="Theme_QuickPanelOpacity" xml:space="preserve">
-    <value xml:space="preserve">侧边栏透多少</value>
+    <value>侧边栏透多少</value>
   </data>
   <data name="Theme_AutoCollapseQuickPanel" xml:space="preserve">
-    <value xml:space="preserve">开完侧边栏自己收回去</value>
+    <value>开完侧边栏自己收回去</value>
   </data>
   <data name="Theme_AutoCollapseQuickPanelDelay" xml:space="preserve">
-    <value xml:space="preserve">收回去之前等多久</value>
+    <value>收回去之前等多久</value>
   </data>
   <data name="Theme_FloatingBarMenuOpacity" xml:space="preserve">
-    <value xml:space="preserve">装备栏菜单透明度</value>
+    <value>装备栏菜单透明度</value>
   </data>
   <data name="Theme_FloatingBarMenuOpacityInPPT" xml:space="preserve">
-    <value xml:space="preserve">PPT 下装备栏菜单透明度</value>
+    <value>PPT 下装备栏菜单透明度</value>
   </data>
   <data name="Theme_BoardMenuOpacity" xml:space="preserve">
-    <value xml:space="preserve">白板菜单透多少</value>
+    <value>白板菜单透多少</value>
   </data>
   <data name="Theme_Tips_GlobalSettings" xml:space="preserve">
-    <value xml:space="preserve">整体设置</value>
+    <value>整体设置</value>
   </data>
   <data name="Theme_Tips_AutoRotation" xml:space="preserve">
-    <value xml:space="preserve">Tips 自动换着来</value>
+    <value>Tips 自动换着来</value>
   </data>
   <data name="Theme_Tips_AutoRotationHint" xml:space="preserve">
-    <value xml:space="preserve">开了以后，白板上的 Tips 会按你定的间隔自己换</value>
+    <value>开了以后，白板上的 Tips 会按你定的间隔自己换</value>
   </data>
   <data name="Theme_Tips_RotationInterval" xml:space="preserve">
-    <value xml:space="preserve">多久换一次（秒）</value>
+    <value>多久换一次（秒）</value>
   </data>
   <data name="Theme_Tips_RotationIntervalHint" xml:space="preserve">
-    <value xml:space="preserve">得填 ≥5 的整数哦</value>
+    <value>得填 ≥5 的整数哦</value>
   </data>
   <data name="Theme_Tips_Import" xml:space="preserve">
-    <value xml:space="preserve">导进来</value>
+    <value>导进来</value>
   </data>
   <data name="Theme_Tips_Create" xml:space="preserve">
-    <value xml:space="preserve">整一个</value>
+    <value>整一个</value>
   </data>
   <data name="Theme_Tips_Edit" xml:space="preserve">
-    <value xml:space="preserve">改改</value>
+    <value>改改</value>
   </data>
   <data name="Theme_Tips_Export" xml:space="preserve">
-    <value xml:space="preserve">导出去</value>
+    <value>导出去</value>
   </data>
   <data name="Theme_Tips_SelectTxtFile" xml:space="preserve">
-    <value xml:space="preserve">+ 挑个 txt 文件</value>
+    <value>+ 挑个 txt 文件</value>
   </data>
   <data name="Theme_Tips_SchemeName" xml:space="preserve">
-    <value xml:space="preserve">叫啥</value>
+    <value>叫啥</value>
   </data>
   <data name="Theme_Tips_SchemeContent" xml:space="preserve">
-    <value xml:space="preserve">写点啥</value>
+    <value>写点啥</value>
   </data>
   <data name="Theme_Tips_NewDialogTitle" xml:space="preserve">
-    <value xml:space="preserve">整一个方案</value>
+    <value>整一个方案</value>
   </data>
   <data name="Theme_Tips_ImportDialogTitle" xml:space="preserve">
-    <value xml:space="preserve">导个方案进来</value>
+    <value>导个方案进来</value>
   </data>
   <data name="Theme_Tips_EditDialogTitle" xml:space="preserve">
-    <value xml:space="preserve">改改方案</value>
+    <value>改改方案</value>
   </data>
   <data name="Theme_Tips_NameRequired" xml:space="preserve">
-    <value xml:space="preserve">名称得填</value>
+    <value>名称得填</value>
   </data>
   <data name="Theme_FloatingIcon_LtscLight" xml:space="preserve">
     <value>ICC CE Lite 浅色</value>

@@ -1,133 +1,141 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Nav_Advanced" xml:space="preserve">
-    <value xml:space="preserve">高阶玩法</value>
+    <value>高阶玩法</value>
   </data>
   <data name="Nav_Advanced_Settings" xml:space="preserve">
-    <value xml:space="preserve">高阶调教</value>
+    <value>高阶调教</value>
   </data>
   <data name="Nav_Automation_Settings" xml:space="preserve">
-    <value xml:space="preserve">自动化调教</value>
+    <value>自动化调教</value>
   </data>
   <data name="Nav_FriendlyLinks" xml:space="preserve">
-    <value xml:space="preserve">赞助和友链</value>
+    <value>赞助和友链</value>
   </data>
   <data name="Nav_PPT_Settings" xml:space="preserve">
-    <value xml:space="preserve">PPT 调教</value>
+    <value>PPT 调教</value>
   </data>
   <data name="Nav_Shortcuts" xml:space="preserve">
-    <value xml:space="preserve">快捷键</value>
+    <value>快捷键</value>
   </data>
   <data name="Nav_Startup" xml:space="preserve">
-    <value xml:space="preserve">基础操作</value>
+    <value>基础操作</value>
   </data>
   <data name="Nav_Theme_Settings" xml:space="preserve">
-    <value xml:space="preserve">个性化调教</value>
+    <value>个性化调教</value>
   </data>
   <data name="Settings_Nav_Hotkey_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">快捷键调教</value>
+    <value>快捷键调教</value>
   </data>
   <data name="Settings_Nav_Security" xml:space="preserve">
-    <value xml:space="preserve">安全</value>
+    <value>安全</value>
   </data>
   <data name="Settings_Nav_Security_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">密码保护，防止被人乱动</value>
+    <value>密码保护，防止被人乱动</value>
   </data>
   <data name="Settings_Title" xml:space="preserve">
-    <value xml:space="preserve">调教中心</value>
+    <value>调教中心</value>
   </data>
   <data name="Nav_SettingsWindow_Title" xml:space="preserve">
-    <value xml:space="preserve">ICC CE Lite 调教中心</value>
+    <value>ICC CE Lite 调教中心</value>
   </data>
   <data name="Nav_AppSettings" xml:space="preserve">
-    <value xml:space="preserve">应用调教</value>
+    <value>应用调教</value>
   </data>
   <data name="Nav_SearchSettings" xml:space="preserve">
-    <value xml:space="preserve">搜个设置</value>
+    <value>搜个设置</value>
   </data>
   <data name="Nav_Home" xml:space="preserve">
-    <value xml:space="preserve">大本营</value>
+    <value>大本营</value>
   </data>
   <data name="Nav_Home_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">快速传送门</value>
+    <value>快速传送门</value>
   </data>
   <data name="Nav_ICCSettings" xml:space="preserve">
-    <value xml:space="preserve">ICC CE Lite 调教</value>
+    <value>ICC CE Lite 调教</value>
   </data>
   <data name="Nav_General" xml:space="preserve">
-    <value xml:space="preserve">通用</value>
+    <value>通用</value>
   </data>
   <data name="Nav_General_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">通用调教</value>
+    <value>通用调教</value>
   </data>
   <data name="Nav_Startup_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">启动和基础行为</value>
+    <value>启动和基础行为</value>
   </data>
   <data name="Nav_Clock" xml:space="preserve">
-    <value xml:space="preserve">时钟</value>
+    <value>时钟</value>
   </data>
   <data name="Nav_Clock_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">时钟显示调教</value>
+    <value>时钟显示调教</value>
   </data>
   <data name="Nav_ToolbarComponents" xml:space="preserve">
-    <value xml:space="preserve">组件</value>
+    <value>组件</value>
   </data>
   <data name="Nav_ToolbarComponents_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">按钮怎么排、哪些露脸</value>
+    <value>按钮怎么排、哪些露脸</value>
   </data>
   <data name="Nav_ToolbarAppearance" xml:space="preserve">
-    <value xml:space="preserve">外观</value>
+    <value>外观</value>
   </data>
   <data name="Nav_ToolbarAppearance_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">工具栏外观调教</value>
+    <value>工具栏外观调教</value>
   </data>
   <data name="Nav_Privacy" xml:space="preserve">
-    <value xml:space="preserve">小秘密</value>
+    <value>小秘密</value>
   </data>
   <data name="Nav_MainInterface" xml:space="preserve">
-    <value xml:space="preserve">主界面</value>
+    <value>主界面</value>
   </data>
   <data name="Nav_MainInterface_Tooltip" xml:space="preserve">
     <value>主界面调教</value>
@@ -139,7 +147,7 @@
     <value>小窗窗调教</value>
   </data>
   <data name="Nav_Sidebar" xml:space="preserve">
-    <value xml:space="preserve">侧边栏</value>
+    <value>侧边栏</value>
   </data>
   <data name="Nav_Sidebar_Tooltip" xml:space="preserve">
     <value>侧边栏调教</value>
@@ -151,19 +159,19 @@
     <value>装备栏按钮排序与显隐</value>
   </data>
   <data name="Nav_Board" xml:space="preserve">
-    <value xml:space="preserve">白板</value>
+    <value>白板</value>
   </data>
   <data name="Nav_Board_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">白板模式下的工具栏、外观和菜单</value>
+    <value>白板模式下的工具栏、外观和菜单</value>
   </data>
   <data name="Nav_BoardComponents" xml:space="preserve">
-    <value xml:space="preserve">组件</value>
+    <value>组件</value>
   </data>
   <data name="Nav_BoardComponents_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">白板工具栏放哪些按钮</value>
+    <value>白板工具栏放哪些按钮</value>
   </data>
   <data name="Nav_BoardAppearance" xml:space="preserve">
-    <value xml:space="preserve">外观</value>
+    <value>外观</value>
   </data>
   <data name="Nav_BoardAppearance_Tooltip" xml:space="preserve">
     <value>白板工具栏外观调教</value>
@@ -172,52 +180,52 @@
     <value>PPT联动调教</value>
   </data>
   <data name="Nav_AboutInkCanvas" xml:space="preserve">
-    <value xml:space="preserve">关于 ICC CE Lite</value>
+    <value>关于 ICC CE Lite</value>
   </data>
   <data name="Nav_NavigateError" xml:space="preserve">
-    <value xml:space="preserve">跳转翻车了：{0}</value>
+    <value>跳转翻车了：{0}</value>
   </data>
   <data name="Nav_Error" xml:space="preserve">
-    <value xml:space="preserve">翻车了</value>
+    <value>翻车了</value>
   </data>
   <data name="Nav_IndexBuildFailed" xml:space="preserve">
-    <value xml:space="preserve">给页面 {0} 建索引翻车了：{1}</value>
+    <value>给页面 {0} 建索引翻车了：{1}</value>
   </data>
   <data name="Nav_PreloadPageFailed" xml:space="preserve">
-    <value xml:space="preserve">预加载页面 {0} 没成功：{1}</value>
+    <value>预加载页面 {0} 没成功：{1}</value>
   </data>
   <data name="Nav_PreloadPagesFailed" xml:space="preserve">
-    <value xml:space="preserve">预加载设置页时翻车了：{0}</value>
+    <value>预加载设置页时翻车了：{0}</value>
   </data>
   <data name="Settings_Description" xml:space="preserve">
-    <value xml:space="preserve">这里是调教中心</value>
+    <value>这里是调教中心</value>
   </data>
   <data name="Nav_CanvasInk" xml:space="preserve">
-    <value xml:space="preserve">笔迹和平滑</value>
+    <value>笔迹和平滑</value>
   </data>
   <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">笔迹怎么画、怎么平滑，压感和橡皮</value>
+    <value>笔迹怎么画、怎么平滑，压感和橡皮</value>
   </data>
   <data name="Nav_Lecture" xml:space="preserve">
-    <value xml:space="preserve">上课</value>
+    <value>上课</value>
   </data>
   <data name="Nav_Lecture_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">课件放映、计时和自动化</value>
+    <value>课件放映、计时和自动化</value>
   </data>
   <data name="Nav_Timer_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">课堂计时和倒计时</value>
+    <value>课堂计时和倒计时</value>
   </data>
   <data name="Nav_BoardMenu" xml:space="preserve">
-    <value xml:space="preserve">白板菜单</value>
+    <value>白板菜单</value>
   </data>
   <data name="Nav_BoardMenu_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">白板菜单的顺序和显隐</value>
+    <value>白板菜单的顺序和显隐</value>
   </data>
   <data name="Nav_ToolbarMenu" xml:space="preserve">
-    <value xml:space="preserve">工具栏菜单</value>
+    <value>工具栏菜单</value>
   </data>
   <data name="Nav_ToolbarMenu_Tooltip" xml:space="preserve">
-    <value xml:space="preserve">工具栏菜单的顺序和显隐</value>
+    <value>工具栏菜单的顺序和显隐</value>
   </data>
   <data name="Nav_WhiteboardTips" xml:space="preserve">
     <value>信仰の源</value>

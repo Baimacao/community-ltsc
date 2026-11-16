@@ -1,47 +1,55 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="AutoFold_App_AdmoxBoard" xml:space="preserve">
     <value>安道白板</value>
   </data>
@@ -115,13 +123,13 @@
     <value>自动干掉 希沃 PPT 小工具</value>
   </data>
   <data name="AutoKill_PPTToolsHint" xml:space="preserve">
-    <value xml:space="preserve">开 PPT 时不让希沃工具栏弹出来挡画面。注意：希沃课堂授课助手会因此被牵连。</value>
+    <value>开 PPT 时不让希沃工具栏弹出来挡画面。注意：希沃课堂授课助手会因此被牵连。</value>
   </data>
   <data name="AutoKill_SeewoDesktop2Anno" xml:space="preserve">
     <value>自动干掉 希沃桌面 2.0 桌面批注</value>
   </data>
   <data name="AutoKill_SeewoDesktop2AnnoHint" xml:space="preserve">
-    <value xml:space="preserve">希沃桌面 2.0 的桌面批注是 64 位程序，本程序认不精，只能按进程名匹。</value>
+    <value>希沃桌面 2.0 的桌面批注是 64 位程序，本程序认不精，只能按进程名匹。</value>
   </data>
   <data name="AutoKill_Title" xml:space="preserve">
     <value>自动猎杀</value>
@@ -133,7 +141,7 @@
     <value>放 PPT 时自动收纳，省心~</value>
   </data>
   <data name="Automation_AutoFoldTitle" xml:space="preserve">
-    <value xml:space="preserve">自动收起来</value>
+    <value>自动收起来</value>
   </data>
   <data name="Automation_KeepFoldAfterExit" xml:space="preserve">
     <value>软件退出后继续收纳</value>
@@ -142,7 +150,7 @@
     <value>开启后，被收纳的软件即使退出了也保持收纳状态，卷到底~</value>
   </data>
   <data name="Automation_SaveFileName_Custom" xml:space="preserve">
-    <value xml:space="preserve">自己写…</value>
+    <value>自己写…</value>
   </data>
   <data name="Automation_SaveFileName_CustomTemplate_Desc" xml:space="preserve">
     <value>可用占位符：{date} {time} {datetime} {mode} {page} {count} {type}</value>
@@ -169,10 +177,10 @@
     <value>时间戳（默认）</value>
   </data>
   <data name="Automation_SaveFileNameFormat" xml:space="preserve">
-    <value xml:space="preserve">文件名长啥样</value>
+    <value>文件名长啥样</value>
   </data>
   <data name="Automation_Title" xml:space="preserve">
-    <value xml:space="preserve">自动化</value>
+    <value>自动化</value>
   </data>
   <data name="Automation_UseCustomSaveFileName_Desc" xml:space="preserve">
     <value>开启后可以自己定文件名怎么起，整活~</value>
@@ -220,7 +228,7 @@
     <value>开启后，退出 PPT 放映就自动把浮动栏收起来，眼不见心不烦~</value>
   </data>
   <data name="FoldMode_AutoFoldAfterWhiteboard" xml:space="preserve">
-    <value xml:space="preserve">退白板的时候自己收</value>
+    <value>退白板的时候自己收</value>
   </data>
   <data name="FoldMode_AutoFoldAfterWhiteboardHint" xml:space="preserve">
     <value>开启后，退出白板模式就自动收到侧边栏，利索~</value>

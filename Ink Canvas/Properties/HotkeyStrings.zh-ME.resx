@@ -1,55 +1,63 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Hotkey_InfoBarTitle" xml:space="preserve">
-    <value xml:space="preserve">说明</value>
+    <value>说明</value>
   </data>
   <data name="Hotkey_InfoBarMessage" xml:space="preserve">
     <value>在这里可以自定义全局骚操作键。全局快捷键在任何情况下都能生效，就算软件不在焦点也照样触发，yyds！</value>
   </data>
   <data name="Hotkey_MouseMode" xml:space="preserve">
-    <value xml:space="preserve">鼠标模式</value>
+    <value>鼠标模式</value>
   </data>
   <data name="Hotkey_EnableHotkeysInMouseMode" xml:space="preserve">
     <value>鼠标模式下也启用骚操作键</value>
@@ -58,7 +66,7 @@
     <value>开启后，鼠标模式下快捷键照样生效，不放过任何一个骚操作</value>
   </data>
   <data name="Hotkey_BasicOperations" xml:space="preserve">
-    <value xml:space="preserve">基础操作</value>
+    <value>基础操作</value>
   </data>
   <data name="Hotkey_UndoDesc" xml:space="preserve">
     <value>后悔药：撤销上一步</value>
@@ -70,7 +78,7 @@
     <value>一键清空画板，从头来过</value>
   </data>
   <data name="Hotkey_Paste" xml:space="preserve">
-    <value xml:space="preserve">粘贴</value>
+    <value>粘贴</value>
   </data>
   <data name="Hotkey_PasteDesc" xml:space="preserve">
     <value>粘贴剪贴板内容，搬砖必备</value>
@@ -79,37 +87,37 @@
     <value>工具切换（变身！）</value>
   </data>
   <data name="Hotkey_SelectTool" xml:space="preserve">
-    <value xml:space="preserve">选择工具</value>
+    <value>选择工具</value>
   </data>
   <data name="Hotkey_SelectToolDesc" xml:space="preserve">
     <value>切换到选择工具，精准操作</value>
   </data>
   <data name="Hotkey_DrawTool" xml:space="preserve">
-    <value xml:space="preserve">画图工具</value>
+    <value>画图工具</value>
   </data>
   <data name="Hotkey_DrawToolDesc" xml:space="preserve">
     <value>切换到绘图工具，开始创作</value>
   </data>
   <data name="Hotkey_EraserTool" xml:space="preserve">
-    <value xml:space="preserve">橡皮工具</value>
+    <value>橡皮工具</value>
   </data>
   <data name="Hotkey_EraserToolDesc" xml:space="preserve">
     <value>切换到橡皮擦工具，擦掉黑历史</value>
   </data>
   <data name="Hotkey_BlackboardTool" xml:space="preserve">
-    <value xml:space="preserve">黑板工具</value>
+    <value>黑板工具</value>
   </data>
   <data name="Hotkey_BlackboardToolDesc" xml:space="preserve">
     <value>切换到黑板工具，老师来了</value>
   </data>
   <data name="Hotkey_QuitDrawTool" xml:space="preserve">
-    <value xml:space="preserve">退出绘图 / 白板</value>
+    <value>退出绘图 / 白板</value>
   </data>
   <data name="Hotkey_QuitDrawToolDesc" xml:space="preserve">
     <value>退出绘图模式或白板模式，收工！</value>
   </data>
   <data name="Hotkey_PenSettings" xml:space="preserve">
-    <value xml:space="preserve">画笔设置</value>
+    <value>画笔设置</value>
   </data>
   <data name="Hotkey_Pen1" xml:space="preserve">
     <value>画笔1号</value>
@@ -145,7 +153,7 @@
     <value>功能骚操作键</value>
   </data>
   <data name="Hotkey_DrawLine" xml:space="preserve">
-    <value xml:space="preserve">画直线</value>
+    <value>画直线</value>
   </data>
   <data name="Hotkey_DrawLineDesc" xml:space="preserve">
     <value>绘制直线工具，笔直如我</value>
@@ -163,7 +171,7 @@
     <value>恢复出厂设置</value>
   </data>
   <data name="Hotkey_SaveSettings" xml:space="preserve">
-    <value xml:space="preserve">保存设置</value>
+    <value>保存设置</value>
   </data>
   <data name="Hotkey_ManagerNotInit" xml:space="preserve">
     <value>快捷键管理器还没醒，保存不了变更，栓Q</value>
@@ -196,7 +204,7 @@
     <value>快捷键设置已保存，稳了！</value>
   </data>
   <data name="Hotkey_SaveSuccessTitle" xml:space="preserve">
-    <value xml:space="preserve">存好了</value>
+    <value>存好了</value>
   </data>
   <data name="Hotkey_SaveErrorMessage" xml:space="preserve">
     <value>保存快捷键设置时翻车了: {0}</value>

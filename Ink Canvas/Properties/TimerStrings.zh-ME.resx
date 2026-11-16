@@ -1,108 +1,116 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Timer_Title" xml:space="preserve">
-    <value xml:space="preserve">倒计时咯</value>
+    <value>倒计时咯</value>
   </data>
   <data name="Timer_CommonTab" xml:space="preserve">
-    <value xml:space="preserve">常用时长</value>
+    <value>常用时长</value>
   </data>
   <data name="Timer_RecentTab" xml:space="preserve">
-    <value xml:space="preserve">用过的</value>
+    <value>用过的</value>
   </data>
   <data name="Timer_FullScreen" xml:space="preserve">
-    <value xml:space="preserve">全屏起飞</value>
+    <value>全屏起飞</value>
   </data>
   <data name="Timer_Reset" xml:space="preserve">
-    <value xml:space="preserve">一键重来</value>
+    <value>一键重来</value>
   </data>
   <data name="Timer_EnableCountUp" xml:space="preserve">
-    <value xml:space="preserve">超时继续计时</value>
+    <value>超时继续计时</value>
   </data>
   <data name="Timer_OvertimeHighlight" xml:space="preserve">
-    <value xml:space="preserve">超时变红</value>
+    <value>超时变红</value>
   </data>
   <data name="Timer_Volume" xml:space="preserve">
-    <value xml:space="preserve">音量</value>
+    <value>音量</value>
   </data>
   <data name="Timer_CustomSoundLabel" xml:space="preserve">
-    <value xml:space="preserve">换个提示音</value>
+    <value>换个提示音</value>
   </data>
   <data name="Timer_Progressive" xml:space="preserve">
-    <value xml:space="preserve">快结束时提前提醒</value>
+    <value>快结束时提前提醒</value>
   </data>
   <data name="Timer_ProgressiveVolume" xml:space="preserve">
-    <value xml:space="preserve">提前提醒的音量</value>
+    <value>提前提醒的音量</value>
   </data>
   <data name="Timer_ProgressiveCustomLabel" xml:space="preserve">
-    <value xml:space="preserve">换个提前提醒的音</value>
+    <value>换个提前提醒的音</value>
   </data>
   <data name="Timer_ProgressiveSelectFile" xml:space="preserve">
-    <value xml:space="preserve">选个文件</value>
+    <value>选个文件</value>
   </data>
   <data name="Timer_SelectSound" xml:space="preserve">
-    <value xml:space="preserve">选提示音</value>
+    <value>选提示音</value>
   </data>
   <data name="Timer_AudioFilter" xml:space="preserve">
-    <value xml:space="preserve">音频文件|*.wav;*.mp3;*.m4a|所有文件|*.*</value>
+    <value>音频文件|*.wav;*.mp3;*.m4a|所有文件|*.*</value>
   </data>
   <data name="Timer_SoundSetSuccess" xml:space="preserve">
-    <value xml:space="preserve">提示音换好了</value>
+    <value>提示音换好了</value>
   </data>
   <data name="Timer_SoundSetTitle" xml:space="preserve">
-    <value xml:space="preserve">提示音设置</value>
+    <value>提示音设置</value>
   </data>
   <data name="Timer_SoundResetSuccess" xml:space="preserve">
-    <value xml:space="preserve">提示音恢复默认了</value>
+    <value>提示音恢复默认了</value>
   </data>
   <data name="Timer_ResetTitle" xml:space="preserve">
-    <value xml:space="preserve">恢复默认</value>
+    <value>恢复默认</value>
   </data>
   <data name="Timer_SelectProgressiveSound" xml:space="preserve">
-    <value xml:space="preserve">选个提前提醒的音</value>
+    <value>选个提前提醒的音</value>
   </data>
   <data name="Timer_SlimMode" xml:space="preserve">
-    <value xml:space="preserve">小窗</value>
+    <value>小窗</value>
   </data>
 </root>

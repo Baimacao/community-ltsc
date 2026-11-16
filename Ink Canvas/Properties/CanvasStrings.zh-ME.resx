@@ -1,166 +1,174 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Canvas_AdvancedSmoothing" xml:space="preserve">
-    <value xml:space="preserve">高级曲线平滑（推荐，丝滑体验）</value>
+    <value>高级曲线平滑（推荐，丝滑体验）</value>
   </data>
   <data name="Canvas_AskEachTime" xml:space="preserve">
-    <value xml:space="preserve">每次都问我</value>
+    <value>每次都问我</value>
   </data>
   <data name="Canvas_AutoRestoreTimePoints" xml:space="preserve">
-    <value xml:space="preserve">自动恢复的时间点（HH:mm，可以写多个，用 ; 隔开）</value>
+    <value>自动恢复的时间点（HH:mm，可以写多个，用 ; 隔开）</value>
   </data>
   <data name="Canvas_BrushAutoRestore" xml:space="preserve">
-    <value xml:space="preserve">打开画笔自动恢复（自动回血）</value>
+    <value>打开画笔自动恢复（自动回血）</value>
   </data>
   <data name="Canvas_BrushAutoRestoreHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后，临时改过画笔也会在指定时间点回到你配的颜色 / 透明度 / 粗细，再也不怕忘记调回来</value>
+    <value>开了之后，临时改过画笔也会在指定时间点回到你配的颜色 / 透明度 / 粗细，再也不怕忘记调回来</value>
   </data>
   <data name="Canvas_ClearCanvasAlsoClearImages" xml:space="preserve">
-    <value xml:space="preserve">清空画布时图片也一起清掉</value>
+    <value>清空画布时图片也一起清掉</value>
   </data>
   <data name="Canvas_ClearInkAlsoClearHistory" xml:space="preserve">
-    <value xml:space="preserve">清墨迹时把历史记录一起删（断舍离）</value>
+    <value>清墨迹时把历史记录一起删（断舍离）</value>
   </data>
   <data name="Canvas_Color_Black" xml:space="preserve">
-    <value xml:space="preserve">黑色</value>
+    <value>黑色</value>
   </data>
   <data name="Canvas_Color_Blue" xml:space="preserve">
-    <value xml:space="preserve">蓝色</value>
+    <value>蓝色</value>
   </data>
   <data name="Canvas_Color_Default" xml:space="preserve">
-    <value xml:space="preserve">默认</value>
+    <value>默认</value>
   </data>
   <data name="Canvas_Color_Green" xml:space="preserve">
-    <value xml:space="preserve">绿色</value>
+    <value>绿色</value>
   </data>
   <data name="Canvas_Color_Orange" xml:space="preserve">
-    <value xml:space="preserve">橙色</value>
+    <value>橙色</value>
   </data>
   <data name="Canvas_Color_Purple" xml:space="preserve">
-    <value xml:space="preserve">紫色</value>
+    <value>紫色</value>
   </data>
   <data name="Canvas_Color_Red" xml:space="preserve">
-    <value xml:space="preserve">红色</value>
+    <value>红色</value>
   </data>
   <data name="Canvas_Color_White" xml:space="preserve">
-    <value xml:space="preserve">白色</value>
+    <value>白色</value>
   </data>
   <data name="Canvas_Color_Yellow" xml:space="preserve">
-    <value xml:space="preserve">黄色</value>
+    <value>黄色</value>
   </data>
   <data name="Canvas_CompressPicturesUploaded" xml:space="preserve">
-    <value xml:space="preserve">插进来的大图自动压一压（超过 1920×1080）</value>
+    <value>插进来的大图自动压一压（超过 1920×1080）</value>
   </data>
   <data name="Canvas_CurveSmoothing_Off" xml:space="preserve">
-    <value xml:space="preserve">关掉（原生态手抖风）</value>
+    <value>关掉（原生态手抖风）</value>
   </data>
   <data name="Canvas_CurveSmoothingMode" xml:space="preserve">
-    <value xml:space="preserve">平滑模式</value>
+    <value>平滑模式</value>
   </data>
   <data name="Canvas_DisableHardwareAcceleration" xml:space="preserve">
-    <value xml:space="preserve">关掉硬件加速（用流畅换兼容）</value>
+    <value>关掉硬件加速（用流畅换兼容）</value>
   </data>
   <data name="Canvas_DisableHardwareAccelerationHint" xml:space="preserve">
-    <value xml:space="preserve">关掉兼容性更好，但可能会卡；有些效果要重启程序才完全生效。</value>
+    <value>关掉兼容性更好，但可能会卡；有些效果要重启程序才完全生效。</value>
   </data>
   <data name="Canvas_DisablePressureHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后忽略所有设备的压感，笔画粗细统一。跟压感触屏模式互斥。</value>
+    <value>开了之后忽略所有设备的压感，笔画粗细统一。跟压感触屏模式互斥。</value>
   </data>
   <data name="Canvas_EnablePressureTouch" xml:space="preserve">
-    <value xml:space="preserve">打开压感触屏模式</value>
+    <value>打开压感触屏模式</value>
   </data>
   <data name="Canvas_EnablePressureTouchHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后触屏也能吃压感，适合那些系统不认但实际支持压感的屏。</value>
+    <value>开了之后触屏也能吃压感，适合那些系统不认但实际支持压感的屏。</value>
   </data>
   <data name="Canvas_EraserSize" xml:space="preserve">
-    <value xml:space="preserve">橡皮多大</value>
+    <value>橡皮多大</value>
   </data>
   <data name="Canvas_EraserSize_Large" xml:space="preserve">
-    <value xml:space="preserve">大号</value>
+    <value>大号</value>
   </data>
   <data name="Canvas_EraserSize_Medium" xml:space="preserve">
-    <value xml:space="preserve">中号</value>
+    <value>中号</value>
   </data>
   <data name="Canvas_EraserSize_Small" xml:space="preserve">
-    <value xml:space="preserve">小号</value>
+    <value>小号</value>
   </data>
   <data name="Canvas_EraserSize_VeryLarge" xml:space="preserve">
-    <value xml:space="preserve">巨无霸</value>
+    <value>巨无霸</value>
   </data>
   <data name="Canvas_EraserSize_VerySmall" xml:space="preserve">
-    <value xml:space="preserve">迷你</value>
+    <value>迷你</value>
   </data>
   <data name="Canvas_EraserSizeHint" xml:space="preserve">
-    <value xml:space="preserve">不是立刻生效的，下次用面积擦才变。</value>
+    <value>不是立刻生效的，下次用面积擦才变。</value>
   </data>
   <data name="Canvas_GroupTitle" xml:space="preserve">
-    <value xml:space="preserve">画板</value>
+    <value>画板</value>
   </data>
   <data name="Canvas_HideInkOnExit" xml:space="preserve">
-    <value xml:space="preserve">点鼠标时把笔迹藏起来（眼不见为净）</value>
+    <value>点鼠标时把笔迹藏起来（眼不见为净）</value>
   </data>
   <data name="Canvas_HideStrokeWhenSelectingHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后，点「鼠标」退出批注时笔迹直接遁走；关掉就赖在屏幕上不走。</value>
+    <value>开了之后，点「鼠标」退出批注时笔迹直接遁走；关掉就赖在屏幕上不走。</value>
   </data>
   <data name="Canvas_HyperbolaAsymptoteHint" xml:space="preserve">
-    <value xml:space="preserve">注意！不保留双曲线渐近线可能碰上撤回的 BUG，别怪我没提醒。</value>
+    <value>注意！不保留双曲线渐近线可能碰上撤回的 BUG，别怪我没提醒。</value>
   </data>
   <data name="Canvas_IgnorePressure" xml:space="preserve">
-    <value xml:space="preserve">屏蔽压感（统一粗细）</value>
+    <value>屏蔽压感（统一粗细）</value>
   </data>
   <data name="Canvas_KeepAsymptote" xml:space="preserve">
-    <value xml:space="preserve">留着双曲线的渐近线</value>
+    <value>留着双曲线的渐近线</value>
   </data>
   <data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth" xml:space="preserve">
-    <value xml:space="preserve">白板展台按钮调起希沃视频展台</value>
+    <value>白板展台按钮调起希沃视频展台</value>
   </data>
   <data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBoothHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后，点白板工具栏「展台」会打开希沃视频展台（得先装了）；关掉就用内置的。</value>
+    <value>开了之后，点白板工具栏「展台」会打开希沃视频展台（得先装了）；关掉就用内置的。</value>
   </data>
   <data name="Canvas_MergeInkSmoothingWithUndo" xml:space="preserve">
-    <value xml:space="preserve">墨迹平滑和撤销合并成一步</value>
+    <value>墨迹平滑和撤销合并成一步</value>
   </data>
   <data name="Canvas_MergeInkSmoothingWithUndoHint" xml:space="preserve">
     <value>开启后，一笔字的原始墨迹和后续平滑替换会算作一次撤销，不用点两次；墨迹纠正不参与这波合并。</value>
@@ -169,13 +177,13 @@
     <value>不</value>
   </data>
   <data name="Canvas_RestoreColor" xml:space="preserve">
-    <value xml:space="preserve">恢复成什么颜色</value>
+    <value>恢复成什么颜色</value>
   </data>
   <data name="Canvas_RestoreOpacity" xml:space="preserve">
-    <value xml:space="preserve">恢复成多透明</value>
+    <value>恢复成多透明</value>
   </data>
   <data name="Canvas_RestoreWidth" xml:space="preserve">
-    <value xml:space="preserve">恢复成多粗</value>
+    <value>恢复成多粗</value>
   </data>
   <data name="Canvas_ShowCircleCenter" xml:space="preserve">
     <value>画圆时显示圆心位置（找圆心不求人）</value>
@@ -187,16 +195,16 @@
     <value>开启后，画坐标系会按 1 cm 间隔自动添加刻度，数学老师狂喜。</value>
   </data>
   <data name="Canvas_ShowPenCursor" xml:space="preserve">
-    <value xml:space="preserve">让画笔光标露个脸</value>
+    <value>让画笔光标露个脸</value>
   </data>
   <data name="Canvas_PenCursorType" xml:space="preserve">
-    <value xml:space="preserve">光标长什么样</value>
+    <value>光标长什么样</value>
   </data>
   <data name="Canvas_PenCursorTypeHint" xml:space="preserve">
     <value>选一个你喜欢的光标样式吧</value>
   </data>
   <data name="Canvas_PenCursorType_System" xml:space="preserve">
-    <value xml:space="preserve">用系统光标</value>
+    <value>用系统光标</value>
   </data>
   <data name="Canvas_PenCursorType_BuiltIn" xml:space="preserve">
     <value>软件自带光标</value>
@@ -205,7 +213,7 @@
     <value>自己选光标</value>
   </data>
   <data name="Canvas_CustomPenCursorPath" xml:space="preserve">
-    <value xml:space="preserve">自己挑个光标文件</value>
+    <value>自己挑个光标文件</value>
   </data>
   <data name="Canvas_CustomPenCursorPathHint" xml:space="preserve">
     <value>没选文件就用软件自带的</value>
@@ -214,7 +222,7 @@
     <value>挑个光标文件…</value>
   </data>
   <data name="Canvas_CustomPenCursorFilter" xml:space="preserve">
-    <value xml:space="preserve">光标文件|*.cur;*.ani</value>
+    <value>光标文件|*.cur;*.ani</value>
   </data>
   <data name="Canvas_SwitchBackAfterEraser" xml:space="preserve">
     <value>用完橡皮擦自动切回批注模式</value>
@@ -223,13 +231,13 @@
     <value>开启后，用橡皮擦擦完东西静置一会就自动切回批注模式</value>
   </data>
   <data name="Canvas_SwitchBackDelay" xml:space="preserve">
-    <value xml:space="preserve">多久后自动切回去</value>
+    <value>多久后自动切回去</value>
   </data>
   <data name="Canvas_SwitchBackDelayHint" xml:space="preserve">
     <value>如果在计时时间内又擦了一下，计时器会重新开始计时</value>
   </data>
   <data name="Canvas_WPFBezier" xml:space="preserve">
-    <value xml:space="preserve">用 WPF 自带的贝塞尔平滑</value>
+    <value>用 WPF 自带的贝塞尔平滑</value>
   </data>
   <data name="Canvas_Yes" xml:space="preserve">
     <value>好</value>
@@ -247,93 +255,93 @@
     <value>阻止矫正后的三角形带模拟压感值</value>
   </data>
   <data name="InkRecog_EnableInkRecognition" xml:space="preserve">
-    <value xml:space="preserve">打开墨迹识别（AI 助手上线）</value>
+    <value>打开墨迹识别（AI 助手上线）</value>
   </data>
   <data name="InkRecog_FixEllipse" xml:space="preserve">
-    <value xml:space="preserve">把手画的圆和椭圆掰正（圆规成精）</value>
+    <value>把手画的圆和椭圆掰正（圆规成精）</value>
   </data>
   <data name="InkRecog_FixRectangle" xml:space="preserve">
-    <value xml:space="preserve">把手画的矩形掰正（方方正正）</value>
+    <value>把手画的矩形掰正（方方正正）</value>
   </data>
   <data name="InkRecog_FixTriangle" xml:space="preserve">
-    <value xml:space="preserve">把手画的三角形掰正（三角达人）</value>
+    <value>把手画的三角形掰正（三角达人）</value>
   </data>
   <data name="InkRecog_HighPrecisionHint" xml:space="preserve">
-    <value xml:space="preserve">拉得更准，代价是反应慢一丢丢。灵敏度越小越严格、越不爱拉直。</value>
+    <value>拉得更准，代价是反应慢一丢丢。灵敏度越小越严格、越不爱拉直。</value>
   </data>
   <data name="InkRecog_HighPrecisionStraighten" xml:space="preserve">
-    <value xml:space="preserve">高精度拉直线（强迫症福音）</value>
+    <value>高精度拉直线（强迫症福音）</value>
   </data>
   <data name="InkRecog_LengthThreshold" xml:space="preserve">
-    <value xml:space="preserve">多长才算线</value>
+    <value>多长才算线</value>
   </data>
   <data name="InkRecog_LineEndpointSnapping" xml:space="preserve">
-    <value xml:space="preserve">线头自动吸附（自动牵手）</value>
+    <value>线头自动吸附（自动牵手）</value>
   </data>
   <data name="InkRecog_LineEndpointSnappingHint" xml:space="preserve">
-    <value xml:space="preserve">开了之后，画的线头靠近别的线头会自动连上，天生一对。</value>
+    <value>开了之后，画的线头靠近别的线头会自动连上，天生一对。</value>
   </data>
   <data name="InkRecog_PauseStraightenDelay" xml:space="preserve">
-    <value xml:space="preserve">停多久才拉直</value>
+    <value>停多久才拉直</value>
   </data>
   <data name="InkRecog_PauseStraightenHint" xml:space="preserve">
-    <value xml:space="preserve">写字时停顿一下，自动把当前这笔画拉成直线（得同时开直线拉直）。</value>
+    <value>写字时停顿一下，自动把当前这笔画拉成直线（得同时开直线拉直）。</value>
   </data>
   <data name="InkRecog_PauseStraightenLine" xml:space="preserve">
-    <value xml:space="preserve">停顿一下自动拉直（想好了再画）</value>
+    <value>停顿一下自动拉直（想好了再画）</value>
   </data>
   <data name="InkRecog_Sensitivity" xml:space="preserve">
-    <value xml:space="preserve">灵敏度</value>
+    <value>灵敏度</value>
   </data>
   <data name="InkRecog_SnappingDistance" xml:space="preserve">
-    <value xml:space="preserve">吸多远</value>
+    <value>吸多远</value>
   </data>
   <data name="InkRecog_Title" xml:space="preserve">
-    <value xml:space="preserve">墨迹纠正（手残救星）</value>
+    <value>墨迹纠正（手残救星）</value>
   </data>
   <data name="InkRecog_ShapeCorrection" xml:space="preserve">
-    <value xml:space="preserve">形状自动摆正</value>
+    <value>形状自动摆正</value>
   </data>
   <data name="Canvas_SecondsFormat" xml:space="preserve">
-    <value xml:space="preserve">{0:0} 秒</value>
+    <value>{0:0} 秒</value>
   </data>
   <data name="Canvas_BackgroundSettings" xml:space="preserve">
-    <value xml:space="preserve">背景咋设</value>
+    <value>背景咋设</value>
   </data>
   <data name="Canvas_WhiteboardMode" xml:space="preserve">
-    <value xml:space="preserve">白板模式</value>
+    <value>白板模式</value>
   </data>
   <data name="Canvas_Blackboard" xml:space="preserve">
-    <value xml:space="preserve">黑板</value>
+    <value>黑板</value>
   </data>
   <data name="Canvas_BackgroundColor" xml:space="preserve">
-    <value xml:space="preserve">背景颜色</value>
+    <value>背景颜色</value>
   </data>
   <data name="Canvas_ApplyColor" xml:space="preserve">
-    <value xml:space="preserve">就用这个色</value>
+    <value>就用这个色</value>
   </data>
   <data name="Canvas_DarkMode" xml:space="preserve">
-    <value xml:space="preserve">黑底</value>
+    <value>黑底</value>
   </data>
   <data name="Shape_RemoveAsymptote" xml:space="preserve">
-    <value xml:space="preserve">渐近线还要不要？</value>
+    <value>渐近线还要不要？</value>
   </data>
   <data name="Canvas_SectionCursor" xml:space="preserve">
-    <value xml:space="preserve">光标和压感</value>
+    <value>光标和压感</value>
   </data>
   <data name="Canvas_SectionInk" xml:space="preserve">
-    <value xml:space="preserve">笔迹怎么画、怎么存</value>
+    <value>笔迹怎么画、怎么存</value>
   </data>
   <data name="Canvas_SectionBrushRestore" xml:space="preserve">
-    <value xml:space="preserve">画笔自己恢复</value>
+    <value>画笔自己恢复</value>
   </data>
   <data name="Canvas_SectionClearBehavior" xml:space="preserve">
-    <value xml:space="preserve">清空和压缩</value>
+    <value>清空和压缩</value>
   </data>
   <data name="Canvas_SectionMouseAndMode" xml:space="preserve">
-    <value xml:space="preserve">鼠标和切模式</value>
+    <value>鼠标和切模式</value>
   </data>
   <data name="Canvas_SectionSeewo" xml:space="preserve">
-    <value xml:space="preserve">希沃视频展台</value>
+    <value>希沃视频展台</value>
   </data>
 </root>

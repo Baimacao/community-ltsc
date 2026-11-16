@@ -1,43 +1,43 @@
-<?xml version='1.0' encoding='utf-8'?>
-<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:schema id="root">
-    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xs:element name="root" ns1:IsDataSet="true">
-      <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
-          <xs:element name="metadata">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" />
-              </xs:sequence>
-              <xs:attribute name="name" use="required" type="xsd:string" />
-              <xs:attribute name="type" type="xsd:string" />
-              <xs:attribute name="mimetype" type="xsd:string" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="assembly">
-            <xs:complexType>
-              <xs:attribute name="alias" type="xsd:string" />
-              <xs:attribute name="name" type="xsd:string" />
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="data">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
-                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
-              </xs:sequence>
-              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
-              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
-              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
-              <xs:attribute ref="xml:space" />
-            </xs:complexType>
-          </xs:element>
-        </xs:choice>
-      </xs:complexType>
-    </xs:element>
-  </xs:schema>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -51,154 +51,154 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Oobe_WelcomeTitle" xml:space="preserve">
-    <value xml:space="preserve">终于等到你 · ICC CE Lite</value>
+    <value>终于等到你 · ICC CE Lite</value>
   </data>
   <data name="Oobe_StepCount" xml:space="preserve">
-    <value xml:space="preserve">共 4 步 · 大概 1 分钟</value>
+    <value>共 4 步 · 大概 1 分钟</value>
   </data>
   <data name="Oobe_StartStepByStep" xml:space="preserve">
-    <value xml:space="preserve">来，一步步配</value>
+    <value>来，一步步配</value>
   </data>
   <data name="Oobe_UsePreset" xml:space="preserve">
-    <value xml:space="preserve">直接用预设（懒人福音）</value>
+    <value>直接用预设（懒人福音）</value>
   </data>
   <data name="Oobe_NavWelcome" xml:space="preserve">
-    <value xml:space="preserve">欢迎入坑</value>
+    <value>欢迎入坑</value>
   </data>
   <data name="Oobe_NavCanvas" xml:space="preserve">
-    <value xml:space="preserve">画板和笔</value>
+    <value>画板和笔</value>
   </data>
   <data name="Oobe_NavGestures" xml:space="preserve">
-    <value xml:space="preserve">搓手手势</value>
+    <value>搓手手势</value>
   </data>
   <data name="Oobe_NavFinish" xml:space="preserve">
-    <value xml:space="preserve">搞定收工</value>
+    <value>搞定收工</value>
   </data>
   <data name="Oobe_Step1Title" xml:space="preserve">
-    <value xml:space="preserve">画板与墨迹</value>
+    <value>画板与墨迹</value>
   </data>
   <data name="Oobe_Step1Subtitle" xml:space="preserve">
-    <value xml:space="preserve">光标、压感、墨迹显示和形状纠正，灵魂画手必修课。</value>
+    <value>光标、压感、墨迹显示和形状纠正，灵魂画手必修课。</value>
   </data>
   <data name="Oobe_Step2Title" xml:space="preserve">
-    <value xml:space="preserve">手势操作</value>
+    <value>手势操作</value>
   </data>
   <data name="Oobe_ShowPenCursorDesc" xml:space="preserve">
-    <value xml:space="preserve">画的时候显示光标位置，知道笔在哪。</value>
+    <value>画的时候显示光标位置，知道笔在哪。</value>
   </data>
   <data name="Oobe_IgnorePressureDesc" xml:space="preserve">
-    <value xml:space="preserve">所有笔画粗细一样，不管你按多重，佛系画线。</value>
+    <value>所有笔画粗细一样，不管你按多重，佛系画线。</value>
   </data>
   <data name="Oobe_HideInkOnExit" xml:space="preserve">
-    <value xml:space="preserve">退出画板时把墨迹藏起来</value>
+    <value>退出画板时把墨迹藏起来</value>
   </data>
   <data name="Oobe_HideInkOnExitDesc" xml:space="preserve">
-    <value xml:space="preserve">进 PPT 非批注模式时不显示墨迹。</value>
+    <value>进 PPT 非批注模式时不显示墨迹。</value>
   </data>
   <data name="Oobe_InkRecogDesc" xml:space="preserve">
-    <value xml:space="preserve">手绘的图形自动变标准形状，灵魂画手也能画圆了。</value>
+    <value>手绘的图形自动变标准形状，灵魂画手也能画圆了。</value>
   </data>
   <data name="Oobe_Step3Title" xml:space="preserve">
-    <value xml:space="preserve">外观与快捷键</value>
+    <value>外观与快捷键</value>
   </data>
   <data name="Oobe_EnableTwoFingerZoom" xml:space="preserve">
-    <value xml:space="preserve">双指缩放（捏一捏）</value>
+    <value>双指缩放（捏一捏）</value>
   </data>
   <data name="Oobe_EnableTwoFingerPan" xml:space="preserve">
-    <value xml:space="preserve">双指平移（拖一拖）</value>
+    <value>双指平移（拖一拖）</value>
   </data>
   <data name="Oobe_PalmEraserDesc" xml:space="preserve">
-    <value xml:space="preserve">多个触点且面积大时自动变橡皮，手掌一抹就擦，黑科技。</value>
+    <value>多个触点且面积大时自动变橡皮，手掌一抹就擦，黑科技。</value>
   </data>
   <data name="Oobe_AppTheme" xml:space="preserve">
-    <value xml:space="preserve">主题（换个皮肤）</value>
+    <value>主题（换个皮肤）</value>
   </data>
   <data name="Oobe_AppThemeDesc" xml:space="preserve">
-    <value xml:space="preserve">随时在 设置 → 个性化 里换装。</value>
+    <value>随时在 设置 → 个性化 里换装。</value>
   </data>
   <data name="Oobe_ThemeLight" xml:space="preserve">
-    <value xml:space="preserve">浅色（蹭点日光）</value>
+    <value>浅色（蹭点日光）</value>
   </data>
   <data name="Oobe_TrayAndQuickPanel" xml:space="preserve">
-    <value xml:space="preserve">托盘和快速面板</value>
+    <value>托盘和快速面板</value>
   </data>
   <data name="Oobe_EnableTrayIcon" xml:space="preserve">
-    <value xml:space="preserve">在系统托盘挂个小图标</value>
+    <value>在系统托盘挂个小图标</value>
   </data>
   <data name="Oobe_EnableTrayIconDesc" xml:space="preserve">
-    <value xml:space="preserve">方便后台快速唤出，随叫随到。</value>
+    <value>方便后台快速唤出，随叫随到。</value>
   </data>
   <data name="Oobe_EnableQuickPanel" xml:space="preserve">
-    <value xml:space="preserve">开个快速面板</value>
+    <value>开个快速面板</value>
   </data>
   <data name="Oobe_EnableQuickPanelDesc" xml:space="preserve">
-    <value xml:space="preserve">计时器、点名这些常用工具一键直达，效率起飞。</value>
+    <value>计时器、点名这些常用工具一键直达，效率起飞。</value>
   </data>
   <data name="Oobe_EnableGlobalHotkeys" xml:space="preserve">
-    <value xml:space="preserve">鼠标模式下也能用全局快捷键</value>
+    <value>鼠标模式下也能用全局快捷键</value>
   </data>
   <data name="Oobe_EnableGlobalHotkeysDesc" xml:space="preserve">
-    <value xml:space="preserve">具体怎么按去 设置 → 个性化 里调。</value>
+    <value>具体怎么按去 设置 → 个性化 里调。</value>
   </data>
   <data name="Oobe_FinishTitle" xml:space="preserve">
-    <value xml:space="preserve">搞定收工</value>
+    <value>搞定收工</value>
   </data>
   <data name="Oobe_FinishDesc" xml:space="preserve">
-    <value xml:space="preserve">确认下面这几项就能开冲了。之后都能在「设置」里改，放心大胆选。</value>
+    <value>确认下面这几项就能开冲了。之后都能在「设置」里改，放心大胆选。</value>
   </data>
   <data name="Oobe_SummaryTrayIcon" xml:space="preserve">
-    <value xml:space="preserve">托盘图标</value>
+    <value>托盘图标</value>
   </data>
   <data name="Oobe_BoolEnabled" xml:space="preserve">
-    <value xml:space="preserve">开了</value>
+    <value>开了</value>
   </data>
   <data name="Oobe_BoolDisabled" xml:space="preserve">
-    <value xml:space="preserve">关了</value>
+    <value>关了</value>
   </data>
   <data name="Oobe_Previous" xml:space="preserve">
-    <value xml:space="preserve">上一步（我反悔了）</value>
+    <value>上一步（我反悔了）</value>
   </data>
   <data name="Oobe_Next" xml:space="preserve">
-    <value xml:space="preserve">下一步</value>
+    <value>下一步</value>
   </data>
   <data name="Oobe_Skip" xml:space="preserve">
-    <value xml:space="preserve">不看了</value>
+    <value>不看了</value>
   </data>
   <data name="Oobe_LtscIntroTitle" xml:space="preserve">
-    <value xml:space="preserve">为课堂而改的版本</value>
+    <value>为课堂而改的版本</value>
   </data>
   <data name="Oobe_LtscIntroDesc" xml:space="preserve">
     <value>这是 ICC-CE 的长期支持分支。去掉了干扰课堂的功能，重做了一批容易卡顿、容易出错的地方，把力量花在稳定和顺手上面。</value>
   </data>
   <data name="Oobe_WhatChanged" xml:space="preserve">
-    <value xml:space="preserve">这版整了点啥</value>
+    <value>这版整了点啥</value>
   </data>
   <data name="Oobe_Highlight1Title" xml:space="preserve">
-    <value xml:space="preserve">动画更顺了</value>
+    <value>动画更顺了</value>
   </data>
   <data name="Oobe_Highlight1Desc" xml:space="preserve">
-    <value xml:space="preserve">界面动效全换成弹簧引擎，跟手、不抖、不掉帧。</value>
+    <value>界面动效全换成弹簧引擎，跟手、不抖、不掉帧。</value>
   </data>
   <data name="Oobe_Highlight2Title" xml:space="preserve">
-    <value xml:space="preserve">退出和恢复更稳了</value>
+    <value>退出和恢复更稳了</value>
   </data>
   <data name="Oobe_Highlight2Desc" xml:space="preserve">
-    <value xml:space="preserve">关掉主程序后不会剩后台进程，PPT 退出也不会被透明层挡着。</value>
+    <value>关掉主程序后不会剩后台进程，PPT 退出也不会被透明层挡着。</value>
   </data>
   <data name="Oobe_Highlight3Title" xml:space="preserve">
-    <value xml:space="preserve">触摸屏单独调过</value>
+    <value>触摸屏单独调过</value>
   </data>
   <data name="Oobe_Highlight3Desc" xml:space="preserve">
-    <value xml:space="preserve">设置页能自然滚动，触摸屏上笔迹和手势更跟手。</value>
+    <value>设置页能自然滚动，触摸屏上笔迹和手势更跟手。</value>
   </data>
   <data name="Oobe_FeedbackDesc" xml:space="preserve">
-    <value xml:space="preserve">有问题或者有想法，来这儿说</value>
+    <value>有问题或者有想法，来这儿说</value>
   </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
     <value>保存，开冲！</value>
   </data>
   <data name="Oobe_StepFormat" xml:space="preserve">
-    <value xml:space="preserve">第 {0} 步 / 共 {1} 步</value>
+    <value>第 {0} 步 / 共 {1} 步</value>
   </data>
   <data name="Oobe_StepFinishFormat" xml:space="preserve">
     <value>{0} / {1} · 搞定</value>
@@ -234,72 +234,72 @@
     <value>关掉大部分自动化和联动，保持最小后台行为，适合只想简单批注的同学。</value>
   </data>
   <data name="Oobe_PresetTagPPTLink" xml:space="preserve">
-    <value xml:space="preserve">PPT 联动</value>
+    <value>PPT 联动</value>
   </data>
   <data name="Oobe_PresetTagTwoFinger" xml:space="preserve">
-    <value xml:space="preserve">双指手势</value>
+    <value>双指手势</value>
   </data>
   <data name="Oobe_PresetTagTrayIcon" xml:space="preserve">
-    <value xml:space="preserve">托盘图标</value>
+    <value>托盘图标</value>
   </data>
   <data name="Oobe_PresetNote" xml:space="preserve">
-    <value xml:space="preserve">选好预设就直接配完了，不用一步步来，省事。</value>
+    <value>选好预设就直接配完了，不用一步步来，省事。</value>
   </data>
   <data name="Oobe_PresetBack" xml:space="preserve">
-    <value xml:space="preserve">返回（我再想想）</value>
+    <value>返回（我再想想）</value>
   </data>
   <data name="Oobe_PresetApply" xml:space="preserve">
-    <value xml:space="preserve">就这么用，开冲</value>
+    <value>就这么用，开冲</value>
   </data>
   <data name="Oobe_Step2Subtitle" xml:space="preserve">
-    <value xml:space="preserve">双指缩放平移、手掌擦除这些触摸操作。</value>
+    <value>双指缩放平移、手掌擦除这些触摸操作。</value>
   </data>
   <data name="Oobe_Step3Subtitle" xml:space="preserve">
-    <value xml:space="preserve">主题、托盘、快速面板和快捷键，搓手党狂喜。</value>
+    <value>主题、托盘、快速面板和快捷键，搓手党狂喜。</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value xml:space="preserve">别让翻页笔那几个特殊键在课堂上误触黑屏或者退出放映。</value>
+    <value>别让翻页笔那几个特殊键在课堂上误触黑屏或者退出放映。</value>
   </data>
   <data name="Oobe_SummaryAppTheme" xml:space="preserve">
-    <value xml:space="preserve">主题（换皮）</value>
+    <value>主题（换皮）</value>
   </data>
   <data name="Oobe_SummaryTwoFingerZoom" xml:space="preserve">
-    <value xml:space="preserve">双指缩放 / 平移</value>
+    <value>双指缩放 / 平移</value>
   </data>
   <data name="Oobe_ReRunTitle" xml:space="preserve">
-    <value xml:space="preserve">重跑一遍设置向导</value>
+    <value>重跑一遍设置向导</value>
   </data>
   <data name="Oobe_ReRunDesc" xml:space="preserve">
-    <value xml:space="preserve">把画板、手势、外观、PPT 联动这些再过一遍。已经调好的不会动。</value>
+    <value>把画板、手势、外观、PPT 联动这些再过一遍。已经调好的不会动。</value>
   </data>
   <data name="Oobe_ReRunButton" xml:space="preserve">
-    <value xml:space="preserve">重跑一遍</value>
+    <value>重跑一遍</value>
   </data>
   <data name="Oobe_Step4Title" xml:space="preserve">
-    <value xml:space="preserve">翻页笔适配</value>
+    <value>翻页笔适配</value>
   </data>
   <data name="Oobe_NavPresenter" xml:space="preserve">
-    <value xml:space="preserve">翻页笔</value>
+    <value>翻页笔</value>
   </data>
   <data name="Common_Off" xml:space="preserve">
-    <value xml:space="preserve">关</value>
+    <value>关</value>
   </data>
   <data name="Common_On" xml:space="preserve">
-    <value xml:space="preserve">开</value>
+    <value>开</value>
   </data>
   <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
-    <value xml:space="preserve">打开翻页笔适配</value>
+    <value>打开翻页笔适配</value>
   </data>
   <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
-    <value xml:space="preserve">开了之后，配好的功能键就正常干活；关着只管拦截不响应，防误触。</value>
+    <value>开了之后，配好的功能键就正常干活；关着只管拦截不响应，防误触。</value>
   </data>
   <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
-    <value xml:space="preserve">其他模式下这些键照旧走系统逻辑，一点不受影响。退出放映时钩子立刻卸掉。之后可以在「设置 → PPT → 翻页笔适配」里改键。</value>
+    <value>其他模式下这些键照旧走系统逻辑，一点不受影响。退出放映时钩子立刻卸掉。之后可以在「设置 → PPT → 翻页笔适配」里改键。</value>
   </data>
   <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
-    <value xml:space="preserve">只在 PPT 放映时管用</value>
+    <value>只在 PPT 放映时管用</value>
   </data>
   <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
-    <value xml:space="preserve">翻页笔适配</value>
+    <value>翻页笔适配</value>
   </data>
 </root>
