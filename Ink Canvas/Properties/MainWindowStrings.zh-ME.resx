@@ -221,17 +221,8 @@
   <data name="Main_Clipboard_PasteFailed" xml:space="preserve">
     <value>贴图翻车了: {0}</value>
   </data>
-  <data name="Main_Hitokoto_Loading" xml:space="preserve">
-    <value>正在去一言搬砖...</value>
-  </data>
   <data name="Main_Hitokoto_Unavailable" xml:space="preserve">
     <value>一言寄了，用不了</value>
-  </data>
-  <data name="Main_Hitokoto_HttpUnavailable" xml:space="preserve">
-    <value>一言寄了（HTTP 库也挂了）</value>
-  </data>
-  <data name="Main_Hitokoto_NoContent" xml:space="preserve">
-    <value>一言啥也没说就跑了</value>
   </data>
   <data name="Main_Settings_ResetVerify" xml:space="preserve">
     <value>重置配置验明正身</value>
@@ -241,9 +232,6 @@
   </data>
   <data name="Main_Settings_ResetDone" xml:space="preserve">
     <value>设置已一键还原出厂设置啦~</value>
-  </data>
-  <data name="Main_RollCall_CannotCallExternal" xml:space="preserve">
-    <value>外部点名叫不动：{0}</value>
   </data>
   <data name="Main_InkReplay_Paused" xml:space="preserve">
     <value>暂停了！摸鱼时间~</value>
@@ -431,43 +419,6 @@
   <data name="Main_Security_ChangePasswordHint" xml:space="preserve">
     <value>输入当前密码，然后设个新的</value>
   </data>
-  <data name="Main_Security_TotpOnlyHint" xml:space="preserve">
-    <value>输入 6 位 TOTP 验证码</value>
-  </data>
-  <data name="Main_Security_PasswordOrTotpHint" xml:space="preserve">
-    <value>输安全密码或者 6 位 TOTP 验证码都行</value>
-  </data>
-  <data name="Main_Security_PasswordOnlyHint" xml:space="preserve">
-    <value>输入安全密码</value>
-  </data>
-  <data name="Main_Update_FailedTitle" xml:space="preserve">
-    <value>更新翻车了</value>
-  </data>
-  <data name="Main_Update_FilesInUse" xml:space="preserve">
-    <value>更新失败：文件被占着呢，覆盖不了
-关掉所有相关程序再来一次吧</value>
-  </data>
-  <data name="Main_Update_CopyError" xml:space="preserve">
-    <value>更新失败：复制文件时出幺蛾子了
-{0}</value>
-  </data>
-  <data name="Main_Update_LaunchFailedTitle" xml:space="preserve">
-    <value>启动翻车了</value>
-  </data>
-  <data name="Main_Update_LaunchFailed" xml:space="preserve">
-    <value>更新完了但启动不了：{0}
-自己手动开一下吧</value>
-  </data>
-  <data name="Main_Update_LaunchNotFoundTitle" xml:space="preserve">
-    <value>文件跑路了</value>
-  </data>
-  <data name="Main_Update_LaunchNotFound" xml:space="preserve">
-    <value>更新完了但找不到程序文件：{0}
-检查一下更新是不是真成功了</value>
-  </data>
-  <data name="Main_Update_Failed" xml:space="preserve">
-    <value>更新翻车了：{0}</value>
-  </data>
   <data name="Main_Screenshot_DragToSelect" xml:space="preserve">
     <value>拖拖鼠标框个地盘</value>
   </data>
@@ -566,9 +517,6 @@
   </data>
   <data name="Main_Privacy_ReadError" xml:space="preserve">
     <value>隐私说明读取出错了，寄</value>
-  </data>
-  <data name="Main_App_RestartLoopDetected" xml:space="preserve">
-    <value>程序已经连续重启5次了，自动重启已停。快联系开发者或者检查下系统环境吧</value>
   </data>
   <data name="Main_App_UnexpectedError" xml:space="preserve">
     <value>哎呀，出了点意外，ICC CE Lite 可能要翻车了。

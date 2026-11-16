@@ -1,43 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
@@ -46,7 +46,7 @@
     <value>开启 AvoidFullScreenHelper 防全屏术</value>
   </data>
   <data name="AvoidFullScreenHelperHint" xml:space="preserve">
-    <value>Fixes an unclickable or non-topmost taskbar. Side effect: the floating toolbar shifts if a dock bar sits on the screen edge. Restart to apply.</value>
+    <value xml:space="preserve">治任务栏点不动、不置顶的毛病。副作用：屏幕边缘要是有 Dock 栏，浮动工具栏会偏位。重启后生效。</value>
   </data>
   <data name="ConfirmExit" xml:space="preserve">
     <value>关软件前再确认一下（防手滑）</value>
@@ -55,7 +55,7 @@
     <value>开启 DPI 变化雷达</value>
   </data>
   <data name="DPIChangeDetectionHint" xml:space="preserve">
-    <value>If the floating toolbar ends up off-screen after increasing display scaling, move it back. Lowering scaling will not move it.</value>
+    <value xml:space="preserve">缩放调大后浮动工具栏跑到屏幕外，自动把它拽回来。调小不会动它，得手动拖。</value>
   </data>
   <data name="EdgeGestureUtil" xml:space="preserve">
     <value>开启 EdgeGestureUtil 边缘手势拦截</value>
@@ -79,13 +79,13 @@
     <value>开启 ForceFullScreen 强制全屏</value>
   </data>
   <data name="ForceFullScreenHint" xml:space="preserve">
-    <value>Resizes the window to fill the screen whenever it changes. Turn off if unwanted; applies immediately.</value>
+    <value xml:space="preserve">窗口尺寸一变就自动铺满屏幕。不需要就关掉，实时生效。</value>
   </data>
   <data name="FullScreenHelper" xml:space="preserve">
     <value>开启 FullScreenHelper 全屏助手</value>
   </data>
   <data name="FullScreenHelperHint" xml:space="preserve">
-    <value>Reduces the taskbar popping up over fullscreen apps. Turn it off and restart if a window misbehaves.</value>
+    <value xml:space="preserve">让任务栏别在全屏时冒出来捣乱。要是碰上窗口显示不正常，关掉它再重启。</value>
   </data>
   <data name="LogByDate" xml:space="preserve">
     <value>日志按日期归档</value>
@@ -106,7 +106,7 @@
     <value>开启分辨率变化雷达</value>
   </data>
   <data name="ResolutionChangeDetectionHint" xml:space="preserve">
-    <value>If the floating toolbar ends up off-screen after a resolution change, move it back.</value>
+    <value xml:space="preserve">改完分辨率后浮动工具栏跑到屏幕外，自动把它拽回来。</value>
   </data>
   <data name="SpecialScreenMode" xml:space="preserve">
     <value>特殊屏幕模式</value>

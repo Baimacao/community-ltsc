@@ -155,7 +155,7 @@
     <value>清理确认</value>
   </data>
   <data name="Storage_Core_Desc" xml:space="preserve">
-    <value>The program itself, its config files and runtime data. Deleting these breaks the app.</value>
+    <value xml:space="preserve">程序本体、配置文件和运行数据。删了就打不开了。</value>
   </data>
   <data name="Storage_Core_NotCleanable" xml:space="preserve">
     <value>核心文件不能删！删了软件就寄了！</value>

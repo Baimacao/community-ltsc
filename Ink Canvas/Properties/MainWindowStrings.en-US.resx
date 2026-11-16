@@ -224,17 +224,8 @@
   <data name="Main_Clipboard_PasteFailed" xml:space="preserve">
     <value>Paste image failed: {0}</value>
   </data>
-  <data name="Main_Hitokoto_Loading" xml:space="preserve">
-    <value>Fetching Hitokoto...</value>
-  </data>
   <data name="Main_Hitokoto_Unavailable" xml:space="preserve">
     <value>Hitokoto is unavailable</value>
-  </data>
-  <data name="Main_Hitokoto_HttpUnavailable" xml:space="preserve">
-    <value>Hitokoto is unavailable (HTTP library not available)</value>
-  </data>
-  <data name="Main_Hitokoto_NoContent" xml:space="preserve">
-    <value>Hitokoto returned no content</value>
   </data>
   <data name="Main_Settings_ResetVerify" xml:space="preserve">
     <value>Reset Configuration Verification</value>
@@ -244,9 +235,6 @@
   </data>
   <data name="Main_Settings_ResetDone" xml:space="preserve">
     <value>Settings have been reset to default recommended settings~</value>
-  </data>
-  <data name="Main_RollCall_CannotCallExternal" xml:space="preserve">
-    <value>Cannot call external roll call: {0}</value>
   </data>
   <data name="Main_InkReplay_Paused" xml:space="preserve">
     <value>Paused!</value>
@@ -434,43 +422,6 @@
   <data name="Main_Security_ChangePasswordHint" xml:space="preserve">
     <value>Enter your current password and set a new one.</value>
   </data>
-  <data name="Main_Security_TotpOnlyHint" xml:space="preserve">
-    <value>Enter the 6-digit TOTP verification code.</value>
-  </data>
-  <data name="Main_Security_PasswordOrTotpHint" xml:space="preserve">
-    <value>Enter your security password or 6-digit TOTP verification code.</value>
-  </data>
-  <data name="Main_Security_PasswordOnlyHint" xml:space="preserve">
-    <value>Enter your security password.</value>
-  </data>
-  <data name="Main_Update_FailedTitle" xml:space="preserve">
-    <value>Update Failed</value>
-  </data>
-  <data name="Main_Update_FilesInUse" xml:space="preserve">
-    <value>Update failed: Some files could not be overwritten. They may be in use.
-Please close all related programs and try again.</value>
-  </data>
-  <data name="Main_Update_CopyError" xml:space="preserve">
-    <value>Update failed: File copy error
-{0}</value>
-  </data>
-  <data name="Main_Update_LaunchFailedTitle" xml:space="preserve">
-    <value>Launch Failed</value>
-  </data>
-  <data name="Main_Update_LaunchFailed" xml:space="preserve">
-    <value>Update completed, but failed to launch the application: {0}
-Please start the application manually.</value>
-  </data>
-  <data name="Main_Update_LaunchNotFoundTitle" xml:space="preserve">
-    <value>File Missing</value>
-  </data>
-  <data name="Main_Update_LaunchNotFound" xml:space="preserve">
-    <value>Update completed, but the application file was not found: {0}
-Please check if the update was successful.</value>
-  </data>
-  <data name="Main_Update_Failed" xml:space="preserve">
-    <value>Update failed: {0}</value>
-  </data>
   <data name="Main_Screenshot_DragToSelect" xml:space="preserve">
     <value>Drag to select a rectangular area</value>
   </data>
@@ -569,9 +520,6 @@ Please check if the update was successful.</value>
   </data>
   <data name="Main_Privacy_ReadError" xml:space="preserve">
     <value>Error reading privacy policy file.</value>
-  </data>
-  <data name="Main_App_RestartLoopDetected" xml:space="preserve">
-    <value>The app has restarted 5 times in a row. Auto-restart stopped. Please contact the developer or check your system environment.</value>
   </data>
   <data name="Main_App_UnexpectedError" xml:space="preserve">
     <value>Sorry, an unexpected error occurred that may cause ICC CE Lite to run unstably.

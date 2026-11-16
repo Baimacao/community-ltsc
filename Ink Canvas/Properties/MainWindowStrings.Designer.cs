@@ -154,15 +154,7 @@ namespace Ink_Canvas.Properties
         public static string Main_Clipboard_ImagePasted => ResourceManager.GetString(nameof(Main_Clipboard_ImagePasted), _resourceCulture);
 
         public static string Main_Clipboard_PasteFailed => ResourceManager.GetString(nameof(Main_Clipboard_PasteFailed), _resourceCulture);
-
-        public static string Main_Hitokoto_Loading => ResourceManager.GetString(nameof(Main_Hitokoto_Loading), _resourceCulture);
-
         public static string Main_Hitokoto_Unavailable => ResourceManager.GetString(nameof(Main_Hitokoto_Unavailable), _resourceCulture);
-
-        public static string Main_Hitokoto_HttpUnavailable => ResourceManager.GetString(nameof(Main_Hitokoto_HttpUnavailable), _resourceCulture);
-
-        public static string Main_Hitokoto_NoContent => ResourceManager.GetString(nameof(Main_Hitokoto_NoContent), _resourceCulture);
-
         public static string Main_Settings_ResetVerify => ResourceManager.GetString(nameof(Main_Settings_ResetVerify), _resourceCulture);
 
         public static string Main_Settings_ResetVerifyMessage => ResourceManager.GetString(nameof(Main_Settings_ResetVerifyMessage), _resourceCulture);
@@ -218,9 +210,6 @@ namespace Ink_Canvas.Properties
         public static string Main_Colors_DarkTheme => ResourceManager.GetString(nameof(Main_Colors_DarkTheme), _resourceCulture);
 
         public static string Main_Colors_LightTheme => ResourceManager.GetString(nameof(Main_Colors_LightTheme), _resourceCulture);
-
-        public static string Main_RollCall_CannotCallExternal => ResourceManager.GetString(nameof(Main_RollCall_CannotCallExternal), _resourceCulture);
-
         public static string Main_InkReplay_Paused => ResourceManager.GetString(nameof(Main_InkReplay_Paused), _resourceCulture);
 
         public static string Main_CloseConfirm_Level1 => ResourceManager.GetString(nameof(Main_CloseConfirm_Level1), _resourceCulture);
@@ -279,29 +268,6 @@ namespace Ink_Canvas.Properties
         public static string Main_Security_CurrentPasswordLabel => ResourceManager.GetString(nameof(Main_Security_CurrentPasswordLabel), _resourceCulture);
 
         public static string Main_Security_ChangePasswordHint => ResourceManager.GetString(nameof(Main_Security_ChangePasswordHint), _resourceCulture);
-
-        public static string Main_Security_TotpOnlyHint => ResourceManager.GetString(nameof(Main_Security_TotpOnlyHint), _resourceCulture);
-
-        public static string Main_Security_PasswordOrTotpHint => ResourceManager.GetString(nameof(Main_Security_PasswordOrTotpHint), _resourceCulture);
-
-        public static string Main_Security_PasswordOnlyHint => ResourceManager.GetString(nameof(Main_Security_PasswordOnlyHint), _resourceCulture);
-
-        public static string Main_Update_FailedTitle => ResourceManager.GetString(nameof(Main_Update_FailedTitle), _resourceCulture);
-
-        public static string Main_Update_FilesInUse => ResourceManager.GetString(nameof(Main_Update_FilesInUse), _resourceCulture);
-
-        public static string Main_Update_CopyError => ResourceManager.GetString(nameof(Main_Update_CopyError), _resourceCulture);
-
-        public static string Main_Update_LaunchFailedTitle => ResourceManager.GetString(nameof(Main_Update_LaunchFailedTitle), _resourceCulture);
-
-        public static string Main_Update_LaunchFailed => ResourceManager.GetString(nameof(Main_Update_LaunchFailed), _resourceCulture);
-
-        public static string Main_Update_LaunchNotFoundTitle => ResourceManager.GetString(nameof(Main_Update_LaunchNotFoundTitle), _resourceCulture);
-
-        public static string Main_Update_LaunchNotFound => ResourceManager.GetString(nameof(Main_Update_LaunchNotFound), _resourceCulture);
-
-        public static string Main_Update_Failed => ResourceManager.GetString(nameof(Main_Update_Failed), _resourceCulture);
-
         public static string Main_Screenshot_DragToSelect => ResourceManager.GetString(nameof(Main_Screenshot_DragToSelect), _resourceCulture);
 
         public static string Main_Screenshot_FreeDrawHint => ResourceManager.GetString(nameof(Main_Screenshot_FreeDrawHint), _resourceCulture);
@@ -367,9 +333,6 @@ namespace Ink_Canvas.Properties
         public static string Main_Privacy_FileNotFound => ResourceManager.GetString(nameof(Main_Privacy_FileNotFound), _resourceCulture);
 
         public static string Main_Privacy_ReadError => ResourceManager.GetString(nameof(Main_Privacy_ReadError), _resourceCulture);
-
-        public static string Main_App_RestartLoopDetected => ResourceManager.GetString(nameof(Main_App_RestartLoopDetected), _resourceCulture);
-
         public static string Main_App_UnexpectedError => ResourceManager.GetString(nameof(Main_App_UnexpectedError), _resourceCulture);
 
         public static string Main_DisplayChanged => ResourceManager.GetString(nameof(Main_DisplayChanged), _resourceCulture);
