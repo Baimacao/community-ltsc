@@ -1497,20 +1497,36 @@ namespace Ink_Canvas.Windows
         {
             if (MainDisplayGrid == null) return;
 
-            // 瘦窗态下缩放由 AnimateDigitScale 单独控制，这里不抢
-            double targetScale = folded
-                ? (_isSlimMode ? CalcSlimDigitScale() : FoldedDigitScale)
-                : (_isSlimMode ? CalcSlimDigitScale() : 1.0);
+            // 数字区的设计宽度。用设计值而不是 ActualWidth ——
+            // ActualWidth 在 Viewbox 内部是被缩过的，量纲对不上。
+            const double DesignWidth = 500;
+            const double DesignHeight = 166;
+            const double RootWidth = 900;
 
-            // 平移量：把数字区中心对到窗口中心。
-            // RenderTransformOrigin=0.5,0.5 时缩放绕自身中心，所以只需要补左偏的那部分。
+            double targetScale;
             double targetX = 0;
-            if (folded)
+
+            if (_isSlimMode)
             {
-                double rootWidth = 900;
-                double displayWidth = MainDisplayGrid.ActualWidth > 0 ? MainDisplayGrid.ActualWidth : 500;
+                // 瘦窗：铺满整个窗口，居中
+                targetScale = CalcSlimDigitScale();
+                targetX = 0;
+            }
+            else if (folded)
+            {
+                // 折叠：放大到 FoldedDigitScale，并水平居中
+                targetScale = FoldedDigitScale;
+
+                // 数字区原本左偏（Margin.Left 是负值），
+                // 放大后要把它的中心对到窗口中心。
                 double baseLeft = MainDisplayGrid.Margin.Left;
-                targetX = (rootWidth - displayWidth) / 2 - baseLeft;
+                targetX = (RootWidth - DesignWidth) / 2 - baseLeft;
+            }
+            else
+            {
+                // 展开：原尺寸原位
+                targetScale = 1.0;
+                targetX = 0;
             }
 
             if (MainDisplayScale != null)
@@ -1520,7 +1536,8 @@ namespace Ink_Canvas.Windows
                 {
                     try
                     {
-                        double sc = Math.Max(0.5, v);
+                        // 下限放到 0.1：瘦窗需要缩到比 0.5 更小的情况（小窗 + 高 DPI）不该被卡住
+                        double sc = Math.Max(0.1, v);
                         MainDisplayScale.ScaleX = sc;
                         MainDisplayScale.ScaleY = sc;
                     }
@@ -1663,6 +1680,19 @@ namespace Ink_Canvas.Windows
                 iNKORE.UI.WPF.Modern.Controls.Helpers.WindowHelper.SetUseModernWindowStyle(this, false);
                 WindowStyle = WindowStyle.None;
 
+                // 冻住 Viewbox 的自动缩放。
+                //
+                // 外层 MainViewController 是 StretchDirection=DownOnly 的 Viewbox，
+                // 窗口一缩小它会自动把内容等比缩小。数字的 ScaleTransform 在它内部，
+                // 两层缩放叠加，算出来的倍数永远对不上，表现就是"怎么调都没铺满"。
+                // 瘦窗期间关掉它，让 ScaleTransform 独占控制。
+                if (MainViewController != null)
+                {
+                    // Stretch=None 时 StretchDirection 不参与，设它没有意义，
+                    // 只要把 Stretch 关掉即可。
+                    MainViewController.Stretch = Stretch.None;
+                }
+
                 // 缩窗口
                 MinWidth = 120;
                 MinHeight = 60;
@@ -1699,6 +1729,13 @@ namespace Ink_Canvas.Windows
                 // 恢复标题栏和边框
                 iNKORE.UI.WPF.Modern.Controls.Helpers.WindowHelper.SetUseModernWindowStyle(this, true);
                 WindowStyle = WindowStyle.SingleBorderWindow;
+
+                // 还原 Viewbox 的自动缩放
+                if (MainViewController != null)
+                {
+                    MainViewController.StretchDirection = StretchDirection.DownOnly;
+                    MainViewController.Stretch = Stretch.Uniform;
+                }
 
                 MinWidth = 220;
                 MinHeight = 70;
@@ -1746,44 +1783,30 @@ namespace Ink_Canvas.Windows
         }
 
         /// <summary>
-        /// 算出瘦窗里数字要放大到多少才铺满。
+        /// 瘦窗里数字铺满的做法：**不让 Viewbox 参与，直接按窗口尺寸算倍数**。
         ///
-        /// 判据是「铺满但不贴死」：取窗口可用区域和数字区原尺寸的比值，
-        /// 再留 SlimDigitPadding 的边距。
+        /// 之前的错误：用 MainDisplayGrid.ActualWidth 当"数字区宽度"。
+        /// 但那个控件在外层 Viewbox(MainViewController) 内部，ActualWidth 是
+        /// **被 Viewbox 缩过之后**的值；窗口一小它跟着小，拿它去除窗口宽度
+        /// 会得到一个虚高的倍数，再叠上 Viewbox 自己的缩放，最终反而没铺满。
         ///
-        /// 为什么不在 XAML 里用 Viewbox 硬拉：数字区外面还套着
-        /// MainViewController（Viewbox，StretchDirection=DownOnly），
-        /// 它在窗口缩小后会先缩放一次，再叠一层 Viewbox 会双重缩放、算不准。
-        /// 直接算倍数更可控。
+        /// 现在：用设计尺寸 500x166 当基准（这个值不随窗口变），
+        /// 窗口可用区域除以它，得到「相对原始设计尺寸」的真实倍数。
         /// </summary>
         private double CalcSlimDigitScale()
         {
             try
             {
-                if (MainDisplayGrid == null) return 1.0;
+                // 数字区的设计尺寸，写在 XAML 里，不随窗口变化
+                const double DesignWidth = 500;
+                const double DesignHeight = 166;
 
-                // 数字区当前实际尺寸（受 Viewbox 缩放后的视觉尺寸）
-                double visualW = MainDisplayGrid.ActualWidth;
-                double visualH = MainDisplayGrid.ActualHeight;
-
-                if (visualW < 1 || visualH < 1)
-                {
-                    // 还没布局过，用设计值兜底
-                    visualW = 500;
-                    visualH = 166;
-                }
-
-                // 窗口内可用区域：去掉标题栏、内边距
                 double availW = Width - SlimDigitPadding * 2;
                 double availH = Height - SlimDigitPadding * 2;
-
                 if (availW < 1 || availH < 1) return 1.0;
 
-                // 取两个方向的较小值，保证不溢出
-                double scale = Math.Min(availW / visualW, availH / visualH);
-
-                // 夹到合理范围：太小看不清，太大没意义
-                return Math.Max(0.5, Math.Min(4.0, scale));
+                double scale = Math.Min(availW / DesignWidth, availH / DesignHeight);
+                return Math.Max(0.3, Math.Min(6.0, scale));
             }
             catch (Exception ex)
             {
