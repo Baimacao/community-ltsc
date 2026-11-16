@@ -79,22 +79,22 @@
     <value>小秘密与遥测</value>
   </data>
   <data name="Telemetry_Basic" xml:space="preserve">
-    <value>上传基础数据</value>
+    <value xml:space="preserve">传基础数据</value>
   </data>
   <data name="Telemetry_Off" xml:space="preserve">
     <value>关掉（啥也不传）</value>
   </data>
   <data name="Telemetry_Optional" xml:space="preserve">
-    <value>上传基础 + 可选数据</value>
+    <value xml:space="preserve">传基础 + 可选数据</value>
   </data>
   <data name="TelemetryLabel" xml:space="preserve">
-    <value>匿名使用数据上传：</value>
+    <value xml:space="preserve">匿名使用数据上传：</value>
   </data>
   <data name="ThanksContributors" xml:space="preserve">
     <value>感谢下列大佬的贡献：</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>关于</value>
+    <value xml:space="preserve">关于</value>
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>版本号：</value>
@@ -105,7 +105,7 @@
 确定要关吗？</value>
   </data>
   <data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve">
-    <value>确认关闭遥测</value>
+    <value xml:space="preserve">确认关掉遥测</value>
   </data>
   <data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve">
     <value>开匿名数据上传之前，先看看上面的小秘密说明打个勾呗。</value>
@@ -141,6 +141,6 @@
     <value>ICC Lite 精簡版</value>
   </data>
   <data name="About_Dev_AI" xml:space="preserve">
-    <value>AI 协作者</value>
+    <value xml:space="preserve">AI 搭子</value>
   </data>
 </root>

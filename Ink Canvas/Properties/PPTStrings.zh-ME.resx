@@ -43,19 +43,19 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="AutoSaveStrokes" xml:space="preserve">
-    <value>自动保存幻灯片墨迹</value>
+    <value xml:space="preserve">自动存幻灯片墨迹</value>
   </data>
   <data name="AutoSaveStrokesHint" xml:space="preserve">
     <value>开启后，结束放映时自动保存墨迹，下次打开自动加载（文件名和页数要对上号），再也不怕丢墨迹了~</value>
   </data>
   <data name="AutoScreenshot" xml:space="preserve">
-    <value>自动幻灯片截屏</value>
+    <value xml:space="preserve">自动给幻灯片截屏</value>
   </data>
   <data name="LoadingPPT" xml:space="preserve">
-    <value>正在加载PPT...</value>
+    <value xml:space="preserve">PPT 正在加载…</value>
   </data>
   <data name="Enhancement" xml:space="preserve">
-    <value>PowerPoint 联动增强</value>
+    <value xml:space="preserve">PowerPoint 联动增强</value>
   </data>
   <data name="EnterAnnotationOnShow" xml:space="preserve">
     <value>进 PPT 放映自动进批注模式</value>
@@ -73,7 +73,7 @@
     <value>进放映时回到首页</value>
   </data>
   <data name="GroupTitle" xml:space="preserve">
-    <value>PPT联动</value>
+    <value xml:space="preserve">PPT 联动</value>
   </data>
   <data name="KillWppHint" xml:space="preserve">
     <value>关闭后不会自动干掉 WPP 残留进程，可能导致 WPP 关闭时卡成狗或退不干净。</value>
@@ -91,10 +91,10 @@
     <value>提示是否开了自动播放</value>
   </data>
   <data name="NotifyHiddenPage" xml:space="preserve">
-    <value>提示隐藏幻灯片</value>
+    <value xml:space="preserve">提示隐藏幻灯片</value>
   </data>
   <data name="PageButtonClickable" xml:space="preserve">
-    <value>PPT 页码按钮可点击</value>
+    <value xml:space="preserve">PPT 页码按钮能点</value>
   </data>
   <data name="PageButtonClickableHint" xml:space="preserve">
     <value>开启后，点页码按钮唤起页码导航。默认用 PowerPoint 网格缩略图（WPS 不行）；可以在下面手动开启增强预览来支持 WPS~</value>
@@ -106,7 +106,7 @@
     <value>开启后会记住上次看到哪页，点"是"自动跳过去，贴心~</value>
   </data>
   <data name="ShowQuickPanelInShow" xml:space="preserve">
-    <value>PPT 放映时显示快速面板</value>
+    <value xml:space="preserve">放映时显示快速面板</value>
   </data>
   <data name="ShowQuickPanelInShowHint" xml:space="preserve">
     <value>关闭后 PPT 放映时不显示快速面板，清净~</value>
@@ -115,13 +115,13 @@
     <value>抢占焦点放映（跳过 PPT 动画，直接冲！）</value>
   </data>
   <data name="SupportPowerPoint" xml:space="preserve">
-    <value>PPT联动总开关</value>
+    <value xml:space="preserve">PPT 联动总开关</value>
   </data>
   <data name="SupportWPS" xml:space="preserve">
-    <value>WPS 支持</value>
+    <value xml:space="preserve">WPS 支持</value>
   </data>
   <data name="TwoFingerGesture" xml:space="preserve">
-    <value>允许幻灯片模式下的双指手势</value>
+    <value xml:space="preserve">幻灯片模式下允许双指手势</value>
   </data>
   <data name="PPTQuickPanel_CloseMagnifier" xml:space="preserve">
     <value>收了神通吧</value>
@@ -163,7 +163,7 @@
     <value>开启后，每次进入 PPT 放映/联动模式都会提示批注栏的基本操作。</value>
   </data>
   <data name="PPT_ModePrompt_Title" xml:space="preserve">
-    <value>已进入 PPT 模式</value>
+    <value xml:space="preserve">进 PPT 模式了</value>
   </data>
   <data name="PPT_SlidesNotFound" xml:space="preserve">
     <value>幻灯片呢？找不到啊！</value>

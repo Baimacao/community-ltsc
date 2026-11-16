@@ -55,18 +55,18 @@
     <value xml:space="preserve">低敏感度：要按得更实才认，不容易误判；高敏感度：一碰就擦，但可能把手指也当手掌</value>
   </data>
   <data name="Gesture_PalmSensitivity" xml:space="preserve">
-    <value xml:space="preserve">手掌擦敏感度</value>
+    <value xml:space="preserve">手掌擦敏感到哪儿</value>
   </data>
   <data name="Gesture_PalmSensitivityHigh" xml:space="preserve">
     <value xml:space="preserve">敏感一点</value>
   </data>
   <data name="Gesture_PalmSensitivityLow" xml:space="preserve">
-    <value>低敏感度</value>
+    <value xml:space="preserve">不太敏感</value>
   </data>
   <data name="Gesture_PalmSensitivityMedium" xml:space="preserve">
-    <value>中敏感度</value>
+    <value xml:space="preserve">中等敏感</value>
   </data>
   <data name="Gesture_Title" xml:space="preserve">
-    <value>手势</value>
+    <value xml:space="preserve">手势</value>
   </data>
 </root>

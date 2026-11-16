@@ -133,7 +133,7 @@
     <value>放 PPT 时自动收纳，省心~</value>
   </data>
   <data name="Automation_AutoFoldTitle" xml:space="preserve">
-    <value>自动收纳</value>
+    <value xml:space="preserve">自动收起来</value>
   </data>
   <data name="Automation_KeepFoldAfterExit" xml:space="preserve">
     <value>软件退出后继续收纳</value>
@@ -142,7 +142,7 @@
     <value>开启后，被收纳的软件即使退出了也保持收纳状态，卷到底~</value>
   </data>
   <data name="Automation_SaveFileName_Custom" xml:space="preserve">
-    <value>自定义...</value>
+    <value xml:space="preserve">自己写…</value>
   </data>
   <data name="Automation_SaveFileName_CustomTemplate_Desc" xml:space="preserve">
     <value>可用占位符：{date} {time} {datetime} {mode} {page} {count} {type}</value>
@@ -169,10 +169,10 @@
     <value>时间戳（默认）</value>
   </data>
   <data name="Automation_SaveFileNameFormat" xml:space="preserve">
-    <value>文件名格式</value>
+    <value xml:space="preserve">文件名长啥样</value>
   </data>
   <data name="Automation_Title" xml:space="preserve">
-    <value>自动化</value>
+    <value xml:space="preserve">自动化</value>
   </data>
   <data name="Automation_UseCustomSaveFileName_Desc" xml:space="preserve">
     <value>开启后可以自己定文件名怎么起，整活~</value>
@@ -220,7 +220,7 @@
     <value>开启后，退出 PPT 放映就自动把浮动栏收起来，眼不见心不烦~</value>
   </data>
   <data name="FoldMode_AutoFoldAfterWhiteboard" xml:space="preserve">
-    <value>退出白板时自动收纳</value>
+    <value xml:space="preserve">退白板的时候自己收</value>
   </data>
   <data name="FoldMode_AutoFoldAfterWhiteboardHint" xml:space="preserve">
     <value>开启后，退出白板模式就自动收到侧边栏，利索~</value>

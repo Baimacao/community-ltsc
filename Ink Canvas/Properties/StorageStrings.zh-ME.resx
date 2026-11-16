@@ -52,7 +52,7 @@
     <value>定期自动备份（稳如老狗）</value>
   </data>
   <data name="Backup_Interval" xml:space="preserve">
-    <value>备份间隔</value>
+    <value xml:space="preserve">多久备一次</value>
   </data>
   <data name="Backup_Interval_14Days" xml:space="preserve">
     <value>14 天</value>
@@ -70,7 +70,7 @@
     <value>7 天</value>
   </data>
   <data name="Backup_Interval_DefaultHint" xml:space="preserve">
-    <value>（默认 7 天）</value>
+    <value xml:space="preserve">（默认为 7 天）</value>
   </data>
   <data name="Backup_Manual" xml:space="preserve">
     <value>手动备份（我来！）</value>
@@ -85,13 +85,13 @@
     <value>定期自动清理过期的墨迹和截图文件（断舍离）</value>
   </data>
   <data name="Storage_AutoSaveInk" xml:space="preserve">
-    <value>定时自动保存墨迹</value>
+    <value xml:space="preserve">定时自动存墨迹</value>
   </data>
   <data name="Storage_AutoSaveInkOnScreenshot" xml:space="preserve">
-    <value>截图时自动保存墨迹</value>
+    <value xml:space="preserve">截图的时候顺手存墨迹</value>
   </data>
   <data name="Storage_AutoSaveInterval" xml:space="preserve">
-    <value>保存间隔</value>
+    <value xml:space="preserve">存一次隔多久</value>
   </data>
   <data name="Storage_AutoSaveInterval_10Min" xml:space="preserve">
     <value>10 分钟</value>
@@ -115,7 +115,7 @@
     <value>位于 Backups 目录的设置/配置备份（.json / .zip）</value>
   </data>
   <data name="Storage_Backups_Header" xml:space="preserve">
-    <value>备份</value>
+    <value xml:space="preserve">备份</value>
   </data>
   <data name="Storage_CalculateFailed" xml:space="preserve">
     <value>算不出来，破防了</value>
@@ -124,7 +124,7 @@
     <value>算力全开中…</value>
   </data>
   <data name="Storage_CategoryDetails" xml:space="preserve">
-    <value>分类详情</value>
+    <value xml:space="preserve">看看各类占多少</value>
   </data>
   <data name="Storage_Clean" xml:space="preserve">
     <value>清理（大扫除）</value>
@@ -143,7 +143,7 @@
     <value>二次确认（别冲动）</value>
   </data>
   <data name="Storage_Confirm_Title" xml:space="preserve">
-    <value>清理确认</value>
+    <value xml:space="preserve">确认清理</value>
   </data>
   <data name="Storage_Core_Desc" xml:space="preserve">
     <value xml:space="preserve">程序本体、配置文件和运行数据。删了就打不开了。</value>
@@ -152,34 +152,34 @@
     <value>核心文件不能删！删了软件就寄了！</value>
   </data>
   <data name="Storage_Custom_Desc" xml:space="preserve">
-    <value>自定义图标与点名背景图（icons / backgrounds 等 .png）</value>
+    <value xml:space="preserve">自定义图标和点名背景图（icons / backgrounds 里的 .png）</value>
   </data>
   <data name="Storage_Custom_Hint" xml:space="preserve">
     <value>自定义文件是你自己加的，不会自动清理，想删去对应管理界面手动操作。</value>
   </data>
   <data name="Storage_DiskPercent" xml:space="preserve">
-    <value>占磁盘比例</value>
+    <value xml:space="preserve">占了磁盘多少</value>
   </data>
   <data name="Storage_Ink_Desc" xml:space="preserve">
-    <value>位于 Saves 目录下的 .icstk / .xml / 截图 .png 等墨迹文件</value>
+    <value xml:space="preserve">Saves 目录里的 .icstk / .xml / 截图 .png 这些墨迹文件</value>
   </data>
   <data name="Storage_Ink_Header" xml:space="preserve">
-    <value>墨迹</value>
+    <value xml:space="preserve">墨迹</value>
   </data>
   <data name="Storage_Legend_Backups" xml:space="preserve">
-    <value>备份</value>
+    <value xml:space="preserve">备份</value>
   </data>
   <data name="Storage_Legend_Core" xml:space="preserve">
-    <value>核心文件</value>
+    <value xml:space="preserve">核心文件</value>
   </data>
   <data name="Storage_Legend_Custom" xml:space="preserve">
-    <value>自定义</value>
+    <value xml:space="preserve">自定义</value>
   </data>
   <data name="Storage_Legend_Ink" xml:space="preserve">
-    <value>墨迹</value>
+    <value xml:space="preserve">墨迹</value>
   </data>
   <data name="Storage_Legend_Other" xml:space="preserve">
-    <value>其他</value>
+    <value xml:space="preserve">其他</value>
   </data>
   <data name="Storage_Logs_Desc" xml:space="preserve">
     <value>位于 Logs / Crashes 目录下的 .txt 日志与崩溃报告，可以清理</value>
@@ -188,7 +188,7 @@
     <value>日志（案发现场）</value>
   </data>
   <data name="Storage_NavTitle" xml:space="preserve">
-    <value>存储</value>
+    <value xml:space="preserve">存哪儿</value>
   </data>
   <data name="Storage_NavTooltip" xml:space="preserve">
     <value xml:space="preserve">看看 ICC CE Lite 占了多少地方，顺手清一清</value>
@@ -200,10 +200,10 @@
     <value>没归到上面那些的其他文件</value>
   </data>
   <data name="Storage_Refresh" xml:space="preserve">
-    <value>刷新</value>
+    <value xml:space="preserve">刷一下</value>
   </data>
   <data name="Storage_SaveAsXml" xml:space="preserve">
-    <value>保存为 XML 格式</value>
+    <value xml:space="preserve">存成 XML</value>
   </data>
   <data name="Storage_SaveFullPageStrokes" xml:space="preserve">
     <value>墨迹全页面保存（打包带走）</value>
@@ -221,7 +221,7 @@
     <value>备份到手，稳如老狗</value>
   </data>
   <data name="Backup_SuccessMsg" xml:space="preserve">
-    <value>设置已成功备份到:
+    <value xml:space="preserve">设置备好了，放在这儿:
 {0}</value>
   </data>
   <data name="Backup_FailedTitle" xml:space="preserve">
@@ -237,7 +237,7 @@
     <value>没找到备份文件，先创建一个备份吧！</value>
   </data>
   <data name="Restore_FilterLabel" xml:space="preserve">
-    <value>设置备份文件</value>
+    <value xml:space="preserve">设置备份文件</value>
   </data>
   <data name="Restore_AllJsonFilter" xml:space="preserve">
     <value>所有 JSON 文件</value>

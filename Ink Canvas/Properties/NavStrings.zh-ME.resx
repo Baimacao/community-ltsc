@@ -139,7 +139,7 @@
     <value>小窗窗调教</value>
   </data>
   <data name="Nav_Sidebar" xml:space="preserve">
-    <value>侧边栏</value>
+    <value xml:space="preserve">侧边栏</value>
   </data>
   <data name="Nav_Sidebar_Tooltip" xml:space="preserve">
     <value>侧边栏调教</value>
@@ -151,19 +151,19 @@
     <value>装备栏按钮排序与显隐</value>
   </data>
   <data name="Nav_Board" xml:space="preserve">
-    <value>白板</value>
+    <value xml:space="preserve">白板</value>
   </data>
   <data name="Nav_Board_Tooltip" xml:space="preserve">
     <value xml:space="preserve">白板模式下的工具栏、外观和菜单</value>
   </data>
   <data name="Nav_BoardComponents" xml:space="preserve">
-    <value>组件</value>
+    <value xml:space="preserve">组件</value>
   </data>
   <data name="Nav_BoardComponents_Tooltip" xml:space="preserve">
     <value xml:space="preserve">白板工具栏放哪些按钮</value>
   </data>
   <data name="Nav_BoardAppearance" xml:space="preserve">
-    <value>外观</value>
+    <value xml:space="preserve">外观</value>
   </data>
   <data name="Nav_BoardAppearance_Tooltip" xml:space="preserve">
     <value>白板工具栏外观调教</value>
@@ -193,13 +193,13 @@
     <value xml:space="preserve">这里是调教中心</value>
   </data>
   <data name="Nav_CanvasInk" xml:space="preserve">
-    <value xml:space="preserve">笔迹与平滑</value>
+    <value xml:space="preserve">笔迹和平滑</value>
   </data>
   <data name="Nav_CanvasInk_Tooltip" xml:space="preserve">
     <value xml:space="preserve">笔迹怎么画、怎么平滑，压感和橡皮</value>
   </data>
   <data name="Nav_Lecture" xml:space="preserve">
-    <value xml:space="preserve">授课</value>
+    <value xml:space="preserve">上课</value>
   </data>
   <data name="Nav_Lecture_Tooltip" xml:space="preserve">
     <value xml:space="preserve">课件放映、计时和自动化</value>

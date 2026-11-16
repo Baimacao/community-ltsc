@@ -153,7 +153,7 @@
     <value xml:space="preserve">这个位置的翻页按钮放多大</value>
   </data>
   <data name="Flip_GlobalLook" xml:space="preserve">
-    <value xml:space="preserve">全局外观</value>
+    <value xml:space="preserve">整体外观</value>
   </data>
   <data name="Flip_PageNumberFontSize" xml:space="preserve">
     <value xml:space="preserve">页码字号</value>
@@ -186,7 +186,7 @@
     <value xml:space="preserve">停笔多久后底部工具栏开始变淡</value>
   </data>
   <data name="Flip_MainBarFadeOpacity" xml:space="preserve">
-    <value xml:space="preserve">主工具栏淡到多淡</value>
+    <value xml:space="preserve">主工具栏能淡到多淡</value>
   </data>
   <data name="Flip_MainBarFadeOpacityDesc" xml:space="preserve">
     <value xml:space="preserve">数字越小越透。别低于 0.3，不然轮廓都看不清了</value>

@@ -162,7 +162,7 @@
     <value xml:space="preserve">下一步</value>
   </data>
   <data name="Oobe_Skip" xml:space="preserve">
-    <value xml:space="preserve">跳过引导</value>
+    <value xml:space="preserve">不看了</value>
   </data>
   <data name="Oobe_LtscIntroTitle" xml:space="preserve">
     <value xml:space="preserve">为课堂而改的版本</value>
@@ -171,34 +171,34 @@
     <value>这是 ICC-CE 的长期支持分支。去掉了干扰课堂的功能，重做了一批容易卡顿、容易出错的地方，把力量花在稳定和顺手上面。</value>
   </data>
   <data name="Oobe_WhatChanged" xml:space="preserve">
-    <value>这一版做了什么</value>
+    <value xml:space="preserve">这版整了点啥</value>
   </data>
   <data name="Oobe_Highlight1Title" xml:space="preserve">
-    <value>更顺滑的动画</value>
+    <value xml:space="preserve">动画更顺了</value>
   </data>
   <data name="Oobe_Highlight1Desc" xml:space="preserve">
-    <value>所有界面动效换成弹簧引擎，跟手、不抖、不跳帧。</value>
+    <value xml:space="preserve">界面动效全换成弹簧引擎，跟手、不抖、不掉帧。</value>
   </data>
   <data name="Oobe_Highlight2Title" xml:space="preserve">
-    <value>更稳的退出与恢复</value>
+    <value xml:space="preserve">退出和恢复更稳了</value>
   </data>
   <data name="Oobe_Highlight2Desc" xml:space="preserve">
-    <value>关掉主程序后不残留后台进程，PPT 退出不再被透明层挡住。</value>
+    <value xml:space="preserve">关掉主程序后不会剩后台进程，PPT 退出也不会被透明层挡着。</value>
   </data>
   <data name="Oobe_Highlight3Title" xml:space="preserve">
-    <value>为触摸屏调过</value>
+    <value xml:space="preserve">触摸屏单独调过</value>
   </data>
   <data name="Oobe_Highlight3Desc" xml:space="preserve">
-    <value>设置页支持自然滚动，笔迹与手势在触摸屏上更跟手。</value>
+    <value xml:space="preserve">设置页能自然滚动，触摸屏上笔迹和手势更跟手。</value>
   </data>
   <data name="Oobe_FeedbackDesc" xml:space="preserve">
-    <value>遇到问题或有建议，来这里反馈</value>
+    <value xml:space="preserve">有问题或者有想法，来这儿说</value>
   </data>
   <data name="Oobe_SaveAndStart" xml:space="preserve">
     <value>保存，开冲！</value>
   </data>
   <data name="Oobe_StepFormat" xml:space="preserve">
-    <value>步骤 {0} / {1}</value>
+    <value xml:space="preserve">第 {0} 步 / 共 {1} 步</value>
   </data>
   <data name="Oobe_StepFinishFormat" xml:space="preserve">
     <value>{0} / {1} · 搞定</value>
@@ -246,7 +246,7 @@
     <value xml:space="preserve">主题、托盘、快速面板和快捷键，搓手党狂喜。</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value xml:space="preserve">防止翻页笔的特殊键在课堂上误触黑屏或退出放映。</value>
+    <value xml:space="preserve">别让翻页笔那几个特殊键在课堂上误触黑屏或者退出放映。</value>
   </data>
   <data name="Oobe_SummaryAppTheme" xml:space="preserve">
     <value xml:space="preserve">主题（换皮）</value>

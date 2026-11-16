@@ -43,7 +43,7 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Board_Background" xml:space="preserve">
-    <value>背景</value>
+    <value xml:space="preserve">背景</value>
   </data>
   <data name="Board_ClearInk" xml:space="preserve">
     <value>一键清空墨迹</value>
@@ -55,88 +55,88 @@
     <value>送走这页</value>
   </data>
   <data name="Board_Eraser" xml:space="preserve">
-    <value>橡皮</value>
+    <value xml:space="preserve">橡皮</value>
   </data>
   <data name="Board_EraserOptions" xml:space="preserve">
     <value xml:space="preserve">橡皮怎么擦</value>
   </data>
   <data name="Board_EraserShape_Blackboard" xml:space="preserve">
-    <value>黑板擦</value>
+    <value xml:space="preserve">黑板擦</value>
   </data>
   <data name="Board_EraserShape_Circle" xml:space="preserve">
-    <value>圆形擦</value>
+    <value xml:space="preserve">圆擦</value>
   </data>
   <data name="Board_Gesture" xml:space="preserve">
     <value>结印施法</value>
   </data>
   <data name="Board_Highlighter" xml:space="preserve">
-    <value>荧光笔</value>
+    <value xml:space="preserve">荧光笔</value>
   </data>
   <data name="Board_InsertImage" xml:space="preserve">
     <value xml:space="preserve">插个文件</value>
   </data>
   <data name="Board_LaserPen" xml:space="preserve">
-    <value>激光笔</value>
+    <value xml:space="preserve">激光笔</value>
   </data>
   <data name="Board_NewPage" xml:space="preserve">
     <value>新开一页</value>
   </data>
   <data name="Board_NextPage" xml:space="preserve">
-    <value>下一页</value>
+    <value xml:space="preserve">下一页</value>
   </data>
   <data name="Board_Page" xml:space="preserve">
-    <value>页面</value>
+    <value xml:space="preserve">页码</value>
   </data>
   <data name="Board_Pen" xml:space="preserve">
-    <value>笔</value>
+    <value xml:space="preserve">笔</value>
   </data>
   <data name="Board_PreviousPage" xml:space="preserve">
-    <value>上一页</value>
+    <value xml:space="preserve">上一页</value>
   </data>
   <data name="Board_Redo" xml:space="preserve">
-    <value>重做</value>
+    <value xml:space="preserve">重做</value>
   </data>
   <data name="Board_Screenshot" xml:space="preserve">
-    <value>截图</value>
+    <value xml:space="preserve">截个图</value>
   </data>
   <data name="Board_Select" xml:space="preserve">
-    <value>选择</value>
+    <value xml:space="preserve">选择</value>
   </data>
   <data name="Board_SelectImage" xml:space="preserve">
     <value xml:space="preserve">插个文件</value>
   </data>
   <data name="Board_Shape" xml:space="preserve">
-    <value>图形</value>
+    <value xml:space="preserve">图形</value>
   </data>
   <data name="Board_Size" xml:space="preserve">
-    <value>大小</value>
+    <value xml:space="preserve">大小</value>
   </data>
   <data name="Board_StrokeEraser" xml:space="preserve">
-    <value>线擦</value>
+    <value xml:space="preserve">线擦</value>
   </data>
   <data name="Board_Tools" xml:space="preserve">
-    <value>工具</value>
+    <value xml:space="preserve">工具</value>
   </data>
   <data name="Board_TwoFingerMove" xml:space="preserve">
     <value>双指平移</value>
   </data>
   <data name="Board_Undo" xml:space="preserve">
-    <value>撤销</value>
+    <value xml:space="preserve">撤销</value>
   </data>
   <data name="Board_VideoBooth" xml:space="preserve">
-    <value>视频展台</value>
+    <value xml:space="preserve">视频展台</value>
   </data>
   <data name="FloatingBar_Annotate" xml:space="preserve">
-    <value>批注</value>
+    <value xml:space="preserve">批注</value>
   </data>
   <data name="FloatingBar_AreaEraser" xml:space="preserve">
-    <value>面积擦</value>
+    <value xml:space="preserve">面积擦</value>
   </data>
   <data name="FloatingBar_Clear" xml:space="preserve">
     <value>一键清空</value>
   </data>
   <data name="FloatingBar_ClearAndMouse" xml:space="preserve">
-    <value>清并鼠</value>
+    <value xml:space="preserve">清完换鼠标</value>
   </data>
   <data name="FloatingBar_ExitButton" xml:space="preserve">
     <value>溜了</value>
@@ -145,16 +145,16 @@
     <value>墨迹封印术</value>
   </data>
   <data name="FloatingBar_Geometry" xml:space="preserve">
-    <value>几何</value>
+    <value xml:space="preserve">几何</value>
   </data>
   <data name="FloatingBar_Gesture_MultiTouchWriting" xml:space="preserve">
     <value>多指齐写</value>
   </data>
   <data name="FloatingBar_Gesture_TwoFingerRotate" xml:space="preserve">
-    <value>双指旋转</value>
+    <value xml:space="preserve">双指转</value>
   </data>
   <data name="FloatingBar_Gesture_TwoFingerZoom" xml:space="preserve">
-    <value>双指缩放</value>
+    <value xml:space="preserve">双指缩放</value>
   </data>
   <data name="FloatingBar_GestureButton" xml:space="preserve">
     <value>结印施法</value>
@@ -166,25 +166,25 @@
     <value>套马杆</value>
   </data>
   <data name="FloatingBar_Mouse" xml:space="preserve">
-    <value>鼠标</value>
+    <value xml:space="preserve">鼠标</value>
   </data>
   <data name="FloatingBar_StrokeEraser" xml:space="preserve">
-    <value>线擦</value>
+    <value xml:space="preserve">线擦</value>
   </data>
   <data name="FloatingBar_Unfreeze" xml:space="preserve">
     <value>解封</value>
   </data>
   <data name="FloatingBar_Whiteboard" xml:space="preserve">
-    <value>白板</value>
+    <value xml:space="preserve">白板</value>
   </data>
   <data name="Theme_Dark" xml:space="preserve">
-    <value>深色</value>
+    <value xml:space="preserve">暗黑</value>
   </data>
   <data name="Action_Exit" xml:space="preserve">
     <value>溜了</value>
   </data>
   <data name="Pen_Thickness" xml:space="preserve">
-    <value>粗细</value>
+    <value xml:space="preserve">粗细</value>
   </data>
   <data name="QuickPanel_ExitShow" xml:space="preserve">
     <value xml:space="preserve">退出放映</value>
@@ -205,7 +205,7 @@
     <value xml:space="preserve">打开…</value>
   </data>
   <data name="Tools_Replay" xml:space="preserve">
-    <value>重播</value>
+    <value xml:space="preserve">重播</value>
   </data>
   <data name="Tools_Save" xml:space="preserve">
     <value>存好了</value>
@@ -460,10 +460,10 @@
     <value xml:space="preserve">快捷调色盘</value>
   </data>
   <data name="ToolbarCondition_Annotating" xml:space="preserve">
-    <value>批注模式</value>
+    <value xml:space="preserve">批注模式</value>
   </data>
   <data name="ToolbarCondition_PPTMode" xml:space="preserve">
-    <value>PPT模式</value>
+    <value xml:space="preserve">PPT 模式</value>
   </data>
   <data name="ToolbarCondition_Collapsed" xml:space="preserve">
     <value>装备栏已收纳</value>
@@ -496,7 +496,7 @@
     <value xml:space="preserve">淡得多快</value>
   </data>
   <data name="FloatingBar_ColorThemeLight" xml:space="preserve">
-    <value xml:space="preserve">亮系</value>
+    <value xml:space="preserve">亮色系</value>
   </data>
   <data name="BoardToolbarPage_ConfigProfiles" xml:space="preserve">
     <value xml:space="preserve">配置方案</value>
@@ -547,7 +547,7 @@
     <value xml:space="preserve">白板工具栏</value>
   </data>
   <data name="FloatingBar_MiniWhiteboard" xml:space="preserve">
-    <value>小白板</value>
+    <value xml:space="preserve">小白板</value>
   </data>
   <data name="MiniWhiteboard_Clear" xml:space="preserve">
     <value xml:space="preserve">全清</value>

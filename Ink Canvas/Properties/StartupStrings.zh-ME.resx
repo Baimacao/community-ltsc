@@ -64,7 +64,7 @@
     <value>隐藏窗口边框，沉浸感拉满</value>
   </data>
   <data name="NoFocusMode" xml:space="preserve">
-    <value>窗口无焦点模式</value>
+    <value xml:space="preserve">窗口不抢焦点模式</value>
   </data>
   <data name="NoFocusModeHint" xml:space="preserve">
     <value>窗口失去焦点时照样能接收输入，不抛弃不放弃</value>
@@ -76,10 +76,10 @@
     <value>系统启动时自动运行软件，不用你手动开</value>
   </data>
   <data name="Start" xml:space="preserve">
-    <value>启动</value>
+    <value xml:space="preserve">启动</value>
   </data>
   <data name="Startup_Behavior" xml:space="preserve">
-    <value>行为</value>
+    <value xml:space="preserve">行为</value>
   </data>
   <data name="TopMost" xml:space="preserve">
     <value>窗口置顶（永远C位）</value>
@@ -88,10 +88,10 @@
     <value>盖住任务栏和全屏窗口。需要管理员权限或 UIAccess；用管理员会搞坏 PPT 联动。</value>
   </data>
   <data name="TopMostMode" xml:space="preserve">
-    <value>置顶模式</value>
+    <value xml:space="preserve">置顶模式</value>
   </data>
   <data name="TopMostMode_Normal" xml:space="preserve">
-    <value>普通置顶</value>
+    <value xml:space="preserve">普通置顶</value>
   </data>
   <data name="TopMostMode_Normal_RestartRequired" xml:space="preserve">
     <value>切换到普通置顶模式需要重启软件才生效，现在重启吗？</value>
@@ -100,24 +100,24 @@
     <value>当前是拥有 UIA 权限的降权进程</value>
   </data>
   <data name="TopMostMode_RestartAsNormal" xml:space="preserve">
-    <value>切换到非管理员模式</value>
+    <value xml:space="preserve">切回非管理员模式</value>
   </data>
   <data name="TopMostMode_UIA" xml:space="preserve">
-    <value>UIA 置顶（需要一次 UAC 授权）</value>
+    <value xml:space="preserve">UIA 置顶（要一次 UAC 授权）</value>
   </data>
   <data name="TopMostMode_UIA_RestartRequired" xml:space="preserve">
     <value>切换到 UIA 置顶模式需要弹出 UAC 授权并重启成普通用户 UIA 进程，现在继续吗？</value>
   </data>
   <data name="UIAMode_Label" xml:space="preserve">
-    <value>UIA 方案</value>
+    <value xml:space="preserve">UIA 方案</value>
   </data>
   <data name="UIAMode_UserToken" xml:space="preserve">
-    <value>基于用户令牌</value>
+    <value xml:space="preserve">照用户令牌来</value>
   </data>
   <data name="UIAMode_ProcessToken" xml:space="preserve">
-    <value>基于原进程令牌</value>
+    <value xml:space="preserve">照原进程令牌来</value>
   </data>
   <data name="UIAMode_Description" xml:space="preserve">
-    <value>选择 UIA 置顶的令牌获取方案。基于用户令牌从 explorer.exe 获取令牌，基于原进程令牌从原始进程复制令牌。</value>
+    <value xml:space="preserve">选 UIA 置顶怎么拿令牌。用户令牌从 explorer.exe 拿；原进程令牌从原进程复制一份。</value>
   </data>
 </root>

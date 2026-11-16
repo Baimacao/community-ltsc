@@ -151,7 +151,7 @@
     <value xml:space="preserve">屏蔽压感（统一粗细）</value>
   </data>
   <data name="Canvas_KeepAsymptote" xml:space="preserve">
-    <value xml:space="preserve">保留双曲线渐近线</value>
+    <value xml:space="preserve">留着双曲线的渐近线</value>
   </data>
   <data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth" xml:space="preserve">
     <value xml:space="preserve">白板展台按钮调起希沃视频展台</value>
@@ -187,7 +187,7 @@
     <value>开启后，画坐标系会按 1 cm 间隔自动添加刻度，数学老师狂喜。</value>
   </data>
   <data name="Canvas_ShowPenCursor" xml:space="preserve">
-    <value xml:space="preserve">显示画笔光标</value>
+    <value xml:space="preserve">让画笔光标露个脸</value>
   </data>
   <data name="Canvas_PenCursorType" xml:space="preserve">
     <value xml:space="preserve">光标长什么样</value>
@@ -214,7 +214,7 @@
     <value>挑个光标文件…</value>
   </data>
   <data name="Canvas_CustomPenCursorFilter" xml:space="preserve">
-    <value>光标文件|*.cur;*.ani</value>
+    <value xml:space="preserve">光标文件|*.cur;*.ani</value>
   </data>
   <data name="Canvas_SwitchBackAfterEraser" xml:space="preserve">
     <value>用完橡皮擦自动切回批注模式</value>
@@ -292,13 +292,13 @@
     <value xml:space="preserve">墨迹纠正（手残救星）</value>
   </data>
   <data name="InkRecog_ShapeCorrection" xml:space="preserve">
-    <value xml:space="preserve">形状修正</value>
+    <value xml:space="preserve">形状自动摆正</value>
   </data>
   <data name="Canvas_SecondsFormat" xml:space="preserve">
     <value xml:space="preserve">{0:0} 秒</value>
   </data>
   <data name="Canvas_BackgroundSettings" xml:space="preserve">
-    <value xml:space="preserve">背景设置</value>
+    <value xml:space="preserve">背景咋设</value>
   </data>
   <data name="Canvas_WhiteboardMode" xml:space="preserve">
     <value xml:space="preserve">白板模式</value>
@@ -325,7 +325,7 @@
     <value xml:space="preserve">笔迹怎么画、怎么存</value>
   </data>
   <data name="Canvas_SectionBrushRestore" xml:space="preserve">
-    <value xml:space="preserve">画笔自动恢复</value>
+    <value xml:space="preserve">画笔自己恢复</value>
   </data>
   <data name="Canvas_SectionClearBehavior" xml:space="preserve">
     <value xml:space="preserve">清空和压缩</value>
