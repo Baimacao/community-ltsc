@@ -60,93 +60,12 @@ namespace Ink_Canvas
         [JsonProperty("boardToolbarConfigName")]
         public string BoardToolbarConfigName { get; set; } = "default";
 
-        [JsonProperty("performance")]
-        public PerformanceSettings Performance { get; set; } = new PerformanceSettings();
-
         [JsonProperty("miniWhiteboard")]
         public MiniWhiteboardSettings MiniWhiteboard { get; set; } = new MiniWhiteboardSettings();
     }
 
-    public class PerformanceSettings
-    {
-
-        [JsonProperty("history")]
-        public List<PerformanceRunRecord> History { get; set; } = new List<PerformanceRunRecord>();
-
-        [JsonProperty("deviceScore")]
-        public int DeviceScore { get; set; } = -1;
-
-        [JsonProperty("cpuScore")]
-        public int CpuScore { get; set; } = -1;
-
-        [JsonProperty("memoryScore")]
-        public int MemoryScore { get; set; } = -1;
-
-        [JsonProperty("diskScore")]
-        public int DiskScore { get; set; } = -1;
-
-        [JsonProperty("lastTestTime")]
-        public string LastTestTime { get; set; } = string.Empty;
-    }
-
-    public class PerformanceRunRecord
-    {
-        [JsonProperty("startTime")]
-        public string StartTime { get; set; } = string.Empty;
-
-        [JsonProperty("endTime")]
-        public string EndTime { get; set; } = string.Empty;
-
-        [JsonProperty("durationSeconds")]
-        public double DurationSeconds { get; set; }
-
-        [JsonProperty("avgCpuPercent")]
-        public double AvgCpuPercent { get; set; }
-
-        [JsonProperty("peakCpuPercent")]
-        public double PeakCpuPercent { get; set; }
-
-        [JsonProperty("avgMemoryMb")]
-        public double AvgMemoryMb { get; set; }
-
-        [JsonProperty("peakMemoryMb")]
-        public double PeakMemoryMb { get; set; }
-
-        [JsonProperty("sampleCount")]
-        public int SampleCount { get; set; }
-
-        [JsonProperty("smoothingSampleCount")]
-        public int SmoothingSampleCount { get; set; }
-
-        [JsonProperty("smoothingAvgTotalMs")]
-        public double SmoothingAvgTotalMs { get; set; }
-
-        [JsonProperty("smoothingMaxTotalMs")]
-        public double SmoothingMaxTotalMs { get; set; }
-
-        [JsonProperty("smoothingAvgBezierMs")]
-        public double SmoothingAvgBezierMs { get; set; }
-
-        [JsonProperty("smoothingAvgResampleMs")]
-        public double SmoothingAvgResampleMs { get; set; }
-
-        [JsonProperty("smoothingAvgInputPoints")]
-        public double SmoothingAvgInputPoints { get; set; }
-
-        [JsonProperty("smoothingAvgOutputPoints")]
-        public double SmoothingAvgOutputPoints { get; set; }
-    }
-
     public class NotificationSettings
     {
-        [JsonIgnore]
-        public string AnnouncementWebSocketUrl => string.Empty;
-
-        [JsonIgnore]
-        public string AnnouncementSoftwareToken => "092fb28012b3985e2b84341c0643eab0";
-
-        public const string BuiltInSoftwareToken = "492e41ea8eb61fc9a1d336b3852a4478";
-
         [JsonProperty("placement")]
         public string Placement { get; set; } = "TopCenter";
     }
@@ -1268,44 +1187,12 @@ namespace Ink_Canvas
 
         [JsonProperty("resolutionHeight")]
         public int ResolutionHeight { get; set; } = 1080;
-
     }
 
     public class DlassSettings
     {
         [JsonProperty("userToken")]
         public string UserToken { get; set; } = string.Empty;
-
-        [JsonProperty("apiBaseUrl")]
-        public string ApiBaseUrl { get; set; } = "https://dlass.tech";
-
-        private int _autoUploadDelayMinutes = 0;
-        [JsonProperty("autoUploadDelayMinutes")]
-        public int AutoUploadDelayMinutes
-        {
-            get { return _autoUploadDelayMinutes; }
-            set { _autoUploadDelayMinutes = Math.Max(0, value); }
-        }
-
-    }
-
-    public class UploadSettings
-    {
-        [JsonProperty("uploadDelayMinutes")]
-        public int UploadDelayMinutes
-        {
-            get { return _uploadDelayMinutes; }
-            set { _uploadDelayMinutes = Math.Max(0, Math.Min(60, value)); }
-        }
-        private int _uploadDelayMinutes = 0;
-
-        [JsonProperty("enabledProviders")]
-        public List<string> EnabledProviders
-        {
-            get { return _enabledProviders; }
-            set { _enabledProviders = value ?? new List<string>(); }
-        }
-        private List<string> _enabledProviders = new List<string>();
     }
 
     public class MiniWhiteboardSettings

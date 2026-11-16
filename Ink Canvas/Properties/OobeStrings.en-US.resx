@@ -215,6 +215,18 @@
   <data name="Oobe_PresetStandardDesc" xml:space="preserve">
     <value>Enables PPT integration, auto-save ink, tray icon, and two-finger gestures. Suitable for most classroom scenarios.</value>
   </data>
+  <data name="Oobe_PresetTeacher" xml:space="preserve">
+    <value>Teacher-recommended</value>
+  </data>
+  <data name="Oobe_PresetTeacherDesc" xml:space="preserve">
+    <value>Tuned for how teachers actually use it: ink smoothing and auto-straightening on, and it steps aside automatically in Seewo, HiteVision and similar whiteboard apps.</value>
+  </data>
+  <data name="Oobe_PresetTagPenSmoothing" xml:space="preserve">
+    <value>Ink smoothing</value>
+  </data>
+  <data name="Oobe_PresetTagStraighten" xml:space="preserve">
+    <value>Auto-straighten</value>
+  </data>
   <data name="Oobe_PresetLite" xml:space="preserve">
     <value>Lite</value>
   </data>

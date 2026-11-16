@@ -104,6 +104,10 @@ namespace Ink_Canvas.Properties
         public static string Oobe_PresetSubtitle => ResourceManager.GetString(nameof(Oobe_PresetSubtitle), _resourceCulture);
         public static string Oobe_PresetStandard => ResourceManager.GetString(nameof(Oobe_PresetStandard), _resourceCulture);
         public static string Oobe_PresetStandardDesc => ResourceManager.GetString(nameof(Oobe_PresetStandardDesc), _resourceCulture);
+        public static string Oobe_PresetTeacher => ResourceManager.GetString(nameof(Oobe_PresetTeacher), _resourceCulture);
+        public static string Oobe_PresetTeacherDesc => ResourceManager.GetString(nameof(Oobe_PresetTeacherDesc), _resourceCulture);
+        public static string Oobe_PresetTagPenSmoothing => ResourceManager.GetString(nameof(Oobe_PresetTagPenSmoothing), _resourceCulture);
+        public static string Oobe_PresetTagStraighten => ResourceManager.GetString(nameof(Oobe_PresetTagStraighten), _resourceCulture);
         public static string Oobe_PresetLite => ResourceManager.GetString(nameof(Oobe_PresetLite), _resourceCulture);
         public static string Oobe_PresetLiteDesc => ResourceManager.GetString(nameof(Oobe_PresetLiteDesc), _resourceCulture);
         public static string Oobe_PresetTagPPTLink => ResourceManager.GetString(nameof(Oobe_PresetTagPPTLink), _resourceCulture);

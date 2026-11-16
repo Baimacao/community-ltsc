@@ -215,6 +215,18 @@
   <data name="Oobe_PresetStandardDesc" xml:space="preserve">
     <value>啟用 PPT 聯動、自動儲存墨跡、托盤圖標、雙指手勢，適合大多數課堂場景。</value>
   </data>
+  <data name="Oobe_PresetTeacher" xml:space="preserve">
+    <value>教師推薦配置</value>
+  </data>
+  <data name="Oobe_PresetTeacherDesc" xml:space="preserve">
+    <value>按一線老師的實際用法調過：筆跡平滑與自動擺直線全開，在希沃、鴻合等白板軟體裡自動讓路。</value>
+  </data>
+  <data name="Oobe_PresetTagPenSmoothing" xml:space="preserve">
+    <value>筆跡平滑</value>
+  </data>
+  <data name="Oobe_PresetTagStraighten" xml:space="preserve">
+    <value>自動擺直線</value>
+  </data>
   <data name="Oobe_PresetLite" xml:space="preserve">
     <value>簡潔輕量配置</value>
   </data>

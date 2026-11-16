@@ -215,6 +215,18 @@
   <data name="Oobe_PresetStandardDesc" xml:space="preserve">
     <value>启用 PPT 联动、自动保存墨迹、托盘图标、双指手势，适合大多数课堂场景。</value>
   </data>
+  <data name="Oobe_PresetTeacher" xml:space="preserve">
+    <value>教师推荐配置</value>
+  </data>
+  <data name="Oobe_PresetTeacherDesc" xml:space="preserve">
+    <value>按一线老师的实际用法调过：笔迹平滑与自动摆直线全开，在希沃、鸿合等白板软件里自动让路。</value>
+  </data>
+  <data name="Oobe_PresetTagPenSmoothing" xml:space="preserve">
+    <value>笔迹平滑</value>
+  </data>
+  <data name="Oobe_PresetTagStraighten" xml:space="preserve">
+    <value>自动摆直线</value>
+  </data>
   <data name="Oobe_PresetLite" xml:space="preserve">
     <value>简洁轻量配置</value>
   </data>

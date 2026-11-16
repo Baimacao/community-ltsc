@@ -818,12 +818,10 @@ namespace Ink_Canvas.Properties
                 HotkeyStrings.Culture = value;
                 AboutStrings.Culture = value;
                 AdvancedStrings.Culture = value;
-                AnnouncementStrings.Culture = value;
                 AutomationStrings.Culture = value;
                 BoothStrings.Culture = value;
                 BtnStrings.Culture = value;
                 CanvasStrings.Culture = value;
-                CloudStorageStrings.Culture = value;
                 CommonStrings.Culture = value;
                 ConfigStrings.Culture = value;
                 CrashStrings.Culture = value;
@@ -834,16 +832,13 @@ namespace Ink_Canvas.Properties
                 HomeStrings.Culture = value;
                 NavStrings.Culture = value;
                 NotificationStrings.Culture = value;
-                PerformanceStrings.Culture = value;
                 PPTStrings.Culture = value;
-                PluginStrings.Culture = value;
                 RandomStrings.Culture = value;
                 SecurityStrings.Culture = value;
                 StartupStrings.Culture = value;
                 StorageStrings.Culture = value;
                 ThemeStrings.Culture = value;
                 TimerStrings.Culture = value;
-                UpdateCenterPanelStrings.Culture = value;
                 UpdateStrings.Culture = value;
                 WindowStrings.Culture = value;
             }
@@ -866,12 +861,10 @@ namespace Ink_Canvas.Properties
             {
                 "AboutStrings" => AboutStrings.GetString(key),
                 "AdvancedStrings" => AdvancedStrings.GetString(key),
-                "AnnouncementStrings" => AnnouncementStrings.GetString(key),
                 "AutomationStrings" => AutomationStrings.GetString(key),
                 "BoothStrings" => BoothStrings.GetString(key),
                 "BtnStrings" => BtnStrings.GetString(key),
                 "CanvasStrings" => CanvasStrings.GetString(key),
-                "CloudStorageStrings" => CloudStorageStrings.GetString(key),
                 "CommonStrings" => CommonStrings.GetString(key),
                 "ConfigStrings" => ConfigStrings.GetString(key),
                 "CrashStrings" => CrashStrings.GetString(key),
@@ -884,16 +877,13 @@ namespace Ink_Canvas.Properties
                 "NavStrings" => NavStrings.GetString(key),
                 "NotificationStrings" => NotificationStrings.GetString(key),
                 "PPTStrings" => PPTStrings.GetString(key),
-                "PluginStrings" => PluginStrings.GetString(key),
                 "RandomStrings" => RandomStrings.GetString(key),
                 "SecurityStrings" => SecurityStrings.GetString(key),
                 "StartupStrings" => StartupStrings.GetString(key),
                 "StorageStrings" => StorageStrings.GetString(key),
                 "ThemeStrings" => ThemeStrings.GetString(key),
                 "TimerStrings" => TimerStrings.GetString(key),
-                "UpdateCenterPanelStrings" => UpdateCenterPanelStrings.GetString(key),
                 "UpdateStrings" => UpdateStrings.GetString(key),
-                "PerformanceStrings" => PerformanceStrings.GetString(key),
                 "WindowStrings" => WindowStrings.GetString(key),
                 _ => "#" + group + "." + key
             };
