@@ -335,4 +335,10 @@
   <data name="Auto_RestoreNothingToDo" xml:space="preserve">
     <value>這個自動化還沒執行過，沒有可恢復的內容。先點「觸發」試試。</value>
   </data>
+  <data name="Auto_ConflictNoCondition" xml:space="preserve">
+    <value>已開啟自動恢復，但沒有設定任何有效條件。這樣點「觸發」後會立刻被自動撤回——因為程式無法判斷什麼時候該恢復。要嘛加一個條件，要嘛關掉自動恢復。</value>
+  </data>
+  <data name="Auto_ConflictEmptyRule" xml:space="preserve">
+    <value>規則組裡有空白規則（新增後沒有選擇類型）。空白規則不參與判斷，等於沒條件。</value>
+  </data>
 </root>

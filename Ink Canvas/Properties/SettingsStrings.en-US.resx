@@ -302,4 +302,10 @@
   <data name="Auto_RestoreNothingToDo" xml:space="preserve">
     <value>This automation has not run yet, so there is nothing to restore. Press "Trigger" first.</value>
   </data>
+  <data name="Auto_ConflictNoCondition" xml:space="preserve">
+    <value>Auto-restore is on but no valid condition is configured. Pressing "Trigger" will be undone immediately, because there is no way to tell when it should restore. Add a condition, or turn auto-restore off.</value>
+  </data>
+  <data name="Auto_ConflictEmptyRule" xml:space="preserve">
+    <value>This ruleset contains an empty rule (created but no type selected). Empty rules are ignored, so they do not act as a condition.</value>
+  </data>
 </root>

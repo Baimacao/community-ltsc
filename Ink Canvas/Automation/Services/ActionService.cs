@@ -19,11 +19,21 @@ namespace Ink_Canvas.WorkflowAutomation.Services
         /// </summary>
         public void Invoke(ActionSet actionSet)
         {
-            if (!actionSet.IsEnabled) return;
+            if (!actionSet.IsEnabled)
+            {
+                Helpers.LogHelper.WriteLogToFile(
+                    $"[自动化] 触发被跳过：行动组未启用（{actionSet.Name}）",
+                    Helpers.LogHelper.LogType.Warning);
+                return;
+            }
 
             // 先清除所有行动的错误状态
             foreach (var action in actionSet.Actions)
                 action.Exception = null;
+
+            Helpers.LogHelper.WriteLogToFile(
+                $"[自动化] 触发 {actionSet.Name}，动作数 {actionSet.Actions.Count}",
+                Helpers.LogHelper.LogType.Event);
 
             // IsOn 记录的是「这组动作被执行过」，和「要不要自动恢复」是两件事。
             //
@@ -48,11 +58,21 @@ namespace Ink_Canvas.WorkflowAutomation.Services
         /// </summary>
         public void Revert(ActionSet actionSet)
         {
-            if (!actionSet.IsOn) return;
+            if (!actionSet.IsOn)
+            {
+                Helpers.LogHelper.WriteLogToFile(
+                    $"[自动化] 恢复被跳过：IsOn=false（{actionSet.Name}）",
+                    Helpers.LogHelper.LogType.Warning);
+                return;
+            }
 
             // 先清除所有行动的错误状态
             foreach (var action in actionSet.Actions)
                 action.Exception = null;
+
+            Helpers.LogHelper.WriteLogToFile(
+                $"[自动化] 恢复 {actionSet.Name}，动作数 {actionSet.Actions.Count}",
+                Helpers.LogHelper.LogType.Event);
 
             actionSet.IsOn = false;
 

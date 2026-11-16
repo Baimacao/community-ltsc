@@ -688,6 +688,30 @@
                             <TextBlock x:Name="ConditionDisabledHint"
                                        Text="{x:Static props:SettingsStrings.Auto_ConditionsIgnored}" Opacity="0.5" Margin="0,0,0,8"/>
 
+                            <!-- LTSC N-01：配置矛盾警告。
+                                 触发后马上被自动恢复，最常见的两个原因是「开了自动恢复但没配条件」
+                                 和「规则是空的」。这两种情况程序行为都是对的（没条件就判不满足），
+                                 但界面上什么都不说，老师会以为「触发按钮坏了」。
+                                 这里把矛盾摆出来，而不是替他改判断逻辑。 -->
+                            <Border x:Name="ConfigConflictWarning"
+                                    Visibility="Collapsed"
+                                    Margin="0,0,0,10"
+                                    Padding="12,10"
+                                    CornerRadius="6"
+                                    BorderThickness="1"
+                                    BorderBrush="#40E0A020">
+                                <Border.Background>
+                                    <SolidColorBrush Color="#1FE0A020"/>
+                                </Border.Background>
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="10">
+                                    <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Warning}"
+                                                 FontSize="16" VerticalAlignment="Top" Margin="0,2,0,0" />
+                                    <TextBlock x:Name="ConfigConflictWarningText"
+                                               TextWrapping="Wrap" LineHeight="20" FontSize="12.5"
+                                               VerticalAlignment="Center"/>
+                                </ikw:SimpleStackPanel>
+                            </Border>
+
                             <!-- 条件编辑面板 -->
                             <StackPanel x:Name="ConditionEditorPanel">
                                 <!-- 规则集级别控制 -->

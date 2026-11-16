@@ -43,6 +43,7 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             {
                 if (RulesetService.IsRulesetSatisfied(workflow.Ruleset))
                     continue;
+
                 ActionService.Revert(workflow.ActionSet);
             }
         }

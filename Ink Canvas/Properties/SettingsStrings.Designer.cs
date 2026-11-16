@@ -105,6 +105,8 @@ namespace Ink_Canvas.Properties {
         public static string Auto_AddTrigger => ResourceManager.GetString(nameof(Auto_AddTrigger), resourceCulture);
         public static string Auto_WhenConditionsMet => ResourceManager.GetString(nameof(Auto_WhenConditionsMet), resourceCulture);
         public static string Auto_ConditionsIgnored => ResourceManager.GetString(nameof(Auto_ConditionsIgnored), resourceCulture);
+        public static string Auto_ConflictNoCondition => ResourceManager.GetString(nameof(Auto_ConflictNoCondition), resourceCulture);
+        public static string Auto_ConflictEmptyRule => ResourceManager.GetString(nameof(Auto_ConflictEmptyRule), resourceCulture);
         public static string Auto_AnyConditionGroup => ResourceManager.GetString(nameof(Auto_AnyConditionGroup), resourceCulture);
         public static string Auto_AllConditionGroup => ResourceManager.GetString(nameof(Auto_AllConditionGroup), resourceCulture);
         public static string Auto_AnyCondition => ResourceManager.GetString(nameof(Auto_AnyCondition), resourceCulture);

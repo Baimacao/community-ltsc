@@ -302,4 +302,10 @@
   <data name="Auto_RestoreNothingToDo" xml:space="preserve">
     <value>这个自动化还没执行过，没有可恢复的内容。先点「触发」试一下。</value>
   </data>
+  <data name="Auto_ConflictNoCondition" xml:space="preserve">
+    <value>已开启自动恢复，但没有配置任何有效条件。这样点「触发」后会立刻被自动撤回——因为程序无法判断什么时候该恢复。要么加一个条件，要么关掉自动恢复。</value>
+  </data>
+  <data name="Auto_ConflictEmptyRule" xml:space="preserve">
+    <value>规则组里有空白规则（新建后没有选择类型）。空白规则不参与判断，等于没条件。</value>
+  </data>
 </root>

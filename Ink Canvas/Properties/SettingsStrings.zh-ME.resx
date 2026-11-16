@@ -335,4 +335,10 @@
   <data name="Auto_RestoreNothingToDo" xml:space="preserve">
     <value>还没跑过呢，没东西可恢复。先点「触发」看看。</value>
   </data>
+  <data name="Auto_ConflictNoCondition" xml:space="preserve">
+    <value>开了自动恢复，但一个条件都没配。这样点「触发」马上就被撤回去了——程序不知道啥时候该恢复。要么加个条件，要么把自动恢复关掉。</value>
+  </data>
+  <data name="Auto_ConflictEmptyRule" xml:space="preserve">
+    <value>里面有条空规则（新建完没选类型）。空规则不算数，跟没配一样。</value>
+  </data>
 </root>

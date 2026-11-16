@@ -685,11 +685,71 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
                 UpdateConditionVisibility(workflow.IsConditionEnabled);
                 UpdateRevertHintVisibility(workflow.ActionSet.IsRevertEnabled);
+                UpdateConfigConflictWarning(workflow);
             }
             finally
             {
                 _isUpdatingEditor = false;
             }
+        }
+
+        /// <summary>
+        /// 检查配置矛盾并显示警告。
+        ///
+        /// 这里不改任何行为，只把「你现在这套配置会怎样」说清楚。
+        /// 最常见的两种是：
+        ///   1. 开了自动恢复，但没有有效条件 —— 触发后条件判不满足，立刻被撤。
+        ///      程序行为是对的（自动恢复本来就要靠条件决定何时撤），
+        ///      但界面上不说，老师会以为「触发按钮坏了」。
+        ///   2. 规则组里有空规则（新建后没选类型）—— 空规则不参与判断，
+        ///      整组等于没条件，和第 1 条叠加。
+        /// </summary>
+        private void UpdateConfigConflictWarning(Workflow workflow)
+        {
+            if (workflow == null)
+            {
+                ConfigConflictWarning.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            // 统计有效条件：有 Id 的规则才算数
+            int validRules = 0;
+            int emptyRules = 0;
+            if (workflow.Ruleset?.Groups != null)
+            {
+                foreach (var g in workflow.Ruleset.Groups)
+                {
+                    if (g.Rules == null) continue;
+                    foreach (var r in g.Rules)
+                    {
+                        if (string.IsNullOrEmpty(r.Id)) emptyRules++;
+                        else validRules++;
+                    }
+                }
+            }
+
+            bool revertOn = workflow.ActionSet?.IsRevertEnabled == true;
+            string message = null;
+
+            if (revertOn && validRules == 0)
+            {
+                // 最要命的一种：点了触发会被立刻撤回
+                message = SettingsStrings.Auto_ConflictNoCondition;
+            }
+            else if (emptyRules > 0)
+            {
+                // 有空规则但还有别的有效规则：不至于全失效，但会误导
+                message = SettingsStrings.Auto_ConflictEmptyRule;
+            }
+
+            if (message == null)
+            {
+                ConfigConflictWarning.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            ConfigConflictWarningText.Text = message;
+            ConfigConflictWarning.Visibility = Visibility.Visible;
         }
 
         private void UpdateRulesetStateIndicator(Ruleset ruleset)
@@ -728,6 +788,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             {
                 workflow.ActionSet.IsRevertEnabled = CheckBoxIsRevertEnabled.IsChecked == true;
                 UpdateRevertHintVisibility(workflow.ActionSet.IsRevertEnabled);
+                UpdateConfigConflictWarning(workflow);
                 Service.SaveConfig("RevertEnabledChanged");
             }
         }
@@ -739,6 +800,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             {
                 workflow.IsConditionEnabled = ToggleIsConditionEnabled.IsOn;
                 UpdateConditionVisibility(workflow.IsConditionEnabled);
+                UpdateConfigConflictWarning(workflow);
                 Service.SaveConfig("ConditionEnabledChanged");
             }
         }
@@ -865,6 +927,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             {
                 Rules = new ObservableCollection<Rule> { new Rule() }
             });
+            UpdateConfigConflictWarning(workflow);
             Service.SaveConfig("AddRuleGroup");
         }
 
@@ -986,7 +1049,21 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         // 触发/恢复按钮
         private void BtnInvokeAction_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedWorkflow is not Workflow workflow) return;
+            // 诊断：先把「点了按钮」这个事实记下来，再判断后面的分支。
+            // 之前这个按钮点了没反应，日志里一行都没有，分不清是没绑上、
+            // 还是 SelectedWorkflow 为空、还是 Invoke 内部提前 return。
+            Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                $"[自动化] 手动触发被点击，SelectedWorkflow={(SelectedWorkflow == null ? "null" : SelectedWorkflow.ActionSet?.Name)}",
+                Ink_Canvas.Helpers.LogHelper.LogType.Event);
+
+            if (SelectedWorkflow is not Workflow workflow)
+            {
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                    "[自动化] 手动触发中止：没有选中的工作流（列表里可能停在「预设自动化」上）",
+                    Ink_Canvas.Helpers.LogHelper.LogType.Warning);
+                return;
+            }
+
             Service.ActionService.Invoke(workflow.ActionSet);
             Service.SaveConfig("ManualInvokeAction");
         }
@@ -1004,7 +1081,18 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         /// </summary>
         private void BtnRevertAction_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedWorkflow is not Workflow workflow) return;
+
+            if (SelectedWorkflow is not Workflow workflow)
+            {
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                    "[自动化] 手动恢复中止：没有选中的工作流",
+                    Ink_Canvas.Helpers.LogHelper.LogType.Warning);
+                return;
+            }
+
+            Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                $"[自动化] 手动恢复时 IsOn={workflow.ActionSet.IsOn}",
+                Ink_Canvas.Helpers.LogHelper.LogType.Event);
 
             if (!workflow.ActionSet.IsOn)
             {
@@ -1024,6 +1112,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             if (SelectedWorkflow is Workflow workflow)
             {
                 UpdateRulesetStateIndicator(workflow.Ruleset);
+                UpdateConfigConflictWarning(workflow);
             }
             Service.SaveConfig("RuleSettingsChanged");
         }
