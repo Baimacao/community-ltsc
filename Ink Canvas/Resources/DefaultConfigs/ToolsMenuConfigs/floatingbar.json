@@ -1,0 +1,12 @@
+{
+  "floatingBarItems": [
+    "timer",
+    "save",
+    "open",
+    "replay",
+    "screenshot",
+    "manual",
+    "settings"
+  ],
+  "boardItems": []
+}

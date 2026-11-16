@@ -267,6 +267,32 @@
     <Resource Include="Resources\Icons-Fluent\ic_fluent_delete_24_regular.png" />
   </ItemGroup>
   <ItemGroup>
+    <!-- 出厂默认配置。首次运行时由 DefaultConfigInstaller 解到 Configs/ 下。
+         用嵌入资源而不是随程序复制到磁盘：用户看不到也改不坏，
+         升级换包时不会被旧的 Resources/DefaultConfigs/ 盖住。 -->
+    <EmbeddedResource Include="Resources\DefaultConfigs\Settings.json">
+      <LogicalName>DefaultConfigs.Settings.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\HotkeyConfig.json">
+      <LogicalName>DefaultConfigs.HotkeyConfig.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\RecentTimers.json">
+      <LogicalName>DefaultConfigs.RecentTimers.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\ToolsMenuConfigs\board.json">
+      <LogicalName>DefaultConfigs.ToolsMenuConfigs.board.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\ToolsMenuConfigs\floatingbar.json">
+      <LogicalName>DefaultConfigs.ToolsMenuConfigs.floatingbar.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\ToolbarConfigs\default.json">
+      <LogicalName>DefaultConfigs.ToolbarConfigs.default.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DefaultConfigs\BoardToolbarConfigs\default.json">
+      <LogicalName>DefaultConfigs.BoardToolbarConfigs.default.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="privacy.txt" />
     <EmbeddedResource Include="telemetry_token.txt" Condition="Exists('telemetry_token.txt') AND '$(DLASS_TELEMETRY_TOKEN)' == ''">
       <Link>telemetry_token.txt</Link>

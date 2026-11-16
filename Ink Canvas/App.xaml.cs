@@ -1045,6 +1045,31 @@ namespace Ink_Canvas
             // 启动阶段跳过昂贵的 StackTrace 采集
             LogHelper.SuppressCallerInfo = true;
 
+            // 出厂默认配置：首次运行（Configs/ 是空的）时把内置的那套写出来。
+            //
+            // 必须放在 ReadSettingsJsonOnce 之前 —— 那一步会缓存 Settings.json 内容，
+            // 装晚了就等于第一次启动读的还是空配置，默认值不生效。
+            //
+            // 只补缺失文件，不覆盖已存在的（用户配置优先，升级不能吃掉他的设置）。
+            try
+            {
+                int installed = Helpers.DefaultConfigInstaller.EnsureDefaults();
+                if (installed > 0)
+                {
+                    LogHelper.WriteLogToFile(
+                        $"App | 已装出 {installed} 个出厂默认配置文件",
+                        LogHelper.LogType.Event);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 装默认配置失败不该让程序起不来：后面还有代码默认值兜底。
+                // 但必须留痕，否则表现就是"默认配置怎么没生效"。
+                LogHelper.WriteLogToFile(
+                    $"App | 装出厂默认配置失败: {ex.Message}",
+                    LogHelper.LogType.Warning);
+            }
+
             // 一次性读取并解析 Settings.json，避免重复 I/O + dynamic 反序列化
             dynamic parsedSettings = ReadSettingsJsonOnce();
 

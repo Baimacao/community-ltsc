@@ -1,0 +1,451 @@
+{
+  "components": [
+    {
+      "id": "builtin.cursor",
+      "instanceId": "0f29c4f6-7eea-4b50-bc91-8e3f640e2c5d",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.pen",
+      "instanceId": "ab8cc4a8-2f7b-4c8c-96b9-65f654e7fb51",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.quickColorPalette",
+      "instanceId": "93fc85f2-8e96-415b-a99b-d8d29ca18d85",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": true,
+                "conditionId": "isAnnotating"
+              }
+            ]
+          },
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.clear",
+      "instanceId": "6670e465-9ee9-4b49-8b4d-89c9bcf291e1",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.group",
+      "instanceId": "d79fdc4f-88aa-4921-abff-bed18342a61b",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [
+        {
+          "id": "builtin.eraser",
+          "instanceId": "51c191a6-c2c4-4487-b534-078b209ba442",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.eraserByStrokes",
+          "instanceId": "24d7f376-6ee3-4218-aa70-c9e657177ee5",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.select",
+          "instanceId": "4525dfcc-dbd9-4d37-bb40-543f51559a30",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.shapeDraw",
+          "instanceId": "3b3d83d5-890d-45c3-a8aa-95c43070e69b",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.undo",
+          "instanceId": "20c1d2b5-9e93-4d79-9728-5db27fcfcb87",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.redo",
+          "instanceId": "5cd3286f-aa4d-4363-a569-d196e8d95127",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        },
+        {
+          "id": "builtin.cursorWithDel",
+          "instanceId": "ab99e432-8c9a-4232-8041-12867d0d8fff",
+          "hidingRule": 0,
+          "showSeparateBorder": false,
+          "preventHideOnDragClick": false,
+          "settings": {},
+          "children": [],
+          "hidingRuleset": null,
+          "IsGroup": false
+        }
+      ],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": true,
+                "conditionId": "isAnnotating"
+              }
+            ]
+          },
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": true
+    },
+    {
+      "id": "builtin.separator",
+      "instanceId": "a2210c68-9e6e-4c47-8de2-6da3823f5f81",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.whiteboard",
+      "instanceId": "137073a4-a952-46e8-9fad-038dfd4179d5",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.tools",
+      "instanceId": "6dfea0d1-17d8-4b08-99cd-153a1fd1fee7",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.fold",
+      "instanceId": "7cc3476b-49a6-4426-b1fe-c73d1acc98f0",
+      "hidingRule": 0,
+      "showSeparateBorder": false,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.gesture",
+      "instanceId": "14df748e-4d91-4b40-8466-8109ad610e0f",
+      "hidingRule": 0,
+      "showSeparateBorder": true,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": true,
+                "conditionId": "isAnnotating"
+              }
+            ]
+          },
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": false,
+                "conditionId": "isContentCollapsedByUser"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    },
+    {
+      "id": "builtin.exit",
+      "instanceId": "2b1cd099-0bf7-477b-921d-a62a74722efc",
+      "hidingRule": 0,
+      "showSeparateBorder": true,
+      "preventHideOnDragClick": false,
+      "settings": {},
+      "children": [],
+      "hidingRuleset": {
+        "state": 0,
+        "mode": 0,
+        "isReversed": false,
+        "groups": [
+          {
+            "state": 0,
+            "mode": 1,
+            "isReversed": false,
+            "isEnabled": true,
+            "rules": [
+              {
+                "state": 0,
+                "isReversed": true,
+                "conditionId": "isPPTMode"
+              }
+            ]
+          }
+        ]
+      },
+      "IsGroup": false
+    }
+  ]
+}
