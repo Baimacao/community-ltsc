@@ -98,6 +98,7 @@ namespace Ink_Canvas.Properties {
         public static string Auto_Presets => ResourceManager.GetString(nameof(Auto_Presets), resourceCulture);
         public static string Auto_Name => ResourceManager.GetString(nameof(Auto_Name), resourceCulture);
         public static string Auto_RestoreEnabled => ResourceManager.GetString(nameof(Auto_RestoreEnabled), resourceCulture);
+        public static string Auto_RestoreNothingToDo => ResourceManager.GetString(nameof(Auto_RestoreNothingToDo), resourceCulture);
         public static string Auto_Trigger => ResourceManager.GetString(nameof(Auto_Trigger), resourceCulture);
         public static string Auto_Restore => ResourceManager.GetString(nameof(Auto_Restore), resourceCulture);
         public static string Auto_WhenTriggered => ResourceManager.GetString(nameof(Auto_WhenTriggered), resourceCulture);

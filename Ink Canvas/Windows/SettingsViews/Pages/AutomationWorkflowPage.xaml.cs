@@ -991,9 +991,30 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             Service.SaveConfig("ManualInvokeAction");
         }
 
+        /// <summary>
+        /// 手动恢复。
+        ///
+        /// 原来这里直接调 Revert，但 Revert 第一行是 if (!IsOn) return ——
+        /// 动作还没执行过时 IsOn 是 false，按钮点了什么都不发生，也没有任何提示。
+        /// 老师会以为功能坏了。
+        ///
+        /// 现在分两种情况：
+        ///   · 没执行过：明确告诉他没东西可恢复，而不是静默无反应
+        ///   · 执行过：正常恢复
+        /// </summary>
         private void BtnRevertAction_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedWorkflow is not Workflow workflow) return;
+
+            if (!workflow.ActionSet.IsOn)
+            {
+                MessageBox.Show(
+                    SettingsStrings.Auto_RestoreNothingToDo,
+                    SettingsStrings.Auto_Restore,
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             Service.ActionService.Revert(workflow.ActionSet);
             Service.SaveConfig("ManualRevertAction");
         }

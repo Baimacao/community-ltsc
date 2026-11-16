@@ -332,4 +332,7 @@
   <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
     <value>没转成：{0}</value>
   </data>
+  <data name="Auto_RestoreNothingToDo" xml:space="preserve">
+    <value>还没跑过呢，没东西可恢复。先点「触发」看看。</value>
+  </data>
 </root>

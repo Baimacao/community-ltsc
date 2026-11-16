@@ -25,12 +25,13 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             foreach (var action in actionSet.Actions)
                 action.Exception = null;
 
-            // 对齐 ClassIsland：仅在启用恢复时设置 IsOn 标志
-            // 未启用恢复时，IsOn 不应阻止重复触发
-            if (actionSet.IsRevertEnabled)
-            {
-                actionSet.IsOn = true;
-            }
+            // IsOn 记录的是「这组动作被执行过」，和「要不要自动恢复」是两件事。
+            //
+            // 原实现只在 IsRevertEnabled 为真时才置 IsOn，导致关闭自动恢复后：
+            //   · 手动点「恢复」永远无效（Revert 第一行 if (!IsOn) return）
+            //   · 而且界面不会提示任何原因，点了就是没反应
+            // 老师关掉自动恢复只是不想让它自己弹回去，不是不想手动恢复。
+            actionSet.IsOn = true;
 
             // 对齐 ClassIsland：异步执行行动，避免阻塞 UI 线程
             Task.Run(() =>

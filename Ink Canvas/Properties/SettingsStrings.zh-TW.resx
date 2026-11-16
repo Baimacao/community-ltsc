@@ -332,4 +332,7 @@
   <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
     <value>轉換失敗：{0}</value>
   </data>
+  <data name="Auto_RestoreNothingToDo" xml:space="preserve">
+    <value>這個自動化還沒執行過，沒有可恢復的內容。先點「觸發」試試。</value>
+  </data>
 </root>

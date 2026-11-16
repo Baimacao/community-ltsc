@@ -299,4 +299,7 @@
   <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
     <value>转换失败：{0}</value>
   </data>
+  <data name="Auto_RestoreNothingToDo" xml:space="preserve">
+    <value>这个自动化还没执行过，没有可恢复的内容。先点「触发」试一下。</value>
+  </data>
 </root>

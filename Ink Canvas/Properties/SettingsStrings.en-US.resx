@@ -299,4 +299,7 @@
   <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
     <value>Conversion failed: {0}</value>
   </data>
+  <data name="Auto_RestoreNothingToDo" xml:space="preserve">
+    <value>This automation has not run yet, so there is nothing to restore. Press "Trigger" first.</value>
+  </data>
 </root>
