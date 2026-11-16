@@ -1,5 +1,6 @@
 using Ink_Canvas.Helpers;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -757,6 +758,43 @@ namespace Ink_Canvas
         /// <summary>LTSC P2 诊断：自动收纳状态签名，只在变化时打日志。</summary>
         private string _lastAutoFoldDiagKey;
 
+        /// <summary>
+        /// 版本信息缓存。key 是 exe 全路径。
+        ///
+        /// 为什么需要：自动收纳判断里要读文件版本号来区分 EasiNote 5 / 3 / 3C、
+        /// 希沃 6 / 3C 这些同名不同代的软件。FileVersionInfo.GetVersionInfo
+        /// 会打开文件读版本资源，而这些判断在 500ms 定时器里，每次还要遍历
+        /// 所有全屏窗口 —— 一节课下来是几万次文件读取。
+        ///
+        /// 缓存策略：按路径缓存，路径不变就一直用。软件升级后 exe 路径不变但
+        /// 版本变了，这是唯一的失效场景；重新打开一次程序就恢复正确，可以接受。
+        /// 缓存条目在程序运行期间最多几十个（白板软件就那么几个），不需要淘汰。
+        /// </summary>
+        private static readonly Dictionary<string, FileVersionInfo> _versionInfoCache
+            = new Dictionary<string, FileVersionInfo>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// 取版本信息，带缓存。异常路径返回 null，调用方要判空。
+        /// </summary>
+        private static FileVersionInfo GetCachedVersionInfo(string path)
+        {
+            if (string.IsNullOrEmpty(path) || path == "Unknown") return null;
+
+            if (_versionInfoCache.TryGetValue(path, out var cached)) return cached;
+
+            try
+            {
+                var info = FileVersionInfo.GetVersionInfo(path);
+                _versionInfoCache[path] = info;
+                return info;
+            }
+            catch
+            {
+                // 读不到就返回 null，不缓存 —— 下次可能就读得到了（比如文件刚被占用）。
+                return null;
+            }
+        }
+
         private bool foldFloatingBarByUser, // 保持收纳操作不受自动收纳的控制
             unfoldFloatingBarByUser; // 允许用户在希沃软件内进行展开操作
 
@@ -834,7 +872,8 @@ namespace Ink_Canvas
                         {
                             try
                             {
-                                var versionInfo = FileVersionInfo.GetVersionInfo(window.ProcessPath);
+                                var versionInfo = GetCachedVersionInfo(window.ProcessPath);
+                                if (versionInfo == null) continue; // 读不到版本就跳过这个窗口
                                 string version = versionInfo.FileVersion;
                                 string prodName = versionInfo.ProductName;
 
@@ -913,7 +952,8 @@ namespace Ink_Canvas
                         {
                             try
                             {
-                                var versionInfo = FileVersionInfo.GetVersionInfo(window.ProcessPath);
+                                var versionInfo = GetCachedVersionInfo(window.ProcessPath);
+                                if (versionInfo == null) continue; // 读不到版本就跳过这个窗口
                                 var version = versionInfo.FileVersion;
                                 var prodName = versionInfo.ProductName;
                                 if (version.StartsWith("6.") && prodName == "WhiteBoard")
@@ -970,7 +1010,8 @@ namespace Ink_Canvas
                         {
                             try
                             {
-                                var versionInfo = FileVersionInfo.GetVersionInfo(window.ProcessPath);
+                                var versionInfo = GetCachedVersionInfo(window.ProcessPath);
+                                if (versionInfo == null) continue; // 读不到版本就跳过这个窗口
                                 string version = versionInfo.FileVersion;
                                 string prodName = versionInfo.ProductName;
 
@@ -1016,7 +1057,8 @@ namespace Ink_Canvas
                         {
                             try
                             {
-                                var versionInfo = FileVersionInfo.GetVersionInfo(window.ProcessPath);
+                                var versionInfo = GetCachedVersionInfo(window.ProcessPath);
+                                if (versionInfo == null) continue; // 读不到版本就跳过这个窗口
                                 var version = versionInfo.FileVersion;
                                 var prodName = versionInfo.ProductName;
                                 if (version.StartsWith("6.") && prodName == "WhiteBoard")
@@ -1063,7 +1105,8 @@ namespace Ink_Canvas
                     {
                         try
                         {
-                            var versionInfo = FileVersionInfo.GetVersionInfo(processPath);
+                            var versionInfo = GetCachedVersionInfo(processPath);
+                            if (versionInfo == null) return false;
                             string version = versionInfo.FileVersion;
                             string prodName = versionInfo.ProductName;
 
@@ -1144,7 +1187,8 @@ namespace Ink_Canvas
                     {
                         try
                         {
-                            var versionInfo = FileVersionInfo.GetVersionInfo(foregroundWindow.ProcessPath);
+                            var versionInfo = GetCachedVersionInfo(foregroundWindow.ProcessPath);
+                            if (versionInfo == null) return false;
                             string version = versionInfo.FileVersion;
                             string prodName = versionInfo.ProductName;
 
@@ -1244,7 +1288,8 @@ namespace Ink_Canvas
                     {
                         try
                         {
-                            var versionInfo = FileVersionInfo.GetVersionInfo(foregroundWindow.ProcessPath);
+                            var versionInfo = GetCachedVersionInfo(foregroundWindow.ProcessPath);
+                            if (versionInfo == null) return false;
                             var version = versionInfo.FileVersion;
                             var prodName = versionInfo.ProductName;
                             if (version.StartsWith("6.") && prodName == "WhiteBoard")
