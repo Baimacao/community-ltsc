@@ -720,7 +720,6 @@ namespace Ink_Canvas.Properties
             dict["PPT_AutoSaveStrokesHint"] = ("PPTStrings", "AutoSaveStrokesHint");
             dict["PPT_AutoScreenshot"] = ("PPTStrings", "AutoScreenshot");
             dict["PPT_AutoScreenshotHint"] = ("PPTStrings", "AutoScreenshotHint");
-            dict["PPT_BlackBackground"] = ("PPTStrings", "BlackBackground");
             dict["PPT_BottomGroupTitle"] = ("PPTStrings", "BottomGroupTitle");
             dict["PPT_ConflictWithAutoFold"] = ("PPTStrings", "ConflictWithAutoFold");
             dict["PPT_EnhancedPreview"] = ("PPTStrings", "EnhancedPreview");

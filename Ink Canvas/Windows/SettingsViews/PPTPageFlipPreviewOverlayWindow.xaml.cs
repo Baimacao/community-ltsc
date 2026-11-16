@@ -147,10 +147,13 @@ namespace Ink_Canvas.Windows.SettingsViews
             bool lbShowPage = ppt.PPTLBUseGlobalSettings ? ppt.PPTGlobalShowPageNumber : ppt.PPTLBShowPageNumber;
             bool rbShowPage = ppt.PPTRBUseGlobalSettings ? ppt.PPTGlobalShowPageNumber : ppt.PPTRBShowPageNumber;
 
-            bool lsBlackBg = ppt.PPTLSUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTLSBlackBackground;
-            bool rsBlackBg = ppt.PPTRSUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTRSBlackBackground;
-            bool lbBlackBg = ppt.PPTLBUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTLBBlackBackground;
-            bool rbBlackBg = ppt.PPTRBUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTRBBlackBackground;
+            // 翻页条深浅统一跟随应用主题
+            bool navDark = MainWindow.Settings?.Appearance?.Theme == 1
+                || (MainWindow.Settings?.Appearance?.Theme == 2 && !Ink_Canvas.Helpers.ThemeHelper.IsSystemThemeLight());
+            bool lsBlackBg = navDark;
+            bool rsBlackBg = navDark;
+            bool lbBlackBg = navDark;
+            bool rbBlackBg = navDark;
 
             // 1. Update scale for all 4 bars
             LeftSidePanelForPPTNavigation.SetBarScale(lsScale);

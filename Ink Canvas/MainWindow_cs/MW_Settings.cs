@@ -526,16 +526,15 @@ namespace Ink_Canvas
                 _pptUIManager.EnablePPTButtonLongPressPageTurn = ppt.EnablePPTButtonLongPressPageTurn;
                 _pptUIManager.PPTNavBarScale = ppt.PPTNavBarScale;
 
-                // 有效的显示页码 / 黑色背景通过 PPTSButtonsOption / PPTBButtonsOption 间接传递（原有机制）
-                // 这里同步各位置的 ShowPageNumber / BlackBackground 字段（UseGlobalSettings 时用全局值覆盖位置字段，保证下游读取一致）
+                // 有效的显示页码通过 PPTSButtonsOption / PPTBButtonsOption 间接传递（原有机制）
+                // 这里同步各位置的 ShowPageNumber 字段（UseGlobalSettings 时用全局值覆盖位置字段，保证下游读取一致）
+                //
+                // 黑色背景已删除：翻页条深浅现在强制跟随应用主题，
+                // 不再有每个位置一个的黑底开关。
                 if (ppt.PPTLSUseGlobalSettings) ppt.PPTLSShowPageNumber = ppt.PPTGlobalShowPageNumber;
                 if (ppt.PPTRSUseGlobalSettings) ppt.PPTRSShowPageNumber = ppt.PPTGlobalShowPageNumber;
                 if (ppt.PPTLBUseGlobalSettings) ppt.PPTLBShowPageNumber = ppt.PPTGlobalShowPageNumber;
                 if (ppt.PPTRBUseGlobalSettings) ppt.PPTRBShowPageNumber = ppt.PPTGlobalShowPageNumber;
-                if (ppt.PPTLSUseGlobalSettings) ppt.PPTLSBlackBackground = ppt.PPTGlobalBlackBackground;
-                if (ppt.PPTRSUseGlobalSettings) ppt.PPTRSBlackBackground = ppt.PPTGlobalBlackBackground;
-                if (ppt.PPTLBUseGlobalSettings) ppt.PPTLBBlackBackground = ppt.PPTGlobalBlackBackground;
-                if (ppt.PPTRBUseGlobalSettings) ppt.PPTRBBlackBackground = ppt.PPTGlobalBlackBackground;
 
                 _pptUIManager.UpdateNavigationPanelsVisibility();
                 _pptUIManager.UpdateNavigationButtonStyles();

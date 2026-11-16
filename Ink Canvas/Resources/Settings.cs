@@ -631,10 +631,6 @@ namespace Ink_Canvas
 
         [JsonProperty("pptGlobalShowPageNumber")]
         public bool PPTGlobalShowPageNumber { get; set; } = true;
-
-        [JsonProperty("pptGlobalBlackBackground")]
-        public bool PPTGlobalBlackBackground { get; set; } = false;
-
         [JsonProperty("pptGlobalSideButtonPosition")]
         public int PPTGlobalSideButtonPosition { get; set; } = 0;
 
@@ -792,70 +788,6 @@ namespace Ink_Canvas
                 return _pptRBShowPageNumber.Value;
             }
             set => _pptRBShowPageNumber = value;
-        }
-
-        private bool? _pptLSBlackBackground;
-        [JsonProperty("pptLSBlackBackground")]
-        public bool PPTLSBlackBackground
-        {
-            get
-            {
-                if (_pptLSBlackBackground == null)
-                {
-                    string sOpt = PPTSButtonsOption.ToString();
-                    _pptLSBlackBackground = sOpt.Length > 2 && sOpt[2] == '2';
-                }
-                return _pptLSBlackBackground.Value;
-            }
-            set => _pptLSBlackBackground = value;
-        }
-
-        private bool? _pptRSBlackBackground;
-        [JsonProperty("pptRSBlackBackground")]
-        public bool PPTRSBlackBackground
-        {
-            get
-            {
-                if (_pptRSBlackBackground == null)
-                {
-                    string sOpt = PPTSButtonsOption.ToString();
-                    _pptRSBlackBackground = sOpt.Length > 2 && sOpt[2] == '2';
-                }
-                return _pptRSBlackBackground.Value;
-            }
-            set => _pptRSBlackBackground = value;
-        }
-
-        private bool? _pptLBBlackBackground;
-        [JsonProperty("pptLBBlackBackground")]
-        public bool PPTLBBlackBackground
-        {
-            get
-            {
-                if (_pptLBBlackBackground == null)
-                {
-                    string bOpt = PPTBButtonsOption.ToString();
-                    _pptLBBlackBackground = bOpt.Length > 2 && bOpt[2] == '2';
-                }
-                return _pptLBBlackBackground.Value;
-            }
-            set => _pptLBBlackBackground = value;
-        }
-
-        private bool? _pptRBBlackBackground;
-        [JsonProperty("pptRBBlackBackground")]
-        public bool PPTRBBlackBackground
-        {
-            get
-            {
-                if (_pptRBBlackBackground == null)
-                {
-                    string bOpt = PPTBButtonsOption.ToString();
-                    _pptRBBlackBackground = bOpt.Length > 2 && bOpt[2] == '2';
-                }
-                return _pptRBBlackBackground.Value;
-            }
-            set => _pptRBBlackBackground = value;
         }
 
         // -- new --

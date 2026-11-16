@@ -54,9 +54,6 @@
   <data name="AutoScreenshotHint" xml:space="preserve">
     <value>开启 自动幻灯片截屏 后将会在幻灯片有墨迹时翻页自动截屏</value>
   </data>
-  <data name="BlackBackground" xml:space="preserve">
-    <value>黑色背景</value>
-  </data>
   <data name="BottomGroupTitle" xml:space="preserve">
     <value>左下右下</value>
   </data>

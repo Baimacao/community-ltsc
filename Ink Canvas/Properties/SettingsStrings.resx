@@ -146,12 +146,6 @@
   <data name="Flip_ShowPageNumberDesc" xml:space="preserve">
     <value>在翻页条中显示当前页码和总页数</value>
   </data>
-  <data name="Flip_BlackBackground" xml:space="preserve">
-    <value>黑色背景</value>
-  </data>
-  <data name="Flip_BlackBackgroundDesc" xml:space="preserve">
-    <value>使用黑色半透明背景代替默认的主题透明背景</value>
-  </data>
   <data name="Flip_Offset" xml:space="preserve">
     <value>偏移</value>
   </data>

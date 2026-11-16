@@ -480,18 +480,25 @@ namespace Ink_Canvas.Helpers
 
 
         /// <summary>
-        /// LTSC：翻页条深浅强制跟随应用主题，不再读用户各自的「黑色背景」开关。
+        /// 翻页条深浅跟随**应用主题**，不再读用户各自的「黑色背景」开关。
+        ///
         /// 上游这里是 ppt.XXXBlackBackground（四个位置各一个复选框），
         /// 结果是主题变了翻页条不跟着变，投影上和浮动栏撞色。
+        ///
+        /// 原来的实现直接读 ThemeHelper.IsSystemThemeLight()，只看了系统主题 ——
+        /// 应用设成深色、系统是浅色时，浮动栏深、翻页条浅，两个撞在一起。
+        /// 现在改成读应用的实际主题，和浮动栏、按钮图标用同一个判定源。
         /// </summary>
         private bool IsDarkThemeForNavBar()
         {
             try
             {
-                return ThemeHelper.IsSystemThemeLight() == false;
+                var wall = _mainWindow as MainWindow;
+                return wall?.IsCurrentThemeDark() ?? !ThemeHelper.IsSystemThemeLight();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogHelper.WriteLogToFile($"翻页条深浅判定失败: {ex.Message}", LogHelper.LogType.Warning);
                 return false;
             }
         }

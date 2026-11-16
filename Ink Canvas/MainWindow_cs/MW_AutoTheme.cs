@@ -77,8 +77,26 @@ namespace Ink_Canvas
                 AutoSwitchFloatingBarIconForTheme(theme);
             }
 
+            // 翻页条是 UserControl，不在 Application.Current.Windows 里，
+            // RefreshOtherWindowsTheme() 遍历不到它 —— 原来切主题后翻页条颜色不变，
+            // 必须重进一次放映才刷新，就是这个原因。这里显式补一次。
+            RefreshPPtNavBarTheme();
+
             InvalidateVisual();
             RefreshOtherWindowsTheme();
+        }
+
+        /// <summary>把当前主题应用到四个翻页条。</summary>
+        private void RefreshPPtNavBarTheme()
+        {
+            try
+            {
+                PPTUIManager?.UpdateNavigationButtonStyles();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"刷新翻页条主题失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         void LoadImageResourceDictionary(string path)
@@ -164,7 +182,13 @@ namespace Ink_Canvas
             }
         }
 
-        private bool IsCurrentThemeDark()
+        /// <summary>
+        /// 当前应用主题是否深色。
+        ///
+        /// 这是全项目**唯一**的主题深浅判定源：浮动栏图标、按钮配色、翻页条
+        /// 都读它。原来翻页条自己另读系统主题，导致应用深色 + 系统浅色时两者撞色。
+        /// </summary>
+        internal bool IsCurrentThemeDark()
         {
             return Settings.Appearance.Theme == 1 ||
                    (Settings.Appearance.Theme == 2 && !ThemeHelper.IsSystemThemeLight());

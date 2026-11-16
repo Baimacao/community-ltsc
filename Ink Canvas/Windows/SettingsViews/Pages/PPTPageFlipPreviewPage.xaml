@@ -137,12 +137,6 @@
                                     <ui:ToggleSwitch x:Name="ToggleSwitchShowPageNumber" Toggled="ToggleSwitchShowPageNumber_Toggled"/>
                                 </ui:SettingsCard>
 
-                                <!-- Black Background ToggleSwitch -->
-                                <ui:SettingsCard x:Name="CardBlackBackground" Header="{x:Static props:SettingsStrings.Flip_BlackBackground}"
-                                                 Description="{x:Static props:SettingsStrings.Flip_BlackBackgroundDesc}">
-                                    <ui:ToggleSwitch x:Name="ToggleSwitchBlackBackground" Toggled="ToggleSwitchBlackBackground_Toggled"/>
-                                </ui:SettingsCard>
-
                                 <!-- Offset Slider with Reset Button (Side: 左侧/右侧) -->
                                 <ui:SettingsCard x:Name="CardOffset" Header="{x:Static props:SettingsStrings.Flip_Offset}">
                                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">

@@ -272,10 +272,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             ToggleSwitchShowPageNumber.IsOn = isGlobal ? ppt.PPTGlobalShowPageNumber
                 : (useGlobal ? ppt.PPTGlobalShowPageNumber : GetPositionShowPageNumber(selectedIndex, ppt));
 
-            // 3. Black Background ToggleSwitch
-            ToggleSwitchBlackBackground.IsOn = isGlobal ? ppt.PPTGlobalBlackBackground
-                : (useGlobal ? ppt.PPTGlobalBlackBackground : GetPositionBlackBackground(selectedIndex, ppt));
-
             // 4. Offset Sliders (Side + Bottom)
             //    全局 tab: 两个都显示；侧边位置: 仅 CardOffset；底部位置: 仅 CardOffsetBottom
             bool isSideContext = isGlobal || selectedIndex == 0 || selectedIndex == 1;
@@ -356,29 +352,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 case 1: ppt.PPTRSShowPageNumber = val; break;
                 case 2: ppt.PPTLBShowPageNumber = val; break;
                 case 3: ppt.PPTRBShowPageNumber = val; break;
-            }
-        }
-
-        private bool GetPositionBlackBackground(int index, PowerPointSettings ppt)
-        {
-            switch (index)
-            {
-                case 0: return ppt.PPTLSBlackBackground;
-                case 1: return ppt.PPTRSBlackBackground;
-                case 2: return ppt.PPTLBBlackBackground;
-                case 3: return ppt.PPTRBBlackBackground;
-                default: return false;
-            }
-        }
-
-        private void SetPositionBlackBackground(int index, PowerPointSettings ppt, bool val)
-        {
-            switch (index)
-            {
-                case 0: ppt.PPTLSBlackBackground = val; break;
-                case 1: ppt.PPTRSBlackBackground = val; break;
-                case 2: ppt.PPTLBBlackBackground = val; break;
-                case 3: ppt.PPTRBBlackBackground = val; break;
             }
         }
 
@@ -509,10 +482,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             bool lbShowPage = ppt.PPTLBUseGlobalSettings ? ppt.PPTGlobalShowPageNumber : ppt.PPTLBShowPageNumber;
             bool rbShowPage = ppt.PPTRBUseGlobalSettings ? ppt.PPTGlobalShowPageNumber : ppt.PPTRBShowPageNumber;
 
-            bool lsBlackBg = ppt.PPTLSUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTLSBlackBackground;
-            bool rsBlackBg = ppt.PPTRSUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTRSBlackBackground;
-            bool lbBlackBg = ppt.PPTLBUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTLBBlackBackground;
-            bool rbBlackBg = ppt.PPTRBUseGlobalSettings ? ppt.PPTGlobalBlackBackground : ppt.PPTRBBlackBackground;
+            // 翻页条深浅统一跟随应用主题，四个位置一样
+            bool navDark = MainWindow.Settings?.Appearance?.Theme == 1
+                || (MainWindow.Settings?.Appearance?.Theme == 2 && !Ink_Canvas.Helpers.ThemeHelper.IsSystemThemeLight());
+            bool lsBlackBg = navDark;
+            bool rsBlackBg = navDark;
+            bool lbBlackBg = navDark;
+            bool rbBlackBg = navDark;
 
             // 1. Set scale for all 4 bars
             PreviewLS.SetBarScale(lsScale);
@@ -632,32 +608,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             bool isOn = ToggleSwitchShowPageNumber.IsOn;
 
             SetPositionShowPageNumber(selectedIndex, ppt, isOn);
-            SettingsManager.SaveSettingsToFile();
-
-            // Trigger UI and preview refresh
-            SettingsActionHub.OnPPTButtonPositionChanged();
-            UpdatePreviews();
-        }
-
-        private void ToggleSwitchBlackBackground_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!_isLoaded) return;
-
-            var ppt = SettingsManager.Settings.PowerPointSettings;
-
-            if (IsGlobalTabSelected)
-            {
-                ppt.PPTGlobalBlackBackground = ToggleSwitchBlackBackground.IsOn;
-                SettingsManager.SaveSettingsToFile();
-                SettingsActionHub.OnPPTGlobalSettingsChanged();
-                UpdatePreviews();
-                return;
-            }
-
-            int selectedIndex = GetSelectedPositionIndex();
-            bool isOn = ToggleSwitchBlackBackground.IsOn;
-
-            SetPositionBlackBackground(selectedIndex, ppt, isOn);
             SettingsManager.SaveSettingsToFile();
 
             // Trigger UI and preview refresh

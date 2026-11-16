@@ -47,9 +47,6 @@ namespace Ink_Canvas.Properties
         public static string AutoScreenshot => ResourceManager.GetString(nameof(AutoScreenshot), _resourceCulture);
 
         public static string AutoScreenshotHint => ResourceManager.GetString(nameof(AutoScreenshotHint), _resourceCulture);
-
-        public static string BlackBackground => ResourceManager.GetString(nameof(BlackBackground), _resourceCulture);
-
         public static string BottomGroupTitle => ResourceManager.GetString(nameof(BottomGroupTitle), _resourceCulture);
 
         public static string EnhancedPreview => ResourceManager.GetString(nameof(EnhancedPreview), _resourceCulture);

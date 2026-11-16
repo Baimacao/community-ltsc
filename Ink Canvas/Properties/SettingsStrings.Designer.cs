@@ -79,8 +79,6 @@ namespace Ink_Canvas.Properties {
         public static string Flip_EnableHereDesc => ResourceManager.GetString(nameof(Flip_EnableHereDesc), resourceCulture);
         public static string Flip_ShowPageNumber => ResourceManager.GetString(nameof(Flip_ShowPageNumber), resourceCulture);
         public static string Flip_ShowPageNumberDesc => ResourceManager.GetString(nameof(Flip_ShowPageNumberDesc), resourceCulture);
-        public static string Flip_BlackBackground => ResourceManager.GetString(nameof(Flip_BlackBackground), resourceCulture);
-        public static string Flip_BlackBackgroundDesc => ResourceManager.GetString(nameof(Flip_BlackBackgroundDesc), resourceCulture);
         public static string Flip_Offset => ResourceManager.GetString(nameof(Flip_Offset), resourceCulture);
         public static string Flip_Opacity => ResourceManager.GetString(nameof(Flip_Opacity), resourceCulture);
         public static string Flip_Scale => ResourceManager.GetString(nameof(Flip_Scale), resourceCulture);

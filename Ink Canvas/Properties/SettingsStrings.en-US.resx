@@ -146,12 +146,6 @@
   <data name="Flip_ShowPageNumberDesc" xml:space="preserve">
     <value>Shows the current page and the total in the flip bar.</value>
   </data>
-  <data name="Flip_BlackBackground" xml:space="preserve">
-    <value>Black background</value>
-  </data>
-  <data name="Flip_BlackBackgroundDesc" xml:space="preserve">
-    <value>Uses a translucent black background instead of the theme's transparent one.</value>
-  </data>
   <data name="Flip_Offset" xml:space="preserve">
     <value>Offset</value>
   </data>
