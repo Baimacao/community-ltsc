@@ -319,6 +319,9 @@ namespace Ink_Canvas.Windows
                 case OobePresetWindow.PresetKind.Standard:
                     OobePresetWindow.ApplyStandard(_settings);
                     break;
+                case OobePresetWindow.PresetKind.Teacher:
+                    OobePresetWindow.ApplyTeacher(_settings);
+                    break;
                 case OobePresetWindow.PresetKind.Lite:
                     OobePresetWindow.ApplyLite(_settings);
                     break;

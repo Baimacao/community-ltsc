@@ -179,6 +179,69 @@
                     </Grid>
                 </Border>
 
+                <!-- 预设卡片: 教师推荐（真实课堂调校过的一套，来自备课机现场配置） -->
+                <Border x:Name="CardTeacher"
+                        CornerRadius="8"
+                        Padding="20,16"
+                        BorderThickness="2"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="CardTeacher_Click">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" />
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                                Width="40" Height="40"
+                                CornerRadius="8"
+                                Margin="0,0,14,0"
+                                Background="#FF10B981">
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Emoji2}"
+                                         FontSize="20"
+                                         Foreground="White"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
+                        </Border>
+                        <ikw:SimpleStackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                            <TextBlock Style="{DynamicResource BodyStrongTextBlockStyle}"
+                                       Text="{x:Static props:OobeStrings.Oobe_PresetTeacher}" />
+                            <TextBlock Style="{DynamicResource CaptionTextBlockStyle}"
+                                       Opacity="0.75"
+                                       TextWrapping="Wrap"
+                                       Text="{x:Static props:OobeStrings.Oobe_PresetTeacherDesc}" />
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                                <Border CornerRadius="4" Padding="6,2" Background="#FF10B981">
+                                    <TextBlock Style="{DynamicResource CaptionTextBlockStyle}"
+                                               Foreground="White" Text="{x:Static props:OobeStrings.Oobe_PresetTagPenSmoothing}" />
+                                </Border>
+                                <Border CornerRadius="4" Padding="6,2" Background="#FF10B981">
+                                    <TextBlock Style="{DynamicResource CaptionTextBlockStyle}"
+                                               Foreground="White" Text="{x:Static props:OobeStrings.Oobe_PresetTagStraighten}" />
+                                </Border>
+                                <Border CornerRadius="4" Padding="6,2" Background="#FF10B981">
+                                    <TextBlock Style="{DynamicResource CaptionTextBlockStyle}"
+                                               Foreground="White" Text="{x:Static props:OobeStrings.Oobe_PresetTagTwoFinger}" />
+                                </Border>
+                            </ikw:SimpleStackPanel>
+                        </ikw:SimpleStackPanel>
+                        <ui:FontIcon x:Name="IconTeacher"
+                                     Grid.Column="2"
+                                     Icon="{x:Static ui:SegoeFluentIcons.RadioBullet}"
+                                     FontSize="20"
+                                     Margin="12,0,0,0"
+                                     Opacity="0"
+                                     Foreground="{DynamicResource SystemControlForegroundAccentBrush}"
+                                     VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
                 <!-- 预设卡片: 简洁轻量配置 -->
                 <Border x:Name="CardLite"
                         CornerRadius="8"

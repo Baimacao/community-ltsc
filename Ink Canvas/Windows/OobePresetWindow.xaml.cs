@@ -11,7 +11,7 @@ namespace Ink_Canvas.Windows
 {
     public partial class OobePresetWindow : Window
     {
-        public enum PresetKind { None, Standard, Lite }
+        public enum PresetKind { None, Standard, Teacher, Lite }
 
         public PresetKind SelectedPreset { get; private set; } = PresetKind.None;
 
@@ -104,8 +104,10 @@ namespace Ink_Canvas.Windows
             // 重置所有卡片边框
             var defaultBrush = (Brush)FindResource("SystemControlForegroundBaseLowBrush");
             CardStandard.BorderBrush = defaultBrush;
+            CardTeacher.BorderBrush = defaultBrush;
             CardLite.BorderBrush = defaultBrush;
             IconStandard.Opacity = 0;
+            IconTeacher.Opacity = 0;
             IconLite.Opacity = 0;
 
             var accentBrush = (Brush)FindResource("SystemControlForegroundAccentBrush");
@@ -114,6 +116,10 @@ namespace Ink_Canvas.Windows
                 case PresetKind.Standard:
                     CardStandard.BorderBrush = accentBrush;
                     IconStandard.Opacity = 1;
+                    break;
+                case PresetKind.Teacher:
+                    CardTeacher.BorderBrush = accentBrush;
+                    IconTeacher.Opacity = 1;
                     break;
                 case PresetKind.Lite:
                     CardLite.BorderBrush = accentBrush;
@@ -126,6 +132,7 @@ namespace Ink_Canvas.Windows
 
         private void CardStandard_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Standard);
 
+        private void CardTeacher_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Teacher);
         private void CardLite_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Lite);
 
         private void BtnApply_Click(object sender, RoutedEventArgs e)
@@ -213,6 +220,128 @@ namespace Ink_Canvas.Windows
             // 高级
             settings.Advanced.IsLogEnabled = true;
         }
+
+        /// <summary>
+        /// 教师推荐配置：直接套用内置的那份真实备课机配置。
+        ///
+        /// 实现方式是「读整份 JSON 再覆盖」，不是逐字段手写。理由：
+        /// 那份 JSON 有 400 多个字段，手写不可能写全，而且以后 Settings.cs
+        /// 加字段时手写版会悄悄落后 —— 表现就是「教师推荐」跟真实配置对不上，
+        /// 这种偏差没有任何报错会提醒你。读文件则天然跟着走。
+        ///
+        /// 做法约束：
+        /// - 不能直接替换引用。调用方持有的是 readonly 的 _settings，
+        ///   所以反序列化出一份新的，再逐段赋回它。
+        /// - 赋回时必须判空：老版本 JSON 可能缺段。
+        /// - 装完要剥掉「属于某台机器」的几项（保存路径、引导标记），
+        ///   否则用户一进来就是别人的路径、或者跳过引导。
+        /// </summary>
+        public static void ApplyTeacher(Settings settings)
+        {
+            if (settings == null) return;
+
+            Settings preset = LoadEmbeddedSettings("DefaultConfigs.Settings.json");
+            if (preset == null)
+            {
+                // 资源丢了不该让 OOBE 卡住，也不能静默变成空配置 ——
+                // 留日志，然后用「课堂标准」兜底，至少是个能用的状态。
+                LogHelper.WriteLogToFile(
+                    "教师推荐配置读取失败（嵌入资源缺失），回退到课堂标准配置",
+                    LogHelper.LogType.Error);
+                ApplyStandard(settings);
+                return;
+            }
+
+            // 逐段赋回。缺段判空，老 JSON 不会把已有值打掉。
+            if (preset.Advanced != null) settings.Advanced = preset.Advanced;
+            if (preset.Appearance != null) settings.Appearance = preset.Appearance;
+            if (preset.Automation != null) settings.Automation = preset.Automation;
+            if (preset.PowerPointSettings != null) settings.PowerPointSettings = preset.PowerPointSettings;
+            if (preset.Canvas != null) settings.Canvas = preset.Canvas;
+            if (preset.Gesture != null) settings.Gesture = preset.Gesture;
+            if (preset.InkToShape != null) settings.InkToShape = preset.InkToShape;
+            if (preset.Startup != null) settings.Startup = preset.Startup;
+            if (preset.RandSettings != null) settings.RandSettings = preset.RandSettings;
+            if (preset.ModeSettings != null) settings.ModeSettings = preset.ModeSettings;
+            if (preset.Camera != null) settings.Camera = preset.Camera;
+            if (preset.Dlass != null) settings.Dlass = preset.Dlass;
+            if (preset.Security != null) settings.Security = preset.Security;
+            if (preset.Notification != null) settings.Notification = preset.Notification;
+            if (preset.Toolbar != null) settings.Toolbar = preset.Toolbar;
+            if (preset.MiniWhiteboard != null) settings.MiniWhiteboard = preset.MiniWhiteboard;
+            if (preset.ToolbarConfigName != null) settings.ToolbarConfigName = preset.ToolbarConfigName;
+            if (preset.BoardToolbarConfigName != null) settings.BoardToolbarConfigName = preset.BoardToolbarConfigName;
+            if (preset.Automation?.FloatingWindowInterceptor != null)
+                settings.Automation.FloatingWindowInterceptor = preset.Automation.FloatingWindowInterceptor;
+
+            StripMachineSpecificValues(settings);
+        }
+
+        /// <summary>
+        /// 剥掉不该跟配置走的东西。
+        ///
+        /// 这一条是整个方案的关键：能整份套用，前提是知道哪几项「属于机器不属于配置」。
+        /// 现在只有两项，以后如果配置文件里再混进机器相关的东西，也在这里加。
+        /// </summary>
+        private static void StripMachineSpecificValues(Settings settings)
+        {
+            // 1) 保存路径。素材里是某台机器上的 C:\Users\...，必须清空，
+            //    让运行时按 exe 目录重算（LoadSettings 里有这段修正逻辑）。
+            if (settings.Automation != null)
+            {
+                settings.Automation.AutoSavedStrokesLocation = string.Empty;
+            }
+
+            // 2) 引导完成标记。这是「这台机器走过引导了」，不是配置项。
+            //    不清的话用户套用预设后不会再看到引导。
+            if (settings.Startup != null)
+            {
+                settings.Startup.HasShownOobe = false;
+            }
+
+            // 3) 密码。预设里不该带任何密码哈希。
+            if (settings.Security != null)
+            {
+                settings.Security.PasswordSalt = string.Empty;
+                settings.Security.PasswordHash = string.Empty;
+                settings.Security.PasswordEnabled = false;
+            }
+        }
+
+        /// <summary>
+        /// 从嵌入资源读一份 Settings。失败返回 null，由调用方决定怎么兜底。
+        /// </summary>
+        private static Settings LoadEmbeddedSettings(string resourceName)
+        {
+            try
+            {
+                var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                using (var stream = asm.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null)
+                    {
+                        LogHelper.WriteLogToFile(
+                            $"嵌入资源不存在: {resourceName}",
+                            LogHelper.LogType.Error);
+                        return null;
+                    }
+
+                    using (var reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8))
+                    {
+                        string json = reader.ReadToEnd();
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(
+                    $"读取嵌入配置 {resourceName} 失败: {ex.Message}",
+                    LogHelper.LogType.Error);
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// 简洁轻量配置：最小化后台行为，适合简单批注场景。

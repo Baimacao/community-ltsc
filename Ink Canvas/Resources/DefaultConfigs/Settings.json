@@ -58,10 +58,6 @@
         "enableTimeDisplayInWhiteboardMode": false,
         "enableChickenSoupInWhiteboardMode": true,
         "unFoldButtonImageType": 0,
-        "enableSplashScreen": false,
-        "splashScreenStyle": 1,
-        "customSplashImagePath": "",
-        "customSplashTextPosition": 1,
         "isShowQuickPanel": true,
         "chickenSoupSource": 1,
         "chickenSoupPosition": "TopLeft",
@@ -192,14 +188,12 @@
         "pptNavBarScale": 1.0,
         "pptGlobalButtonEnabled": true,
         "pptGlobalShowPageNumber": true,
-        "pptGlobalBlackBackground": true,
         "pptGlobalSideButtonPosition": 0,
         "pptGlobalBottomButtonPosition": 0,
         "pptGlobalButtonOpacity": 0.5,
         "pptLSUseGlobalSettings": true,
         "pptPageNumberFontSize": 17.0,
         "pptPageTotalFontSize": 10.0,
-        "pptNavBarAutoHide": true,
         "pptNavBarAutoHideDelaySeconds": 3.0,
         "pptNavBarAutoHideOpacity": 0.08,
         "floatingBarIdleFade": true,
@@ -218,10 +212,6 @@
         "pptRSShowPageNumber": true,
         "pptLBShowPageNumber": true,
         "pptRBShowPageNumber": true,
-        "pptLSBlackBackground": true,
-        "pptRSBlackBackground": true,
-        "pptLBBlackBackground": true,
-        "pptRBBlackBackground": true,
         "powerPointSupport": true,
         "isShowCanvasAtNewSlideShow": false,
         "isNoClearStrokeOnSelectWhenInPowerPoint": true,
@@ -334,8 +324,6 @@
     },
     "randSettings": {
         "showRandomAndSingleDraw": true,
-        "useLegacyTimerUI": false,
-        "useNewStyleUI": true,
         "timerVolume": 1.0,
         "customTimerSoundPath": "",
         "enableOvertimeCountUp": false,
@@ -353,9 +341,7 @@
         "resolutionHeight": 1080
     },
     "dlass": {
-        "userToken": "",
-        "apiBaseUrl": "https://dlass.tech",
-        "autoUploadDelayMinutes": 0
+        "userToken": ""
     },
     "security": {
         "passwordEnabled": false,
@@ -374,14 +360,6 @@
     },
     "toolbarConfigName": "default",
     "boardToolbarConfigName": "default",
-    "performance": {
-        "history": [],
-        "deviceScore": -1,
-        "cpuScore": -1,
-        "memoryScore": -1,
-        "diskScore": -1,
-        "lastTestTime": ""
-    },
     "miniWhiteboard": {
         "isEnabled": true,
         "defaultWidth": 400.0,
