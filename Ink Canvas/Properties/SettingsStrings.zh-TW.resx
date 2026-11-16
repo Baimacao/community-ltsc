@@ -298,4 +298,31 @@
   <data name="Auto_EmptyHint" xml:space="preserve">
     <value>在左側選擇或添加一個自動化，然後在此處進行設定。</value>
   </data>
+  <data name="PresenterKey_EnableHeader" xml:space="preserve">
+    <value>啟用翻頁筆適配</value>
+  </data>
+  <data name="PresenterKey_EnableDesc" xml:space="preserve">
+    <value>開啟後，下面配對的功能按鍵會正常運作；關閉時只攔截、不回應，防止誤觸。</value>
+  </data>
+  <data name="PresenterKey_ScopeTitle" xml:space="preserve">
+    <value>只在 PPT 關聯放映時生效</value>
+  </data>
+  <data name="PresenterKey_ScopeDesc" xml:space="preserve">
+    <value>其他模式（註記、白板、桌面）下這些鍵完全不受影響，走系統原有邏輯。退出放映時會立刻卸載鍵盤鉤子。</value>
+  </data>
+  <data name="PresenterKey_BindingTitle" xml:space="preserve">
+    <value>按鍵配對</value>
+  </data>
+  <data name="PresenterKey_BindingDesc" xml:space="preserve">
+    <value>點擊右邊的按鍵框，然後按下你想用的鍵（或組合鍵）。點「恢復預設」回到出廠配對。</value>
+  </data>
+  <data name="PresenterKey_ResetDefaults" xml:space="preserve">
+    <value>恢復預設</value>
+  </data>
+  <data name="Nav_PresenterKey" xml:space="preserve">
+    <value>翻頁筆適配</value>
+  </data>
+  <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
+    <value>設定翻頁筆的特殊鍵，防止課堂上誤觸黑屏/退出放映</value>
+  </data>
 </root>

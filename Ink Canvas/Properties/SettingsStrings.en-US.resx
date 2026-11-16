@@ -257,4 +257,31 @@
   <data name="Auto_EmptyHint" xml:space="preserve">
     <value>Pick or add an automation on the left, then set it up here.</value>
   </data>
+  <data name="PresenterKey_EnableHeader" xml:space="preserve">
+    <value>Enable presenter remote support</value>
+  </data>
+  <data name="PresenterKey_EnableDesc" xml:space="preserve">
+    <value>When on, the paired keys below work as configured. When off, they are blocked but do nothing, preventing accidental presses.</value>
+  </data>
+  <data name="PresenterKey_ScopeTitle" xml:space="preserve">
+    <value>Only active during PowerPoint slideshows</value>
+  </data>
+  <data name="PresenterKey_ScopeDesc" xml:space="preserve">
+    <value>In annotation, whiteboard and desktop modes these keys are untouched and follow the system. The keyboard hook unloads the moment the slideshow ends.</value>
+  </data>
+  <data name="PresenterKey_BindingTitle" xml:space="preserve">
+    <value>Key bindings</value>
+  </data>
+  <data name="PresenterKey_BindingDesc" xml:space="preserve">
+    <value>Click a key box on the right, then press the key (or combo) you want. Use "Restore defaults" to return to factory bindings.</value>
+  </data>
+  <data name="PresenterKey_ResetDefaults" xml:space="preserve">
+    <value>Restore defaults</value>
+  </data>
+  <data name="Nav_PresenterKey" xml:space="preserve">
+    <value>Presenter remote</value>
+  </data>
+  <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
+    <value>Configure presenter remote keys to avoid accidentally blanking or exiting a slideshow in class</value>
+  </data>
 </root>

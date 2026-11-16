@@ -165,15 +165,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Permissions}"/>
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
-                            x:Name="AdvancedPageItem"
-                            Content="{x:Static props:NavStrings.Nav_Advanced}"
-                            Tag="AdvancedPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Advanced_Settings}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Settings}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
                     </ui:NavigationViewItem.MenuItems>
                 </ui:NavigationViewItem>
 
@@ -253,9 +244,9 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                         </ui:NavigationViewItem>
                         <ui:NavigationViewItem
                             x:Name="PresenterKeyPageItem"
-                            Content="翻页笔适配"
+                            Content="{x:Static props:SettingsStrings.Nav_PresenterKey}"
                             Tag="PresenterKeyPage"
-                            ToolTipService.ToolTip="配置翻页笔的特殊键，防止课堂上误触黑屏/退出放映">
+                            ToolTipService.ToolTip="{x:Static props:SettingsStrings.Nav_PresenterKey_Tooltip}">
                             <ui:NavigationViewItem.Icon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.TouchPointer}"/>
                             </ui:NavigationViewItem.Icon>
@@ -279,6 +270,19 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                     </ui:NavigationViewItem.MenuItems>
+                </ui:NavigationViewItem>
+
+                <!-- 高级（LTSC N-01：原来塞在「通用」组里，但它装的是日志、配置文件、
+                     实验性功能和诊断工具，跟日常设置不是一类。老师平时不会进来，
+                     出问题时才需要 —— 提成一级入口，放在存储后面。 -->
+                <ui:NavigationViewItem
+                    x:Name="AdvancedPageItem"
+                    Content="{x:Static props:NavStrings.Nav_Advanced}"
+                    Tag="AdvancedPage"
+                    ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Advanced_Settings}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Settings}"/>
+                    </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
                 <!-- LTSC D-01: 自动更新功能已移除，更新设置页不再出现在导航中。 -->
@@ -372,6 +376,18 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_BoardMenu_Tooltip}">
                             <ui:NavigationViewItem.Icon>
                                 <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.BulletedList}"/>
+                            </ui:NavigationViewItem.Icon>
+                        </ui:NavigationViewItem>
+                        <!-- 信仰の源。原来只从「白板 → 外观」里的一张卡片进得去，
+                             要点三层才够到。它是个独立功能（自定义轮换、导入导出方案），
+                             不是外观的一部分，提到导航里。 -->
+                        <ui:NavigationViewItem
+                            x:Name="WhiteboardTipsPageItem"
+                            Content="{x:Static props:NavStrings.Nav_WhiteboardTips}"
+                            Tag="WhiteboardTipsPage"
+                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_WhiteboardTips}">
+                            <ui:NavigationViewItem.Icon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Message}"/>
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                     </ui:NavigationViewItem.MenuItems>

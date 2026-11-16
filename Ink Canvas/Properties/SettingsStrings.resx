@@ -257,4 +257,31 @@
   <data name="Auto_EmptyHint" xml:space="preserve">
     <value>在左侧选择或添加一个自动化，然后在此处进行设置。</value>
   </data>
+  <data name="PresenterKey_EnableHeader" xml:space="preserve">
+    <value>启用翻页笔适配</value>
+  </data>
+  <data name="PresenterKey_EnableDesc" xml:space="preserve">
+    <value>开启后，下面配对的功能按键会正常工作；关闭时只拦截、不响应，防止误触。</value>
+  </data>
+  <data name="PresenterKey_ScopeTitle" xml:space="preserve">
+    <value>只在 PPT 联动放映时生效</value>
+  </data>
+  <data name="PresenterKey_ScopeDesc" xml:space="preserve">
+    <value>其他模式（批注、白板、桌面）下这些键完全不受影响，走系统原有逻辑。退出放映时会立刻卸载键盘钩子。</value>
+  </data>
+  <data name="PresenterKey_BindingTitle" xml:space="preserve">
+    <value>按键配对</value>
+  </data>
+  <data name="PresenterKey_BindingDesc" xml:space="preserve">
+    <value>点击右边的按键框，然后按下你想用的键（或组合键）。点「恢复默认」回到出厂配对。</value>
+  </data>
+  <data name="PresenterKey_ResetDefaults" xml:space="preserve">
+    <value>恢复默认</value>
+  </data>
+  <data name="Nav_PresenterKey" xml:space="preserve">
+    <value>翻页笔适配</value>
+  </data>
+  <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
+    <value>配置翻页笔的特殊键，防止课堂上误触黑屏/退出放映</value>
+  </data>
 </root>

@@ -541,6 +541,15 @@ namespace Ink_Canvas.Properties
             dict["Settings_Nav_Hotkey_Tooltip"] = ("NavStrings", "Settings_Nav_Hotkey_Tooltip");
             dict["Settings_Nav_Security"] = ("NavStrings", "Settings_Nav_Security");
             dict["Settings_Nav_Security_Tooltip"] = ("NavStrings", "Settings_Nav_Security_Tooltip");
+            dict["PresenterKey_EnableHeader"] = ("SettingsStrings", "PresenterKey_EnableHeader");
+            dict["PresenterKey_EnableDesc"] = ("SettingsStrings", "PresenterKey_EnableDesc");
+            dict["PresenterKey_ScopeTitle"] = ("SettingsStrings", "PresenterKey_ScopeTitle");
+            dict["PresenterKey_ScopeDesc"] = ("SettingsStrings", "PresenterKey_ScopeDesc");
+            dict["PresenterKey_BindingTitle"] = ("SettingsStrings", "PresenterKey_BindingTitle");
+            dict["PresenterKey_BindingDesc"] = ("SettingsStrings", "PresenterKey_BindingDesc");
+            dict["PresenterKey_ResetDefaults"] = ("SettingsStrings", "PresenterKey_ResetDefaults");
+            dict["Nav_PresenterKey"] = ("SettingsStrings", "Nav_PresenterKey");
+            dict["Nav_PresenterKey_Tooltip"] = ("SettingsStrings", "Nav_PresenterKey_Tooltip");
             dict["Settings_Title"] = ("NavStrings", "Settings_Title");
             dict["Nav_SettingsWindow_Title"] = ("NavStrings", "Nav_SettingsWindow_Title");
             dict["Nav_AppSettings"] = ("NavStrings", "Nav_AppSettings");

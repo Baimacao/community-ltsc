@@ -116,5 +116,14 @@ namespace Ink_Canvas.Properties {
         public static string Auto_AddAction => ResourceManager.GetString(nameof(Auto_AddAction), resourceCulture);
         public static string Auto_RestoreNote => ResourceManager.GetString(nameof(Auto_RestoreNote), resourceCulture);
         public static string Auto_EmptyHint => ResourceManager.GetString(nameof(Auto_EmptyHint), resourceCulture);
+        public static string PresenterKey_EnableHeader => ResourceManager.GetString(nameof(PresenterKey_EnableHeader), resourceCulture);
+        public static string PresenterKey_EnableDesc => ResourceManager.GetString(nameof(PresenterKey_EnableDesc), resourceCulture);
+        public static string PresenterKey_ScopeTitle => ResourceManager.GetString(nameof(PresenterKey_ScopeTitle), resourceCulture);
+        public static string PresenterKey_ScopeDesc => ResourceManager.GetString(nameof(PresenterKey_ScopeDesc), resourceCulture);
+        public static string PresenterKey_BindingTitle => ResourceManager.GetString(nameof(PresenterKey_BindingTitle), resourceCulture);
+        public static string PresenterKey_BindingDesc => ResourceManager.GetString(nameof(PresenterKey_BindingDesc), resourceCulture);
+        public static string PresenterKey_ResetDefaults => ResourceManager.GetString(nameof(PresenterKey_ResetDefaults), resourceCulture);
+        public static string Nav_PresenterKey => ResourceManager.GetString(nameof(Nav_PresenterKey), resourceCulture);
+        public static string Nav_PresenterKey_Tooltip => ResourceManager.GetString(nameof(Nav_PresenterKey_Tooltip), resourceCulture);
     }
 }

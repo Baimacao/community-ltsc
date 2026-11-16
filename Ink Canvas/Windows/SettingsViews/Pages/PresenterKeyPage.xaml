@@ -5,16 +5,18 @@
          xmlns:d="http://schemas.microsoft.com/expression/blend"
          xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
          xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+         xmlns:props="clr-namespace:Ink_Canvas.Properties"
          mc:Ignorable="d">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,12,24,24">
         <ikw:SimpleStackPanel Spacing="12" MaxWidth="900" HorizontalAlignment="Left">
 
             <!-- 总开关 -->
-            <ui:SettingsCard Header="启用翻页笔适配"
-                             Description="开启后，下面配对的功能按键会正常工作；关闭时只拦截、不响应，防止误触。">
+            <ui:SettingsCard Header="{x:Static props:SettingsStrings.PresenterKey_EnableHeader}"
+                             Description="{x:Static props:SettingsStrings.PresenterKey_EnableDesc}">
                 <ui:ToggleSwitch x:Name="ToggleEnableAdapter"
-                                 OnContent="开" OffContent="关"
+                                 OnContent="{x:Static props:CommonStrings.Common_On}"
+                                 OffContent="{x:Static props:CommonStrings.Common_Off}"
                                  Toggled="ToggleEnableAdapter_Toggled"/>
             </ui:SettingsCard>
 
@@ -25,15 +27,15 @@
                     <SolidColorBrush Color="#1FF0A020"/>
                 </Border.Background>
                 <ikw:SimpleStackPanel Spacing="6">
-                    <TextBlock FontWeight="SemiBold" Text="只在 PPT 联动放映时生效"/>
+                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:SettingsStrings.PresenterKey_ScopeTitle}"/>
                     <TextBlock TextWrapping="Wrap" LineHeight="20" FontSize="12.5" Opacity="0.85"
-                               Text="其他模式（批注、白板、桌面）下这些键完全不受影响，走系统原有逻辑。退出放映时会立刻卸载键盘钩子。"/>
+                               Text="{x:Static props:SettingsStrings.PresenterKey_ScopeDesc}"/>
                 </ikw:SimpleStackPanel>
             </Border>
 
             <!-- 配对表 -->
-            <TextBlock Text="按键配对" FontWeight="SemiBold" Margin="0,8,0,0"/>
-            <TextBlock Text="点击右边的按键框，然后按下你想用的键（或组合键）。点「恢复默认」回到出厂配对。"
+            <TextBlock Text="{x:Static props:SettingsStrings.PresenterKey_BindingTitle}" FontWeight="SemiBold" Margin="0,8,0,0"/>
+            <TextBlock Text="{x:Static props:SettingsStrings.PresenterKey_BindingDesc}"
                        TextWrapping="Wrap" Opacity="0.7" FontSize="12.5"/>
 
             <ItemsControl x:Name="BindingsItemsControl">
@@ -57,7 +59,7 @@
                                         MinWidth="120" Padding="10,6" Margin="8,0"
                                         Click="CaptureButton_Click" Tag="{Binding}"/>
 
-                                <Button Grid.Column="2" Content="恢复默认"
+                                <Button Grid.Column="2" Content="{x:Static props:SettingsStrings.PresenterKey_ResetDefaults}"
                                         Padding="10,6" Click="ResetButton_Click" Tag="{Binding}"/>
                             </Grid>
                         </Border>
