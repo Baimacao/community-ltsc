@@ -56,6 +56,11 @@ namespace Ink_Canvas.Properties
 
         public static string Timer_ProgressiveVolume => ResourceManager.GetString(nameof(Timer_ProgressiveVolume), _resourceCulture);
 
+        /// <summary>
+        ///   查找类似 调整时间 的本地化字符串。
+        /// </summary>
+        public static string Timer_AdjustPanel => ResourceManager.GetString(nameof(Timer_AdjustPanel), _resourceCulture);
+
         public static string Timer_Reset => ResourceManager.GetString(nameof(Timer_Reset), _resourceCulture);
 
         public static string Timer_Title => ResourceManager.GetString(nameof(Timer_Title), _resourceCulture);

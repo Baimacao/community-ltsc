@@ -2,6 +2,7 @@ using Ink_Canvas.Helpers;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Media;
 using System.Timers;
@@ -102,13 +103,16 @@ namespace Ink_Canvas.Windows
 
         private void NewStyleTimerWindow_Closed(object sender, EventArgs e)
         {
-            _minimizedWindow?.Close();
             SystemEvents.UserPreferenceChanged -= SystemEvents_UserPreferenceChanged;
             timer?.Stop();
             timer?.Dispose();
             hideTimer?.Stop();
             hideTimer?.Dispose();
             mediaPlayer?.Close();
+            if (QuickOptionsTransform != null) SpringAnimator.Stop(QuickOptionsTransform);
+            if (MainDisplayTransform != null) SpringAnimator.Stop(MainDisplayTransform);
+            foreach (var key in _springScalarKeys) SpringAnimator.StopScalar(key);
+            _springScalarKeys.Clear();
         }
 
         private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
@@ -260,6 +264,9 @@ namespace Ink_Canvas.Windows
 
         Timer timer = new Timer();
         private Timer hideTimer;
+
+        /// <summary>进入倒计时后，闲置多少秒折叠调时间组件。</summary>
+        private const double AdjustFoldDelaySeconds = 5;
         private DateTime lastActivityTime;
         public TimeSpan? GetTotalTimeSpan()
         {
@@ -804,6 +811,7 @@ namespace Ink_Canvas.Windows
                 StartPauseIcon.Data = Geometry.Parse(PauseIconData);
                 isPaused = false;
                 timer.Start();
+                StartAdjustIdleCountdown();
             }
             else if (isTimerRunning)
             {
@@ -812,6 +820,7 @@ namespace Ink_Canvas.Windows
                 StartPauseIcon.Data = Geometry.Parse(PlayIconData);
                 isPaused = true;
                 timer.Stop();
+                UnfoldAdjustPanel();
             }
             else
             {
@@ -834,8 +843,8 @@ namespace Ink_Canvas.Windows
                 hasPlayedProgressiveReminder = false;
                 timer.Start();
 
-                // 启动隐藏定时器
-                hideTimer.Start();
+                // 进入倒计时状态：开始计 5 秒闲置，到点折叠调时间组件
+                StartAdjustIdleCountdown();
 
                 // 保存到最近计时记录
                 SaveRecentTimer();
@@ -878,12 +887,10 @@ namespace Ink_Canvas.Windows
                 isTimerRunning = false;
                 isPaused = false;
 
-                if (hideTimer != null)
-                {
-                    hideTimer.Stop();
-                }
-                _minimizedWindow?.Close();
+                StopAdjustIdleCountdown();
             }
+
+            UnfoldAdjustPanel();
 
             isOvertimeMode = false;
 
@@ -1296,41 +1303,242 @@ namespace Ink_Canvas.Windows
             });
         }
 
-        private NewStyleMinimizedTimerWindow _minimizedWindow;
-
+        /// <summary>
+        /// 闲置计时。原来这里是「闲置 5 秒弹一个独立迷你窗」——
+        /// 主窗口还在，等于又叠了一层，不是需求里说的「折叠调时间的组件」。
+        /// 现在改成：进入倒计时后闲置满 5 秒，把调时间组件原地收起，
+        /// 主窗口不动，只留大数字 + 底部控制条 + 一个显式展开入口。
+        ///
+        /// 全屏模式下不折叠：全屏窗是独立的展示面，主窗口在后台，
+        /// 折叠它没有意义，还会让回来的时候状态对不上。
+        /// </summary>
         private void HideTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!isTimerRunning || isPaused) return;
+            if (IsFullscreenWindowOpen) return;
 
             var timeSinceLastActivity = DateTime.Now - lastActivityTime;
-            if (timeSinceLastActivity.TotalSeconds >= 5)
+            if (timeSinceLastActivity.TotalSeconds < AdjustFoldDelaySeconds) return;
+
+            Dispatcher.Invoke(() =>
             {
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    if (_minimizedWindow != null && _minimizedWindow.IsVisible) return;
-                    if (IsFullscreenWindowOpen) return;
-                    _minimizedWindow = new NewStyleMinimizedTimerWindow(
-                    () => GetRemainingTime(),
-                    () => !isTimerRunning || isPaused,
-                    () =>
-                    {
-                        Show();
-                        Activate();
-                        UpdateActivityTime();
-                    },
-                    () =>
-                    {
-                        StopTimer();
-                    });
-                    _minimizedWindow.Closed += (s, args) => { _minimizedWindow = null; };
-                    _minimizedWindow.Show();
-                });
-            }
+                    StopAdjustIdleCountdown();
+                    FoldAdjustPanel();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"折叠调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
+                }
+            });
         }
 
         public void UpdateActivityTime()
         {
             lastActivityTime = DateTime.Now;
+        }
+
+        // ── 调时间组件的折叠 ───────────────────────────────────────
+        //
+        // 需求：进入倒计时状态后 5 秒，把「调时间」的组件折起来，
+        // 让老师看倒计时的时候视线里只剩数字和起停按钮。
+        //
+        // 折叠范围（ta 确认）：右侧常用时长 / 最近记录整块 + 六个数字上下的
+        // +/- 步进按钮 + 中间那条竖分隔线。大数字和底部控制条保留。
+        //
+        // 全部用 SpringAnimator —— 项目里那套六预设弹簧引擎，浮动栏和翻页条在用，
+        // 计时器之前一次都没接过。不用 DoubleAnimation：线性缓动和项目其他动效手感不一致。
+        //
+        // 折叠只动 Opacity 和 TranslateTransform，**不动 Width/Height**：
+        // 动画期间改尺寸会触发父级反复重排，数字会抖；位移和透明度只参与合成，
+        // 一帧一个值，稳定得多。
+
+        /// <summary>调时间组件是否处于折叠态。</summary>
+        private bool _isAdjustPanelFolded;
+
+        /// <summary>
+        /// 本窗口用过的弹簧标量 key。
+        /// SpringAnimator 的标量缓存是静态字典，窗口关了不清就一直在，
+        /// 开一次计时器漏一批 —— 关窗时统一 StopScalar。
+        /// </summary>
+        private readonly List<object> _springScalarKeys = new List<object>();
+
+        /// <summary>记住一个弹簧标量 key，供关窗时清理。</summary>
+        private void TrackSpringKey(object key)
+        {
+            if (key == null || _springScalarKeys.Contains(key)) return;
+            _springScalarKeys.Add(key);
+        }
+
+        /// <summary>折叠后大数字要平移多少才居中。窗口内容宽 900，数字区宽 500，原本左偏 10。</summary>
+        private const double FoldedDisplayOffsetX = 210;
+
+        /// <summary>折叠时右侧快捷区向右侧滑出的距离。</summary>
+        private const double QuickOptionsSlideOutX = 32;
+
+        /// <summary>进入倒计时状态后开始计 5 秒闲置。已在跑就不重开。</summary>
+        private void StartAdjustIdleCountdown()
+        {
+            UpdateActivityTime();
+            if (hideTimer == null) return;
+            hideTimer.Stop();
+            hideTimer.Start();
+        }
+
+        /// <summary>停止闲置计数（暂停、重置、完成、关闭时调用）。</summary>
+        private void StopAdjustIdleCountdown()
+        {
+            hideTimer?.Stop();
+        }
+
+        /// <summary>折叠调时间组件。重复调用安全。</summary>
+        private void FoldAdjustPanel()
+        {
+            if (_isAdjustPanelFolded) return;
+            _isAdjustPanelFolded = true;
+
+            try
+            {
+                // 右侧快捷区：向右滑出 + 淡出，落定后再摘出布局
+                if (QuickOptionsHost != null)
+                {
+                    if (QuickOptionsTransform != null)
+                    {
+                        SpringAnimator.Animate(QuickOptionsTransform, (float)QuickOptionsSlideOutX, 0f,
+                            SpringAnimator.Snappy, SpringAnimator.Snappy);
+                    }
+                    AnimateOpacity(QuickOptionsHost, 0, SpringAnimator.Snappy, () =>
+                    {
+                        if (_isAdjustPanelFolded && QuickOptionsHost != null)
+                            QuickOptionsHost.Visibility = Visibility.Collapsed;
+                    });
+                }
+
+                // 六个 +/- 步进按钮一起收起
+                FoldStepButtons(true);
+
+                // 竖分隔线淡掉
+                AnimateOpacity(DividerAdjustSeparator, 0, SpringAnimator.Smooth);
+
+                // 大数字平移到窗口正中
+                if (MainDisplayTransform != null)
+                {
+                    SpringAnimator.Animate(MainDisplayTransform, (float)FoldedDisplayOffsetX, 0f,
+                        SpringAnimator.Smooth, SpringAnimator.Smooth);
+                }
+
+                // 露出「调整时间」入口
+                if (BorderExpandAdjust != null)
+                {
+                    BorderExpandAdjust.Visibility = Visibility.Visible;
+                    AnimateOpacity(BorderExpandAdjust, 1, SpringAnimator.Smooth);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"折叠调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>展开调时间组件。重复调用安全。</summary>
+        private void UnfoldAdjustPanel()
+        {
+            StopAdjustIdleCountdown();
+            UpdateActivityTime();
+
+            if (!_isAdjustPanelFolded) return;
+            _isAdjustPanelFolded = false;
+
+            try
+            {
+                if (QuickOptionsHost != null)
+                {
+                    QuickOptionsHost.Visibility = Visibility.Visible;
+                    if (QuickOptionsTransform != null)
+                    {
+                        SpringAnimator.Animate(QuickOptionsTransform, 0f, 0f,
+                            SpringAnimator.Snappy, SpringAnimator.Snappy);
+                    }
+                    AnimateOpacity(QuickOptionsHost, 1, SpringAnimator.Snappy);
+                }
+
+                FoldStepButtons(false);
+
+                AnimateOpacity(DividerAdjustSeparator, 0.3, SpringAnimator.Smooth);
+
+                if (MainDisplayTransform != null)
+                {
+                    SpringAnimator.Animate(MainDisplayTransform, 0f, 0f,
+                        SpringAnimator.Smooth, SpringAnimator.Smooth);
+                }
+
+                if (BorderExpandAdjust != null)
+                {
+                    AnimateOpacity(BorderExpandAdjust, 0, SpringAnimator.Smooth, () =>
+                    {
+                        if (!_isAdjustPanelFolded && BorderExpandAdjust != null)
+                            BorderExpandAdjust.Visibility = Visibility.Collapsed;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"展开调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// 六个数字上下的 +/- 按钮一起折叠/展开。
+        ///
+        /// **不切 Visibility，只切 Opacity + IsHitTestVisible**：
+        /// Collapsed 会让按钮退出布局，StackPanel 高度一变，中间那排数字
+        /// 就会在整个折叠过程中上下抖 —— 这是「动画流畅」的反面。
+        /// 留着占位，数字原地不动，只是按钮看不见也点不到。
+        /// </summary>
+        private void FoldStepButtons(bool fold)
+        {
+            Button[] buttons =
+            {
+                Digit1PlusBtn, Digit1MinusBtn, Digit2PlusBtn, Digit2MinusBtn,
+                Digit3PlusBtn, Digit3MinusBtn, Digit4PlusBtn, Digit4MinusBtn,
+                Digit5PlusBtn, Digit5MinusBtn, Digit6PlusBtn, Digit6MinusBtn
+            };
+
+            foreach (var btn in buttons)
+            {
+                if (btn == null) continue;
+                // 动画一开始就断开命中测试，避免折叠过程中点到半透明的按钮
+                btn.IsHitTestVisible = !fold;
+                AnimateOpacity(btn, fold ? 0 : 1, SpringAnimator.Snappy);
+            }
+        }
+
+        /// <summary>对元素透明度做弹簧驱动。</summary>
+        private void AnimateOpacity(System.Windows.UIElement element, double target,
+            SpringAnimator.SpringPreset preset, Action finished = null)
+        {
+            if (element == null) return;
+            TrackSpringKey(element);
+            SpringAnimator.AnimateScalar(element, target, v =>
+            {
+                try { element.Opacity = Math.Max(0, Math.Min(1, v)); }
+                catch (Exception ex) { LogHelper.WriteLogToFile($"计时器透明度动画失败: {ex.Message}", LogHelper.LogType.Warning); }
+            }, preset, finished);
+        }
+
+        /// <summary>折叠态入口：点一下把调时间组件拿回来。</summary>
+        private void BorderExpandAdjust_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            UnfoldAdjustPanel();
+        }
+
+        /// <summary>触摸屏也要能点开 —— 触摸不会触发 MouseLeftButtonUp。</summary>
+        private void BorderExpandAdjust_TouchUp(object sender, TouchEventArgs e)
+        {
+            e.Handled = true;
+            UnfoldAdjustPanel();
         }
 
     }

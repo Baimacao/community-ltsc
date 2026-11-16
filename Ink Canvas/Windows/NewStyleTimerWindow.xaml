@@ -45,37 +45,40 @@
                     <!-- Main content -->
                     <Grid x:Name="MainContentGrid" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,-25,0,25">
                         <!-- Left: 6-digit display -->
-                        <Grid x:Name="MainDisplayGrid" Width="500" HorizontalAlignment="Left" Margin="-10,0,0,0">
+                        <Grid x:Name="MainDisplayGrid" Width="500" HorizontalAlignment="Left" Margin="-10,0,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="MainDisplayTransform" X="0" />
+                            </Grid.RenderTransform>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="DigitsPanel">
                                 <!-- HH group -->
                                 <Grid Margin="0,0,20,0" Width="120">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Grid Margin="0,0,15,0">
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit1PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit1Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit1PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit1Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit1Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit1MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit1Minus_Click"
+                                                <Button x:Name="Digit1MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit1Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
                                         </Grid>
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit2PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit2Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit2PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit2Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit2Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit2MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit2Minus_Click"
+                                                <Button x:Name="Digit2MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit2Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
@@ -89,30 +92,30 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Grid Margin="0,0,15,0">
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit3PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit3Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit3PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit3Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit3Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit3MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit3Minus_Click"
+                                                <Button x:Name="Digit3MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit3Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
                                         </Grid>
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit4PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit4Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit4PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit4Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit4Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit4MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit4Minus_Click"
+                                                <Button x:Name="Digit4MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit4Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
@@ -126,30 +129,30 @@
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Grid Margin="0,0,15,0">
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit5PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit5Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit5PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit5Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit5Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit5MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit5Minus_Click"
+                                                <Button x:Name="Digit5MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit5Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
                                         </Grid>
                                         <Grid>
                                             <StackPanel HorizontalAlignment="Center">
-                                                <Button x:Name="Digit6PlusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit6Plus_Click" Margin="0,0,0,15"
+                                                <Button x:Name="Digit6PlusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit6Plus_Click" Margin="0,0,0,15"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M12 5l0 14 M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                                 <Path x:Name="Digit6Display" Data="{StaticResource Digit0}" Fill="{DynamicResource NewTimerWindowDigitForeground}" Width="48" Height="48" HorizontalAlignment="Center" Stretch="Uniform" Margin="0,0,0,15"/>
-                                                <Button x:Name="Digit6MinusBtn" Width="40" Height="40" Cursor="Hand" Click="Digit6Minus_Click"
+                                                <Button x:Name="Digit6MinusBtn" Width="44" Height="44" Cursor="Hand" Click="Digit6Minus_Click"
                                                         Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
-                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="15"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
+                                                    <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="16"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                                     <Path Data="M5 12l14 0" Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent" Width="20" Height="20" Stretch="Uniform"/>
                                                 </Button>
                                             </StackPanel>
@@ -160,11 +163,17 @@
                         </Grid>
 
                         <!-- Divider -->
-                        <Border Width="2" Background="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" Opacity="0.3"
+                        <Border x:Name="DividerAdjustSeparator" Width="2" Background="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}" Opacity="0.3"
                                 HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="465,0,0,0"/>
 
-                        <!-- Right: quick options with TabControl -->
-                        <Grid x:Name="QuickOptionsGrid" HorizontalAlignment="Center" Margin="470,0,0,0" Height="200">
+                        <!-- Right: quick options with TabControl。
+                             外面套一层容器，折叠动画只改它的位移和透明度，
+                             里面 TabControl 的布局一行都不用动。 -->
+                        <Grid x:Name="QuickOptionsHost" Height="200" HorizontalAlignment="Center" Margin="470,0,0,0">
+                            <Grid.RenderTransform>
+                                <TranslateTransform x:Name="QuickOptionsTransform" X="0" />
+                            </Grid.RenderTransform>
+                        <Grid x:Name="QuickOptionsGrid" HorizontalAlignment="Center">
                             <TabControl x:Name="TimerQuickTabControl"
                                         Background="Transparent"
                                         BorderThickness="0"
@@ -278,12 +287,38 @@
                                 </TabItem>
                             </TabControl>
                         </Grid>
+                        </Grid>
                     </Grid>
+
+                    <!-- 折叠态的显式展开入口。
+                         运行中闲置 5 秒，步进按钮和右侧快捷时长会弹簧收起。
+                         触摸屏没有 hover，收起来的东西必须留一个看得见、够大的入口，
+                         否则老师只能靠猜哪里能点。 -->
+                    <Border x:Name="BorderExpandAdjust"
+                            Height="44" MinWidth="196"
+                            CornerRadius="22"
+                            Visibility="Collapsed" Opacity="0"
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            Margin="0,0,0,100"
+                            Cursor="Hand"
+                            Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}"
+                            MouseLeftButtonUp="BorderExpandAdjust_MouseLeftButtonUp"
+                            TouchUp="BorderExpandAdjust_TouchUp">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Data="M12 5l0 14 M5 12l14 0"
+                                  Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  Fill="Transparent" Width="18" Height="18" Stretch="Uniform" Margin="0,0,8,0"/>
+                            <TextBlock Text="{x:Static props:TimerStrings.Timer_AdjustPanel}"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"/>
+                        </StackPanel>
+                    </Border>
 
                     <!-- Bottom bar -->
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="FullscreenBtn" Width="110" Height="40" Cursor="Hand" Click="Fullscreen_Click" Margin="0,0,30,0" IsEnabled="False"
+                            <Button x:Name="FullscreenBtn" Width="110" Height="44" Cursor="Hand" Click="Fullscreen_Click" Margin="0,0,30,0" IsEnabled="False"
                                     Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
@@ -311,7 +346,7 @@
                                       Data="M6.5 4.00004V20C6.49995 20.178 6.54737 20.3527 6.63738 20.5062C6.72739 20.6597 6.85672 20.7864 7.01202 20.8732C7.16733 20.96 7.34299 21.0038 7.52088 21.0001C7.69878 20.9964 7.87245 20.9453 8.024 20.852L21.024 12.852C21.1696 12.7626 21.2898 12.6373 21.3733 12.4881C21.4567 12.339 21.5005 12.1709 21.5005 12C21.5005 11.8291 21.4567 11.6611 21.3733 11.512C21.2898 11.3628 21.1696 11.2375 21.024 11.148L8.024 3.14804C7.87245 3.0548 7.69878 3.00369 7.52088 2.99997C7.34299 2.99626 7.16733 3.04007 7.01202 3.1269C6.85672 3.21372 6.72739 3.34042 6.63738 3.4939C6.54737 3.64739 6.49995 3.82211 6.5 4.00004Z"
                                       Fill="White" Width="24" Height="24" Margin="2,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill"/>
                             </Button>
-                            <Button x:Name="ResetBtn" Width="110" Height="40" Cursor="Hand" Click="Reset_Click"
+                            <Button x:Name="ResetBtn" Width="110" Height="44" Cursor="Hand" Click="Reset_Click"
                                     Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">
                                 <Button.Template><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="8"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Button.Template>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

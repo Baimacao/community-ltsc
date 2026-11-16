@@ -91,6 +91,12 @@ namespace Ink_Canvas.Helpers
             /// <summary>停稳判据的精度。像素用默认 0.05，0..1 的进度值要更小。</summary>
             internal void SetPrecision(float p) { _precision = p; }
 
+            /// <summary>
+            /// 当前正在驱动本值的 Driver。Drive() 靠它去重：
+            /// 同一个值被两个 Driver 各 Step 一次，动画速度就翻倍。
+            /// </summary>
+            internal Driver Owner;
+
             internal void SetPreset(SpringPreset preset) { _preset = preset; }
 
             internal bool Settled => _current == _target && _velocity == 0f;
@@ -182,11 +188,52 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         internal static Driver Drive(IEnumerable<Value> values, Action onStep, Action onSettled = null)
         {
+            var list = new List<Value>();
+            if (values != null) list.AddRange(values);
+
+            // 复用：如果这批值本来就全挂在同一个还活着的 Driver 上，
+            // 只换回调，不再新建。
+            //
+            // 不这么做的后果：同一个值被 N 个 Driver 每帧各 Step 一次，
+            // dt 被累加 N 次，动画速度变成 N 倍。折叠一次要连续调十几次
+            // AnimateScalar，连点三次折叠/展开就是 3 倍速，看着像跳帧。
+            Driver shared = null;
+            bool canShare = list.Count > 0;
+            foreach (var v in list)
+            {
+                if (v.Owner == null || v.Owner.IsDisposed) { canShare = false; break; }
+                if (shared == null) shared = v.Owner;
+                else if (!ReferenceEquals(shared, v.Owner)) { canShare = false; break; }
+            }
+
+            if (canShare && shared != null)
+            {
+                shared.OnStep = onStep;
+                shared.OnSettled = onSettled;
+                if (!Drivers.Contains(shared))
+                {
+                    Drivers.Add(shared);
+                    EnsureHooked();
+                }
+                return shared;
+            }
+
             var d = new Driver { OnStep = onStep, OnSettled = onSettled };
-            if (values != null) d.Values.AddRange(values);
+            d.Values.AddRange(list);
+            foreach (var v in list) v.Owner = d;
             Drivers.Add(d);
             EnsureHooked();
             return d;
+        }
+
+        /// <summary>把一个 Driver 从其值的 Owner 上摘下来，避免下次 Drive 误判为可复用。</summary>
+        private static void DetachOwner(Driver d)
+        {
+            if (d == null) return;
+            foreach (var v in d.Values)
+            {
+                if (ReferenceEquals(v.Owner, d)) v.Owner = null;
+            }
         }
 
         /// <summary>注销一个驱动器（部件被销毁时调用，避免引用泄漏）。</summary>
@@ -194,6 +241,7 @@ namespace Ink_Canvas.Helpers
         {
             if (driver == null) return;
             driver.IsDisposed = true;
+            DetachOwner(driver);
             driver.OnStep = null;
             driver.OnSettled = null;
             driver.Values.Clear();
@@ -362,7 +410,7 @@ namespace Ink_Canvas.Helpers
             for (int i = Drivers.Count - 1; i >= 0; i--)
             {
                 var d = Drivers[i];
-                if (d.IsDisposed) { Drivers.RemoveAt(i); continue; }
+                if (d.IsDisposed) { DetachOwner(d); Drivers.RemoveAt(i); continue; }
 
                 bool moving = false;
                 for (int j = 0; j < d.Values.Count; j++)
@@ -377,6 +425,7 @@ namespace Ink_Canvas.Helpers
                     var cb = d.OnSettled;
                     d.OnSettled = null;
                     try { cb?.Invoke(); } catch { }
+                    DetachOwner(d);
                     Drivers.RemoveAt(i);
                 }
                 else

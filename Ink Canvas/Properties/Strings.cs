@@ -1109,6 +1109,7 @@ namespace Ink_Canvas.Properties
             dict["Theme_Hitokoto_CustomizeTitle"] = ("ThemeStrings", "Theme_Hitokoto_CustomizeTitle");
             dict["Time_End"] = ("CommonStrings", "Time_End");
             dict["Time_Start"] = ("CommonStrings", "Time_Start");
+            dict["Timer_AdjustPanel"] = ("TimerStrings", "Timer_AdjustPanel");
             dict["Timer_CustomSoundLabel"] = ("TimerStrings", "Timer_CustomSoundLabel");
             dict["Timer_EnableCountUp"] = ("TimerStrings", "Timer_EnableCountUp");
             dict["Timer_NewUI"] = ("TimerStrings", "Timer_NewUI");

@@ -153,4 +153,7 @@
   <data name="Timer_SelectProgressiveSound" xml:space="preserve">
     <value>Select Progressive Reminder Sound</value>
   </data>
+  <data name="Timer_AdjustPanel" xml:space="preserve">
+    <value>调整时间</value>
+  </data>
 </root>
