@@ -1,5 +1,6 @@
 using Microsoft.Office.Interop.PowerPoint;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Ink;
@@ -85,6 +86,27 @@ namespace Ink_Canvas.Helpers
             ThrowIfDisposed();
             if (presentation == null) return;
 
+            // LTSC A-7：COM 调用移到锁外。
+            //
+            // PowerPoint 的 presentation.Slides.Count 是一次跨进程 COM 调用，
+            // 对方（PPT）卡住时这里会阻塞到超时——而这些调用原本都在 lock 里，
+            // 意味着 PPT 一卡，所有等其他线程（保存、切页、清理）全部排队等着。
+            // 锁里只该有内存操作，任何可能阻塞的外部调用都要先做完再进锁。
+            int slideCount = 0;
+            try
+            {
+                slideCount = presentation.Slides.Count;
+            }
+            catch (COMException comEx)
+            {
+                uint hr = (uint)comEx.HResult;
+                if (hr == 0x80048010) return;
+                throw;
+            }
+
+            // 保存路径也是磁盘/COM 相关，提前取好，别让它在锁里跑。
+            bool shouldLoadSaved = IsAutoSaveEnabled && !string.IsNullOrEmpty(AutoSaveLocation);
+
             lock (_lockObject)
             {
                 try
@@ -96,18 +118,6 @@ namespace Ink_Canvas.Helpers
                     _lastSwitchTime = DateTime.MinValue;
 
                     _currentPresentationId = GeneratePresentationId(presentation);
-
-                    int slideCount = 0;
-                    try
-                    {
-                        slideCount = presentation.Slides.Count;
-                    }
-                    catch (COMException comEx)
-                    {
-                        uint hr = (uint)comEx.HResult;
-                        if (hr == 0x80048010) return;
-                        throw;
-                    }
 
                     int capacity = slideCount + 2;
                     _maxSlides = Math.Max(_maxSlides, slideCount);
@@ -339,31 +349,56 @@ namespace Ink_Canvas.Helpers
             {
                 try
                 {
-                    string folderPath = GetPresentationFolderPath();
-                    if (!Directory.Exists(folderPath)) return;
-
-                    var dir = new DirectoryInfo(folderPath);
+                    // LTSC A-7：先把所有文件读到内存，再一次性写进 _memoryStreams。
+                    //
+                    // 原来是在锁里逐文件 File.ReadAllBytes —— 一节课几十页墨迹，
+                    // 每页几百 KB，整个读取过程一直持锁。这期间任何其它线程
+                    // （切页、保存、清理）都得等着，表现是翻页卡一下。
+                    // 读盘不涉及共享状态，完全可以放到锁外。
+                    var loaded = new List<(int index, byte[] bytes)>();
                     int loadedCount = 0;
-                    foreach (FileInfo file in dir.GetFiles("*" + StrokeFileExtension))
-                    {
-                        string nameWithoutExt = Path.GetFileNameWithoutExtension(file.Name);
-                        if (!int.TryParse(nameWithoutExt, out int slideIndex) || slideIndex <= 0) continue;
-                        if (slideIndex >= _memoryStreams.Length) continue;
 
-                        try
+                    try
+                    {
+                        string folderPath = GetPresentationFolderPath();
+                        if (Directory.Exists(folderPath))
                         {
-                            byte[] bytes = File.ReadAllBytes(file.FullName);
-                            if (bytes.Length > 8)
+                            var dir = new DirectoryInfo(folderPath);
+                            int slotCount = _memoryStreams.Length;
+                            foreach (FileInfo file in dir.GetFiles("*" + StrokeFileExtension))
                             {
-                                _memoryStreams[slideIndex] = new MemoryStream(bytes);
-                                _memoryStreams[slideIndex].Position = 0;
-                                loadedCount++;
+                                string nameWithoutExt = Path.GetFileNameWithoutExtension(file.Name);
+                                if (!int.TryParse(nameWithoutExt, out int slideIndex) || slideIndex <= 0) continue;
+                                if (slideIndex >= slotCount) continue;
+
+                                try
+                                {
+                                    byte[] bytes = File.ReadAllBytes(file.FullName);
+                                    if (bytes.Length > 8)
+                                    {
+                                        loaded.Add((slideIndex, bytes));
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogHelper.WriteLogToFile($"加载墨迹文件 {file.Name} 失败: {ex}", LogHelper.LogType.Error);
+                                }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"加载墨迹文件 {file.Name} 失败: {ex}", LogHelper.LogType.Error);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"从文件加载墨迹失败: {ex}", LogHelper.LogType.Error);
+                    }
+
+                    // 到这里才碰共享状态，而且是纯内存操作。
+                    foreach (var (index, bytes) in loaded)
+                    {
+                        if (index >= _memoryStreams.Length) continue;
+                        _memoryStreams[index]?.Dispose();
+                        _memoryStreams[index] = new MemoryStream(bytes);
+                        _memoryStreams[index].Position = 0;
+                        loadedCount++;
                     }
 
                     if (loadedCount > 0)
