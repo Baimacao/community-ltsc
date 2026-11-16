@@ -53,9 +53,6 @@
   <data name="Oobe_WelcomeTitle" xml:space="preserve">
     <value>欢迎使用 ICC CE Lite</value>
   </data>
-  <data name="Oobe_WelcomeDesc" xml:space="preserve">
-    <value>面向课堂的批注与白板工具。接下来几步帮你把常用项配好，所有设置之后都能在「设置」里改。</value>
-  </data>
   <data name="Oobe_StepCount" xml:space="preserve">
     <value>共 4 步 · 大约 1 分钟</value>
   </data>
@@ -68,23 +65,11 @@
   <data name="Oobe_NavWelcome" xml:space="preserve">
     <value>欢迎</value>
   </data>
-  <data name="Oobe_NavTelemetry" xml:space="preserve">
-    <value>启动与隐私</value>
-  </data>
   <data name="Oobe_NavCanvas" xml:space="preserve">
     <value>画板与墨迹</value>
   </data>
   <data name="Oobe_NavGestures" xml:space="preserve">
     <value>手势操作</value>
-  </data>
-  <data name="Oobe_NavPPT" xml:space="preserve">
-    <value>PowerPoint 联动</value>
-  </data>
-  <data name="Oobe_NavAutomation" xml:space="preserve">
-    <value>自动化与截图</value>
-  </data>
-  <data name="Oobe_NavAdvanced" xml:space="preserve">
-    <value>高级选项</value>
   </data>
   <data name="Oobe_NavFinish" xml:space="preserve">
     <value>完成</value>
@@ -94,60 +79,6 @@
   </data>
   <data name="Oobe_Step1Subtitle" xml:space="preserve">
     <value>光标、压感、墨迹显示与形状纠正。</value>
-  </data>
-  <data name="Oobe_PrivacyTitle" xml:space="preserve">
-    <value>匿名使用数据与隐私</value>
-  </data>
-  <data name="Oobe_PrivacyDesc" xml:space="preserve">
-    <value>完全匿名的使用统计，仅用于改进软件稳定性与性能。</value>
-  </data>
-  <data name="Oobe_AgreePrivacy" xml:space="preserve">
-    <value>我已阅读并同意</value>
-  </data>
-  <data name="Oobe_PrivacyPolicy" xml:space="preserve">
-    <value>《隐私协议》</value>
-  </data>
-  <data name="Oobe_TelemetryLevel" xml:space="preserve">
-    <value>遥测级别</value>
-  </data>
-  <data name="Oobe_TelemetryLevelDesc" xml:space="preserve">
-    <value>本软件不会收集课堂内容、学生个人信息或可识别的原始墨迹。详细请见 privacy.txt。</value>
-  </data>
-  <data name="Oobe_TelemetryNone" xml:space="preserve">
-    <value>不上传任何匿名使用数据</value>
-  </data>
-  <data name="Oobe_TelemetryBasic" xml:space="preserve">
-    <value>基础（崩溃信息、版本与系统信息）</value>
-  </data>
-  <data name="Oobe_TelemetryOptional" xml:space="preserve">
-    <value>可选（功能使用频率等）</value>
-  </data>
-  <data name="Oobe_StartupCrashTitle" xml:space="preserve">
-    <value>启动与崩溃处理</value>
-  </data>
-  <data name="Oobe_FoldAtStartup" xml:space="preserve">
-    <value>启动时收纳到屏幕边缘</value>
-  </data>
-  <data name="Oobe_FoldAtStartupDesc" xml:space="preserve">
-    <value>启动后将浮动工具栏自动隐藏到屏幕边缘。</value>
-  </data>
-  <data name="Oobe_AutoUpdate" xml:space="preserve">
-    <value>允许后台检查更新并下载新版本。</value>
-  </data>
-  <data name="Oobe_CrashAction" xml:space="preserve">
-    <value>发生未处理异常时</value>
-  </data>
-  <data name="Oobe_CrashActionDesc" xml:space="preserve">
-    <value>可在 设置 → 启动 中修改。</value>
-  </data>
-  <data name="Oobe_CrashSilentRestart" xml:space="preserve">
-    <value>静默重启软件（推荐）</value>
-  </data>
-  <data name="Oobe_CrashNoAction" xml:space="preserve">
-    <value>无操作（仅记录日志）</value>
-  </data>
-  <data name="Oobe_CrashShowDialog" xml:space="preserve">
-    <value>弹出崩溃详情窗口（不重启）</value>
   </data>
   <data name="Oobe_Step2Title" xml:space="preserve">
     <value>手势操作</value>
@@ -188,9 +119,6 @@
   <data name="Oobe_ThemeLight" xml:space="preserve">
     <value>浅色</value>
   </data>
-  <data name="Oobe_ShowSplashScreenDesc" xml:space="preserve">
-    <value>首次启动时显示全屏欢迎页。</value>
-  </data>
   <data name="Oobe_TrayAndQuickPanel" xml:space="preserve">
     <value>托盘与快速面板</value>
   </data>
@@ -211,69 +139,6 @@
   </data>
   <data name="Oobe_EnableGlobalHotkeysDesc" xml:space="preserve">
     <value>具体快捷键可在 设置 → 个性化 中调整。</value>
-  </data>
-  <data name="Oobe_Step5Title" xml:space="preserve">
-    <value>完成</value>
-  </data>
-  <data name="Oobe_EnablePPTLink" xml:space="preserve">
-    <value>启用与 PowerPoint / WPS 的联动</value>
-  </data>
-  <data name="Oobe_EnablePPTLinkDesc" xml:space="preserve">
-    <value>在幻灯片中一键呼出画板。</value>
-  </data>
-  <data name="Oobe_AutoSaveStrokes" xml:space="preserve">
-    <value>放映中自动保存墨迹</value>
-  </data>
-  <data name="Oobe_AutoSaveStrokesDesc" xml:space="preserve">
-    <value>避免误关丢失板书。</value>
-  </data>
-  <data name="Oobe_AutoScreenshot" xml:space="preserve">
-    <value>放映中自动保存截屏</value>
-  </data>
-  <data name="Oobe_AutoScreenshotDesc" xml:space="preserve">
-    <value>用于事后回看课堂内容。</value>
-  </data>
-  <data name="Oobe_EnableTimeCapsule" xml:space="preserve">
-    <value>启用 PPT 时间胶囊</value>
-  </data>
-  <data name="Oobe_EnableTimeCapsuleDesc" xml:space="preserve">
-    <value>放映时显示时间提醒。</value>
-  </data>
-  <data name="Oobe_Step6Title" xml:space="preserve">
-    <value>自动化行为</value>
-  </data>
-  <data name="Oobe_AutoFoldInPPT" xml:space="preserve">
-    <value>进入 PPT 放映时自动收纳</value>
-  </data>
-  <data name="Oobe_AutoSaveInk" xml:space="preserve">
-    <value>启用墨迹自动保存</value>
-  </data>
-  <data name="Oobe_AutoSaveInkDesc" xml:space="preserve">
-    <value>定时将墨迹保存到本地。</value>
-  </data>
-  <data name="Oobe_FloatingInterceptorDesc" xml:space="preserve">
-    <value>拦截希沃、鸿合等课堂软件的悬浮窗，避免遮挡画板。</value>
-  </data>
-  <data name="Oobe_ScreenshotTitle" xml:space="preserve">
-    <value>截图与屏幕捕捉</value>
-  </data>
-  <data name="Oobe_AutoSaveScreenshot" xml:space="preserve">
-    <value>清屏时自动保存截图</value>
-  </data>
-  <data name="Oobe_SaveByDate" xml:space="preserve">
-    <value>按日期分文件夹保存截图</value>
-  </data>
-  <data name="Oobe_ShowRollCallButtons" xml:space="preserve">
-    <value>显示随机抽和单次抽按钮</value>
-  </data>
-  <data name="Oobe_Step8Title" xml:space="preserve">
-    <value>高级选项</value>
-  </data>
-  <data name="Oobe_EnableLog" xml:space="preserve">
-    <value>启用日志</value>
-  </data>
-  <data name="Oobe_EnableLogDesc" xml:space="preserve">
-    <value>便于问题排查与反馈。</value>
   </data>
   <data name="Oobe_FinishTitle" xml:space="preserve">
     <value>一切就绪</value>
@@ -383,32 +248,11 @@
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
     <value>防止翻页笔的特殊键在课堂上误触黑屏或退出放映。</value>
   </data>
-  <data name="Oobe_Step5Subtitle" xml:space="preserve">
-    <value>确认一下，就可以开始用了。</value>
-  </data>
-  <data name="Oobe_Step6Subtitle" xml:space="preserve">
-    <value>自动收纳、墨迹自动保存、悬浮窗拦截与截图保存。</value>
-  </data>
-  <data name="Oobe_Step7Subtitle" xml:space="preserve">
-    <value>点名窗口选项。</value>
-  </data>
-  <data name="Oobe_Step8Subtitle" xml:space="preserve">
-    <value>日志等高级配置。</value>
-  </data>
-  <data name="Oobe_SummaryTelemetryLevel" xml:space="preserve">
-    <value>遥测级别</value>
-  </data>
   <data name="Oobe_SummaryAppTheme" xml:space="preserve">
     <value>应用主题</value>
   </data>
-  <data name="Oobe_SummaryPPTLink" xml:space="preserve">
-    <value>PowerPoint / WPS 联动</value>
-  </data>
   <data name="Oobe_SummaryTwoFingerZoom" xml:space="preserve">
     <value>双指缩放 / 平移</value>
-  </data>
-  <data name="Oobe_SummaryLogEnabled" xml:space="preserve">
-    <value>启用日志</value>
   </data>
   <data name="Oobe_ReRunTitle" xml:space="preserve">
     <value>重新运行设置向导</value>

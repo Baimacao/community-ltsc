@@ -50,4 +50,244 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Oobe_WelcomeTitle" xml:space="preserve"><value>歡迎使用 ICC CE Lite</value></data><data name="Oobe_WelcomeDesc" xml:space="preserve"><value>面向課堂的批注與白板工具。接下來幾步幫你把常用項配好，所有設定之後都能在「設定」里改。</value></data><data name="Oobe_StepCount" xml:space="preserve"><value>共 4 步 · 大約 1 分鐘</value></data><data name="Oobe_StartStepByStep" xml:space="preserve"><value>開始配置</value></data><data name="Oobe_UsePreset" xml:space="preserve"><value>用預設配置</value></data><data name="Oobe_NavWelcome" xml:space="preserve"><value>歡迎</value></data><data name="Oobe_NavTelemetry" xml:space="preserve"><value>啟動與隱私</value></data><data name="Oobe_NavCanvas" xml:space="preserve"><value>畫板與墨跡</value></data><data name="Oobe_NavGestures" xml:space="preserve"><value>手勢操作</value></data><data name="Oobe_NavPPT" xml:space="preserve"><value>PowerPoint 聯動</value></data><data name="Oobe_NavAutomation" xml:space="preserve"><value>自動化與截圖</value></data><data name="Oobe_NavAdvanced" xml:space="preserve"><value>高級選項</value></data><data name="Oobe_NavFinish" xml:space="preserve"><value>完成</value></data><data name="Oobe_Step1Title" xml:space="preserve"><value>畫板與墨跡</value></data><data name="Oobe_Step1Subtitle" xml:space="preserve"><value>光標、壓感、墨跡顯示與形狀糾正。</value></data><data name="Oobe_PrivacyTitle" xml:space="preserve"><value>匿名使用資料與隱私</value></data><data name="Oobe_PrivacyDesc" xml:space="preserve"><value>完全匿名的使用統計，僅用于改進軟體穩定性與性能。</value></data><data name="Oobe_AgreePrivacy" xml:space="preserve"><value>我已閱讀并同意</value></data><data name="Oobe_PrivacyPolicy" xml:space="preserve"><value>《隱私協議》</value></data><data name="Oobe_TelemetryLevel" xml:space="preserve"><value>遙測級別</value></data><data name="Oobe_TelemetryLevelDesc" xml:space="preserve"><value>本軟體不會收集課堂內容、學生個人資訊或可識別的原始墨跡。詳細請見 privacy.txt。</value></data><data name="Oobe_TelemetryNone" xml:space="preserve"><value>不上傳任何匿名使用資料</value></data><data name="Oobe_TelemetryBasic" xml:space="preserve"><value>基礎（當機資訊、版本與系統資訊）</value></data><data name="Oobe_TelemetryOptional" xml:space="preserve"><value>可選（功能使用頻率等）</value></data><data name="Oobe_StartupCrashTitle" xml:space="preserve"><value>啟動與當機處理</value></data><data name="Oobe_FoldAtStartup" xml:space="preserve"><value>啟動時收納到螢幕邊緣</value></data><data name="Oobe_FoldAtStartupDesc" xml:space="preserve"><value>啟動后將浮動工具欄自動隱藏到螢幕邊緣。</value></data><data name="Oobe_AutoUpdate" xml:space="preserve"><value>允許后臺檢查更新并下載新版本。</value></data><data name="Oobe_CrashAction" xml:space="preserve"><value>發生未處理異常時</value></data><data name="Oobe_CrashActionDesc" xml:space="preserve"><value>可在 設定 → 啟動 中修改。</value></data><data name="Oobe_CrashSilentRestart" xml:space="preserve"><value>靜默重啟軟體（推薦）</value></data><data name="Oobe_CrashNoAction" xml:space="preserve"><value>無操作（僅記錄日志）</value></data><data name="Oobe_CrashShowDialog" xml:space="preserve"><value>彈出當機詳情視窗（不重啟）</value></data><data name="Oobe_Step2Title" xml:space="preserve"><value>手勢操作</value></data><data name="Oobe_ShowPenCursorDesc" xml:space="preserve"><value>繪制時顯示光標位置。</value></data><data name="Oobe_IgnorePressureDesc" xml:space="preserve"><value>所有筆畫統一粗細，不再受壓力影響。</value></data><data name="Oobe_HideInkOnExit" xml:space="preserve"><value>退出畫板模式時隱藏墨跡</value></data><data name="Oobe_HideInkOnExitDesc" xml:space="preserve"><value>進入 PPT 非批注模式時不顯示墨跡。</value></data><data name="Oobe_InkRecogDesc" xml:space="preserve"><value>手繪圖形自動轉為標準形狀。</value></data><data name="Oobe_Step3Title" xml:space="preserve"><value>外觀與快速鍵</value></data><data name="Oobe_EnableTwoFingerZoom" xml:space="preserve"><value>啟用雙指縮放</value></data><data name="Oobe_EnableTwoFingerPan" xml:space="preserve"><value>啟用雙指平移</value></data><data name="Oobe_PalmEraserDesc" xml:space="preserve"><value>多觸點且接觸面積較大時臨時切換為橡皮。</value></data><data name="Oobe_AppTheme" xml:space="preserve"><value>應用主題</value></data><data name="Oobe_AppThemeDesc" xml:space="preserve"><value>可在 設定 → 個性化 中隨時修改。</value></data><data name="Oobe_ThemeLight" xml:space="preserve"><value>淺色</value></data><data name="Oobe_ShowSplashScreenDesc" xml:space="preserve"><value>首次啟動時顯示全屏歡迎頁。</value></data><data name="Oobe_TrayAndQuickPanel" xml:space="preserve"><value>托盤與快速面板</value></data><data name="Oobe_EnableTrayIcon" xml:space="preserve"><value>在系統托盤顯示圖標</value></data><data name="Oobe_EnableTrayIconDesc" xml:space="preserve"><value>方便后臺快速喚出 ICC CE Lite。</value></data><data name="Oobe_EnableQuickPanel" xml:space="preserve"><value>啟用快速面板</value></data><data name="Oobe_EnableQuickPanelDesc" xml:space="preserve"><value>計時器、點名等常用工具的快速入口。</value></data><data name="Oobe_EnableGlobalHotkeys" xml:space="preserve"><value>滑鼠模式下啟用全局快速鍵</value></data><data name="Oobe_EnableGlobalHotkeysDesc" xml:space="preserve"><value>具體快速鍵可在 設定 → 個性化 中調整。</value></data><data name="Oobe_Step5Title" xml:space="preserve"><value>完成</value></data><data name="Oobe_EnablePPTLink" xml:space="preserve"><value>啟用與 PowerPoint / WPS 的聯動</value></data><data name="Oobe_EnablePPTLinkDesc" xml:space="preserve"><value>在幻燈片中一鍵呼出畫板。</value></data><data name="Oobe_AutoSaveStrokes" xml:space="preserve"><value>放映中自動儲存墨跡</value></data><data name="Oobe_AutoSaveStrokesDesc" xml:space="preserve"><value>避免誤關丟失板書。</value></data><data name="Oobe_AutoScreenshot" xml:space="preserve"><value>放映中自動儲存截屏</value></data><data name="Oobe_AutoScreenshotDesc" xml:space="preserve"><value>用于事后回看課堂內容。</value></data><data name="Oobe_EnableTimeCapsule" xml:space="preserve"><value>啟用 PPT 時間膠囊</value></data><data name="Oobe_EnableTimeCapsuleDesc" xml:space="preserve"><value>放映時顯示時間提醒。</value></data><data name="Oobe_Step6Title" xml:space="preserve"><value>自動化行為</value></data><data name="Oobe_AutoFoldInPPT" xml:space="preserve"><value>進入 PPT 放映時自動收納</value></data><data name="Oobe_AutoSaveInk" xml:space="preserve"><value>啟用墨跡自動儲存</value></data><data name="Oobe_AutoSaveInkDesc" xml:space="preserve"><value>定時將墨跡儲存到本地。</value></data><data name="Oobe_FloatingInterceptorDesc" xml:space="preserve"><value>攔截希沃、鴻合等課堂軟體的懸浮窗，避免遮擋畫板。</value></data><data name="Oobe_ScreenshotTitle" xml:space="preserve"><value>截圖與螢幕捕捉</value></data><data name="Oobe_AutoSaveScreenshot" xml:space="preserve"><value>清屏時自動儲存截圖</value></data><data name="Oobe_SaveByDate" xml:space="preserve"><value>按日期分資料夾儲存截圖</value></data><data name="Oobe_ShowRollCallButtons" xml:space="preserve"><value>顯示隨機抽和單次抽按鈕</value></data><data name="Oobe_Step8Title" xml:space="preserve"><value>高級選項</value></data><data name="Oobe_EnableLog" xml:space="preserve"><value>啟用日志</value></data><data name="Oobe_EnableLogDesc" xml:space="preserve"><value>便于問題排查與意見回饋。</value></data><data name="Oobe_FinishTitle" xml:space="preserve"><value>一切就緒</value></data><data name="Oobe_FinishDesc" xml:space="preserve"><value>確認下面的關鍵配置后即可開始使用。所有設定稍后都能在「設定」中修改。</value></data><data name="Oobe_SummaryTrayIcon" xml:space="preserve"><value>系統托盤圖標</value></data><data name="Oobe_BoolEnabled" xml:space="preserve"><value>已啟用</value></data><data name="Oobe_BoolDisabled" xml:space="preserve"><value>已關閉</value></data><data name="Oobe_Previous" xml:space="preserve"><value>上一步</value></data><data name="Oobe_Next" xml:space="preserve"><value>下一步</value></data><data name="Oobe_Skip" xml:space="preserve"><value>跳過引導</value></data><data name="Oobe_LtscIntroTitle" xml:space="preserve"><value>為課堂而改</value></data><data name="Oobe_LtscIntroDesc" xml:space="preserve"><value>ICC-CE 的長期支援分支。去掉了干擾課堂的功能，重寫了一批容易卡頓、容易出錯的地方，力氣花在穩定和順手上面。</value></data><data name="Oobe_WhatChanged" xml:space="preserve"><value>這一版做了什么</value></data><data name="Oobe_Highlight1Title" xml:space="preserve"><value>更順滑的動畫</value></data><data name="Oobe_Highlight1Desc" xml:space="preserve"><value>所有介面動效換成彈簧引擎，跟手、不抖、不跳幀。</value></data><data name="Oobe_Highlight2Title" xml:space="preserve"><value>更穩的退出與恢復</value></data><data name="Oobe_Highlight2Desc" xml:space="preserve"><value>關掉主程序后不殘留后臺處理程序，PPT 退出不再被透明層擋住。</value></data><data name="Oobe_Highlight3Title" xml:space="preserve"><value>為觸摸屏調過</value></data><data name="Oobe_Highlight3Desc" xml:space="preserve"><value>設定頁支援自然滾動，筆跡與手勢在觸摸屏上更跟手。</value></data><data name="Oobe_FeedbackDesc" xml:space="preserve"><value>遇到問題或有建議，來這里意見回饋</value></data><data name="Oobe_SaveAndStart" xml:space="preserve"><value>儲存并開始</value></data><data name="Oobe_StepFormat" xml:space="preserve"><value>步驟 {0} / {1}</value></data><data name="Oobe_StepFinishFormat" xml:space="preserve"><value>{0} / {1} · 完成</value></data><data name="Oobe_PresetTitle" xml:space="preserve"><value>選擇預設配置</value></data><data name="Oobe_PresetSubtitle" xml:space="preserve"><value>選擇一套由開發者調校的推薦配置，一鍵完成設定。所有選項可在「設定」中隨時修改。</value></data><data name="Oobe_PresetStandard" xml:space="preserve"><value>課堂標準配置</value></data><data name="Oobe_PresetStandardDesc" xml:space="preserve"><value>啟用 PPT 聯動、自動儲存墨跡、托盤圖標、雙指手勢，適合大多數課堂場景。</value></data><data name="Oobe_PresetLite" xml:space="preserve"><value>簡潔輕量配置</value></data><data name="Oobe_PresetLiteDesc" xml:space="preserve"><value>關閉大部分自動化與聯動功能，保持最小后臺行為，適合簡單批注場景。</value></data><data name="Oobe_PresetTagPPTLink" xml:space="preserve"><value>PPT 聯動</value></data><data name="Oobe_PresetTagTwoFinger" xml:space="preserve"><value>雙指手勢</value></data><data name="Oobe_PresetTagTrayIcon" xml:space="preserve"><value>托盤圖標</value></data><data name="Oobe_PresetNote" xml:space="preserve"><value>選擇預設后將直接完成初始設定，無需逐步配置。</value></data><data name="Oobe_PresetBack" xml:space="preserve"><value>返回</value></data><data name="Oobe_PresetApply" xml:space="preserve"><value>應用并開始使用</value></data><data name="Oobe_Step2Subtitle" xml:space="preserve"><value>雙指縮放平移、手掌擦除等觸摸操作。</value></data><data name="Oobe_Step3Subtitle" xml:space="preserve"><value>主題、托盤、快速面板與快速鍵。</value></data><data name="Oobe_Step4Subtitle" xml:space="preserve"><value>防止翻頁筆的特殊鍵在課堂上誤觸黑屏或退出放映。</value></data><data name="Oobe_Step5Subtitle" xml:space="preserve"><value>確認一下，就可以開始用了。</value></data><data name="Oobe_Step6Subtitle" xml:space="preserve"><value>自動收納、墨跡自動儲存、懸浮窗攔截與截圖儲存。</value></data><data name="Oobe_Step7Subtitle" xml:space="preserve"><value>點名視窗選項。</value></data><data name="Oobe_Step8Subtitle" xml:space="preserve"><value>日志等高級配置。</value></data><data name="Oobe_SummaryTelemetryLevel" xml:space="preserve"><value>遙測級別</value></data><data name="Oobe_SummaryAppTheme" xml:space="preserve"><value>應用主題</value></data><data name="Oobe_SummaryPPTLink" xml:space="preserve"><value>PowerPoint / WPS 聯動</value></data><data name="Oobe_SummaryTwoFingerZoom" xml:space="preserve"><value>雙指縮放 / 平移</value></data><data name="Oobe_SummaryLogEnabled" xml:space="preserve"><value>啟用日志</value></data><data name="Oobe_ReRunTitle" xml:space="preserve"><value>重新運行設定向導</value></data><data name="Oobe_ReRunDesc" xml:space="preserve"><value>從頭再過一遍畫板、手勢、外觀、PPT 聯動這些選項。已經調好的設定會保留，不會被清空。</value></data><data name="Oobe_ReRunButton" xml:space="preserve"><value>重新引導</value></data><data name="Oobe_NavPresenter" xml:space="preserve"><value>翻頁筆</value></data><data name="Oobe_Step4Title" xml:space="preserve"><value>翻頁筆適配</value></data><data name="Oobe_Step4SectionPresenter" xml:space="preserve"><value>翻頁筆適配</value></data><data name="Oobe_Step4PresenterEnable" xml:space="preserve"><value>啟用翻頁筆適配</value></data><data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve"><value>開啟后，配對的功能鍵會正常工作；關閉時只攔截不響應，用來防止誤觸。</value></data><data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve"><value>只在 PPT 聯動放映時生效</value></data><data name="Oobe_Step4PresenterNoteBody" xml:space="preserve"><value>其他模式下這些鍵完全不受影響，走系統原有邏輯。退出放映時會立刻卸載鍵盤鉤子。之後可以在「設定 → PPT → 翻頁筆適配」里改鍵。</value></data><data name="Common_On" xml:space="preserve"><value>開</value></data><data name="Common_Off" xml:space="preserve"><value>關</value></data></root>
+  <data name="Oobe_WelcomeTitle" xml:space="preserve">
+    <value>歡迎使用 ICC CE Lite</value>
+  </data>
+  <data name="Oobe_StepCount" xml:space="preserve">
+    <value>共 4 步 · 大約 1 分鐘</value>
+  </data>
+  <data name="Oobe_StartStepByStep" xml:space="preserve">
+    <value>開始配置</value>
+  </data>
+  <data name="Oobe_UsePreset" xml:space="preserve">
+    <value>用預設配置</value>
+  </data>
+  <data name="Oobe_NavWelcome" xml:space="preserve">
+    <value>歡迎</value>
+  </data>
+  <data name="Oobe_NavCanvas" xml:space="preserve">
+    <value>畫板與墨跡</value>
+  </data>
+  <data name="Oobe_NavGestures" xml:space="preserve">
+    <value>手勢操作</value>
+  </data>
+  <data name="Oobe_NavFinish" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="Oobe_Step1Title" xml:space="preserve">
+    <value>畫板與墨跡</value>
+  </data>
+  <data name="Oobe_Step1Subtitle" xml:space="preserve">
+    <value>光標、壓感、墨跡顯示與形狀糾正。</value>
+  </data>
+  <data name="Oobe_Step2Title" xml:space="preserve">
+    <value>手勢操作</value>
+  </data>
+  <data name="Oobe_ShowPenCursorDesc" xml:space="preserve">
+    <value>繪制時顯示光標位置。</value>
+  </data>
+  <data name="Oobe_IgnorePressureDesc" xml:space="preserve">
+    <value>所有筆畫統一粗細，不再受壓力影響。</value>
+  </data>
+  <data name="Oobe_HideInkOnExit" xml:space="preserve">
+    <value>退出畫板模式時隱藏墨跡</value>
+  </data>
+  <data name="Oobe_HideInkOnExitDesc" xml:space="preserve">
+    <value>進入 PPT 非批注模式時不顯示墨跡。</value>
+  </data>
+  <data name="Oobe_InkRecogDesc" xml:space="preserve">
+    <value>手繪圖形自動轉為標準形狀。</value>
+  </data>
+  <data name="Oobe_Step3Title" xml:space="preserve">
+    <value>外觀與快速鍵</value>
+  </data>
+  <data name="Oobe_EnableTwoFingerZoom" xml:space="preserve">
+    <value>啟用雙指縮放</value>
+  </data>
+  <data name="Oobe_EnableTwoFingerPan" xml:space="preserve">
+    <value>啟用雙指平移</value>
+  </data>
+  <data name="Oobe_PalmEraserDesc" xml:space="preserve">
+    <value>多觸點且接觸面積較大時臨時切換為橡皮。</value>
+  </data>
+  <data name="Oobe_AppTheme" xml:space="preserve">
+    <value>應用主題</value>
+  </data>
+  <data name="Oobe_AppThemeDesc" xml:space="preserve">
+    <value>可在 設定 → 個性化 中隨時修改。</value>
+  </data>
+  <data name="Oobe_ThemeLight" xml:space="preserve">
+    <value>淺色</value>
+  </data>
+  <data name="Oobe_TrayAndQuickPanel" xml:space="preserve">
+    <value>托盤與快速面板</value>
+  </data>
+  <data name="Oobe_EnableTrayIcon" xml:space="preserve">
+    <value>在系統托盤顯示圖標</value>
+  </data>
+  <data name="Oobe_EnableTrayIconDesc" xml:space="preserve">
+    <value>方便后臺快速喚出 ICC CE Lite。</value>
+  </data>
+  <data name="Oobe_EnableQuickPanel" xml:space="preserve">
+    <value>啟用快速面板</value>
+  </data>
+  <data name="Oobe_EnableQuickPanelDesc" xml:space="preserve">
+    <value>計時器、點名等常用工具的快速入口。</value>
+  </data>
+  <data name="Oobe_EnableGlobalHotkeys" xml:space="preserve">
+    <value>滑鼠模式下啟用全局快速鍵</value>
+  </data>
+  <data name="Oobe_EnableGlobalHotkeysDesc" xml:space="preserve">
+    <value>具體快速鍵可在 設定 → 個性化 中調整。</value>
+  </data>
+  <data name="Oobe_FinishTitle" xml:space="preserve">
+    <value>一切就緒</value>
+  </data>
+  <data name="Oobe_FinishDesc" xml:space="preserve">
+    <value>確認下面的關鍵配置后即可開始使用。所有設定稍后都能在「設定」中修改。</value>
+  </data>
+  <data name="Oobe_SummaryTrayIcon" xml:space="preserve">
+    <value>系統托盤圖標</value>
+  </data>
+  <data name="Oobe_BoolEnabled" xml:space="preserve">
+    <value>已啟用</value>
+  </data>
+  <data name="Oobe_BoolDisabled" xml:space="preserve">
+    <value>已關閉</value>
+  </data>
+  <data name="Oobe_Previous" xml:space="preserve">
+    <value>上一步</value>
+  </data>
+  <data name="Oobe_Next" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="Oobe_Skip" xml:space="preserve">
+    <value>跳過引導</value>
+  </data>
+  <data name="Oobe_LtscIntroTitle" xml:space="preserve">
+    <value>為課堂而改</value>
+  </data>
+  <data name="Oobe_LtscIntroDesc" xml:space="preserve">
+    <value>ICC-CE 的長期支援分支。去掉了干擾課堂的功能，重寫了一批容易卡頓、容易出錯的地方，力氣花在穩定和順手上面。</value>
+  </data>
+  <data name="Oobe_WhatChanged" xml:space="preserve">
+    <value>這一版做了什么</value>
+  </data>
+  <data name="Oobe_Highlight1Title" xml:space="preserve">
+    <value>更順滑的動畫</value>
+  </data>
+  <data name="Oobe_Highlight1Desc" xml:space="preserve">
+    <value>所有介面動效換成彈簧引擎，跟手、不抖、不跳幀。</value>
+  </data>
+  <data name="Oobe_Highlight2Title" xml:space="preserve">
+    <value>更穩的退出與恢復</value>
+  </data>
+  <data name="Oobe_Highlight2Desc" xml:space="preserve">
+    <value>關掉主程序后不殘留后臺處理程序，PPT 退出不再被透明層擋住。</value>
+  </data>
+  <data name="Oobe_Highlight3Title" xml:space="preserve">
+    <value>為觸摸屏調過</value>
+  </data>
+  <data name="Oobe_Highlight3Desc" xml:space="preserve">
+    <value>設定頁支援自然滾動，筆跡與手勢在觸摸屏上更跟手。</value>
+  </data>
+  <data name="Oobe_FeedbackDesc" xml:space="preserve">
+    <value>遇到問題或有建議，來這里意見回饋</value>
+  </data>
+  <data name="Oobe_SaveAndStart" xml:space="preserve">
+    <value>儲存并開始</value>
+  </data>
+  <data name="Oobe_StepFormat" xml:space="preserve">
+    <value>步驟 {0} / {1}</value>
+  </data>
+  <data name="Oobe_StepFinishFormat" xml:space="preserve">
+    <value>{0} / {1} · 完成</value>
+  </data>
+  <data name="Oobe_PresetTitle" xml:space="preserve">
+    <value>選擇預設配置</value>
+  </data>
+  <data name="Oobe_PresetSubtitle" xml:space="preserve">
+    <value>選擇一套由開發者調校的推薦配置，一鍵完成設定。所有選項可在「設定」中隨時修改。</value>
+  </data>
+  <data name="Oobe_PresetStandard" xml:space="preserve">
+    <value>課堂標準配置</value>
+  </data>
+  <data name="Oobe_PresetStandardDesc" xml:space="preserve">
+    <value>啟用 PPT 聯動、自動儲存墨跡、托盤圖標、雙指手勢，適合大多數課堂場景。</value>
+  </data>
+  <data name="Oobe_PresetLite" xml:space="preserve">
+    <value>簡潔輕量配置</value>
+  </data>
+  <data name="Oobe_PresetLiteDesc" xml:space="preserve">
+    <value>關閉大部分自動化與聯動功能，保持最小后臺行為，適合簡單批注場景。</value>
+  </data>
+  <data name="Oobe_PresetTagPPTLink" xml:space="preserve">
+    <value>PPT 聯動</value>
+  </data>
+  <data name="Oobe_PresetTagTwoFinger" xml:space="preserve">
+    <value>雙指手勢</value>
+  </data>
+  <data name="Oobe_PresetTagTrayIcon" xml:space="preserve">
+    <value>托盤圖標</value>
+  </data>
+  <data name="Oobe_PresetNote" xml:space="preserve">
+    <value>選擇預設后將直接完成初始設定，無需逐步配置。</value>
+  </data>
+  <data name="Oobe_PresetBack" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="Oobe_PresetApply" xml:space="preserve">
+    <value>應用并開始使用</value>
+  </data>
+  <data name="Oobe_Step2Subtitle" xml:space="preserve">
+    <value>雙指縮放平移、手掌擦除等觸摸操作。</value>
+  </data>
+  <data name="Oobe_Step3Subtitle" xml:space="preserve">
+    <value>主題、托盤、快速面板與快速鍵。</value>
+  </data>
+  <data name="Oobe_Step4Subtitle" xml:space="preserve">
+    <value>防止翻頁筆的特殊鍵在課堂上誤觸黑屏或退出放映。</value>
+  </data>
+  <data name="Oobe_SummaryAppTheme" xml:space="preserve">
+    <value>應用主題</value>
+  </data>
+  <data name="Oobe_SummaryTwoFingerZoom" xml:space="preserve">
+    <value>雙指縮放 / 平移</value>
+  </data>
+  <data name="Oobe_ReRunTitle" xml:space="preserve">
+    <value>重新運行設定向導</value>
+  </data>
+  <data name="Oobe_ReRunDesc" xml:space="preserve">
+    <value>從頭再過一遍畫板、手勢、外觀、PPT 聯動這些選項。已經調好的設定會保留，不會被清空。</value>
+  </data>
+  <data name="Oobe_ReRunButton" xml:space="preserve">
+    <value>重新引導</value>
+  </data>
+  <data name="Oobe_NavPresenter" xml:space="preserve">
+    <value>翻頁筆</value>
+  </data>
+  <data name="Oobe_Step4Title" xml:space="preserve">
+    <value>翻頁筆適配</value>
+  </data>
+  <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
+    <value>翻頁筆適配</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
+    <value>啟用翻頁筆適配</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
+    <value>開啟后，配對的功能鍵會正常工作；關閉時只攔截不響應，用來防止誤觸。</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
+    <value>只在 PPT 聯動放映時生效</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
+    <value>其他模式下這些鍵完全不受影響，走系統原有邏輯。退出放映時會立刻卸載鍵盤鉤子。之後可以在「設定 → PPT → 翻頁筆適配」里改鍵。</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>開</value>
+  </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>關</value>
+  </data>
+</root>
