@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Plugin_Title" xml:space="preserve"><value>外掛管理</value></data><data name="Plugin_Loading" xml:space="preserve"><value>正在載入外掛...</value></data><data name="Plugin_LoadedCount" xml:space="preserve"><value>已載入 {0} 個外掛</value></data><data name="Plugin_NoPlugins" xml:space="preserve"><value>沒有找到外掛，請將外掛檔案放置在 Plugins 目錄中</value></data><data name="Plugin_LoadError" xml:space="preserve"><value>載入外掛時出錯：{0}</value></data><data name="Plugin_Author" xml:space="preserve"><value>作者：{0}</value></data><data name="Plugin_Settings" xml:space="preserve"><value>外掛設定</value></data><data name="Market_Title" xml:space="preserve"><value>外掛市場</value></data><data name="Market_SearchPlaceholder" xml:space="preserve"><value>搜尋外掛...</value></data><data name="Market_TabMarket" xml:space="preserve"><value>市場</value></data><data name="Market_TabInstalled" xml:space="preserve"><value>已安裝</value></data><data name="Market_Refresh" xml:space="preserve"><value>重新整理外掛源</value></data><data name="Market_OpenPluginsFolder" xml:space="preserve"><value>打開外掛目錄</value></data><data name="Market_InstallFromLocal" xml:space="preserve"><value>從本地安裝</value></data><data name="Market_Install" xml:space="preserve"><value>安裝</value></data><data name="Market_Update" xml:space="preserve"><value>更新</value></data><data name="Market_UpdateAvailable" xml:space="preserve"><value>可更新</value></data><data name="Market_RestartRequired" xml:space="preserve"><value>需重啟</value></data><data name="Market_RestartToApply" xml:space="preserve"><value>重啟以應用</value></data><data name="Market_SelectPluginHint" xml:space="preserve"><value>在左側選擇一個外掛以查看詳情</value></data><data name="Market_ProjectHomepage" xml:space="preserve"><value>項目主頁</value></data><data name="Market_TabOverview" xml:space="preserve"><value>概覽</value></data><data name="Market_TabDependencies" xml:space="preserve"><value>依賴項</value></data><data name="Market_ReadmeLoading" xml:space="preserve"><value>正在載入說明文檔...</value></data><data name="Market_ReadmeLoadFailed" xml:space="preserve"><value>無法載入說明文檔。</value></data><data name="Market_NoReadme" xml:space="preserve"><value>該外掛暫無說明文檔。</value></data><data name="Market_DependencyWarning" xml:space="preserve"><value>此外掛依賴以下外掛，將一并安裝：{0}
+
+是否繼續？</value></data><data name="Market_DependencyTitle" xml:space="preserve"><value>安裝依賴</value></data><data name="Market_InstallLocalSuccess" xml:space="preserve"><value>外掛已添加到安裝隊列，重啟后生效。</value></data><data name="Market_InstallLocalFailed" xml:space="preserve"><value>安裝失敗：{0}</value></data><data name="Market_RestartMessage" xml:space="preserve"><value>需要重啟應用以完成外掛安裝/更新。是否立即重啟？</value></data><data name="Market_RestartTitle" xml:space="preserve"><value>重啟確認</value></data><data name="Market_RestartFailed" xml:space="preserve"><value>重啟失敗：{0}</value></data><data name="Plugin_Update" xml:space="preserve"><value>更新</value></data><data name="Plugin_Delete" xml:space="preserve"><value>刪除</value></data><data name="Plugin_DeleteConfirm" xml:space="preserve"><value>確定要刪除外掛「{0}」嗎？刪除后需要重啟應用生效。</value></data><data name="Plugin_DeleteTitle" xml:space="preserve"><value>刪除外掛</value></data><data name="Plugin_UpdateAvailable" xml:space="preserve"><value>有新版本: v{0}</value></data><data name="Plugin_ErrorTitle" xml:space="preserve"><value>外掛錯誤</value></data><data name="Plugin_ErrorAutoDisabled" xml:space="preserve"><value>外掛已自動禁用：在 {0} 分鐘內連續 {1} 次載入失敗。請手動重設后再啟用。</value></data><data name="Plugin_ErrorReset" xml:space="preserve"><value>重設錯誤并重新載入</value></data><data name="Plugin_ExportConfig" xml:space="preserve"><value>導出配置</value></data><data name="Plugin_ImportConfig" xml:space="preserve"><value>導入配置</value></data><data name="Plugin_ExportTitle" xml:space="preserve"><value>導出外掛配置</value></data><data name="Plugin_ExportSuccess" xml:space="preserve"><value>外掛配置已導出到：{0}</value></data><data name="Plugin_ExportFailed" xml:space="preserve"><value>導出失敗：{0}</value></data><data name="Plugin_ImportTitle" xml:space="preserve"><value>導入外掛配置</value></data><data name="Plugin_ImportSuccess" xml:space="preserve"><value>導入成功，覆蓋了 {0} 個檔案。</value></data><data name="Plugin_ImportFailed" xml:space="preserve"><value>導入失敗：{0}</value></data><data name="Market_SecurityWarning" xml:space="preserve"><value>此外掛來源未經驗證，繼續安裝存在風險。請確認你信任該來源。</value></data><data name="Market_SecurityTitle" xml:space="preserve"><value>安全提示</value></data><data name="Market_OpenLogsFolder" xml:space="preserve"><value>打開日志目錄</value></data><data name="Market_LoadErrorOnInstall" xml:space="preserve"><value>此外掛檢測到以下問題，建議繼續安裝前確認：</value></data><data name="Market_ManageSources" xml:space="preserve"><value>外掛源</value></data><data name="Market_ActiveSource" xml:space="preserve"><value>當前源</value></data><data name="Market_AddSource" xml:space="preserve"><value>添加源</value></data><data name="Market_EditSource" xml:space="preserve"><value>編輯源</value></data><data name="Market_RemoveSource" xml:space="preserve"><value>刪除源</value></data><data name="Market_SourceIdLabel" xml:space="preserve"><value>源名稱</value></data><data name="Market_SourceUrlLabel" xml:space="preserve"><value>索引 URL</value></data><data name="Market_SourceOfficial" xml:space="preserve"><value>官方源（不可編輯）</value></data><data name="Market_MirrorGroup" xml:space="preserve"><value>下載鏡像</value></data><data name="Market_NoMirrors" xml:space="preserve"><value>該索引未提供下載鏡像</value></data><data name="Market_MirrorAuto" xml:space="preserve"><value>自動（預設）</value></data><data name="Market_SaveSource" xml:space="preserve"><value>儲存</value></data><data name="Market_CancelSource" xml:space="preserve"><value>取消</value></data><data name="Market_SourceInvalidUrl" xml:space="preserve"><value>URL 必須以 http:// 或 https:// 開頭</value></data><data name="Market_SourceDuplicate" xml:space="preserve"><value>已存在同名源</value></data><data name="Market_SourceRemoved" xml:space="preserve"><value>源已刪除</value></data><data name="Market_SourceSaved" xml:space="preserve"><value>源已儲存</value></data><data name="Market_SourceNameRequired" xml:space="preserve"><value>請輸入源名稱</value></data><data name="Market_RemoveSourceConfirmation" xml:space="preserve"><value>確定要刪除源“{0}”嗎？</value></data></root>

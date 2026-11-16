@@ -219,10 +219,13 @@
                         <ComboBox x:Name="ComboBoxLanguage"
                                   SelectedIndex="0"
                                   SelectionChanged="ComboBoxLanguage_SelectionChanged">
+                            <!-- 顺序必须和 WindowPage.xaml.cs 里的索引映射一致：
+                                 0=跟随系统 1=简体 2=繁體 3=梗体 4=English -->
                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_System}" />
                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_Language_ChineseSimplified}" />
-                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_Language_English}" />
+                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_Language_ChineseTraditional}" />
                             <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_Language_MemeChinese}" />
+                            <ComboBoxItem Content="{x:Static props:ThemeStrings.Theme_Language_English}" />
                         </ComboBox>
                     </ui:SettingsCard>
 

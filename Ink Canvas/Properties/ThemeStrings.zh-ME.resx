@@ -471,4 +471,7 @@
   <data name="Theme_Tips_Title" xml:space="preserve">
     <value>信仰の源</value>
   </data>
+  <data name="Theme_Language_ChineseTraditional" xml:space="preserve">
+    <value>繁體中文（潮）</value>
+  </data>
 </root>

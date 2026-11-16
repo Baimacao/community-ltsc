@@ -403,10 +403,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 // 原来非法值会静默落进最后的 else 得到 0（显示为「系统」），
                 // 但实际语言由 TrySetCulture 的异常兜底决定，两者可能不一致。
                 var lang = LocalizationHelper.NormalizeLanguage(settings.Appearance.Language);
+                // 索引对应 ComboBoxLanguage 里的顺序：
+                // 0=跟随系统 1=简体 2=繁體 3=梗体 4=English
                 int langIndex = string.IsNullOrWhiteSpace(lang) ? 0 :
                     string.Equals(lang, "zh-CN", StringComparison.OrdinalIgnoreCase) ? 1 :
-                    string.Equals(lang, "en-US", StringComparison.OrdinalIgnoreCase) ? 2 :
-                    string.Equals(lang, "zh-ME", StringComparison.OrdinalIgnoreCase) ? 3 : 0;
+                    string.Equals(lang, "zh-TW", StringComparison.OrdinalIgnoreCase) ? 2 :
+                    string.Equals(lang, "zh-ME", StringComparison.OrdinalIgnoreCase) ? 3 :
+                    string.Equals(lang, "en-US", StringComparison.OrdinalIgnoreCase) ? 4 : 0;
                 ComboBoxLanguage.SelectedIndex = langIndex;
             }
             finally
@@ -455,8 +458,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 string language = index switch
                 {
                     1 => "zh-CN",
-                    2 => "en-US",
+                    2 => "zh-TW",
                     3 => "zh-ME",
+                    4 => "en-US",
                     _ => string.Empty
                 };
                 SettingsManager.Settings.Appearance.Language = language;

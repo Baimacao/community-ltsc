@@ -193,8 +193,9 @@
                                 <ComboBox x:Name="ComboBoxOobeLanguage" MinWidth="180" Height="34"
                                           SelectionChanged="ComboBoxOobeLanguage_SelectionChanged">
                                     <ComboBoxItem Content="简体中文" Tag="zh-CN" />
+                                    <ComboBoxItem Content="繁體中文" Tag="zh-TW" />
+                                    <ComboBoxItem Content="梗体中文" Tag="zh-ME" />
                                     <ComboBoxItem Content="English" Tag="en-US" />
-                                    <ComboBoxItem Content="繁體中文" Tag="zh-ME" />
                                 </ComboBox>
                             </ikw:SimpleStackPanel>
 

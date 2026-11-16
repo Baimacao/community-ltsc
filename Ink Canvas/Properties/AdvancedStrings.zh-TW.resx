@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AvoidFullScreenHelper" xml:space="preserve"><value>啟用 AvoidFullScreenHelper</value></data><data name="AvoidFullScreenHelperHint" xml:space="preserve"><value>解決任務欄點不動、不置頂的問題。副作用：如果螢幕邊緣有 Dock 欄，浮動工具欄會偏位。重啟生效。</value></data><data name="ConfirmExit" xml:space="preserve"><value>關閉軟體時二次彈窗確認</value></data><data name="DPIChangeDetection" xml:space="preserve"><value>啟用 DPIChangeDetection</value></data><data name="DPIChangeDetectionHint" xml:space="preserve"><value>調大縮放比例后，如果浮動工具欄跑到螢幕外，自動把它拉回來。調小縮放不會動它，需要手動拖。</value></data><data name="EdgeGestureUtil" xml:space="preserve"><value>啟用 EdgeGestureUtil</value></data><data name="EdgeGestureUtilHint_Part1" xml:space="preserve"><value>EdgeGestureUtil 是 icc 最新引入的可以暫時阻止在使用觸摸時觸發邊緣手勢（如 Windows10 環境下，螢幕左邊緣滑動進入任務視圖，右邊緣滑動彈出通知中心；Windows11 環境下，底部向上滑動打開開始菜單），其原理是使用了 System.EdgeGesture.DisableTouchWhenFullscreen （當應用程序視窗處于活動狀態且處于全屏模式 (或擁有的視窗) 處于活動狀態時，防止邊緣手勢行為。）來實現的。如果有異常，請關閉該選項，該選項應該能夠實時生效。（Win7 和 Win8 使用者該選項無法使用）</value></data><data name="EraserBindTouchHint" xml:space="preserve"><value>BoundsWidth 參數作為接觸面積區分界限</value></data><data name="EraserBindTouchMultiplier" xml:space="preserve"><value>橡皮擦綁定觸摸大小倍數</value></data><data name="Experimental" xml:space="preserve"><value>實驗性選項</value></data><data name="FingerModeBoundsWidthHeader" xml:space="preserve"><value>手指模式 BoundsWidth</value></data><data name="ForceFullScreen" xml:space="preserve"><value>啟用 ForceFullScreen</value></data><data name="ForceFullScreenHint" xml:space="preserve"><value>視窗大小一變就自動鋪滿整個螢幕。不需要就關掉，實時生效。</value></data><data name="FullScreenHelper" xml:space="preserve"><value>啟用 FullScreenHelper</value></data><data name="FullScreenHelperHint" xml:space="preserve"><value>減少全屏時任務欄彈出來打擾。如果遇到視窗顯示異常，關掉它并重啟。</value></data><data name="LogByDate" xml:space="preserve"><value>日志以日期儲存</value></data><data name="Logging" xml:space="preserve"><value>記錄日志</value></data><data name="LogRotateHint" xml:space="preserve"><value>日志檔案超過 512 KB 時會自動刪除。開啟日期儲存后，日志將儲存在 Logs 資料夾中，當資料夾大小超過 5MB 時自動清空。</value></data><data name="NibModeBoundsWidthHeader" xml:space="preserve"><value>筆尖模式 BoundsWidth</value></data><data name="QuadIRMode" xml:space="preserve"><value>四邊紅外模式</value></data><data name="ResolutionChangeDetection" xml:space="preserve"><value>啟用 ResolutionChangeDetection</value></data><data name="ResolutionChangeDetectionHint" xml:space="preserve"><value>改了螢幕分辨率后，如果浮動工具欄跑到螢幕外，自動把它拉回來。</value></data><data name="SpecialScreenMode" xml:space="preserve"><value>特殊螢幕模式</value></data><data name="Title" xml:space="preserve"><value>高級設定</value></data><data name="TouchMultiplier" xml:space="preserve"><value>觸摸倍數</value></data><data name="TouchMultiplierCalibrateHint" xml:space="preserve"><value>在下方區域內用筆尖點選以估計觸摸大小倍數</value></data><data name="TouchMultiplierHint" xml:space="preserve"><value>可在手指觸摸畫板時顯示圓形橡皮或手掌觸摸畫板時顯示的橡皮比
+手掌大很多時調整</value></data><data name="TouchMultiplierValueHint" xml:space="preserve"><value>數值僅供參考</value></data><data name="Debug_ShowConsole_Desc" xml:space="preserve"><value>顯示一個獨立的控制臺視窗，用于實時輸出日志（開啟后立即生效；關閉設定中的「啟用日志記錄」將不會輸出內容）。</value></data><data name="Debug_ShowConsole_Header" xml:space="preserve"><value>顯示調試視窗</value></data><data name="Debug_PPTComProbe_Desc" xml:space="preserve"><value>開啟后會在PPT連接、放映切換和定時輪詢時輸出大量COM對象、視窗、處理程序與狀態探針資訊。僅建議排查PPT/WPS聯動問題時臨時開啟。</value></data><data name="Debug_PPTComProbe_Header" xml:space="preserve"><value>啟用PPT COM調試探針</value></data><data name="Debug_PPTPreviewVisible_Desc" xml:space="preserve"><value>開啟后會在PPT翻頁按鈕設定頁面的左側顯示內嵌預覽區域（預設隱藏）。</value></data><data name="Debug_PPTPreviewVisible_Header" xml:space="preserve"><value>顯示PPT翻頁按鈕預覽</value></data><data name="Debug_IconSettings" xml:space="preserve"><value>圖標設定</value></data><data name="Debug_SettingsExpanderExample" xml:space="preserve"><value>SettingsExpander 示例</value></data><data name="Debug_CrashTest_Section" xml:space="preserve"><value>當機重啟測試</value></data><data name="Debug_SimulateCrash_Header" xml:space="preserve"><value>模擬當機</value></data><data name="Debug_SimulateCrash_Desc" xml:space="preserve"><value>點選后會立即觸發一次未處理異常，用于驗證當機重啟熔斷機制是否正常工作。</value></data><data name="Debug_SimulateCrash_Button" xml:space="preserve"><value>觸發當機</value></data><data name="Debug_SimulateHeartbeatTimeout_Header" xml:space="preserve"><value>模擬心跳超時</value></data><data name="Debug_SimulateHeartbeatTimeout_Desc" xml:space="preserve"><value>點選后會停止心跳計時器，下一次守護檢查將檢測到心跳超時并觸發重啟。</value></data><data name="Debug_SimulateHeartbeatTimeout_Button" xml:space="preserve"><value>停止心跳</value></data><data name="Debug_ResetStartupCount_Header" xml:space="preserve"><value>重設熔斷計數器</value></data><data name="Debug_ResetStartupCount_Desc" xml:space="preserve"><value>清零 startup-count 檔案，解除因連續當機導致的熔斷鎖定。</value></data><data name="Debug_ResetStartupCount_Button" xml:space="preserve"><value>重設計數</value></data><data name="Adv_AdminLaunch" xml:space="preserve"><value>以管理員權限啟動時</value></data><data name="Adv_AdminLaunchDesc" xml:space="preserve"><value>管理員權限會導致 PPT 聯動失效（翻頁組件消失、頁碼讀不到）</value></data><data name="Adv_AdminAsk" xml:space="preserve"><value>彈窗提醒</value></data><data name="Adv_AdminRelaunch" xml:space="preserve"><value>自動以普通權限重啟</value></data><data name="Adv_AdminIgnore" xml:space="preserve"><value>不做處理</value></data><data name="Adv_AutoCalibrate" xml:space="preserve"><value>自動校準觸摸參數</value></data><data name="Adv_AutoCalibrateDesc" xml:space="preserve"><value>通過三次觸摸自動計算合適的筆尖/手指閾值和觸摸倍率</value></data><data name="Adv_CalibrateSteps" xml:space="preserve"><value>校準步驟</value></data><data name="Adv_CalibrateIntro" xml:space="preserve"><value>點選"開始校準"按鈕，然後依次在下方區域用：</value></data><data name="Adv_CalibrateStep1" xml:space="preserve"><value>1. 筆尖（觸控筆）</value></data><data name="Adv_CalibrateStep2" xml:space="preserve"><value>2. 手指</value></data><data name="Adv_CalibrateStep3" xml:space="preserve"><value>3. 手掌（模擬誤觸）</value></data><data name="Adv_StartCalibrate" xml:space="preserve"><value>開始校準</value></data><data name="Adv_CalibrateIdle" xml:space="preserve"><value>點選上面的按鈕開始</value></data><data name="Adv_NibValueUncalibrated" xml:space="preserve"><value>筆尖值: 未校準</value></data><data name="Adv_FingerValueUncalibrated" xml:space="preserve"><value>手指值: 未校準</value></data><data name="Adv_PalmValueUncalibrated" xml:space="preserve"><value>手掌值: 未校準</value></data><data name="Adv_CalibrateTapPen" xml:space="preserve"><value>請用 筆尖 點選此處</value></data><data name="Adv_CalibrateTapFinger" xml:space="preserve"><value>請用 手指 點選此處</value></data><data name="Adv_CalibrateTapPalm" xml:space="preserve"><value>請用 手掌 點選此處（模擬誤觸）</value></data><data name="Adv_CalibrateDone" xml:space="preserve"><value>校準完成！點選按鈕重新校準</value></data><data name="Adv_NibValueWaiting" xml:space="preserve"><value>筆尖值: 等待校準...</value></data><data name="Adv_NibValueFormat" xml:space="preserve"><value>筆尖值: {0:F2}</value></data><data name="Adv_FingerValueFormat" xml:space="preserve"><value>手指值: {0:F2}</value></data><data name="Adv_PalmValueFormat" xml:space="preserve"><value>手掌值: {0:F2}</value></data></root>

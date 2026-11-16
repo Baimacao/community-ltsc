@@ -1039,6 +1039,7 @@ namespace Ink_Canvas.Properties
             dict["Theme_SidebarGroupTitle"] = ("ThemeStrings", "Theme_SidebarGroupTitle");
             dict["Theme_Label"] = ("ThemeStrings", "Theme_Label");
             dict["Theme_Language_ChineseSimplified"] = ("ThemeStrings", "Theme_Language_ChineseSimplified");
+            dict["Theme_Language_ChineseTraditional"] = ("ThemeStrings", "Theme_Language_ChineseTraditional");
             dict["Theme_Language_English"] = ("ThemeStrings", "Theme_Language_English");
             dict["Theme_Language_MemeChinese"] = ("ThemeStrings", "Theme_Language_MemeChinese");
             dict["Theme_Language_RestartHint"] = ("ThemeStrings", "Theme_Language_RestartHint");

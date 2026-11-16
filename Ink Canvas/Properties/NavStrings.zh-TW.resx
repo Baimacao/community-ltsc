@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Advanced" xml:space="preserve"><value>高級</value></data><data name="Nav_Advanced_Settings" xml:space="preserve"><value>高級設定</value></data><data name="Nav_Automation_Settings" xml:space="preserve"><value>自動化設定</value></data><data name="Nav_FriendlyLinks" xml:space="preserve"><value>贊助及友鏈</value></data><data name="Nav_Plugins" xml:space="preserve"><value>外掛</value></data><data name="Nav_PPT_Settings" xml:space="preserve"><value>PPT設定</value></data><data name="Nav_Shortcuts" xml:space="preserve"><value>快速鍵</value></data><data name="Nav_Startup" xml:space="preserve"><value>基本</value></data><data name="Nav_Theme_Settings" xml:space="preserve"><value>個性化設定</value></data><data name="Settings_ModeDesc" xml:space="preserve"><value>選擇軟體運行模式。僅 PPT 模式下，軟體將完全隱藏，僅在 PPT 放映時出現。（實驗性功能，可能不穩定。）</value></data><data name="Settings_ModeDesc_1" xml:space="preserve"><value>運行模式</value></data><data name="Settings_Nav_Hotkey_Tooltip" xml:space="preserve"><value>快速鍵設定</value></data><data name="Settings_Nav_Security" xml:space="preserve"><value>安全</value></data><data name="Settings_Nav_Security_Tooltip" xml:space="preserve"><value>安全密碼與處理程序保護</value></data><data name="Settings_Plugins" xml:space="preserve"><value>外掛管理</value></data><data name="Settings_Title" xml:space="preserve"><value>設定</value></data><data name="Nav_SettingsWindow_Title" xml:space="preserve"><value>ICC CE Lite 設定</value></data><data name="Nav_AppSettings" xml:space="preserve"><value>應用設定</value></data><data name="Nav_SearchSettings" xml:space="preserve"><value>尋找設定</value></data><data name="Nav_Home" xml:space="preserve"><value>首頁</value></data><data name="Nav_Home_Tooltip" xml:space="preserve"><value>快速導航</value></data><data name="Nav_ICCSettings" xml:space="preserve"><value>ICC CE Lite 設定</value></data><data name="Nav_Basic" xml:space="preserve"><value>基本</value></data><data name="Nav_General" xml:space="preserve"><value>通用</value></data><data name="Nav_General_Tooltip" xml:space="preserve"><value>通用設定</value></data><data name="Nav_Startup_Tooltip" xml:space="preserve"><value>啟動與基本行為設定</value></data><data name="Nav_Clock" xml:space="preserve"><value>時鐘</value></data><data name="Nav_Clock_Tooltip" xml:space="preserve"><value>時鐘顯示設定</value></data><data name="Nav_ToolbarComponents" xml:space="preserve"><value>組件</value></data><data name="Nav_ToolbarComponents_Tooltip" xml:space="preserve"><value>工具欄按鈕排序與可見性</value></data><data name="Nav_ToolbarAppearance" xml:space="preserve"><value>外觀</value></data><data name="Nav_ToolbarAppearance_Tooltip" xml:space="preserve"><value>工具欄外觀設定</value></data><data name="Nav_Basic_Tooltip" xml:space="preserve"><value>基本設定</value></data><data name="Nav_Privacy" xml:space="preserve"><value>隱私</value></data><data name="Nav_Privacy_Tooltip" xml:space="preserve"><value>隱私與遙測設定</value></data><data name="Nav_MainInterface" xml:space="preserve"><value>主介面</value></data><data name="Nav_MainInterface_Tooltip" xml:space="preserve"><value>主介面設定</value></data><data name="Nav_Window" xml:space="preserve"><value>視窗</value></data><data name="Nav_Window_Tooltip" xml:space="preserve"><value>視窗設定</value></data><data name="Nav_Sidebar" xml:space="preserve"><value>側邊欄</value></data><data name="Nav_Sidebar_Tooltip" xml:space="preserve"><value>側邊欄設定</value></data><data name="Nav_Toolbar" xml:space="preserve"><value>工具欄</value></data><data name="Nav_Toolbar_Tooltip" xml:space="preserve"><value>工具欄按鈕排序與可見性</value></data><data name="Nav_BoardToolbar" xml:space="preserve"><value>白板工具欄</value></data><data name="Nav_BoardToolbar_Tooltip" xml:space="preserve"><value>白板工具欄組件配置</value></data><data name="Nav_Board" xml:space="preserve"><value>白板</value></data><data name="Nav_Board_Tooltip" xml:space="preserve"><value>白板模式下的工具欄、外觀與菜單</value></data><data name="Nav_BoardComponents" xml:space="preserve"><value>組件</value></data><data name="Nav_BoardComponents_Tooltip" xml:space="preserve"><value>白板工具欄組件配置</value></data><data name="Nav_BoardAppearance" xml:space="preserve"><value>外觀</value></data><data name="Nav_BoardAppearance_Tooltip" xml:space="preserve"><value>白板工具欄外觀設定</value></data><data name="Nav_ToolbarMenu" xml:space="preserve"><value>菜單</value></data><data name="Nav_ToolbarMenu_Tooltip" xml:space="preserve"><value>工具欄菜單排序與可見性</value></data><data name="Nav_BoardMenu" xml:space="preserve"><value>菜單</value></data><data name="Nav_BoardMenu_Tooltip" xml:space="preserve"><value>白板菜單排序與可見性</value></data><data name="Nav_CanvasAndInk_Tooltip" xml:space="preserve"><value>畫板與墨跡設定</value></data><data name="Nav_Canvas_Tooltip" xml:space="preserve"><value>畫板設定</value></data><data name="Nav_InkRecognition_Tooltip" xml:space="preserve"><value>墨跡糾正設定</value></data><data name="Nav_PPT_Tooltip" xml:space="preserve"><value>PPT聯動設定</value></data><data name="Nav_Update_Tooltip" xml:space="preserve"><value>更新設定</value></data><data name="Nav_RandomDraw_Tooltip" xml:space="preserve"><value>隨機點名與計時器</value></data><data name="Nav_PluginSettings" xml:space="preserve"><value>外掛設定</value></data><data name="Nav_AboutInkCanvas" xml:space="preserve"><value>關于 ICC CE Lite</value></data><data name="Nav_NavigateError" xml:space="preserve"><value>導航到頁面時出錯: {0}</value></data><data name="Nav_Error" xml:space="preserve"><value>錯誤</value></data><data name="Nav_PluginSettingsFormat" xml:space="preserve"><value>{0} 設定</value></data><data name="Nav_IndexBuildFailed" xml:space="preserve"><value>為頁面 {0} 建索引失敗: {1}</value></data><data name="Nav_LoadPluginSettingsFailed" xml:space="preserve"><value>載入外掛設定頁面時出錯: {0}</value></data><data name="Nav_PreloadPageFailed" xml:space="preserve"><value>預載入設定頁面 {0} 失敗: {1}</value></data><data name="Nav_PreloadPagesFailed" xml:space="preserve"><value>異步預載入設定頁面時出錯: {0}</value></data><data name="Settings_Description" xml:space="preserve"><value>這里是設定頁面</value></data><data name="Nav_Performance" xml:space="preserve"><value>性能</value></data><data name="Nav_Performance_Tooltip" xml:space="preserve"><value>性能監測與設備評估</value></data><data name="Nav_CanvasGroup" xml:space="preserve"><value>畫布與筆跡</value></data><data name="Nav_CanvasGroup_Tooltip" xml:space="preserve"><value>畫布、筆跡與書寫體驗</value></data><data name="Nav_CanvasInk" xml:space="preserve"><value>筆跡與平滑</value></data><data name="Nav_CanvasInk_Tooltip" xml:space="preserve"><value>筆跡渲染、平滑、壓感與橡皮</value></data><data name="Nav_Lecture" xml:space="preserve"><value>授課</value></data><data name="Nav_Lecture_Tooltip" xml:space="preserve"><value>課件放映、計時與自動化</value></data><data name="Nav_Timer_Tooltip" xml:space="preserve"><value>課堂計時與倒計時</value></data></root>

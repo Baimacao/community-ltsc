@@ -26,7 +26,7 @@
     <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <EmbeddedOnlyCultures>en-US;zh-ME</EmbeddedOnlyCultures>
+    <EmbeddedOnlyCultures>en-US;zh-ME;zh-TW</EmbeddedOnlyCultures>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU;x86;x64</Platforms>
@@ -576,6 +576,9 @@
       <WithCulture>false</WithCulture>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\*.zh-ME.resx">
+      <WithCulture>false</WithCulture>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\*.zh-TW.resx">
       <WithCulture>false</WithCulture>
     </EmbeddedResource>
   </ItemGroup>

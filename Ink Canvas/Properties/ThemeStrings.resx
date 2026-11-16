@@ -471,4 +471,7 @@
   <data name="Theme_FloatingIcon_LtscDark" xml:space="preserve">
     <value>ICC CE Lite 深色</value>
   </data>
+  <data name="Theme_Language_ChineseTraditional" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
 </root>

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>性能</value></data><data name="EnableMonitoring" xml:space="preserve"><value>啟用性能監測</value></data><data name="EnableMonitoringHint" xml:space="preserve"><value>在軟體運行期間定期采集 CPU 和記憶體使用情況，記錄最近 30 次運行的性能資料。關閉后將停止采集并清除歷史記錄。</value></data><data name="CurrentSession" xml:space="preserve"><value>當前運行狀態</value></data><data name="CpuUsage" xml:space="preserve"><value>CPU 占用</value></data><data name="SystemCpuUsage" xml:space="preserve"><value>設備 CPU</value></data><data name="MemoryUsage" xml:space="preserve"><value>記憶體占用</value></data><data name="MonitoringInactive" xml:space="preserve"><value>性能監測未啟用</value></data><data name="MonitoringActive" xml:space="preserve"><value>正在采集中...</value></data><data name="HistorySection" xml:space="preserve"><value>歷史運行記錄</value></data><data name="HistoryHint" xml:space="preserve"><value>記錄最近 30 次軟體運行期間的平均 CPU 和記憶體占用</value></data><data name="NoHistory" xml:space="preserve"><value>暫無歷史資料</value></data><data name="HistoryRunCount" xml:space="preserve"><value>共 {0} 次運行記錄</value></data><data name="AvgCpuLabel" xml:space="preserve"><value>平均 CPU</value></data><data name="AvgMemoryLabel" xml:space="preserve"><value>平均記憶體</value></data><data name="PeakCpuLabel" xml:space="preserve"><value>最高 CPU</value></data><data name="PeakMemoryLabel" xml:space="preserve"><value>最高記憶體</value></data><data name="ClearHistory" xml:space="preserve"><value>清除歷史記錄</value></data><data name="ClearHistoryConfirm" xml:space="preserve"><value>確定要清除所有性能歷史記錄嗎？此操作不可撤銷。</value></data><data name="DeviceScoreSection" xml:space="preserve"><value>設備性能評估</value></data><data name="DeviceScoreHint" xml:space="preserve"><value>評估當前設備的硬體性能，判斷能否流暢運行本軟體</value></data><data name="RunDeviceTest" xml:space="preserve"><value>開始評估</value></data><data name="DeviceScoreResult" xml:space="preserve"><value>綜合評分</value></data><data name="DeviceScoreExcellent" xml:space="preserve"><value>優秀 — 設備性能出色，可流暢運行</value></data><data name="DeviceScoreGood" xml:space="preserve"><value>良好 — 設備性能足夠，運行無壓力</value></data><data name="DeviceScoreFair" xml:space="preserve"><value>一般 — 設備性能基本滿足，可能出現輕微卡頓</value></data><data name="DeviceScorePoor" xml:space="preserve"><value>較差 — 設備性能不足，建議升級硬體</value></data><data name="DeviceScoreUnknown" xml:space="preserve"><value>未評估</value></data><data name="CpuScore" xml:space="preserve"><value>處理器評分</value></data><data name="MemoryScore" xml:space="preserve"><value>記憶體評分</value></data><data name="DiskScore" xml:space="preserve"><value>磁盤評分</value></data><data name="LastTestTime" xml:space="preserve"><value>上次評估時間</value></data><data name="TestInProgress" xml:space="preserve"><value>正在評估中...</value></data><data name="InkSmoothingSection" xml:space="preserve"><value>墨跡糾正耗時</value></data><data name="InkSmoothingHint" xml:space="preserve"><value>統計最近 100 次筆畫平滑處理的耗時資料</value></data><data name="InkSmoothingInactive" xml:space="preserve"><value>曲線平滑未啟用或暫無資料</value></data><data name="InkSmoothingAvgTotal" xml:space="preserve"><value>平均總耗時</value></data><data name="InkSmoothingMaxTotal" xml:space="preserve"><value>最大總耗時</value></data><data name="InkSmoothingAvgBezier" xml:space="preserve"><value>貝塞爾計算</value></data><data name="InkSmoothingAvgResample" xml:space="preserve"><value>重采樣耗時</value></data><data name="InkSmoothingAvgInputPoints" xml:space="preserve"><value>平均輸入點數</value></data><data name="InkSmoothingAvgOutputPoints" xml:space="preserve"><value>平均輸出點數</value></data><data name="InkSmoothingSampleCount" xml:space="preserve"><value>已采樣筆畫數</value></data></root>

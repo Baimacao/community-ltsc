@@ -15,7 +15,7 @@ namespace Ink_Canvas.Helpers
 {
     public static class LocalizationHelper
     {
-        private static readonly string[] EmbeddedOnlyCultures = { "en-US", "zh-ME" };
+        private static readonly string[] EmbeddedOnlyCultures = { "en-US", "zh-ME", "zh-TW" };
         private static readonly Dictionary<(string className, string cultureName), Dictionary<string, string>> _embeddedCache = new();
         private static readonly Dictionary<string, ResourceManager> _originalResourceManagers = new();
 
@@ -218,7 +218,7 @@ namespace Ink_Canvas.Helpers
         /// 支持的语言码白名单。
         /// 空字符串 = 跟随系统。
         /// </summary>
-        private static readonly string[] SupportedLanguages = { "", "zh-CN", "en-US", "zh-ME" };
+        private static readonly string[] SupportedLanguages = { "", "zh-CN", "zh-TW", "zh-ME", "en-US" };
 
         /// <summary>
         /// 把配置里读到的语言码规范成受支持的值。
