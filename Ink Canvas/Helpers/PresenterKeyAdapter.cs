@@ -109,8 +109,104 @@ namespace Ink_Canvas.Helpers
         /// <summary>本次会话里已经提示过的功能（ta 裁决 Q4-4：会话级，不写配置）。</summary>
         private static readonly HashSet<string> _warnedFeatures = new HashSet<string>();
 
-        /// <summary>适配是否已开启（映射正常工作的状态）。</summary>
+        /// <summary>
+        /// 适配是否已开启（映射正常工作的状态）。
+        ///
+        /// 这个值**落盘**（Settings.PresenterKey.Enabled）：老师改过就不该重启又变回去。
+        /// 只有「本次会话不再弹提示」是会话级的（ta 裁决 Q4-4），两者是不同的东西。
+        /// </summary>
         internal static bool IsEnabled { get; private set; }
+
+        /// <summary>
+        /// 从 Settings 恢复状态。程序启动时调一次。
+        ///
+        /// 出厂默认 = 关闭：老师第一次遇到这些键时，宁可只拦截 + 弹提示，
+        /// 也不能让翻页笔一按就把课上状态改掉。
+        /// </summary>
+        internal static void LoadFromSettings()
+        {
+            try
+            {
+                var settings = MainWindow.Settings?.PresenterKey;
+                if (settings == null) return;
+
+                IsEnabled = settings.Enabled;
+
+                // 配对：先用出厂值铺底，再用配置里存过的覆盖。
+                // 只覆盖存在且合法的项 —— 老配置缺条目、或存了非法枚举值时，
+                // 那一项保持出厂值，不会把按键变成「未设置」。
+                if (settings.Bindings != null)
+                {
+                    foreach (var b in Bindings)
+                    {
+                        if (settings.Bindings.TryGetValue(b.Feature, out var saved) && saved != null)
+                        {
+                            var key = (Key)saved.Key;
+                            var mods = (ModifierKeys)saved.Modifiers;
+                            if (key != Key.None && IsValidModifiers(mods))
+                            {
+                                b.Key = key;
+                                b.Modifiers = mods;
+                            }
+                        }
+                    }
+                }
+
+                LogHelper.WriteLogToFile(
+                    $"翻页笔适配状态已载入：{(IsEnabled ? "开启" : "关闭")}",
+                    LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"载入翻页笔适配状态失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// 把当前配对与开关写回 Settings 并落盘。
+        ///
+        /// 调用点：设置页改键/改开关、OOBE 选完、提示框里选「启用适配」。
+        /// 只写用户实际改过的条目不现实（无法判断哪条算改过），
+        /// 全量写也不亏 —— 5 条记录而已。
+        /// </summary>
+        internal static void PersistToSettings()
+        {
+            try
+            {
+                var root = MainWindow.Settings;
+                if (root == null) return;
+
+                if (root.PresenterKey == null)
+                    root.PresenterKey = new PresenterKeySettings();
+
+                root.PresenterKey.Enabled = IsEnabled;
+
+                var map = new Dictionary<string, PresenterKeyBinding>();
+                foreach (var b in Bindings)
+                {
+                    map[b.Feature] = new PresenterKeyBinding
+                    {
+                        Key = (int)b.Key,
+                        Modifiers = (int)b.Modifiers
+                    };
+                }
+                root.PresenterKey.Bindings = map;
+
+                Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"保存翻页笔适配状态失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>只认 WPF 定义过的修饰键组合，避免配置文件被改坏后塞进奇怪的值。</summary>
+        private static bool IsValidModifiers(ModifierKeys mods)
+        {
+            const ModifierKeys all = ModifierKeys.Alt | ModifierKeys.Control
+                                   | ModifierKeys.Shift | ModifierKeys.Windows;
+            return (mods & ~all) == ModifierKeys.None;
+        }
 
         /// <summary>当前是否处于「接管」状态（= 钩子挂着的状态）。</summary>
         internal static bool IsHooked => _hook != null && _hook.IsHooked;
@@ -180,9 +276,25 @@ namespace Ink_Canvas.Helpers
 
             if (IsEnabled)
             {
-                // 已开启适配：按映射正常工作 —— 不拦截，让系统/PPT 收到
+                // 已开启适配：按映射正常工作 —— **吃掉这个键，同时执行映射**。
+                //
+                // 这里原来是 return false（放行给系统/PPT），是错的，实测能证明：
+                //   · 这 5 个键在放映状态下 PPT 自己也认（ESC 退放映、B 黑屏、
+                //     E 擦除、Ctrl+P 画笔、Shift+F5 从头播放）。放行 = ICC 和 PPT
+                //     各做一遍，同一件事做两次。
+                //   · ESC 更糟：它同时还是 ICC 的全局热键（GlobalHotkeyManager
+                //     "Exit" = Escape）。放行时是 ICC 退一次 + PPT 退一次 +
+                //     全局热键再退一次。
+                //
+                // 探针实测（E:\DSH\tmp\hookprobe，WH_KEYBOARD_LL + RegisterHotKey）：
+                //   钩子不吞 → hookSwallowed=0 hotkeyFired=1
+                //   钩子吞   → hookSwallowed=1 hotkeyFired=0
+                // 也就是说：只要吃掉，系统就收不到 WM_HOTKEY，重复触发不可能发生。
+                //
+                // 代价是「吃掉后 PPT 也收不到」，但这是适配的本意 ——
+                // 老师开适配就是为了让这些键只由 ICC 管，不要顺带把 PPT 也动了。
                 RunFeatureAsync(binding.Feature);
-                return false;
+                return true;
             }
 
             // 未开启：拦截，不响应

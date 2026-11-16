@@ -248,6 +248,62 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("L-2", false, Trim(ex.Message)); }
 
+            // --- 7. 翻页笔适配的吞键语义（N-03）---
+            // 这两条是本次修复的核心，纯逻辑、可确定性验证：
+            //   适配开启：必须 return true（吃掉）。原来 return false 会让
+            //             ICC 和 PPT 各做一遍；ESC 还会同时命中 ICC 的全局热键。
+            //   适配关闭：同样 return true，否则「只拦截不响应」就是假的。
+            try
+            {
+                var adapterType = typeof(Ink_Canvas.Helpers.PresenterKeyAdapter);
+                var swallowMethod = adapterType.GetMethod("OnShouldSwallow", BindingFlags.NonPublic | BindingFlags.Static);
+                var enabledProp = adapterType.GetProperty("IsEnabled", BindingFlags.NonPublic | BindingFlags.Static);
+                var bindField = adapterType.GetField("Bindings", BindingFlags.NonPublic | BindingFlags.Static);
+                R("N-03 吞键判定入口存在", swallowMethod != null && enabledProp != null && bindField != null);
+
+                if (swallowMethod != null && enabledProp != null && bindField != null)
+                {
+                    var bindings = bindField.GetValue(null) as System.Collections.IEnumerable;
+                    object escBinding = null;
+                    foreach (var b in bindings)
+                    {
+                        var fe = b.GetType().GetProperty("Feature")?.GetValue(b) as string;
+                        if (fe == "exit") { escBinding = b; break; }
+                    }
+                    R("N-03 能找到 exit 配对", escBinding != null);
+
+                    if (escBinding != null)
+                    {
+                        bool wasEnabled = (bool)enabledProp.GetValue(null);
+                        try
+                        {
+                            enabledProp.SetValue(null, true);
+                            var r1 = (bool)swallowMethod.Invoke(null, new object[] { System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None });
+                            R("N-03 适配开启时 ESC 被吞", r1, "return=" + r1);
+
+                            enabledProp.SetValue(null, false);
+                            var r2 = (bool)swallowMethod.Invoke(null, new object[] { System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None });
+                            R("N-03 适配关闭时 ESC 仍被拦截", r2, "return=" + r2);
+                        }
+                        finally { enabledProp.SetValue(null, wasEnabled); }
+                    }
+                }
+            }
+            catch (Exception ex) { R("N-03", false, Trim(ex.Message)); }
+
+            // --- 7b. 退出热键按需注册的结构（N-03）---
+            try
+            {
+                var gmType = typeof(Ink_Canvas.Helpers.GlobalHotkeyManager);
+                R("N-03 退出热键状态字段存在",
+                    gmType.GetField("_exitHotkeyRegistered", BindingFlags.NonPublic | BindingFlags.Instance) != null &&
+                    gmType.GetField("_exitHotkeyAction", BindingFlags.NonPublic | BindingFlags.Instance) != null);
+                R("N-03 按需注册/改键入口存在",
+                    gmType.GetMethod("ApplyExitHotkeyRegistration", BindingFlags.NonPublic | BindingFlags.Instance) != null &&
+                    gmType.GetMethod("UpdateExitHotkeyBinding", BindingFlags.NonPublic | BindingFlags.Instance) != null);
+            }
+            catch (Exception ex) { R("N-03b", false, Trim(ex.Message)); }
+
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 

@@ -199,7 +199,24 @@ namespace Ink_Canvas.Helpers
         /// <returns>快捷键信息列表</returns>
         public List<HotkeyInfo> GetRegisteredHotkeys()
         {
-            return new List<HotkeyInfo>(_registeredHotkeys.Values);
+            var list = new List<HotkeyInfo>(_registeredHotkeys.Values);
+
+            // 退出热键是按需注册的，平时不在 _registeredHotkeys 里，
+            // 但它确实是用户配过的一个快捷键 —— 列出时要带上，否则设置页/保存
+            // 会以为它不存在，一保存就把这条配置抹掉。
+            if (_exitHotkeyAction != null &&
+                !list.Exists(h => string.Equals(h.Name, "Exit", StringComparison.OrdinalIgnoreCase)))
+            {
+                list.Add(new HotkeyInfo
+                {
+                    Name = "Exit",
+                    Key = _exitHotkeyKey,
+                    Modifiers = _exitHotkeyModifiers,
+                    Action = _exitHotkeyAction
+                });
+            }
+
+            return list;
         }
 
         /// <summary>
@@ -253,6 +270,100 @@ namespace Ink_Canvas.Helpers
             }
         }
 
+        #region 退出热键（按需注册）
+
+        /// <summary>退出热键的动作。默认注册里只记住它，不真正注册。</summary>
+        private Action _exitHotkeyAction;
+
+        /// <summary>当前退出热键是否处于注册状态。</summary>
+        private bool _exitHotkeyRegistered;
+
+        /// <summary>
+        /// 退出热键当前用的键与修饰符。设置页改过之后要和这里对齐。
+        /// </summary>
+        private Key _exitHotkeyKey = Key.Escape;
+        private ModifierKeys _exitHotkeyModifiers = ModifierKeys.None;
+
+        /// <summary>
+        /// 按需注册/注销「退出放映」全局热键。
+        ///
+        /// 为什么不能常驻注册：
+        /// RegisterHotKey 对**无修饰键**的按键是系统级独占的。实测（三组反向对照）：
+        ///   · 没有进程注册裸 ESC → 前台窗口 escDown=1 escUp=1
+        ///   · 有进程注册裸 ESC   → 前台窗口 escDown=0 escUp=1（KeyDown 被系统吃掉）
+        ///   · 那个进程退出后     → 前台窗口恢复 escDown=1
+        /// 三组里焦点都在前台窗口上、B 键都正常到达，所以差异只来自热键注册。
+        ///
+        /// 所以：谁注册了裸 ESC，谁就把**这台机器上所有程序的 ESC KeyDown** 吃掉，
+        /// 包括 PowerPoint 自己的「退出放映」、浏览器、记事本。
+        ///
+        /// 注意生效条件（查过日志，别想当然）：ICC 启动时是鼠标模式，
+        /// InitializeGlobalHotkeyManager 会立刻 UpdateHotkeyStateForToolMode(true)
+        /// 把热键全注销，所以**刚启动时 ICC 并不占用 ESC**。
+        /// 只有切进批注/白板模式（非鼠标模式且 EnableHotkeysInMouseMode=false）时
+        /// 才会整批注册，那时裸 ESC 就被独占。
+        ///
+        /// 于是改成：退出热键只在放映期间注册。
+        /// 放映时 ICC 主窗口置顶全屏，老师不会同时在别的程序里按 ESC；
+        /// 退出放映立刻注销，还给系统。其余模式下的退出继续走键盘事件，
+        /// 不占系统级热键。
+        /// </summary>
+        internal void ApplyExitHotkeyRegistration(bool shouldRegister)
+        {
+            try
+            {
+                if (shouldRegister && !_exitHotkeyRegistered)
+                {
+                    if (_exitHotkeyAction == null) return;
+
+                    if (RegisterHotkey("Exit", _exitHotkeyKey, _exitHotkeyModifiers, _exitHotkeyAction))
+                    {
+                        _exitHotkeyRegistered = true;
+                        LogHelper.WriteLogToFile(
+                            $"退出放映热键已注册（{_exitHotkeyKey}），仅放映期间生效",
+                            LogHelper.LogType.Event);
+                    }
+                    else
+                    {
+                        // 注册失败要看得见 —— 否则老师会以为 ESC 能用
+                        LogHelper.WriteLogToFile(
+                            $"退出放映热键注册失败（{_exitHotkeyKey}），可能被其他程序占用",
+                            LogHelper.LogType.Warning);
+                    }
+                }
+                else if (!shouldRegister && _exitHotkeyRegistered)
+                {
+                    UnregisterHotkey("Exit");
+                    _exitHotkeyRegistered = false;
+                    LogHelper.WriteLogToFile("退出放映热键已注销，ESC 归还系统", LogHelper.LogType.Event);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"切换退出放映热键状态失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
+        /// 设置页改了退出热键的键位时调用：记住新键位，并在放映中立刻换到新键。
+        /// </summary>
+        internal void UpdateExitHotkeyBinding(Key key, ModifierKeys modifiers, Action action)
+        {
+            _exitHotkeyKey = key;
+            _exitHotkeyModifiers = modifiers;
+            _exitHotkeyAction = action;
+
+            if (_exitHotkeyRegistered)
+            {
+                // 先注销旧的，再按新键注册
+                UnregisterHotkey("Exit");
+                _exitHotkeyRegistered = false;
+                ApplyExitHotkeyRegistration(true);
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// 注册默认快捷键集合
         /// </summary>
@@ -287,8 +398,12 @@ namespace Ink_Canvas.Helpers
                 RegisterHotkey("Screenshot", Key.C, ModifierKeys.Alt, () => _mainWindow.SaveScreenShotToDesktop());
                 RegisterHotkey("Hide", Key.V, ModifierKeys.Alt, () => _mainWindow.SymbolIconEmoji_MouseUp(null, null));
 
-                // 退出快捷键
-                RegisterHotkey("Exit", Key.Escape, ModifierKeys.None, () => _mainWindow.KeyExit(null, null));
+                // 退出快捷键：这里**不注册**，改由 PPT 放映期间按需注册。
+                // 理由见 ApplyExitHotkeyRegistration 的注释 —— 裸 ESC 的
+                // RegisterHotKey 是系统级独占，会饿死所有前台程序。
+                // 批注/白板模式下也会走这里，所以不能让它顺手把 ESC 挂上。
+                _exitHotkeyAction = () => _mainWindow.KeyExit(null, null);
+                ApplyExitHotkeyRegistration(_mainWindow != null && _mainWindow.IsInPPTPresentationMode);
 
                 // 已注册默认全局快捷键集合
             }
@@ -1147,6 +1262,17 @@ namespace Ink_Canvas.Helpers
                         var action = GetActionByName(hotkeyConfig.Name);
                         if (action != null)
                         {
+                            // 退出热键按需注册：这里只记住键位和动作，不挂到系统上。
+                            // 否则配置文件一含 Exit，裸 ESC 又会常驻独占系统 ESC。
+                            if (hotkeyConfig.Name == "Exit")
+                            {
+                                _exitHotkeyKey = hotkeyConfig.Key;
+                                _exitHotkeyModifiers = hotkeyConfig.Modifiers;
+                                _exitHotkeyAction = action;
+                                successCount++;
+                                continue;
+                            }
+
                             if (RegisterHotkey(hotkeyConfig.Name, hotkeyConfig.Key, hotkeyConfig.Modifiers, action))
                             {
                                 successCount++;

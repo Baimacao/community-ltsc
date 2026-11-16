@@ -62,6 +62,42 @@ namespace Ink_Canvas
 
         [JsonProperty("miniWhiteboard")]
         public MiniWhiteboardSettings MiniWhiteboard { get; set; } = new MiniWhiteboardSettings();
+
+        [JsonProperty("presenterKey")]
+        public PresenterKeySettings PresenterKey { get; set; } = new PresenterKeySettings();
+    }
+
+    /// <summary>
+    /// 翻页笔适配的配置。
+    ///
+    /// 落盘位置：Configs/Settings.json 的 presenterKey 段。
+    /// 缺这一段时（老配置升级上来）走这里的默认值，不当作错误。
+    /// </summary>
+    public class PresenterKeySettings
+    {
+        /// <summary>适配总开关。true = 按配对正常工作；false = 只拦截不响应。</summary>
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; } = false;
+
+        /// <summary>
+        /// 按键配对。key = 功能标识（annotate / clear / blackout / slideshow / exit），value = 按键。
+        ///
+        /// 只存用户改过的项：读取时先用出厂值铺底，再用这里的覆盖。
+        /// 这样以后新增功能、或改出厂键，老配置不会因为缺条目而失效。
+        /// </summary>
+        [JsonProperty("bindings")]
+        public Dictionary<string, PresenterKeyBinding> Bindings { get; set; }
+            = new Dictionary<string, PresenterKeyBinding>();
+    }
+
+    /// <summary>单个翻页笔按键配对。Key/Modifiers 用 WPF 的枚举数值存，和 HotkeyConfig.json 一致。</summary>
+    public class PresenterKeyBinding
+    {
+        [JsonProperty("key")]
+        public int Key { get; set; }
+
+        [JsonProperty("modifiers")]
+        public int Modifiers { get; set; }
     }
 
     public class NotificationSettings

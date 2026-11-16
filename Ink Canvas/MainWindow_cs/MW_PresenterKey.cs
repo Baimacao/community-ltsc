@@ -46,6 +46,19 @@ namespace Ink_Canvas
             {
                 LogHelper.WriteLogToFile($"翻页笔适配同步失败: {ex.Message}", LogHelper.LogType.Error);
             }
+
+            try
+            {
+                // 退出放映热键只在放映期间注册，退出即归还系统。
+                // 裸 ESC 的 RegisterHotKey 是系统级独占（实测：注册后前台窗口只收到
+                // KeyUp、收不到 KeyDown），谁挂着谁就把整个系统的 ESC 吃掉。
+                // 详见 ApplyExitHotkeyRegistration 的注释。
+                GlobalHotkeyManagerInstance?.ApplyExitHotkeyRegistration(value);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"退出放映热键状态同步失败: {ex.Message}", LogHelper.LogType.Error);
+            }
         }
         /// <summary>
         /// 接上翻页笔适配的两个回调。由 Window_Loaded 调用一次。
@@ -54,6 +67,11 @@ namespace Ink_Canvas
         {
             PresenterKeyAdapter.FeatureRequested = OnPresenterFeatureRequested;
             PresenterKeyAdapter.WarnRequested = ShowPresenterKeyWarning;
+
+            // 从 Settings 恢复开关与按键配对。
+            // 必须在这里做：Window_Loaded 时 LoadSettings 已经跑完，
+            // 再往后设置页可能已经打开过，那时读到的是出厂值就晚了。
+            PresenterKeyAdapter.LoadFromSettings();
         }
 
         /// <summary>

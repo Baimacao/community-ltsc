@@ -826,7 +826,26 @@ namespace Ink_Canvas
                 {
                     if (userValue.Type == JTokenType.Object && defaultValue.Type == JTokenType.Object)
                     {
-                        RemoveObsoleteProperties(userValue as JObject, defaultValue as JObject, ref hasChanges);
+                        // 默认值是**空对象**时，把它当作「开放字典」：键是用户数据，不是 schema。
+                        //
+                        // 反例（这次真踩到的）：Settings.PresenterKey.Bindings 是
+                        // Dictionary<string, PresenterKeyBinding>，出厂值是 {}。
+                        // 老师在设置页改过的键存进去后，下次启动走到这里：
+                        // 默认侧没有 "exit" 这个键 → 判定为过期属性 → 删掉。
+                        // 结果就是「改完重启全丢」，而且日志只说「已清理过期配置项」，
+                        // 看不出它清掉了用户真正的设置。
+                        //
+                        // 空对象不可能是「有固定字段的结构」，所以跳过它的子键比对是安全的。
+                        var userChildObj = userValue as JObject;
+                        var defaultChildObj = defaultValue as JObject;
+                        if (defaultChildObj != null && defaultChildObj.Count == 0)
+                        {
+                            // 开放字典：不删子键
+                        }
+                        else
+                        {
+                            RemoveObsoleteProperties(userChildObj, defaultChildObj, ref hasChanges);
+                        }
                     }
                     // 处理数组中的对象（如自定义图标列表等）
                     else if (userValue.Type == JTokenType.Array && defaultValue.Type == JTokenType.Array)

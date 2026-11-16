@@ -230,11 +230,16 @@ namespace Ink_Canvas.Windows
                     var langTag = GetSelectedComboBoxTag(ComboBoxOobeLanguage, "");
                     _settings.Appearance.Language = langTag;
 
-                    // 翻页笔适配：开关状态写入运行时适配器。
-                    // 不进 Settings —— 它是会话级状态（ta 裁决 Q4-4：关掉重开会重新提示），
-                    // 但 OOBE 里老师明确选了「开」，那就该在本次会话立刻生效。
+                    // 翻页笔适配：开关状态写入运行时适配器并落盘。
+                    // 注意区分两件事（ta 裁决 Q4-4）：
+                    //   · 「本次会话不再弹提示」是会话级，不写配置；
+                    //   · 「适配开关」是用户的设置，要写配置，重启后保持。
+                    // OOBE 里老师明确选过一次，没理由重启就丢掉。
                     if (ToggleSwitchPresenterAdapter.IsOn)
                         PresenterKeyAdapter.EnableAdapter();
+                    else
+                        PresenterKeyAdapter.DisableAdapter();
+                    PresenterKeyAdapter.PersistToSettings();
                     _settings.Appearance.EnableHotkeysInMouseMode = CardEnableHotkeysInMouseMode.IsOn;
                 }
             }

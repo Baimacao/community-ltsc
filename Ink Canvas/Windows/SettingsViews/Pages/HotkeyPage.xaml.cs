@@ -261,6 +261,18 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     return;
                 }
 
+                // 退出热键是「按需注册」的：只在放映期间才真正挂到系统上。
+                // 走这里而不是直接 RegisterHotkey，否则设置页一改键就把它变回常驻，
+                // 裸 ESC 会重新独占系统 ESC。
+                if (hotkeyName == "Exit")
+                {
+                    _hotkeyManager.UpdateExitHotkeyBinding(key, modifiers, action);
+                    _hotkeyManager.SaveHotkeysToSettings();
+                    LoadCurrentHotkeys();
+                    LogHelper.WriteLogToFile($"退出放映热键已更新为 {modifiers}+{key}（仅放映期间生效）", LogHelper.LogType.Event);
+                    return;
+                }
+
                 if (_hotkeyManager.RegisterHotkey(hotkeyName, key, modifiers, action))
                 {
                     _hotkeyManager.SaveHotkeysToSettings();

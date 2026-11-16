@@ -70,6 +70,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 PresenterKeyAdapter.EnableAdapter();
             else
                 PresenterKeyAdapter.DisableAdapter();
+
+            // 落盘：老师改过就该记住，不该重启又变回去。
+            PresenterKeyAdapter.PersistToSettings();
         }
 
         private void CaptureButton_Click(object sender, RoutedEventArgs e)
@@ -97,6 +100,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             else
             {
                 HideConflict();
+                PresenterKeyAdapter.PersistToSettings();
             }
         }
 
@@ -135,10 +139,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 ShowConflict(conflict);
                 target.Source.ResetToDefault();
                 target.NotifyKeyChanged();
+                // 回滚后的状态也要落盘，否则磁盘上留的是被拒绝的那个键
+                PresenterKeyAdapter.PersistToSettings();
             }
             else
             {
                 HideConflict();
+                PresenterKeyAdapter.PersistToSettings();
             }
         }
 
