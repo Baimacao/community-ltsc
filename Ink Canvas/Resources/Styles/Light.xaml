@@ -5,6 +5,15 @@
     <SolidColorBrush x:Key="FloatBarBorderBrush" Opacity="0.8" Color="Black" />
     <SolidColorBrush x:Key="FloatBarForeground" Color="Black" />
     <Color x:Key="FloatBarForegroundColor">#FF000000</Color>
+    <!-- 浅色主题的 logo。所有窗口里的 <Image Source="{DynamicResource AppLogo*}"/> 都读这组，
+         换主题时由 SetTheme() 替换整个字典，图片自动跟着换。 -->
+    <BitmapImage x:Key="AppLogo16"  UriSource="/Resources/Icons-png/iccltsc-light-16.png"  CacheOption="OnLoad"/>
+    <BitmapImage x:Key="AppLogo20"  UriSource="/Resources/Icons-png/iccltsc-light-20.png"  CacheOption="OnLoad"/>
+    <BitmapImage x:Key="AppLogo24"  UriSource="/Resources/Icons-png/iccltsc-light-24.png"  CacheOption="OnLoad"/>
+    <BitmapImage x:Key="AppLogo32"  UriSource="/Resources/Icons-png/iccltsc-light-32.png"  CacheOption="OnLoad"/>
+    <BitmapImage x:Key="AppLogo64"  UriSource="/Resources/Icons-png/iccltsc-light-64.png"  CacheOption="OnLoad"/>
+    <BitmapImage x:Key="AppLogoIco" UriSource="/Resources/icc.ico" CacheOption="OnLoad"/>
+
 
     <SolidColorBrush x:Key="QuickDrawFloatingButtonBackground" Color="#CCFFFFFF"/>
     <SolidColorBrush x:Key="QuickDrawFloatingButtonBorderBrush" Color="#33000000"/>

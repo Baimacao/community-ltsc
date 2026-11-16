@@ -59,7 +59,7 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                     <ColumnDefinition Width="137"/>
                 </Grid.ColumnDefinitions>
                 <ikw:SimpleStackPanel x:Name="AppTitle" Grid.Column="0" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <Image Source="\Resources\icc.ico" Width="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Image Source="{DynamicResource AppLogo20}" Width="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock x:Name="AppTitleText"
                         VerticalAlignment="Center"
                         Text="{x:Static props:NavStrings.Nav_AppSettings}" TextWrapping="NoWrap"/>

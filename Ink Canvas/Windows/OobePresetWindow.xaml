@@ -7,7 +7,7 @@
         xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
         mc:Ignorable="d"
         Title="{x:Static props:OobeStrings.Oobe_PresetTitle}"
-        Icon="/Resources/Icons-png/iccltsc-light-32.png"
+        Icon="/Resources/icc.ico"
         Height="560" Width="680"
         MinHeight="420" MinWidth="520"
         WindowStartupLocation="CenterOwner"
@@ -57,7 +57,7 @@
                                       Spacing="12"
                                       VerticalAlignment="Center"
                                       Margin="16,0,0,0">
-                    <Image Source="\Resources\icc.ico" Width="18"
+                    <Image Source="{DynamicResource AppLogo20}" Width="18"
                            RenderOptions.BitmapScalingMode="HighQuality" />
                     <TextBlock VerticalAlignment="Center"
                                Text="{x:Static props:OobeStrings.Oobe_PresetTitle}"

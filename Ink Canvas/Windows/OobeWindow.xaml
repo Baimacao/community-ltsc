@@ -9,7 +9,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="{x:Static props:OobeStrings.Oobe_WelcomeTitle}"
-        Icon="/Resources/Icons-png/iccltsc-light-32.png"
+        Icon="/Resources/icc.ico"
         Height="700"
         Width="1080"
         MinHeight="520"
@@ -68,7 +68,7 @@
                                       Spacing="12"
                                       VerticalAlignment="Center"
                                       Margin="16,0,0,0">
-                    <Image x:Name="TitleBarIcon" Source="/Resources/Icons-png/iccltsc-light-32.png" Width="18"
+                    <Image x:Name="TitleBarIcon" Source="{DynamicResource AppLogo32}" Width="18"
                            RenderOptions.BitmapScalingMode="HighQuality" />
                     <TextBlock VerticalAlignment="Center"
                                Text="{x:Static props:OobeStrings.Oobe_WelcomeTitle}"
@@ -158,7 +158,7 @@
                                     <Border.RenderTransform>
                                         <ScaleTransform x:Name="WelcomeLogoScale" ScaleX="1" ScaleY="1" />
                                     </Border.RenderTransform>
-                                    <Image x:Name="WelcomeLogoImage" Source="/Resources/Icons-png/iccltsc-light-64.png" Width="36"
+                                    <Image x:Name="WelcomeLogoImage" Source="{DynamicResource AppLogo64}" Width="36"
                                            RenderOptions.BitmapScalingMode="HighQuality" />
                                 </Border>
                                 <ikw:SimpleStackPanel VerticalAlignment="Center" Spacing="0">
