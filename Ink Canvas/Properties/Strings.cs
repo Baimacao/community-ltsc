@@ -629,7 +629,6 @@ namespace Ink_Canvas.Properties
             dict["Nav_Advanced_Settings"] = ("NavStrings", "Nav_Advanced_Settings");
             dict["Nav_Automation_Settings"] = ("NavStrings", "Nav_Automation_Settings");
             dict["Nav_FriendlyLinks"] = ("NavStrings", "Nav_FriendlyLinks");
-            dict["Nav_Plugins"] = ("NavStrings", "Nav_Plugins");
             dict["Plugin_Title"] = ("PluginStrings", "Plugin_Title");
             dict["Plugin_Loading"] = ("PluginStrings", "Plugin_Loading");
             dict["Plugin_LoadedCount"] = ("PluginStrings", "Plugin_LoadedCount");
@@ -861,12 +860,9 @@ namespace Ink_Canvas.Properties
             dict["Security_UsbPromptLocalDisk"] = ("SecurityStrings", "Security_UsbPromptLocalDisk");
             dict["Security_UsbBypassDialogHint"] = ("SecurityStrings", "Security_UsbBypassDialogHint");
             dict["Security_UsbBypassDialogHintShort"] = ("SecurityStrings", "Security_UsbBypassDialogHintShort");
-            dict["Settings_ModeDesc"] = ("NavStrings", "Settings_ModeDesc");
-            dict["Settings_ModeDesc_1"] = ("NavStrings", "Settings_ModeDesc_1");
             dict["Settings_Nav_Hotkey_Tooltip"] = ("NavStrings", "Settings_Nav_Hotkey_Tooltip");
             dict["Settings_Nav_Security"] = ("NavStrings", "Settings_Nav_Security");
             dict["Settings_Nav_Security_Tooltip"] = ("NavStrings", "Settings_Nav_Security_Tooltip");
-            dict["Settings_Plugins"] = ("NavStrings", "Settings_Plugins");
             dict["Settings_Title"] = ("NavStrings", "Settings_Title");
             dict["Nav_SettingsWindow_Title"] = ("NavStrings", "Nav_SettingsWindow_Title");
             dict["Nav_AppSettings"] = ("NavStrings", "Nav_AppSettings");
@@ -874,10 +870,7 @@ namespace Ink_Canvas.Properties
             dict["Nav_Home"] = ("NavStrings", "Nav_Home");
             dict["Nav_Home_Tooltip"] = ("NavStrings", "Nav_Home_Tooltip");
             dict["Nav_ICCSettings"] = ("NavStrings", "Nav_ICCSettings");
-            dict["Nav_Basic"] = ("NavStrings", "Nav_Basic");
-            dict["Nav_Basic_Tooltip"] = ("NavStrings", "Nav_Basic_Tooltip");
             dict["Nav_Privacy"] = ("NavStrings", "Nav_Privacy");
-            dict["Nav_Privacy_Tooltip"] = ("NavStrings", "Nav_Privacy_Tooltip");
             dict["Nav_MainInterface"] = ("NavStrings", "Nav_MainInterface");
             dict["Nav_MainInterface_Tooltip"] = ("NavStrings", "Nav_MainInterface_Tooltip");
             dict["Nav_Window"] = ("NavStrings", "Nav_Window");
@@ -886,19 +879,11 @@ namespace Ink_Canvas.Properties
             dict["Nav_Sidebar_Tooltip"] = ("NavStrings", "Nav_Sidebar_Tooltip");
             dict["Nav_Toolbar"] = ("NavStrings", "Nav_Toolbar");
             dict["Nav_Toolbar_Tooltip"] = ("NavStrings", "Nav_Toolbar_Tooltip");
-            dict["Nav_CanvasAndInk_Tooltip"] = ("NavStrings", "Nav_CanvasAndInk_Tooltip");
-            dict["Nav_Canvas_Tooltip"] = ("NavStrings", "Nav_Canvas_Tooltip");
-            dict["Nav_InkRecognition_Tooltip"] = ("NavStrings", "Nav_InkRecognition_Tooltip");
             dict["Nav_PPT_Tooltip"] = ("NavStrings", "Nav_PPT_Tooltip");
-            dict["Nav_Update_Tooltip"] = ("NavStrings", "Nav_Update_Tooltip");
-            dict["Nav_RandomDraw_Tooltip"] = ("NavStrings", "Nav_RandomDraw_Tooltip");
-            dict["Nav_PluginSettings"] = ("NavStrings", "Nav_PluginSettings");
             dict["Nav_AboutInkCanvas"] = ("NavStrings", "Nav_AboutInkCanvas");
             dict["Nav_NavigateError"] = ("NavStrings", "Nav_NavigateError");
             dict["Nav_Error"] = ("NavStrings", "Nav_Error");
-            dict["Nav_PluginSettingsFormat"] = ("NavStrings", "Nav_PluginSettingsFormat");
             dict["Nav_IndexBuildFailed"] = ("NavStrings", "Nav_IndexBuildFailed");
-            dict["Nav_LoadPluginSettingsFailed"] = ("NavStrings", "Nav_LoadPluginSettingsFailed");
             dict["Nav_PreloadPageFailed"] = ("NavStrings", "Nav_PreloadPageFailed");
             dict["Nav_PreloadPagesFailed"] = ("NavStrings", "Nav_PreloadPagesFailed");
             dict["Settings_Description"] = ("NavStrings", "Settings_Description");
@@ -1337,8 +1322,6 @@ namespace Ink_Canvas.Properties
             dict["Performance_InkSmoothingAvgInputPoints"] = ("PerformanceStrings", "InkSmoothingAvgInputPoints");
             dict["Performance_InkSmoothingAvgOutputPoints"] = ("PerformanceStrings", "InkSmoothingAvgOutputPoints");
             dict["Performance_InkSmoothingSampleCount"] = ("PerformanceStrings", "InkSmoothingSampleCount");
-            dict["Nav_Performance"] = ("NavStrings", "Nav_Performance");
-            dict["Nav_Performance_Tooltip"] = ("NavStrings", "Nav_Performance_Tooltip");
             return dict;
         }
 

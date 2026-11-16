@@ -41,8 +41,6 @@ namespace Ink_Canvas.Properties {
         public static string Menu_Added => ResourceManager.GetString(nameof(Menu_Added), resourceCulture);
         public static string Menu_Available => ResourceManager.GetString(nameof(Menu_Available), resourceCulture);
         public static string Menu_ResetLayout => ResourceManager.GetString(nameof(Menu_ResetLayout), resourceCulture);
-        public static string Menu_FloatingBar => ResourceManager.GetString(nameof(Menu_FloatingBar), resourceCulture);
-        public static string Menu_Board => ResourceManager.GetString(nameof(Menu_Board), resourceCulture);
         public static string Ppt_FlipAppearanceSection => ResourceManager.GetString(nameof(Ppt_FlipAppearanceSection), resourceCulture);
         public static string Ppt_FlipAppearanceSectionDesc => ResourceManager.GetString(nameof(Ppt_FlipAppearanceSectionDesc), resourceCulture);
         public static string Ppt_KeepInkInPpt => ResourceManager.GetString(nameof(Ppt_KeepInkInPpt), resourceCulture);

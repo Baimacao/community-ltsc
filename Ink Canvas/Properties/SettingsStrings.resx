@@ -38,12 +38,6 @@
   <data name="Menu_ResetLayout" xml:space="preserve">
     <value>恢复默认布局</value>
   </data>
-  <data name="Menu_FloatingBar" xml:space="preserve">
-    <value>浮动栏</value>
-  </data>
-  <data name="Menu_Board" xml:space="preserve">
-    <value>白板</value>
-  </data>
   <data name="Ppt_FlipAppearanceSection" xml:space="preserve">
     <value>翻页按钮的外观与位置</value>
   </data>

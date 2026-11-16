@@ -38,12 +38,6 @@
   <data name="Menu_ResetLayout" xml:space="preserve">
     <value>Reset layout</value>
   </data>
-  <data name="Menu_FloatingBar" xml:space="preserve">
-    <value>floating toolbar</value>
-  </data>
-  <data name="Menu_Board" xml:space="preserve">
-    <value>whiteboard</value>
-  </data>
   <data name="Ppt_FlipAppearanceSection" xml:space="preserve">
     <value>Flip button look &amp; position</value>
   </data>
