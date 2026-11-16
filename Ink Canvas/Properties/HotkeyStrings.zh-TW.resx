@@ -38,8 +38,175 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Hotkey_InfoBarTitle" xml:space="preserve"><value>說明</value></data><data name="Hotkey_InfoBarMessage" xml:space="preserve"><value>在這里可以自定義全局快速鍵。全局快速鍵在任何情況下都能生效，即使應用程序不在焦點狀態。</value></data><data name="Hotkey_MouseMode" xml:space="preserve"><value>滑鼠模式</value></data><data name="Hotkey_EnableHotkeysInMouseMode" xml:space="preserve"><value>在滑鼠模式下啟用快速鍵</value></data><data name="Hotkey_EnableHotkeysInMouseModeHint" xml:space="preserve"><value>開啟后，即使在滑鼠模式下快速鍵也會生效</value></data><data name="Hotkey_BasicOperations" xml:space="preserve"><value>基本操作</value></data><data name="Hotkey_UndoDesc" xml:space="preserve"><value>撤銷上一步操作</value></data><data name="Hotkey_RedoDesc" xml:space="preserve"><value>重做上一步操作</value></data><data name="Hotkey_ClearDesc" xml:space="preserve"><value>清空當前畫板內容</value></data><data name="Hotkey_Paste" xml:space="preserve"><value>粘貼</value></data><data name="Hotkey_PasteDesc" xml:space="preserve"><value>粘貼剪貼簿內容</value></data><data name="Hotkey_ToolSwitch" xml:space="preserve"><value>工具切換</value></data><data name="Hotkey_SelectTool" xml:space="preserve"><value>選擇工具</value></data><data name="Hotkey_SelectToolDesc" xml:space="preserve"><value>切換到選擇工具</value></data><data name="Hotkey_DrawTool" xml:space="preserve"><value>繪圖工具</value></data><data name="Hotkey_DrawToolDesc" xml:space="preserve"><value>切換到繪圖工具</value></data><data name="Hotkey_EraserTool" xml:space="preserve"><value>橡皮擦工具</value></data><data name="Hotkey_EraserToolDesc" xml:space="preserve"><value>切換到橡皮擦工具</value></data><data name="Hotkey_BlackboardTool" xml:space="preserve"><value>黑板工具</value></data><data name="Hotkey_BlackboardToolDesc" xml:space="preserve"><value>切換到黑板工具</value></data><data name="Hotkey_QuitDrawTool" xml:space="preserve"><value>退出繪圖/白板</value></data><data name="Hotkey_QuitDrawToolDesc" xml:space="preserve"><value>退出繪圖模式或白板模式</value></data><data name="Hotkey_PenSettings" xml:space="preserve"><value>畫筆設定</value></data><data name="Hotkey_Pen1" xml:space="preserve"><value>畫筆1</value></data><data name="Hotkey_Pen1Desc" xml:space="preserve"><value>選擇畫筆1</value></data><data name="Hotkey_Pen2" xml:space="preserve"><value>畫筆2</value></data><data name="Hotkey_Pen2Desc" xml:space="preserve"><value>選擇畫筆2</value></data><data name="Hotkey_Pen3" xml:space="preserve"><value>畫筆3</value></data><data name="Hotkey_Pen3Desc" xml:space="preserve"><value>選擇畫筆3</value></data><data name="Hotkey_Pen4" xml:space="preserve"><value>畫筆4</value></data><data name="Hotkey_Pen4Desc" xml:space="preserve"><value>選擇畫筆4</value></data><data name="Hotkey_Pen5" xml:space="preserve"><value>畫筆5</value></data><data name="Hotkey_Pen5Desc" xml:space="preserve"><value>選擇畫筆5</value></data><data name="Hotkey_FunctionHotkeys" xml:space="preserve"><value>功能快速鍵</value></data><data name="Hotkey_DrawLine" xml:space="preserve"><value>繪制直線</value></data><data name="Hotkey_DrawLineDesc" xml:space="preserve"><value>繪制直線工具</value></data><data name="Hotkey_ScreenshotDesc" xml:space="preserve"><value>儲存螢幕截圖到桌面</value></data><data name="Hotkey_QuickDraw" xml:space="preserve"><value>快抽</value></data><data name="Hotkey_QuickDrawDesc" xml:space="preserve"><value>打開快抽視窗（與懸浮快抽按鈕相同）</value></data><data name="Hotkey_HideDesc" xml:space="preserve"><value>隱藏應用程序</value></data><data name="Hotkey_ExitDesc" xml:space="preserve"><value>退出當前模式或應用程序</value></data><data name="Hotkey_ResetToDefault" xml:space="preserve"><value>重設為預設</value></data><data name="Hotkey_SaveSettings" xml:space="preserve"><value>儲存設定</value></data><data name="Hotkey_ManagerNotInit" xml:space="preserve"><value>快速鍵管理器尚未初始化，無法儲存變更。</value></data><data name="Hotkey_Error" xml:space="preserve"><value>錯誤</value></data><data name="Hotkey_ConflictMessage" xml:space="preserve"><value>快速鍵 {0} 已被其他功能使用，請選擇其他組合。</value></data><data name="Hotkey_ConflictTitle" xml:space="preserve"><value>快速鍵沖突</value></data><data name="Hotkey_ConfirmResetMessage" xml:space="preserve"><value>確定要重設所有快速鍵為預設設定嗎？</value></data><data name="Hotkey_ConfirmResetTitle" xml:space="preserve"><value>確認重設</value></data><data name="Hotkey_ResetCompleteMessage" xml:space="preserve"><value>快速鍵已重設為預設設定。</value></data><data name="Hotkey_ResetCompleteTitle" xml:space="preserve"><value>重設完成</value></data><data name="Hotkey_ResetErrorMessage" xml:space="preserve"><value>重設快速鍵時出錯: {0}</value></data><data name="Hotkey_SaveSuccessMessage" xml:space="preserve"><value>快速鍵設定已儲存。</value></data><data name="Hotkey_SaveSuccessTitle" xml:space="preserve"><value>儲存成功</value></data><data name="Hotkey_SaveErrorMessage" xml:space="preserve"><value>儲存快速鍵設定時出錯: {0}</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Hotkey_InfoBarTitle" xml:space="preserve">
+    <value>說明</value>
+  </data>
+  <data name="Hotkey_InfoBarMessage" xml:space="preserve">
+    <value>在這里可以自定義全局快速鍵。全局快速鍵在任何情況下都能生效，即使應用程序不在焦點狀態。</value>
+  </data>
+  <data name="Hotkey_MouseMode" xml:space="preserve">
+    <value>滑鼠模式</value>
+  </data>
+  <data name="Hotkey_EnableHotkeysInMouseMode" xml:space="preserve">
+    <value>在滑鼠模式下啟用快速鍵</value>
+  </data>
+  <data name="Hotkey_EnableHotkeysInMouseModeHint" xml:space="preserve">
+    <value>開啟后，即使在滑鼠模式下快速鍵也會生效</value>
+  </data>
+  <data name="Hotkey_BasicOperations" xml:space="preserve">
+    <value>基本操作</value>
+  </data>
+  <data name="Hotkey_UndoDesc" xml:space="preserve">
+    <value>撤銷上一步操作</value>
+  </data>
+  <data name="Hotkey_RedoDesc" xml:space="preserve">
+    <value>重做上一步操作</value>
+  </data>
+  <data name="Hotkey_ClearDesc" xml:space="preserve">
+    <value>清空當前畫板內容</value>
+  </data>
+  <data name="Hotkey_Paste" xml:space="preserve">
+    <value>粘貼</value>
+  </data>
+  <data name="Hotkey_PasteDesc" xml:space="preserve">
+    <value>粘貼剪貼簿內容</value>
+  </data>
+  <data name="Hotkey_ToolSwitch" xml:space="preserve">
+    <value>工具切換</value>
+  </data>
+  <data name="Hotkey_SelectTool" xml:space="preserve">
+    <value>選擇工具</value>
+  </data>
+  <data name="Hotkey_SelectToolDesc" xml:space="preserve">
+    <value>切換到選擇工具</value>
+  </data>
+  <data name="Hotkey_DrawTool" xml:space="preserve">
+    <value>繪圖工具</value>
+  </data>
+  <data name="Hotkey_DrawToolDesc" xml:space="preserve">
+    <value>切換到繪圖工具</value>
+  </data>
+  <data name="Hotkey_EraserTool" xml:space="preserve">
+    <value>橡皮擦工具</value>
+  </data>
+  <data name="Hotkey_EraserToolDesc" xml:space="preserve">
+    <value>切換到橡皮擦工具</value>
+  </data>
+  <data name="Hotkey_BlackboardTool" xml:space="preserve">
+    <value>黑板工具</value>
+  </data>
+  <data name="Hotkey_BlackboardToolDesc" xml:space="preserve">
+    <value>切換到黑板工具</value>
+  </data>
+  <data name="Hotkey_QuitDrawTool" xml:space="preserve">
+    <value>退出繪圖/白板</value>
+  </data>
+  <data name="Hotkey_QuitDrawToolDesc" xml:space="preserve">
+    <value>退出繪圖模式或白板模式</value>
+  </data>
+  <data name="Hotkey_PenSettings" xml:space="preserve">
+    <value>畫筆設定</value>
+  </data>
+  <data name="Hotkey_Pen1" xml:space="preserve">
+    <value>畫筆1</value>
+  </data>
+  <data name="Hotkey_Pen1Desc" xml:space="preserve">
+    <value>選擇畫筆1</value>
+  </data>
+  <data name="Hotkey_Pen2" xml:space="preserve">
+    <value>畫筆2</value>
+  </data>
+  <data name="Hotkey_Pen2Desc" xml:space="preserve">
+    <value>選擇畫筆2</value>
+  </data>
+  <data name="Hotkey_Pen3" xml:space="preserve">
+    <value>畫筆3</value>
+  </data>
+  <data name="Hotkey_Pen3Desc" xml:space="preserve">
+    <value>選擇畫筆3</value>
+  </data>
+  <data name="Hotkey_Pen4" xml:space="preserve">
+    <value>畫筆4</value>
+  </data>
+  <data name="Hotkey_Pen4Desc" xml:space="preserve">
+    <value>選擇畫筆4</value>
+  </data>
+  <data name="Hotkey_Pen5" xml:space="preserve">
+    <value>畫筆5</value>
+  </data>
+  <data name="Hotkey_Pen5Desc" xml:space="preserve">
+    <value>選擇畫筆5</value>
+  </data>
+  <data name="Hotkey_FunctionHotkeys" xml:space="preserve">
+    <value>功能快速鍵</value>
+  </data>
+  <data name="Hotkey_DrawLine" xml:space="preserve">
+    <value>繪制直線</value>
+  </data>
+  <data name="Hotkey_DrawLineDesc" xml:space="preserve">
+    <value>繪制直線工具</value>
+  </data>
+  <data name="Hotkey_ScreenshotDesc" xml:space="preserve">
+    <value>儲存螢幕截圖到桌面</value>
+  </data>
+  <data name="Hotkey_HideDesc" xml:space="preserve">
+    <value>隱藏應用程序</value>
+  </data>
+  <data name="Hotkey_ExitDesc" xml:space="preserve">
+    <value>退出當前模式或應用程序</value>
+  </data>
+  <data name="Hotkey_ResetToDefault" xml:space="preserve">
+    <value>重設為預設</value>
+  </data>
+  <data name="Hotkey_SaveSettings" xml:space="preserve">
+    <value>儲存設定</value>
+  </data>
+  <data name="Hotkey_ManagerNotInit" xml:space="preserve">
+    <value>快速鍵管理器尚未初始化，無法儲存變更。</value>
+  </data>
+  <data name="Hotkey_Error" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="Hotkey_ConflictMessage" xml:space="preserve">
+    <value>快速鍵 {0} 已被其他功能使用，請選擇其他組合。</value>
+  </data>
+  <data name="Hotkey_ConflictTitle" xml:space="preserve">
+    <value>快速鍵沖突</value>
+  </data>
+  <data name="Hotkey_ConfirmResetMessage" xml:space="preserve">
+    <value>確定要重設所有快速鍵為預設設定嗎？</value>
+  </data>
+  <data name="Hotkey_ConfirmResetTitle" xml:space="preserve">
+    <value>確認重設</value>
+  </data>
+  <data name="Hotkey_ResetCompleteMessage" xml:space="preserve">
+    <value>快速鍵已重設為預設設定。</value>
+  </data>
+  <data name="Hotkey_ResetCompleteTitle" xml:space="preserve">
+    <value>重設完成</value>
+  </data>
+  <data name="Hotkey_ResetErrorMessage" xml:space="preserve">
+    <value>重設快速鍵時出錯: {0}</value>
+  </data>
+  <data name="Hotkey_SaveSuccessMessage" xml:space="preserve">
+    <value>快速鍵設定已儲存。</value>
+  </data>
+  <data name="Hotkey_SaveSuccessTitle" xml:space="preserve">
+    <value>儲存成功</value>
+  </data>
+  <data name="Hotkey_SaveErrorMessage" xml:space="preserve">
+    <value>儲存快速鍵設定時出錯: {0}</value>
+  </data>
+</root>

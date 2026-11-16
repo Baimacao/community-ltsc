@@ -38,16 +38,105 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Copyright" xml:space="preserve"><value>InkCanvasForClass · ICA · ICC · ICC-CE 的延續</value></data><data name="DevelopersLabel" xml:space="preserve"><value>開發者：</value></data><data name="DeviceIdLabel" xml:space="preserve"><value>設備 ID：</value></data><data name="LicenseBody" xml:space="preserve"><value>本項目遵循 GNU GPL v3。上游所有貢獻者的署名與許可聲明完整保留，任何修改同樣以 GPL v3 開放。</value></data><data name="LicenseTitle" xml:space="preserve"><value>本軟體和 ICA，Ink Canvas 均基于許可證開源</value></data><data name="OpenSourceSlogan" xml:space="preserve"><value>開源不是施舍，是把自己踩過的坑填平，讓后面的人少陷一次。</value></data><data name="PhigrosCr" xml:space="preserve"><value>部分內容取自 Phigros</value></data><data name="PrivacyAgreement" xml:space="preserve"><value>我已閱讀并同意 privacy 中的隱私說明</value></data><data name="PrivacyAndTelemetry" xml:space="preserve"><value>隱私與遙測</value></data><data name="Telemetry_Basic" xml:space="preserve"><value>上傳基礎資料</value></data><data name="Telemetry_Off" xml:space="preserve"><value>關閉（不上傳）</value></data><data name="Telemetry_Optional" xml:space="preserve"><value>上傳基礎 + 可選資料</value></data><data name="TelemetryLabel" xml:space="preserve"><value>匿名使用資料上傳：</value></data><data name="ThanksContributors" xml:space="preserve"><value>感謝下列貢獻者：</value></data><data name="Title" xml:space="preserve"><value>關于</value></data><data name="VersionLabel" xml:space="preserve"><value>版本：</value></data><data name="Unknown" xml:space="preserve"><value>未知</value></data><data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve"><value>關閉匿名使用資料上傳后，將無法繼續使用預覽/測試通道，系統會自動切換回正式通道（Release）。
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Copyright" xml:space="preserve">
+    <value>InkCanvasForClass · ICA · ICC · ICC-CE 的延續</value>
+  </data>
+  <data name="DevelopersLabel" xml:space="preserve">
+    <value>開發者：</value>
+  </data>
+  <data name="LicenseBody" xml:space="preserve">
+    <value>本項目遵循 GNU GPL v3。上游所有貢獻者的署名與許可聲明完整保留，任何修改同樣以 GPL v3 開放。</value>
+  </data>
+  <data name="LicenseTitle" xml:space="preserve">
+    <value>本軟體和 ICA，Ink Canvas 均基于許可證開源</value>
+  </data>
+  <data name="OpenSourceSlogan" xml:space="preserve">
+    <value>開源不是施舍，是把自己踩過的坑填平，讓后面的人少陷一次。</value>
+  </data>
+  <data name="PhigrosCr" xml:space="preserve">
+    <value>部分內容取自 Phigros</value>
+  </data>
+  <data name="PrivacyAgreement" xml:space="preserve">
+    <value>我已閱讀并同意 privacy 中的隱私說明</value>
+  </data>
+  <data name="PrivacyAndTelemetry" xml:space="preserve">
+    <value>隱私與遙測</value>
+  </data>
+  <data name="Telemetry_Basic" xml:space="preserve">
+    <value>上傳基礎資料</value>
+  </data>
+  <data name="Telemetry_Off" xml:space="preserve">
+    <value>關閉（不上傳）</value>
+  </data>
+  <data name="Telemetry_Optional" xml:space="preserve">
+    <value>上傳基礎 + 可選資料</value>
+  </data>
+  <data name="TelemetryLabel" xml:space="preserve">
+    <value>匿名使用資料上傳：</value>
+  </data>
+  <data name="ThanksContributors" xml:space="preserve">
+    <value>感謝下列貢獻者：</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>關于</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>版本：</value>
+  </data>
+  <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
+    <value>關閉匿名使用資料上傳后，將無法繼續使用預覽/測試通道，系統會自動切換回正式通道（Release）。
 
-是否確認關閉？</value></data><data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve"><value>確認關閉遙測</value></data><data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve"><value>在開啟匿名使用資料上傳前，請先閱讀并勾選上方的隱私說明。</value></data><data name="Privacy_PrivacyAgreementRequired_Title" xml:space="preserve"><value>需要同意隱私說明</value></data><data name="Privacy_PrivacyFileNotFound_Message" xml:space="preserve"><value>未找到隱私說明檔案（privacy / privacy.txt），暫時無法啟用匿名使用資料上傳。</value></data><data name="Privacy_PrivacyFileNotFound_Title" xml:space="preserve"><value>隱私說明缺失</value></data><data name="Privacy_ConfirmRevokePrivacy_Message" xml:space="preserve"><value>取消同意隱私說明后，將關閉匿名使用資料上傳，并切回正式通道（Release）。
+是否確認關閉？</value>
+  </data>
+  <data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve">
+    <value>確認關閉遙測</value>
+  </data>
+  <data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve">
+    <value>在開啟匿名使用資料上傳前，請先閱讀并勾選上方的隱私說明。</value>
+  </data>
+  <data name="Privacy_PrivacyAgreementRequired_Title" xml:space="preserve">
+    <value>需要同意隱私說明</value>
+  </data>
+  <data name="Privacy_PrivacyFileNotFound_Message" xml:space="preserve">
+    <value>未找到隱私說明檔案（privacy / privacy.txt），暫時無法啟用匿名使用資料上傳。</value>
+  </data>
+  <data name="Privacy_PrivacyFileNotFound_Title" xml:space="preserve">
+    <value>隱私說明缺失</value>
+  </data>
+  <data name="Privacy_ConfirmRevokePrivacy_Message" xml:space="preserve">
+    <value>取消同意隱私說明后，將關閉匿名使用資料上傳，并切回正式通道（Release）。
 
-是否確認？</value></data><data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve"><value>確認取消隱私同意</value></data><data name="About_LtscTitle" xml:space="preserve"><value>Lite 精簡版</value></data><data name="About_LtscBody" xml:space="preserve"><value>這是基于 ICC-CE（InkCanvasForClass Community Edition）的 Lite 精簡版，面向日常授課場景。
+是否確認？</value>
+  </data>
+  <data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve">
+    <value>確認取消隱私同意</value>
+  </data>
+  <data name="About_LtscTitle" xml:space="preserve">
+    <value>Lite 精簡版</value>
+  </data>
+  <data name="About_LtscBody" xml:space="preserve">
+    <value>這是基于 ICC-CE（InkCanvasForClass Community Edition）的 Lite 精簡版，面向日常授課場景。
 
 和上游的區別：優先保證穩定性，功能改動會先在真機上驗證再放出；介面文案按一線教師的使用習慣重寫；不追新功能。
 
-遇到問題請先說明是哪個版本（關于頁頂部能看到），這樣才能判斷是上游原有的問題還是本分支改出來的。</value></data><data name="About_Dev_ICCLTSC" xml:space="preserve"><value>ICC Lite 精簡版</value></data><data name="About_Dev_AI" xml:space="preserve"><value>AI 協作者</value></data></root>
+遇到問題請先說明是哪個版本（關于頁頂部能看到），這樣才能判斷是上游原有的問題還是本分支改出來的。</value>
+  </data>
+  <data name="About_Dev_ICCLTSC" xml:space="preserve">
+    <value>ICC Lite 精簡版</value>
+  </data>
+  <data name="About_Dev_AI" xml:space="preserve">
+    <value>AI 協作者</value>
+  </data>
+</root>

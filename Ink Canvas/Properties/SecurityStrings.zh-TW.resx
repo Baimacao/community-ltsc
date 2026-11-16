@@ -38,10 +38,79 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="FileAssoc_Check" xml:space="preserve"><value>檢查關聯狀態</value></data><data name="FileAssoc_Title" xml:space="preserve"><value>檔案關聯管理</value></data><data name="FileAssoc_Unregister" xml:space="preserve"><value>取消檔案關聯</value></data><data name="SecurityPanel__InkCanvasForClass_Hint" xml:space="preserve"><value>關閉 ICC CE Lite 時進行密碼驗證</value></data><data name="SecurityPanel__Settingsjson_Hint" xml:space="preserve"><value>重設 Settings.json 前進行二次驗證</value></data><data name="SecurityPanel_Hint" xml:space="preserve"><value>開啟后需要設定密碼</value></data><data name="SecurityPanel_Hint_1" xml:space="preserve"><value>設定或修改安全密碼</value></data><data name="SecurityPanel_Hint_2" xml:space="preserve"><value>打開設定面板/新設定視窗時進行驗證</value></data><data name="SecurityPanel_Hint_4" xml:space="preserve"><value>開啟后關鍵檔案會被只讀占用</value></data><data name="Security_SectionPassword" xml:space="preserve"><value>安全密碼</value></data><data name="Security_InfoBarTitle" xml:space="preserve"><value>說明</value></data><data name="Security_PasswordInfoBarMessage" xml:space="preserve"><value>安全密碼預設關閉。開啟后可用于退出軟體、進入設定與重設配置等操作時的二次驗證。</value></data><data name="Security_EnablePassword" xml:space="preserve"><value>啟用安全密碼</value></data><data name="Security_PasswordManagement" xml:space="preserve"><value>密碼管理</value></data><data name="Security_SetOrChangePassword" xml:space="preserve"><value>設定/修改密碼</value></data><data name="Security_EnableTotp" xml:space="preserve"><value>啟用 TOTP 驗證</value></data><data name="Security_EnableTotpHint" xml:space="preserve"><value>可用于凍結筆跡解凍等二次驗證</value></data><data name="Security_TotpSecretKey" xml:space="preserve"><value>TOTP 密鑰</value></data><data name="Security_TotpSecretKeyHint" xml:space="preserve"><value>在身份驗證器中手動添加該密鑰</value></data><data name="Security_GenerateOrResetKey" xml:space="preserve"><value>生成/重設密鑰</value></data><data name="Security_RequirePasswordOnExit" xml:space="preserve"><value>退出軟體需要驗證</value></data><data name="Security_RequirePasswordOnEnterSettings" xml:space="preserve"><value>進入設定需要驗證</value></data><data name="Security_RequirePasswordOnResetConfig" xml:space="preserve"><value>重設配置需要驗證</value></data><data name="Security_RequirePasswordOnModifyOrClearNameList" xml:space="preserve"><value>修改/清空點名名單需要驗證</value></data><data name="Security_RequirePasswordOnModifyOrClearNameList_Hint" xml:space="preserve"><value>對點名名單進行修改或清空前進行驗證</value></data><data name="Security_ProcessProtection" xml:space="preserve"><value>處理程序保護</value></data><data name="Security_ProcessProtectionInfoBarMessage" xml:space="preserve"><value>處理程序保護預設開啟：運行期間保護根目錄下的程序檔案（exe/dll/config）不被外部修改。</value></data><data name="Security_DisablePasswordTitle" xml:space="preserve"><value>關閉安全密碼</value></data><data name="Security_DisablePasswordMessage" xml:space="preserve"><value>請輸入安全密碼或 TOTP 驗證碼以關閉安全密碼功能。</value></data><data name="Security_ResetTotpTitle" xml:space="preserve"><value>重設 TOTP 密鑰</value></data><data name="Security_ResetTotpMessage" xml:space="preserve"><value>請輸入安全密碼或當前 TOTP 動態驗證碼以重設密鑰。</value></data><data name="Security_UsbSectionHeader" xml:space="preserve"><value>U盤維護驗證</value></data><data name="Security_UsbInfoBarMessage" xml:space="preserve"><value>啟用U盤驗證后，當需要安全驗證時，若插入了已授權的U盤，將自動跳過驗證，方便維護人員直接操作。</value></data><data name="Security_EnableUsbVerification" xml:space="preserve"><value>啟用U盤驗證</value></data><data name="Security_EnableUsbVerification_Hint" xml:space="preserve"><value>允許插入已授權的U盤作為一種免密的安全驗證方式</value></data><data name="Security_UsbAuthorizedSns" xml:space="preserve"><value>已授權的U盤序列號</value></data><data name="Security_UsbAuthorizedSns_Hint" xml:space="preserve"><value>已授權的設備序列號列表（多臺設備使用英文逗號分隔）</value></data><data name="Security_UsbDetectAndAuthorize" xml:space="preserve"><value>檢測并授權新U盤</value></data><data name="Security_UsbDetectAndAuthorize_Hint" xml:space="preserve"><value>掃描當前連接的U盤，并快速將其序列號加入授權列表中</value></data><data name="Security_UsbRefreshDrives" xml:space="preserve"><value>重新整理設備</value></data><data name="Security_UsbAuthorizeDrive" xml:space="preserve"><value>授權所選U盤</value></data><data name="Security_UsbPromptNoValidSn" xml:space="preserve"><value>所選U盤無有效序列號</value></data><data name="Security_UsbPromptAlreadyAuthorized" xml:space="preserve"><value>該U盤序列號已被授權</value></data><data name="Security_UsbPromptAuthorizeSuccess" xml:space="preserve"><value>成功授權該U盤序列號！已加入授權列表。</value></data><data name="Security_UsbPromptSelectDrive" xml:space="preserve"><value>請先選擇一個檢測到的U盤</value></data><data name="Security_UsbPromptNoDriveDetected" xml:space="preserve"><value>未檢測到U盤</value></data><data name="Security_UsbPromptLocalDisk" xml:space="preserve"><value>本地磁盤</value></data><data name="Security_UsbBypassDialogHint" xml:space="preserve"><value>
-(已啟用U盤安全驗證，您可以插入已授權的維護U盤以自動驗證通過)</value></data><data name="Security_UsbBypassDialogHintShort" xml:space="preserve"><value>
-(已啟用U盤安全驗證，可直接插入已授權的維護U盤)</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="FileAssoc_Check" xml:space="preserve">
+    <value>檢查關聯狀態</value>
+  </data>
+  <data name="FileAssoc_Title" xml:space="preserve">
+    <value>檔案關聯管理</value>
+  </data>
+  <data name="FileAssoc_Unregister" xml:space="preserve">
+    <value>取消檔案關聯</value>
+  </data>
+  <data name="SecurityPanel__InkCanvasForClass_Hint" xml:space="preserve">
+    <value>關閉 ICC CE Lite 時進行密碼驗證</value>
+  </data>
+  <data name="SecurityPanel__Settingsjson_Hint" xml:space="preserve">
+    <value>重設 Settings.json 前進行二次驗證</value>
+  </data>
+  <data name="SecurityPanel_Hint" xml:space="preserve">
+    <value>開啟后需要設定密碼</value>
+  </data>
+  <data name="SecurityPanel_Hint_1" xml:space="preserve">
+    <value>設定或修改安全密碼</value>
+  </data>
+  <data name="SecurityPanel_Hint_2" xml:space="preserve">
+    <value>打開設定面板/新設定視窗時進行驗證</value>
+  </data>
+  <data name="Security_SectionPassword" xml:space="preserve">
+    <value>安全密碼</value>
+  </data>
+  <data name="Security_InfoBarTitle" xml:space="preserve">
+    <value>說明</value>
+  </data>
+  <data name="Security_PasswordInfoBarMessage" xml:space="preserve">
+    <value>安全密碼預設關閉。開啟后可用于退出軟體、進入設定與重設配置等操作時的二次驗證。</value>
+  </data>
+  <data name="Security_EnablePassword" xml:space="preserve">
+    <value>啟用安全密碼</value>
+  </data>
+  <data name="Security_PasswordManagement" xml:space="preserve">
+    <value>密碼管理</value>
+  </data>
+  <data name="Security_SetOrChangePassword" xml:space="preserve">
+    <value>設定/修改密碼</value>
+  </data>
+  <data name="Security_RequirePasswordOnExit" xml:space="preserve">
+    <value>退出軟體需要驗證</value>
+  </data>
+  <data name="Security_RequirePasswordOnEnterSettings" xml:space="preserve">
+    <value>進入設定需要驗證</value>
+  </data>
+  <data name="Security_RequirePasswordOnResetConfig" xml:space="preserve">
+    <value>重設配置需要驗證</value>
+  </data>
+  <data name="Security_RequirePasswordOnModifyOrClearNameList" xml:space="preserve">
+    <value>修改/清空點名名單需要驗證</value>
+  </data>
+  <data name="Security_RequirePasswordOnModifyOrClearNameList_Hint" xml:space="preserve">
+    <value>對點名名單進行修改或清空前進行驗證</value>
+  </data>
+  <data name="Security_DisablePasswordTitle" xml:space="preserve">
+    <value>關閉安全密碼</value>
+  </data>
+  <data name="Security_DisablePasswordMessage" xml:space="preserve">
+    <value>請輸入安全密碼或 TOTP 驗證碼以關閉安全密碼功能。</value>
+  </data>
+</root>

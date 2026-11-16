@@ -51,9 +51,6 @@
   <data name="Hotkey_NotSet" xml:space="preserve">
     <value>Not set</value>
   </data>
-  <data name="Mode_PPTOnly" xml:space="preserve">
-    <value>PPT only</value>
-  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
@@ -62,12 +59,6 @@
   </data>
   <data name="Size_Small" xml:space="preserve">
     <value>Small</value>
-  </data>
-  <data name="Time_End" xml:space="preserve">
-    <value>End time</value>
-  </data>
-  <data name="Time_Start" xml:space="preserve">
-    <value>Start time</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

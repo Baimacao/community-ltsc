@@ -38,8 +38,94 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="SilentUpdate_TimeRange" xml:space="preserve"><value>靜默更新時間段</value></data><data name="AutoUpdateHint" xml:space="preserve"><value>開啟后將在軟體啟動時自動檢查更新。</value></data><data name="EnableNibMode" xml:space="preserve"><value>筆尖模式</value></data><data name="EnableNibModeHint" xml:space="preserve"><value>啟用后僅響應筆尖觸摸，忽略手掌和手指</value></data><data name="ExternalProtocol" xml:space="preserve"><value>外部協議調用 (icc://)</value></data><data name="ExternalProtocolHint" xml:space="preserve"><value>通過 icc:// 協議從外部控制軟體</value></data><data name="FastStartup" xml:space="preserve"><value>快速啟動模式</value></data><data name="FastStartupHint" xml:space="preserve"><value>盡快顯示主介面，并將外掛、PPT、通知、自動化、監控等非首屏功能延遲到啟動完成后載入。下次啟動時生效。</value></data><data name="FixVersionHint" xml:space="preserve"><value>版本修復會根據當前選擇的通道下載最新版本并執行安裝，可用于修復損壞的安裝</value></data><data name="FoldAtStartup" xml:space="preserve"><value>開機運行后收納到側邊欄</value></data><data name="FoldAtStartupHint" xml:space="preserve"><value>開機啟動后自動收納到側邊欄</value></data><data name="NoBorderMode" xml:space="preserve"><value>視窗無邊框模式</value></data><data name="NoBorderModeHint" xml:space="preserve"><value>隱藏視窗邊框，提供更沉浸的體驗</value></data><data name="NoFocusMode" xml:space="preserve"><value>視窗無焦點模式</value></data><data name="NoFocusModeHint" xml:space="preserve"><value>視窗失去焦點時仍可接收輸入</value></data><data name="RunAtStartup" xml:space="preserve"><value>開機時運行</value></data><data name="RunAtStartupHint" xml:space="preserve"><value>系統啟動時自動運行軟體</value></data><data name="SilentUpdateFullHint" xml:space="preserve"><value>關閉后更新前會先問你。開啟后，晚上空閑時自動更新，條件是不在書寫、不在畫板里。</value></data><data name="SilentUpdateHint" xml:space="preserve"><value>靜默更新將在軟體不使用時自動安裝，無需手動操作</value></data><data name="SmartUpdate" xml:space="preserve"><value>智慧更新</value></data><data name="SmartUpdateHint" xml:space="preserve"><value>開啟后使用統一平臺 API 檢查更新并獲取下載連結。</value></data><data name="Start" xml:space="preserve"><value>啟動</value></data><data name="Startup_Behavior" xml:space="preserve"><value>行為</value></data><data name="TimePeriodHint" xml:space="preserve"><value>若終止時間小于起始時間，即將終止時間視為第二天的時間。若起始時間與終止時間相同，即視為全天候時間。</value></data><data name="TopMost" xml:space="preserve"><value>視窗置頂</value></data><data name="TopMostHint" xml:space="preserve"><value>蓋住任務欄和全屏視窗。需要管理員權限或 UIAccess；以管理員運行會導致 PPT 聯動失效。</value></data><data name="TopMostMode" xml:space="preserve"><value>置頂模式</value></data><data name="TopMostMode_Normal" xml:space="preserve"><value>普通置頂</value></data><data name="TopMostMode_Normal_RestartRequired" xml:space="preserve"><value>切換到普通置頂模式需要重啟軟體才能生效，是否立即重啟？</value></data><data name="TopMostMode_RestartAsAdmin" xml:space="preserve"><value>重啟到管理員模式（用于覆蓋任務欄）</value></data><data name="TopMostMode_CurrentUIAccessNormal" xml:space="preserve"><value>當前為擁有 UIA 權限的降權處理程序</value></data><data name="TopMostMode_RestartAsNormal" xml:space="preserve"><value>切換到非管理員模式</value></data><data name="TopMostMode_UIA" xml:space="preserve"><value>UIA 置頂（需要一次 UAC 授權）</value></data><data name="TopMostMode_UIA_RestartRequired" xml:space="preserve"><value>切換到 UIA 置頂模式需要彈出 UAC 授權并重啟為普通使用者 UIA 處理程序，是否立即繼續？</value></data><data name="UIAMode_Label" xml:space="preserve"><value>UIA 方案</value></data><data name="UIAMode_UserToken" xml:space="preserve"><value>基于使用者令牌</value></data><data name="UIAMode_ProcessToken" xml:space="preserve"><value>基于原處理程序令牌</value></data><data name="UIAMode_Description" xml:space="preserve"><value>選擇 UIA 置頂的令牌獲取方案。基于使用者令牌從 explorer.exe 獲取令牌，基于原處理程序令牌從原始處理程序復制令牌。</value></data><data name="UpdateChannel" xml:space="preserve"><value>更新通道</value></data><data name="UpdateChannelHint" xml:space="preserve"><value>穩定版提供可靠更新，預覽版提供新功能體驗同時擁有較 Beta 版版更強的穩定性，測試版提供新功能搶先體驗</value></data><data name="UpdatePackageArchitecture" xml:space="preserve"><value>軟體架構</value></data><data name="UpdatePackageArchitectureHint" xml:space="preserve"><value>選擇要下載的更新包架構，預設跟隨當前軟體架構</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EnableNibMode" xml:space="preserve">
+    <value>筆尖模式</value>
+  </data>
+  <data name="ExternalProtocol" xml:space="preserve">
+    <value>外部協議調用 (icc://)</value>
+  </data>
+  <data name="ExternalProtocolHint" xml:space="preserve">
+    <value>通過 icc:// 協議從外部控制軟體</value>
+  </data>
+  <data name="FoldAtStartup" xml:space="preserve">
+    <value>開機運行后收納到側邊欄</value>
+  </data>
+  <data name="FoldAtStartupHint" xml:space="preserve">
+    <value>開機啟動后自動收納到側邊欄</value>
+  </data>
+  <data name="NoBorderMode" xml:space="preserve">
+    <value>視窗無邊框模式</value>
+  </data>
+  <data name="NoBorderModeHint" xml:space="preserve">
+    <value>隱藏視窗邊框，提供更沉浸的體驗</value>
+  </data>
+  <data name="NoFocusMode" xml:space="preserve">
+    <value>視窗無焦點模式</value>
+  </data>
+  <data name="NoFocusModeHint" xml:space="preserve">
+    <value>視窗失去焦點時仍可接收輸入</value>
+  </data>
+  <data name="RunAtStartup" xml:space="preserve">
+    <value>開機時運行</value>
+  </data>
+  <data name="RunAtStartupHint" xml:space="preserve">
+    <value>系統啟動時自動運行軟體</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>啟動</value>
+  </data>
+  <data name="Startup_Behavior" xml:space="preserve">
+    <value>行為</value>
+  </data>
+  <data name="TopMost" xml:space="preserve">
+    <value>視窗置頂</value>
+  </data>
+  <data name="TopMostHint" xml:space="preserve">
+    <value>蓋住任務欄和全屏視窗。需要管理員權限或 UIAccess；以管理員運行會導致 PPT 聯動失效。</value>
+  </data>
+  <data name="TopMostMode" xml:space="preserve">
+    <value>置頂模式</value>
+  </data>
+  <data name="TopMostMode_Normal" xml:space="preserve">
+    <value>普通置頂</value>
+  </data>
+  <data name="TopMostMode_Normal_RestartRequired" xml:space="preserve">
+    <value>切換到普通置頂模式需要重啟軟體才能生效，是否立即重啟？</value>
+  </data>
+  <data name="TopMostMode_CurrentUIAccessNormal" xml:space="preserve">
+    <value>當前為擁有 UIA 權限的降權處理程序</value>
+  </data>
+  <data name="TopMostMode_RestartAsNormal" xml:space="preserve">
+    <value>切換到非管理員模式</value>
+  </data>
+  <data name="TopMostMode_UIA" xml:space="preserve">
+    <value>UIA 置頂（需要一次 UAC 授權）</value>
+  </data>
+  <data name="TopMostMode_UIA_RestartRequired" xml:space="preserve">
+    <value>切換到 UIA 置頂模式需要彈出 UAC 授權并重啟為普通使用者 UIA 處理程序，是否立即繼續？</value>
+  </data>
+  <data name="UIAMode_Label" xml:space="preserve">
+    <value>UIA 方案</value>
+  </data>
+  <data name="UIAMode_UserToken" xml:space="preserve">
+    <value>基于使用者令牌</value>
+  </data>
+  <data name="UIAMode_ProcessToken" xml:space="preserve">
+    <value>基于原處理程序令牌</value>
+  </data>
+  <data name="UIAMode_Description" xml:space="preserve">
+    <value>選擇 UIA 置頂的令牌獲取方案。基于使用者令牌從 explorer.exe 獲取令牌，基于原處理程序令牌從原始處理程序復制令牌。</value>
+  </data>
+</root>

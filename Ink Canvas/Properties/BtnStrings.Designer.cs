@@ -39,11 +39,6 @@ namespace Ink_Canvas.Properties
         {
             return ResourceManager.GetString(key, _resourceCulture);
         }
-
-        public static string Exit => ResourceManager.GetString(nameof(Exit), _resourceCulture);
-
         public static string Restart => ResourceManager.GetString(nameof(Restart), _resourceCulture);
-
-        public static string VersionFix => ResourceManager.GetString(nameof(VersionFix), _resourceCulture);
     }
 }

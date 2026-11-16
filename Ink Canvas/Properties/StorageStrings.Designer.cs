@@ -45,9 +45,6 @@ namespace Ink_Canvas.Properties
         public static string Backup_AutoBeforeUpdate => ResourceManager.GetString(nameof(Backup_AutoBeforeUpdate), _resourceCulture);
 
         public static string Backup_AutoPeriodic => ResourceManager.GetString(nameof(Backup_AutoPeriodic), _resourceCulture);
-
-        public static string Backup_Desc => ResourceManager.GetString(nameof(Backup_Desc), _resourceCulture);
-
         public static string Backup_Interval => ResourceManager.GetString(nameof(Backup_Interval), _resourceCulture);
 
         public static string Backup_Interval_14Days => ResourceManager.GetString(nameof(Backup_Interval_14Days), _resourceCulture);
@@ -77,9 +74,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_AutoSaveInterval => ResourceManager.GetString(nameof(Storage_AutoSaveInterval), _resourceCulture);
 
         public static string Storage_AutoSaveInterval_10Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_10Min), _resourceCulture);
-
-        public static string Storage_AutoSaveInterval_15Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_15Min), _resourceCulture);
-
         public static string Storage_AutoSaveInterval_1Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_1Min), _resourceCulture);
 
         public static string Storage_AutoSaveInterval_30Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_30Min), _resourceCulture);
@@ -87,9 +81,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_AutoSaveInterval_3Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_3Min), _resourceCulture);
 
         public static string Storage_AutoSaveInterval_5Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_5Min), _resourceCulture);
-
-        public static string Storage_AutoSaveInterval_60Min => ResourceManager.GetString(nameof(Storage_AutoSaveInterval_60Min), _resourceCulture);
-
         public static string Storage_AutoScreenshotOnClear => ResourceManager.GetString(nameof(Storage_AutoScreenshotOnClear), _resourceCulture);
 
         public static string Storage_Backups_Desc => ResourceManager.GetString(nameof(Storage_Backups_Desc), _resourceCulture);
@@ -119,9 +110,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_Core_NotCleanable => ResourceManager.GetString(nameof(Storage_Core_NotCleanable), _resourceCulture);
 
         public static string Storage_Custom_Desc => ResourceManager.GetString(nameof(Storage_Custom_Desc), _resourceCulture);
-
-        public static string Storage_Custom_Header => ResourceManager.GetString(nameof(Storage_Custom_Header), _resourceCulture);
-
         public static string Storage_Custom_Hint => ResourceManager.GetString(nameof(Storage_Custom_Hint), _resourceCulture);
 
         public static string Storage_DiskPercent => ResourceManager.GetString(nameof(Storage_DiskPercent), _resourceCulture);
@@ -139,11 +127,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_Legend_Ink => ResourceManager.GetString(nameof(Storage_Legend_Ink), _resourceCulture);
 
         public static string Storage_Legend_Other => ResourceManager.GetString(nameof(Storage_Legend_Other), _resourceCulture);
-
-        public static string Storage_Legend_Update => ResourceManager.GetString(nameof(Storage_Legend_Update), _resourceCulture);
-
-        public static string Storage_Legend_Plugins => ResourceManager.GetString(nameof(Storage_Legend_Plugins), _resourceCulture);
-
         public static string Storage_Logs_Desc => ResourceManager.GetString(nameof(Storage_Logs_Desc), _resourceCulture);
 
         public static string Storage_Logs_Header => ResourceManager.GetString(nameof(Storage_Logs_Header), _resourceCulture);
@@ -155,15 +138,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_OpenAppFolder => ResourceManager.GetString(nameof(Storage_OpenAppFolder), _resourceCulture);
 
         public static string Storage_Other_Desc => ResourceManager.GetString(nameof(Storage_Other_Desc), _resourceCulture);
-
-        public static string Storage_PathBrowse => ResourceManager.GetString(nameof(Storage_PathBrowse), _resourceCulture);
-
-        public static string Storage_Plugins_Desc => ResourceManager.GetString(nameof(Storage_Plugins_Desc), _resourceCulture);
-
-        public static string Storage_Plugins_Header => ResourceManager.GetString(nameof(Storage_Plugins_Header), _resourceCulture);
-
-        public static string Storage_Plugins_Hint => ResourceManager.GetString(nameof(Storage_Plugins_Hint), _resourceCulture);
-
         public static string Storage_Refresh => ResourceManager.GetString(nameof(Storage_Refresh), _resourceCulture);
 
         public static string Storage_SaveAsXml => ResourceManager.GetString(nameof(Storage_SaveAsXml), _resourceCulture);
@@ -175,11 +149,6 @@ namespace Ink_Canvas.Properties
         public static string Storage_Title => ResourceManager.GetString(nameof(Storage_Title), _resourceCulture);
 
         public static string Storage_TotalUsage => ResourceManager.GetString(nameof(Storage_TotalUsage), _resourceCulture);
-
-        public static string Storage_Update_Desc => ResourceManager.GetString(nameof(Storage_Update_Desc), _resourceCulture);
-
-        public static string Storage_Update_Header => ResourceManager.GetString(nameof(Storage_Update_Header), _resourceCulture);
-
         public static string Backup_SuccessTitle => ResourceManager.GetString(nameof(Backup_SuccessTitle), _resourceCulture);
 
         public static string Backup_SuccessMsg => ResourceManager.GetString(nameof(Backup_SuccessMsg), _resourceCulture);

@@ -210,9 +210,6 @@
   <data name="FloatingInterceptor_App_SeewoPPTTools" xml:space="preserve">
     <value>希沃 PPT 小工具</value>
   </data>
-  <data name="FloatingInterceptor_Enable" xml:space="preserve">
-    <value>启用悬浮窗拦截</value>
-  </data>
   <data name="FloatingInterceptor_Title" xml:space="preserve">
     <value>悬浮窗拦截</value>
   </data>

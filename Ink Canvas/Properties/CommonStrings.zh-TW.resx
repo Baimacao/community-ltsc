@@ -38,8 +38,46 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Color" xml:space="preserve"><value>顏色</value></data><data name="Common_Cancel" xml:space="preserve"><value>取消</value></data><data name="Hotkey_NotSet" xml:space="preserve"><value>未設定</value></data><data name="Mode_PPTOnly" xml:space="preserve"><value>僅 PPT 模式</value></data><data name="No" xml:space="preserve"><value>否</value></data><data name="Size_Medium" xml:space="preserve"><value>中等</value></data><data name="Size_Small" xml:space="preserve"><value>較小</value></data><data name="Time_End" xml:space="preserve"><value>終止時間</value></data><data name="Time_Start" xml:space="preserve"><value>起始時間</value></data><data name="Yes" xml:space="preserve"><value>是</value></data><data name="Common_OK" xml:space="preserve"><value>確定</value></data><data name="Common_On" xml:space="preserve"><value>開</value></data><data name="Common_Off" xml:space="preserve"><value>關</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Color" xml:space="preserve">
+    <value>顏色</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Hotkey_NotSet" xml:space="preserve">
+    <value>未設定</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Size_Medium" xml:space="preserve">
+    <value>中等</value>
+  </data>
+  <data name="Size_Small" xml:space="preserve">
+    <value>較小</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="Common_OK" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>開</value>
+  </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>關</value>
+  </data>
+</root>

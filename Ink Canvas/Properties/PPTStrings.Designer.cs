@@ -45,18 +45,6 @@ namespace Ink_Canvas.Properties
         public static string AutoSaveStrokesHint => ResourceManager.GetString(nameof(AutoSaveStrokesHint), _resourceCulture);
 
         public static string AutoScreenshot => ResourceManager.GetString(nameof(AutoScreenshot), _resourceCulture);
-
-        public static string AutoScreenshotHint => ResourceManager.GetString(nameof(AutoScreenshotHint), _resourceCulture);
-        public static string BottomGroupTitle => ResourceManager.GetString(nameof(BottomGroupTitle), _resourceCulture);
-
-        public static string EnhancedPreview => ResourceManager.GetString(nameof(EnhancedPreview), _resourceCulture);
-
-        public static string EnhancedPreviewHint => ResourceManager.GetString(nameof(EnhancedPreviewHint), _resourceCulture);
-
-        public static string EnhancedPreviewLoadingAnimation => ResourceManager.GetString(nameof(EnhancedPreviewLoadingAnimation), _resourceCulture);
-
-        public static string EnhancedPreviewLoadingAnimationHint => ResourceManager.GetString(nameof(EnhancedPreviewLoadingAnimationHint), _resourceCulture);
-
         public static string LoadingPPT => ResourceManager.GetString(nameof(LoadingPPT), _resourceCulture);
 
         public static string Enhancement => ResourceManager.GetString(nameof(Enhancement), _resourceCulture);
@@ -68,27 +56,12 @@ namespace Ink_Canvas.Properties
         public static string FingerGestureSlideHint => ResourceManager.GetString(nameof(FingerGestureSlideHint), _resourceCulture);
 
         public static string FlipButtonsTitle => ResourceManager.GetString(nameof(FlipButtonsTitle), _resourceCulture);
-
-        public static string FlipButtonsScale => ResourceManager.GetString(nameof(FlipButtonsScale), _resourceCulture);
-
         public static string GoToFirstPageOnReenter => ResourceManager.GetString(nameof(GoToFirstPageOnReenter), _resourceCulture);
 
         public static string GroupTitle => ResourceManager.GetString(nameof(GroupTitle), _resourceCulture);
-
-        public static string HalfOpacity => ResourceManager.GetString(nameof(HalfOpacity), _resourceCulture);
-
         public static string KillWppHint => ResourceManager.GetString(nameof(KillWppHint), _resourceCulture);
 
         public static string KillWppProcess => ResourceManager.GetString(nameof(KillWppProcess), _resourceCulture);
-
-        public static string LeftBottomOffset => ResourceManager.GetString(nameof(LeftBottomOffset), _resourceCulture);
-
-        public static string LeftBottomOpacity => ResourceManager.GetString(nameof(LeftBottomOpacity), _resourceCulture);
-
-        public static string LeftOffset => ResourceManager.GetString(nameof(LeftOffset), _resourceCulture);
-
-        public static string LeftOpacity => ResourceManager.GetString(nameof(LeftOpacity), _resourceCulture);
-
         public static string LongPressPageTurn => ResourceManager.GetString(nameof(LongPressPageTurn), _resourceCulture);
 
         public static string LongPressPageTurnHint => ResourceManager.GetString(nameof(LongPressPageTurnHint), _resourceCulture);
@@ -100,81 +73,18 @@ namespace Ink_Canvas.Properties
         public static string PageButtonClickable => ResourceManager.GetString(nameof(PageButtonClickable), _resourceCulture);
 
         public static string PageButtonClickableHint => ResourceManager.GetString(nameof(PageButtonClickableHint), _resourceCulture);
-
-        public static string PPTArchitecture => ResourceManager.GetString(nameof(PPTArchitecture), _resourceCulture);
-
-        public static string PPTComArchitecture => ResourceManager.GetString(nameof(PPTComArchitecture), _resourceCulture);
-
-        public static string PPTRotArchitecture => ResourceManager.GetString(nameof(PPTRotArchitecture), _resourceCulture);
-
-        public static string PPTAgentArchitecture => ResourceManager.GetString(nameof(PPTAgentArchitecture), _resourceCulture);
-
-        public static string PPTAgentArchitectureHint => ResourceManager.GetString(nameof(PPTAgentArchitectureHint), _resourceCulture);
-
-        public static string PPTAgentNotConnected => ResourceManager.GetString(nameof(PPTAgentNotConnected), _resourceCulture);
-
-        public static string PPTAgentInstallHint => ResourceManager.GetString(nameof(PPTAgentInstallHint), _resourceCulture);
-
-        public static string Position_Left => ResourceManager.GetString(nameof(Position_Left), _resourceCulture);
-
-        public static string Position_LeftBottom => ResourceManager.GetString(nameof(Position_LeftBottom), _resourceCulture);
-
-        public static string Position_Right => ResourceManager.GetString(nameof(Position_Right), _resourceCulture);
-
-        public static string Position_RightBottom => ResourceManager.GetString(nameof(Position_RightBottom), _resourceCulture);
-
         public static string RememberLastPage => ResourceManager.GetString(nameof(RememberLastPage), _resourceCulture);
 
         public static string RememberLastPageHint => ResourceManager.GetString(nameof(RememberLastPageHint), _resourceCulture);
-
-        public static string RightBottomOffset => ResourceManager.GetString(nameof(RightBottomOffset), _resourceCulture);
-
-        public static string RightBottomOpacity => ResourceManager.GetString(nameof(RightBottomOpacity), _resourceCulture);
-
-        public static string RightOffset => ResourceManager.GetString(nameof(RightOffset), _resourceCulture);
-
-        public static string RightOpacity => ResourceManager.GetString(nameof(RightOpacity), _resourceCulture);
-
-        public static string ShowFlipButtons => ResourceManager.GetString(nameof(ShowFlipButtons), _resourceCulture);
-
-        public static string ShowPageNumber => ResourceManager.GetString(nameof(ShowPageNumber), _resourceCulture);
-
         public static string ShowQuickPanelInShow => ResourceManager.GetString(nameof(ShowQuickPanelInShow), _resourceCulture);
 
         public static string ShowQuickPanelInShowHint => ResourceManager.GetString(nameof(ShowQuickPanelInShowHint), _resourceCulture);
-
-        public static string SideGroupTitle => ResourceManager.GetString(nameof(SideGroupTitle), _resourceCulture);
-
         public static string SkipAnimations => ResourceManager.GetString(nameof(SkipAnimations), _resourceCulture);
 
         public static string SupportPowerPoint => ResourceManager.GetString(nameof(SupportPowerPoint), _resourceCulture);
 
         public static string SupportWPS => ResourceManager.GetString(nameof(SupportWPS), _resourceCulture);
-
-        public static string TimeCapsule => ResourceManager.GetString(nameof(TimeCapsule), _resourceCulture);
-
-        public static string TimeCapsuleHint => ResourceManager.GetString(nameof(TimeCapsuleHint), _resourceCulture);
-
-        public static string TimeCapsuleOpacity => ResourceManager.GetString(nameof(TimeCapsuleOpacity), _resourceCulture);
-
-        public static string TimeCapsulePos_Center => ResourceManager.GetString(nameof(TimeCapsulePos_Center), _resourceCulture);
-
-        public static string TimeCapsulePos_TL => ResourceManager.GetString(nameof(TimeCapsulePos_TL), _resourceCulture);
-
-        public static string TimeCapsulePos_TR => ResourceManager.GetString(nameof(TimeCapsulePos_TR), _resourceCulture);
-
-        public static string TimeCapsulePosition => ResourceManager.GetString(nameof(TimeCapsulePosition), _resourceCulture);
-
-        public static string TimeCapsuleResetPosition => ResourceManager.GetString(nameof(TimeCapsuleResetPosition), _resourceCulture);
-
-        public static string TimeCapsuleResetPositionHint => ResourceManager.GetString(nameof(TimeCapsuleResetPositionHint), _resourceCulture);
-
-        public static string TimeCapsuleScale => ResourceManager.GetString(nameof(TimeCapsuleScale), _resourceCulture);
-
         public static string TwoFingerGesture => ResourceManager.GetString(nameof(TwoFingerGesture), _resourceCulture);
-
-        public static string UseRot => ResourceManager.GetString(nameof(UseRot), _resourceCulture);
-
         public static string PPTQuickPanel_Sound => ResourceManager.GetString(nameof(PPTQuickPanel_Sound), _resourceCulture);
 
         public static string PPTQuickPanel_Insert => ResourceManager.GetString(nameof(PPTQuickPanel_Insert), _resourceCulture);
@@ -196,9 +106,6 @@ namespace Ink_Canvas.Properties
         public static string PPT_HiddenSlides_Detected => ResourceManager.GetString(nameof(PPT_HiddenSlides_Detected), _resourceCulture);
 
         public static string PPT_AutoPlay_Detected => ResourceManager.GetString(nameof(PPT_AutoPlay_Detected), _resourceCulture);
-
-        public static string PPT_ModePrompt_Message => ResourceManager.GetString(nameof(PPT_ModePrompt_Message), _resourceCulture);
-
         public static string PPT_ModePrompt_Setting => ResourceManager.GetString(nameof(PPT_ModePrompt_Setting), _resourceCulture);
 
         public static string PPT_ModePrompt_SettingHint => ResourceManager.GetString(nameof(PPT_ModePrompt_SettingHint), _resourceCulture);

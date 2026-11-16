@@ -48,9 +48,6 @@
   <data name="DevelopersLabel" xml:space="preserve">
     <value>开发者：</value>
   </data>
-  <data name="DeviceIdLabel" xml:space="preserve">
-    <value>设备 ID：</value>
-  </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
   </data>
@@ -89,9 +86,6 @@
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>版本：</value>
-  </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>未知</value>
   </data>
   <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
     <value>关闭匿名使用数据上传后，将无法继续使用预览/测试通道，系统会自动切换回正式通道（Release）。

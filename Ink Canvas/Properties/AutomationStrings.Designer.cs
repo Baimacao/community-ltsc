@@ -151,9 +151,6 @@ namespace Ink_Canvas.Properties
         public static string FloatingInterceptor_App_SeewoPincoDrawing => ResourceManager.GetString(nameof(FloatingInterceptor_App_SeewoPincoDrawing), _resourceCulture);
 
         public static string FloatingInterceptor_App_SeewoPPTTools => ResourceManager.GetString(nameof(FloatingInterceptor_App_SeewoPPTTools), _resourceCulture);
-
-        public static string FloatingInterceptor_Enable => ResourceManager.GetString(nameof(FloatingInterceptor_Enable), _resourceCulture);
-
         public static string FloatingInterceptor_Title => ResourceManager.GetString(nameof(FloatingInterceptor_Title), _resourceCulture);
 
         public static string FoldMode_AutoFoldAfterPPT => ResourceManager.GetString(nameof(FoldMode_AutoFoldAfterPPT), _resourceCulture);

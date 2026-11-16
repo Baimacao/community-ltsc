@@ -210,9 +210,6 @@
   <data name="FloatingInterceptor_App_SeewoPPTTools" xml:space="preserve">
     <value>Seewo PPT Tools</value>
   </data>
-  <data name="FloatingInterceptor_Enable" xml:space="preserve">
-    <value>Enable floating window interceptor</value>
-  </data>
   <data name="FloatingInterceptor_Title" xml:space="preserve">
     <value>Floating window interceptor</value>
   </data>

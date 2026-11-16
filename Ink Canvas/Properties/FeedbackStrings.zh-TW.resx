@@ -38,25 +38,16 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="WindowTitle" xml:space="preserve"><value>意見回饋問題 - ICC CE Lite</value></data><data name="BtnCancel" xml:space="preserve"><value>取消</value></data><data name="BtnNext" xml:space="preserve"><value>下一步</value></data><data name="BtnBack" xml:space="preserve"><value>上一頁</value></data><data name="BtnConfirm" xml:space="preserve"><value>確認</value></data><data name="Page1Title" xml:space="preserve"><value>選擇要包含的資訊</value></data><data name="Page1_SoftwareInfo" xml:space="preserve"><value>軟體資訊</value></data><data name="Page1_SoftwareInfoDesc" xml:space="preserve"><value>選擇要包含在意見回饋中的軟體版本資訊</value></data><data name="Page1_AppVersion" xml:space="preserve"><value>軟體版本</value></data><data name="Page1_UpdateChannel" xml:space="preserve"><value>更新通道</value></data><data name="Page1_SystemInfo" xml:space="preserve"><value>系統資訊</value></data><data name="Page1_SystemInfoDesc" xml:space="preserve"><value>選擇要包含在意見回饋中的系統環境資訊</value></data><data name="Page1_OSVersion" xml:space="preserve"><value>操作系統版本</value></data><data name="Page1_NetVersion" xml:space="preserve"><value>.NET 版本</value></data><data name="Page1_DeviceInfo" xml:space="preserve"><value>設備資訊</value></data><data name="Page1_DeviceInfoDesc" xml:space="preserve"><value>選擇要包含在意見回饋中的設備標識資訊</value></data><data name="Page1_DeviceId" xml:space="preserve"><value>設備 ID</value></data><data name="Page1_Config" xml:space="preserve"><value>軟體配置</value></data><data name="Page1_ConfigDesc" xml:space="preserve"><value>選擇要包含在意見回饋中的軟體配置資訊</value></data><data name="Page1_PPTSettings" xml:space="preserve"><value>PPT 聯動設定</value></data><data name="Page1_InkRecognition" xml:space="preserve"><value>墨跡識別設定</value></data><data name="Page2Title" xml:space="preserve"><value>確認要發送的資訊</value></data><data name="Page2_SoftwareInfo" xml:space="preserve"><value>軟體資訊</value></data><data name="Page2_SoftwareInfoDesc" xml:space="preserve"><value>將要包含在意見回饋中的軟體版本資訊</value></data><data name="Page2_SystemInfo" xml:space="preserve"><value>系統資訊</value></data><data name="Page2_SystemInfoDesc" xml:space="preserve"><value>將要包含在意見回饋中的系統環境資訊</value></data><data name="Page2_DeviceInfo" xml:space="preserve"><value>設備資訊</value></data><data name="Page2_DeviceInfoDesc" xml:space="preserve"><value>將要包含在意見回饋中的設備標識資訊</value></data><data name="Page2_Config" xml:space="preserve"><value>軟體配置</value></data><data name="Page2_ConfigDesc" xml:space="preserve"><value>將要包含在意見回饋中的軟體配置資訊</value></data><data name="Page2_Exclude" xml:space="preserve"><value>（不包含）</value></data><data name="Page3Title" xml:space="preserve"><value>選擇意見回饋方式</value></data><data name="Page3_GitHub" xml:space="preserve"><value>GitHub 問題意見回饋</value></data><data name="Page3_GitHubDesc" xml:space="preserve"><value>在 GitHub 上提交問題意見回饋</value></data><data name="Page3_OpenGitHub" xml:space="preserve"><value>跳轉到 GitHub 意見回饋</value></data><data name="Page3_CopyIssueUrl" xml:space="preserve"><value>復制意見回饋連結</value></data><data name="Page3_Copied" xml:space="preserve"><value>已復制 ?</value></data><data name="Page3_Markdown" xml:space="preserve"><value>意見回饋模板 (Markdown)</value></data><data name="Page3_MarkdownDesc" xml:space="preserve"><value>復制以下 Markdown 模板進行意見回饋</value></data><data name="Page3_CopyMarkdown" xml:space="preserve"><value>復制模板</value></data><data name="Page3_TemplatePlaceholder" xml:space="preserve"><value># 問題描述
-請描述您遇到的問題...
-
-# 重現步驟
-1. 
-2. 
-3. 
-
-# 預期行為
-請描述您期望的行為...
-
-# 實際行為
-請描述實際發生的...
-
-# 環境資訊
-- 版本: 
-- 系統: 
-</value></data><data name="About_FeedbackButton" xml:space="preserve"><value>提交意見回饋</value></data><data name="About_FeedbackSection" xml:space="preserve"><value>意見回饋問題</value></data><data name="Page1_PastebinServer" xml:space="preserve"><value>Pastebin 伺服器</value></data><data name="Page1_PastebinServerDesc" xml:space="preserve"><value>自部署的 MicroBin 服務地址（留空則不上傳到 pastebin）</value></data><data name="Page1_PastebinPlaceholder" xml:space="preserve"><value>https://microbin.example.com</value></data><data name="Page3_PastebinUpload" xml:space="preserve"><value>上傳到 Pastebin</value></data><data name="Page3_PastebinUploadDesc" xml:space="preserve"><value>將脫敏后的 JSON 資料上傳到 pastebin 服務</value></data><data name="Page3_UploadToPastebin" xml:space="preserve"><value>上傳資料</value></data><data name="Page3_CopyPastebinUrl" xml:space="preserve"><value>復制 Pastebin 連結</value></data><data name="Page3_UploadSuccess" xml:space="preserve"><value>上傳成功 ?</value></data><data name="Page3_UploadFailed" xml:space="preserve"><value>上傳失敗</value></data><data name="Page3_Uploading" xml:space="preserve"><value>正在上傳...</value></data><data name="Page3_PastebinNotConfigured" xml:space="preserve"><value>未配置 Pastebin 伺服器</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+</root>

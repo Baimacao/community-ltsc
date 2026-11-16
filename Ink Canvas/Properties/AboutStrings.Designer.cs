@@ -44,10 +44,6 @@ namespace Ink_Canvas.Properties
         public static string LicenseBody => ResourceManager.GetString(nameof(LicenseBody), _resourceCulture);
 
         public static string DevelopersLabel => ResourceManager.GetString(nameof(DevelopersLabel), _resourceCulture);
-
-        public static string DeviceIdLabel => ResourceManager.GetString(nameof(DeviceIdLabel), _resourceCulture);
-
-
         public static string LicenseTitle => ResourceManager.GetString(nameof(LicenseTitle), _resourceCulture);
 
         public static string OpenSourceSlogan => ResourceManager.GetString(nameof(OpenSourceSlogan), _resourceCulture);
@@ -71,9 +67,6 @@ namespace Ink_Canvas.Properties
         public static string Title => ResourceManager.GetString(nameof(Title), _resourceCulture);
 
         public static string VersionLabel => ResourceManager.GetString(nameof(VersionLabel), _resourceCulture);
-
-        public static string Unknown => ResourceManager.GetString(nameof(Unknown), _resourceCulture);
-
         public static string Privacy_ConfirmDisableTelemetry_Message => ResourceManager.GetString(nameof(Privacy_ConfirmDisableTelemetry_Message), _resourceCulture);
 
         public static string Privacy_ConfirmDisableTelemetry_Title => ResourceManager.GetString(nameof(Privacy_ConfirmDisableTelemetry_Title), _resourceCulture);

@@ -45,19 +45,11 @@ namespace Ink_Canvas.Properties
         public static string Common_Cancel => ResourceManager.GetString(nameof(Common_Cancel), _resourceCulture);
 
         public static string Hotkey_NotSet => ResourceManager.GetString(nameof(Hotkey_NotSet), _resourceCulture);
-
-        public static string Mode_PPTOnly => ResourceManager.GetString(nameof(Mode_PPTOnly), _resourceCulture);
-
         public static string No => ResourceManager.GetString(nameof(No), _resourceCulture);
 
         public static string Size_Medium => ResourceManager.GetString(nameof(Size_Medium), _resourceCulture);
 
         public static string Size_Small => ResourceManager.GetString(nameof(Size_Small), _resourceCulture);
-
-        public static string Time_End => ResourceManager.GetString(nameof(Time_End), _resourceCulture);
-
-        public static string Time_Start => ResourceManager.GetString(nameof(Time_Start), _resourceCulture);
-
         public static string Yes => ResourceManager.GetString(nameof(Yes), _resourceCulture);
 
         public static string Common_OK => ResourceManager.GetString(nameof(Common_OK), _resourceCulture);

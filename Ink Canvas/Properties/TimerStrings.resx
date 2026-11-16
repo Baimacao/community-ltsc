@@ -45,56 +45,14 @@
   <data name="Timer_Title" xml:space="preserve">
     <value>计时</value>
   </data>
-  <data name="Timer_HourUp" xml:space="preserve">
-    <value>小时十位加一</value>
-  </data>
-  <data name="Timer_HourDown" xml:space="preserve">
-    <value>小时十位减一</value>
-  </data>
-  <data name="Timer_HourDigitUp" xml:space="preserve">
-    <value>小时个位加一</value>
-  </data>
-  <data name="Timer_HourDigitDown" xml:space="preserve">
-    <value>小时个位减一</value>
-  </data>
-  <data name="Timer_MinuteUp" xml:space="preserve">
-    <value>分钟十位加一</value>
-  </data>
-  <data name="Timer_MinuteDown" xml:space="preserve">
-    <value>分钟十位减一</value>
-  </data>
-  <data name="Timer_MinuteDigitUp" xml:space="preserve">
-    <value>分钟个位加一</value>
-  </data>
-  <data name="Timer_MinuteDigitDown" xml:space="preserve">
-    <value>分钟个位减一</value>
-  </data>
-  <data name="Timer_SecondUp" xml:space="preserve">
-    <value>秒十位加一</value>
-  </data>
-  <data name="Timer_SecondDown" xml:space="preserve">
-    <value>秒十位减一</value>
-  </data>
-  <data name="Timer_SecondDigitUp" xml:space="preserve">
-    <value>秒个位加一</value>
-  </data>
-  <data name="Timer_SecondDigitDown" xml:space="preserve">
-    <value>秒个位减一</value>
-  </data>
   <data name="Timer_CommonTab" xml:space="preserve">
     <value>常用</value>
   </data>
   <data name="Timer_RecentTab" xml:space="preserve">
     <value>最近</value>
   </data>
-  <data name="Timer_45Minutes" xml:space="preserve">
-    <value>45 分钟</value>
-  </data>
   <data name="Timer_FullScreen" xml:space="preserve">
     <value>全屏显示</value>
-  </data>
-  <data name="Timer_StartPause" xml:space="preserve">
-    <value>开始或暂停</value>
   </data>
   <data name="Timer_Reset" xml:space="preserve">
     <value>重置计时</value>
@@ -143,9 +101,6 @@
   </data>
   <data name="Timer_SelectProgressiveSound" xml:space="preserve">
     <value>Select Progressive Reminder Sound</value>
-  </data>
-  <data name="Timer_AdjustPanel" xml:space="preserve">
-    <value>调整时间</value>
   </data>
   <data name="Timer_SlimMode" xml:space="preserve">
     <value>小窗</value>

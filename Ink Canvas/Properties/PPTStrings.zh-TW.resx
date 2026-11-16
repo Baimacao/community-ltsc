@@ -38,8 +38,142 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="AutoSaveStrokes" xml:space="preserve"><value>自動儲存幻燈片墨跡</value></data><data name="AutoSaveStrokesHint" xml:space="preserve"><value>開啟 自動儲存幻燈片墨跡 后將在結束幻燈片放映時自動將儲存已有墨跡，并在下次打開時自動載入（檔案名和幻燈片頁數都要相同）</value></data><data name="AutoScreenshot" xml:space="preserve"><value>自動幻燈片截屏</value></data><data name="AutoScreenshotHint" xml:space="preserve"><value>開啟 自動幻燈片截屏 后將會在幻燈片有墨跡時翻頁自動截屏</value></data><data name="BottomGroupTitle" xml:space="preserve"><value>左下右下</value></data><data name="EnhancedPreview" xml:space="preserve"><value>PPT 頁碼按鈕增強型預覽</value></data><data name="EnhancedPreviewHint" xml:space="preserve"><value>手動開啟后，點選頁碼按鈕將顯示縮略圖頁列表（支援 WPS 與 PowerPoint），并可點選跳轉到目標頁。</value></data><data name="EnhancedPreviewLoadingAnimation" xml:space="preserve"><value>顯示動畫</value></data><data name="EnhancedPreviewLoadingAnimationHint" xml:space="preserve"><value>載入 PPT 增強預覽縮略圖時顯示動畫。</value></data><data name="LoadingPPT" xml:space="preserve"><value>正在載入PPT...</value></data><data name="Enhancement" xml:space="preserve"><value>PowerPoint 聯動增強</value></data><data name="EnterAnnotationOnShow" xml:space="preserve"><value>進入 PPT 放映時自動進入批注模式</value></data><data name="FingerGestureSlide" xml:space="preserve"><value>允許使用手指手勢進行幻燈片翻頁</value></data><data name="FingerGestureSlideHint" xml:space="preserve"><value>允許開啟畫板時使用手指手勢進行幻燈片翻頁（啟用后，在幻燈片放映模式下，當畫板無墨跡時，使用手指（筆尖或手掌無法識別）左右滑動即可控制幻燈片翻頁。）</value></data><data name="FlipButtonsTitle" xml:space="preserve"><value>PPT翻頁按鈕</value></data><data name="FlipButtonsScale" xml:space="preserve"><value>翻頁按鈕大小</value></data><data name="GoToFirstPageOnReenter" xml:space="preserve"><value>進入放映時回到首頁</value></data><data name="GroupTitle" xml:space="preserve"><value>PPT聯動</value></data><data name="HalfOpacity" xml:space="preserve"><value>半透明</value></data><data name="KillWppHint" xml:space="preserve"><value>關閉后將不會自動查殺 WPP 殘留處理程序，可能導致 WPP 關閉 時卡頓或無法徹底退出。</value></data><data name="KillWppProcess" xml:space="preserve"><value>WPP 處理程序查殺（防止 WPP 殘留處理程序）</value></data><data name="LeftBottomOffset" xml:space="preserve"><value>左下偏移</value></data><data name="LeftBottomOpacity" xml:space="preserve"><value>左下透明度</value></data><data name="LeftOffset" xml:space="preserve"><value>左側偏移</value></data><data name="LeftOpacity" xml:space="preserve"><value>左側透明度</value></data><data name="LongPressPageTurn" xml:space="preserve"><value>PPT 翻頁按鈕長按翻頁</value></data><data name="LongPressPageTurnHint" xml:space="preserve"><value>開啟該選項后，長按PPT翻頁按鈕可以連續翻頁，提高翻頁效率。</value></data><data name="NotifyAutoPlay" xml:space="preserve"><value>提示是否已啟用自動播放</value></data><data name="NotifyHiddenPage" xml:space="preserve"><value>提示隱藏幻燈片</value></data><data name="PageButtonClickable" xml:space="preserve"><value>PPT 頁碼按鈕可點選</value></data><data name="PageButtonClickableHint" xml:space="preserve"><value>開啟該選項后，點選頁碼按鈕可喚起頁碼導航。預設調用 PowerPoint 網格縮略圖（WPS 不支援）；可在下方子設定手動開啟增強型預覽以支援 WPS。</value></data><data name="Position_Left" xml:space="preserve"><value>左側</value></data><data name="Position_LeftBottom" xml:space="preserve"><value>左下</value></data><data name="Position_Right" xml:space="preserve"><value>右側</value></data><data name="Position_RightBottom" xml:space="preserve"><value>右下</value></data><data name="RememberLastPage" xml:space="preserve"><value>記憶并提示上次播放位置</value></data><data name="RememberLastPageHint" xml:space="preserve"><value>開啟后會記錄上次播放的頁數，點選"是"后會自動跳轉</value></data><data name="RightBottomOffset" xml:space="preserve"><value>右下偏移</value></data><data name="RightBottomOpacity" xml:space="preserve"><value>右下透明度</value></data><data name="RightOffset" xml:space="preserve"><value>右側偏移</value></data><data name="RightOpacity" xml:space="preserve"><value>右側透明度</value></data><data name="ShowFlipButtons" xml:space="preserve"><value>在 PPT 模式下顯示翻頁按鈕</value></data><data name="ShowPageNumber" xml:space="preserve"><value>顯示頁碼</value></data><data name="ShowQuickPanelInShow" xml:space="preserve"><value>PPT 放映時顯示快速面板</value></data><data name="ShowQuickPanelInShowHint" xml:space="preserve"><value>關閉后在 PPT 放映時不顯示快速面板</value></data><data name="SideGroupTitle" xml:space="preserve"><value>兩側</value></data><data name="SkipAnimations" xml:space="preserve"><value>搶占焦點放映（用于跳過 PPT 動畫）</value></data><data name="SupportPowerPoint" xml:space="preserve"><value>PPT聯動總開關</value></data><data name="PPTArchitecture" xml:space="preserve"><value>PPT 架構切換</value></data><data name="PPTComArchitecture" xml:space="preserve"><value>PPT COM 架構</value></data><data name="PPTRotArchitecture" xml:space="preserve"><value>ROT 架構</value></data><data name="PPTAgentArchitecture" xml:space="preserve"><value>VSTO Agent 架構</value></data><data name="PPTAgentArchitectureHint" xml:space="preserve"><value>用獨立的輔助程序連接 PPT，比直接控制更穩。正常使用不用管它。</value></data><data name="PPTAgentNotConnected" xml:space="preserve"><value>PPT Agent 未連接</value></data><data name="PPTAgentInstallHint" xml:space="preserve"><value>請先打開 PowerPoint 并確保 ICC PowerPoint Agent 外掛已載入。</value></data><data name="SupportWPS" xml:space="preserve"><value>WPS 支援</value></data><data name="TimeCapsule" xml:space="preserve"><value>PPT 時間顯示膠囊</value></data><data name="TimeCapsuleHint" xml:space="preserve"><value>開啟后在 PPT 放映模式下顯示時間膠囊，可替代最小化計時器視窗</value></data><data name="TimeCapsuleOpacity" xml:space="preserve"><value>時間膠囊透明度</value></data><data name="TimeCapsulePos_Center" xml:space="preserve"><value>頂部居中</value></data><data name="TimeCapsulePos_TL" xml:space="preserve"><value>左上角</value></data><data name="TimeCapsulePos_TR" xml:space="preserve"><value>右上角</value></data><data name="TimeCapsulePosition" xml:space="preserve"><value>時間膠囊位置</value></data><data name="TimeCapsuleResetPosition" xml:space="preserve"><value>重設位置</value></data><data name="TimeCapsuleResetPositionHint" xml:space="preserve"><value>將時間膠囊重設到預設位置</value></data><data name="TimeCapsuleScale" xml:space="preserve"><value>時間膠囊大小</value></data><data name="TwoFingerGesture" xml:space="preserve"><value>允許幻燈片模式下的雙指手勢</value></data><data name="PPTQuickPanel_CloseMagnifier" xml:space="preserve"><value>關閉放大鏡</value></data><data name="PPTQuickPanel_FocusMagnifier" xml:space="preserve"><value>聚焦放大鏡</value></data><data name="PPTQuickPanel_Insert" xml:space="preserve"><value>插入</value></data><data name="PPTQuickPanel_MagnifierHint" xml:space="preserve"><value>拖曳選擇框移動，拖曳控制點縮放，按 ESC 關閉</value></data><data name="PPTQuickPanel_OpenMagnifier" xml:space="preserve"><value>開啟放大鏡</value></data><data name="PPTQuickPanel_ScreenshotInsert" xml:space="preserve"><value>截圖插入</value></data><data name="PPTQuickPanel_Sound" xml:space="preserve"><value>聲音</value></data><data name="PPTQuickPanel_Zoom" xml:space="preserve"><value>縮放</value></data><data name="UseRot" xml:space="preserve"><value>使用 ROT 聯動</value></data><data name="PPT_RememberLastPage_Prompt" xml:space="preserve"><value>上次播放到了第 {0} 頁，是否立即跳轉</value></data><data name="PPT_HiddenSlides_Detected" xml:space="preserve"><value>檢測到此演示文檔中包含隱藏的幻燈片，是否取消隱藏？</value></data><data name="PPT_AutoPlay_Detected" xml:space="preserve"><value>檢測到此演示文檔中自動播放或排練計時已經啟用，可能導致幻燈片自動翻頁，是否取消？</value></data><data name="PPT_ModePrompt_Message" xml:space="preserve"><value>點選批注欄圖標可折疊/展開批注欄，拖曳圖標可移動位置，點選頁數可快捷翻頁。</value></data><data name="PPT_ModePrompt_Setting" xml:space="preserve"><value>進入 PPT 模式時顯示批注欄提示</value></data><data name="PPT_ModePrompt_SettingHint" xml:space="preserve"><value>開啟后，每次進入 PPT 放映/聯動模式時都會提示批注欄的基本操作。</value></data><data name="PPT_ModePrompt_Title" xml:space="preserve"><value>已進入 PPT 模式</value></data><data name="PPT_SlidesNotFound" xml:space="preserve"><value>未找到幻燈片</value></data><data name="SmartMode" xml:space="preserve"><value>PPT 智慧模式</value></data><data name="SmartModeHint" xml:space="preserve"><value>自動檢測 PPT 中的影片控件區域，滑鼠進入時切換為指針模式，離開后恢復批注模式</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AutoSaveStrokes" xml:space="preserve">
+    <value>自動儲存幻燈片墨跡</value>
+  </data>
+  <data name="AutoSaveStrokesHint" xml:space="preserve">
+    <value>開啟 自動儲存幻燈片墨跡 后將在結束幻燈片放映時自動將儲存已有墨跡，并在下次打開時自動載入（檔案名和幻燈片頁數都要相同）</value>
+  </data>
+  <data name="AutoScreenshot" xml:space="preserve">
+    <value>自動幻燈片截屏</value>
+  </data>
+  <data name="LoadingPPT" xml:space="preserve">
+    <value>正在載入PPT...</value>
+  </data>
+  <data name="Enhancement" xml:space="preserve">
+    <value>PowerPoint 聯動增強</value>
+  </data>
+  <data name="EnterAnnotationOnShow" xml:space="preserve">
+    <value>進入 PPT 放映時自動進入批注模式</value>
+  </data>
+  <data name="FingerGestureSlide" xml:space="preserve">
+    <value>允許使用手指手勢進行幻燈片翻頁</value>
+  </data>
+  <data name="FingerGestureSlideHint" xml:space="preserve">
+    <value>允許開啟畫板時使用手指手勢進行幻燈片翻頁（啟用后，在幻燈片放映模式下，當畫板無墨跡時，使用手指（筆尖或手掌無法識別）左右滑動即可控制幻燈片翻頁。）</value>
+  </data>
+  <data name="FlipButtonsTitle" xml:space="preserve">
+    <value>PPT翻頁按鈕</value>
+  </data>
+  <data name="GoToFirstPageOnReenter" xml:space="preserve">
+    <value>進入放映時回到首頁</value>
+  </data>
+  <data name="GroupTitle" xml:space="preserve">
+    <value>PPT聯動</value>
+  </data>
+  <data name="KillWppHint" xml:space="preserve">
+    <value>關閉后將不會自動查殺 WPP 殘留處理程序，可能導致 WPP 關閉 時卡頓或無法徹底退出。</value>
+  </data>
+  <data name="KillWppProcess" xml:space="preserve">
+    <value>WPP 處理程序查殺（防止 WPP 殘留處理程序）</value>
+  </data>
+  <data name="LongPressPageTurn" xml:space="preserve">
+    <value>PPT 翻頁按鈕長按翻頁</value>
+  </data>
+  <data name="LongPressPageTurnHint" xml:space="preserve">
+    <value>開啟該選項后，長按PPT翻頁按鈕可以連續翻頁，提高翻頁效率。</value>
+  </data>
+  <data name="NotifyAutoPlay" xml:space="preserve">
+    <value>提示是否已啟用自動播放</value>
+  </data>
+  <data name="NotifyHiddenPage" xml:space="preserve">
+    <value>提示隱藏幻燈片</value>
+  </data>
+  <data name="PageButtonClickable" xml:space="preserve">
+    <value>PPT 頁碼按鈕可點選</value>
+  </data>
+  <data name="PageButtonClickableHint" xml:space="preserve">
+    <value>開啟該選項后，點選頁碼按鈕可喚起頁碼導航。預設調用 PowerPoint 網格縮略圖（WPS 不支援）；可在下方子設定手動開啟增強型預覽以支援 WPS。</value>
+  </data>
+  <data name="RememberLastPage" xml:space="preserve">
+    <value>記憶并提示上次播放位置</value>
+  </data>
+  <data name="RememberLastPageHint" xml:space="preserve">
+    <value>開啟后會記錄上次播放的頁數，點選"是"后會自動跳轉</value>
+  </data>
+  <data name="ShowQuickPanelInShow" xml:space="preserve">
+    <value>PPT 放映時顯示快速面板</value>
+  </data>
+  <data name="ShowQuickPanelInShowHint" xml:space="preserve">
+    <value>關閉后在 PPT 放映時不顯示快速面板</value>
+  </data>
+  <data name="SkipAnimations" xml:space="preserve">
+    <value>搶占焦點放映（用于跳過 PPT 動畫）</value>
+  </data>
+  <data name="SupportPowerPoint" xml:space="preserve">
+    <value>PPT聯動總開關</value>
+  </data>
+  <data name="SupportWPS" xml:space="preserve">
+    <value>WPS 支援</value>
+  </data>
+  <data name="TwoFingerGesture" xml:space="preserve">
+    <value>允許幻燈片模式下的雙指手勢</value>
+  </data>
+  <data name="PPTQuickPanel_CloseMagnifier" xml:space="preserve">
+    <value>關閉放大鏡</value>
+  </data>
+  <data name="PPTQuickPanel_FocusMagnifier" xml:space="preserve">
+    <value>聚焦放大鏡</value>
+  </data>
+  <data name="PPTQuickPanel_Insert" xml:space="preserve">
+    <value>插入</value>
+  </data>
+  <data name="PPTQuickPanel_MagnifierHint" xml:space="preserve">
+    <value>拖曳選擇框移動，拖曳控制點縮放，按 ESC 關閉</value>
+  </data>
+  <data name="PPTQuickPanel_OpenMagnifier" xml:space="preserve">
+    <value>開啟放大鏡</value>
+  </data>
+  <data name="PPTQuickPanel_ScreenshotInsert" xml:space="preserve">
+    <value>截圖插入</value>
+  </data>
+  <data name="PPTQuickPanel_Sound" xml:space="preserve">
+    <value>聲音</value>
+  </data>
+  <data name="PPTQuickPanel_Zoom" xml:space="preserve">
+    <value>縮放</value>
+  </data>
+  <data name="PPT_RememberLastPage_Prompt" xml:space="preserve">
+    <value>上次播放到了第 {0} 頁，是否立即跳轉</value>
+  </data>
+  <data name="PPT_HiddenSlides_Detected" xml:space="preserve">
+    <value>檢測到此演示文檔中包含隱藏的幻燈片，是否取消隱藏？</value>
+  </data>
+  <data name="PPT_AutoPlay_Detected" xml:space="preserve">
+    <value>檢測到此演示文檔中自動播放或排練計時已經啟用，可能導致幻燈片自動翻頁，是否取消？</value>
+  </data>
+  <data name="PPT_ModePrompt_Setting" xml:space="preserve">
+    <value>進入 PPT 模式時顯示批注欄提示</value>
+  </data>
+  <data name="PPT_ModePrompt_SettingHint" xml:space="preserve">
+    <value>開啟后，每次進入 PPT 放映/聯動模式時都會提示批注欄的基本操作。</value>
+  </data>
+  <data name="PPT_ModePrompt_Title" xml:space="preserve">
+    <value>已進入 PPT 模式</value>
+  </data>
+  <data name="PPT_SlidesNotFound" xml:space="preserve">
+    <value>未找到幻燈片</value>
+  </data>
+</root>

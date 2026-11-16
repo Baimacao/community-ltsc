@@ -39,25 +39,10 @@ namespace Ink_Canvas.Properties
         {
             return ResourceManager.GetString(key, _resourceCulture);
         }
-
-        public static string SilentUpdate_TimeRange => ResourceManager.GetString(nameof(SilentUpdate_TimeRange), _resourceCulture);
-
-        public static string AutoUpdateHint => ResourceManager.GetString(nameof(AutoUpdateHint), _resourceCulture);
-
         public static string EnableNibMode => ResourceManager.GetString(nameof(EnableNibMode), _resourceCulture);
-
-        public static string EnableNibModeHint => ResourceManager.GetString(nameof(EnableNibModeHint), _resourceCulture);
-
         public static string ExternalProtocol => ResourceManager.GetString(nameof(ExternalProtocol), _resourceCulture);
 
         public static string ExternalProtocolHint => ResourceManager.GetString(nameof(ExternalProtocolHint), _resourceCulture);
-
-        public static string FastStartup => ResourceManager.GetString(nameof(FastStartup), _resourceCulture);
-
-        public static string FastStartupHint => ResourceManager.GetString(nameof(FastStartupHint), _resourceCulture);
-
-        public static string FixVersionHint => ResourceManager.GetString(nameof(FixVersionHint), _resourceCulture);
-
         public static string FoldAtStartup => ResourceManager.GetString(nameof(FoldAtStartup), _resourceCulture);
 
         public static string FoldAtStartupHint => ResourceManager.GetString(nameof(FoldAtStartupHint), _resourceCulture);
@@ -73,21 +58,9 @@ namespace Ink_Canvas.Properties
         public static string RunAtStartup => ResourceManager.GetString(nameof(RunAtStartup), _resourceCulture);
 
         public static string RunAtStartupHint => ResourceManager.GetString(nameof(RunAtStartupHint), _resourceCulture);
-
-        public static string SilentUpdateFullHint => ResourceManager.GetString(nameof(SilentUpdateFullHint), _resourceCulture);
-
-        public static string SilentUpdateHint => ResourceManager.GetString(nameof(SilentUpdateHint), _resourceCulture);
-
-        public static string SmartUpdate => ResourceManager.GetString(nameof(SmartUpdate), _resourceCulture);
-
-        public static string SmartUpdateHint => ResourceManager.GetString(nameof(SmartUpdateHint), _resourceCulture);
-
         public static string Start => ResourceManager.GetString(nameof(Start), _resourceCulture);
 
         public static string Startup_Behavior => ResourceManager.GetString(nameof(Startup_Behavior), _resourceCulture);
-
-        public static string TimePeriodHint => ResourceManager.GetString(nameof(TimePeriodHint), _resourceCulture);
-
         public static string TopMost => ResourceManager.GetString(nameof(TopMost), _resourceCulture);
 
         public static string TopMostHint => ResourceManager.GetString(nameof(TopMostHint), _resourceCulture);
@@ -97,9 +70,6 @@ namespace Ink_Canvas.Properties
         public static string TopMostMode_Normal => ResourceManager.GetString(nameof(TopMostMode_Normal), _resourceCulture);
 
         public static string TopMostMode_Normal_RestartRequired => ResourceManager.GetString(nameof(TopMostMode_Normal_RestartRequired), _resourceCulture);
-
-        public static string TopMostMode_RestartAsAdmin => ResourceManager.GetString(nameof(TopMostMode_RestartAsAdmin), _resourceCulture);
-
         public static string TopMostMode_CurrentUIAccessNormal => ResourceManager.GetString(nameof(TopMostMode_CurrentUIAccessNormal), _resourceCulture);
 
         public static string TopMostMode_RestartAsNormal => ResourceManager.GetString(nameof(TopMostMode_RestartAsNormal), _resourceCulture);
@@ -115,13 +85,5 @@ namespace Ink_Canvas.Properties
         public static string UIAMode_ProcessToken => ResourceManager.GetString(nameof(UIAMode_ProcessToken), _resourceCulture);
 
         public static string UIAMode_Description => ResourceManager.GetString(nameof(UIAMode_Description), _resourceCulture);
-
-        public static string UpdateChannel => ResourceManager.GetString(nameof(UpdateChannel), _resourceCulture);
-
-        public static string UpdateChannelHint => ResourceManager.GetString(nameof(UpdateChannelHint), _resourceCulture);
-
-        public static string UpdatePackageArchitecture => ResourceManager.GetString(nameof(UpdatePackageArchitecture), _resourceCulture);
-
-        public static string UpdatePackageArchitectureHint => ResourceManager.GetString(nameof(UpdatePackageArchitectureHint), _resourceCulture);
     }
 }

@@ -51,9 +51,6 @@
   <data name="Hotkey_NotSet" xml:space="preserve">
     <value xml:space="preserve">还没设</value>
   </data>
-  <data name="Mode_PPTOnly" xml:space="preserve">
-    <value xml:space="preserve">纯 PPT 模式</value>
-  </data>
   <data name="No" xml:space="preserve">
     <value xml:space="preserve">不要</value>
   </data>
@@ -62,12 +59,6 @@
   </data>
   <data name="Size_Small" xml:space="preserve">
     <value xml:space="preserve">小一点</value>
-  </data>
-  <data name="Time_End" xml:space="preserve">
-    <value xml:space="preserve">结束时间</value>
-  </data>
-  <data name="Time_Start" xml:space="preserve">
-    <value xml:space="preserve">开始时间</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value xml:space="preserve">要</value>

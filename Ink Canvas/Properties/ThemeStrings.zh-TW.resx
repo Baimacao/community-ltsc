@@ -38,11 +38,274 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="AppearancePanel_24HourTimeFormat" xml:space="preserve"><value>使用24小時制顯示時間</value></data><data name="Theme_BlackboardScale80" xml:space="preserve"><value>白板 UI 縮放倍數</value></data><data name="Theme_BoardToolbarOpacity" xml:space="preserve"><value>白板工具欄透明度</value></data><data name="Theme_BoardToolbarOpacityLeft" xml:space="preserve"><value>左下角透明度</value></data><data name="Theme_BoardToolbarOpacityCenter" xml:space="preserve"><value>中間透明度</value></data><data name="Theme_BoardToolbarOpacityRight" xml:space="preserve"><value>右下角透明度</value></data><data name="Theme_BoardScaleLeft" xml:space="preserve"><value>左下角縮放倍數</value></data><data name="Theme_BoardScaleCenter" xml:space="preserve"><value>中間縮放倍數</value></data><data name="Theme_BoardScaleRight" xml:space="preserve"><value>右下角縮放倍數</value></data><data name="Theme_Clear" xml:space="preserve"><value>清除</value></data><data name="Theme_CustomFloatingIconLabel" xml:space="preserve"><value>自定義浮動欄圖標</value></data><data name="Theme_CustomSplash_NotSelected" xml:space="preserve"><value>未選擇自定義圖片</value></data><data name="Theme_CustomSplashImage" xml:space="preserve"><value>自定義啟動圖片</value></data><data name="Theme_CustomSplashImage_Desc" xml:space="preserve"><value>選擇自定義圖片作為啟動動畫背景（支援JPG、PNG、BMP等格式）</value></data><data name="Theme_CustomSplashTextPosition" xml:space="preserve"><value>文字顯示位置</value></data><data name="Theme_CustomSplashTextPosition_Desc" xml:space="preserve"><value>設定啟動時載入文字和進度條的位置</value></data><data name="Theme_Dark" xml:space="preserve"><value>深色主題</value></data><data name="Theme_EnableQuickPanel" xml:space="preserve"><value>點選展開按鈕后顯示側邊欄</value></data><data name="Theme_EnableSplash" xml:space="preserve"><value>啟用啟動動畫</value></data><data name="Theme_FloatingBarButtonsTitle" xml:space="preserve"><value>浮動欄按鈕顯示</value></data><data name="Theme_FloatingBarIcon" xml:space="preserve"><value>浮動工具欄圖標</value></data><data name="Theme_FloatingBarOpacity" xml:space="preserve"><value>浮動工具欄透明度</value></data><data name="Theme_FloatingBarOpacityInPPT" xml:space="preserve"><value>浮欄在 PPT 下透明度</value></data><data name="Theme_FloatingBarOpacityInPPTHint" xml:space="preserve"><value>重新進入 PPT 放映后生效</value></data><data name="Theme_FloatingBarScale" xml:space="preserve"><value>浮動工具欄縮放倍數</value></data><data name="Theme_FloatingIcon_CoolapkAbused" xml:space="preserve"><value>酷安受虐滑稽</value></data><data name="Theme_FloatingIcon_CoolapkCrossEye" xml:space="preserve"><value>酷安斗雞眼滑稽</value></data><data name="Theme_FloatingIcon_CoolapkGreenHatDoge" xml:space="preserve"><value>酷安綠帽Doge</value></data><data name="Theme_FloatingIcon_CoolapkSmile" xml:space="preserve"><value>酷安呲牙笑</value></data><data name="Theme_FloatingIcon_CoolapkUnderwear" xml:space="preserve"><value>酷安頭戴內褲滑稽</value></data><data name="Theme_FloatingIcon_IccBlackTransparent" xml:space="preserve"><value>「ICC-CE」黑色透明版</value></data><data name="Theme_FloatingIcon_IccDark" xml:space="preserve"><value>「ICC-CE」深色</value></data><data name="Theme_FloatingIcon_IccDarkBreath" xml:space="preserve"><value>「ICC-CE」深色呼吸版</value></data><data name="Theme_FloatingIcon_IccDefault" xml:space="preserve"><value>「ICC-CE」預設</value></data><data name="Theme_FloatingIcon_IccNoShadow" xml:space="preserve"><value>「ICC-CE」無陰影</value></data><data name="Theme_FloatingIcon_IccWhiteTransparent" xml:space="preserve"><value>「ICC-CE」白色透明版</value></data><data name="Theme_FloatingIcon_TiebaEmoji" xml:space="preserve"><value>貼吧滑稽</value></data><data name="Theme_GroupTitle" xml:space="preserve"><value>個性化</value></data><data name="Theme_SidebarGroupTitle" xml:space="preserve"><value>側邊欄</value></data><data name="Theme_Label" xml:space="preserve"><value>主題</value></data><data name="Theme_Language_ChineseSimplified" xml:space="preserve"><value>簡體中文</value></data><data name="Theme_Language_English" xml:space="preserve"><value>English</value></data><data name="Theme_Language_MemeChinese" xml:space="preserve"><value>梗體中文</value></data><data name="Theme_Language_RestartHint" xml:space="preserve"><value>更改介面語言后需要重啟應用程序才能完全生效。</value></data><data name="Theme_LanguageLabel" xml:space="preserve"><value>介面語言</value></data><data name="Theme_Light" xml:space="preserve"><value>淺色主題</value></data><data name="Theme_Manage" xml:space="preserve"><value>管理</value></data><data name="Theme_QuickPalette_DoubleRow" xml:space="preserve"><value>雙行顯示（8 種顏色）</value></data><data name="Theme_QuickPalette_SingleRow" xml:space="preserve"><value>單行顯示（6 種顏色）</value></data><data name="Theme_QuickPanelBottomOffset" xml:space="preserve"><value>展開按鈕與側邊欄的位置偏移</value></data><data name="Theme_QuickPanelBottomOffset_Description" xml:space="preserve"><value>調整側邊欄在垂直方向上的偏移，右上左下</value></data><data name="Theme_QuoteSource" xml:space="preserve"><value>信仰の源出自 Where？</value></data><data name="Theme_QuoteSource_GaokaoBless" xml:space="preserve"><value>高考祝福語</value></data><data name="Theme_QuoteSource_Hitokoto" xml:space="preserve"><value>一言（Hitokoto API）</value></data><data name="Theme_QuoteSource_Mottos" xml:space="preserve"><value>勵志立志的名言警句</value></data><data name="Theme_QuoteSource_OsuQuotes" xml:space="preserve"><value>osu!玩家語錄</value></data><data name="Theme_QuoteSource_PhigrosTips" xml:space="preserve"><value>Phigros Tips</value></data><data name="Theme_ShowQuoteInWhiteboard" xml:space="preserve"><value>在白板中顯示信仰の源 1（好喝的/毒的雞湯）</value></data><data name="Theme_QuotePosition" xml:space="preserve"><value>信仰の源在白板中的位置</value></data><data name="Theme_QuotePosition_TopLeft" xml:space="preserve"><value>左上角</value></data><data name="Theme_QuotePosition_TopRight" xml:space="preserve"><value>右上角</value></data><data name="Theme_QuotePosition_BottomLeft" xml:space="preserve"><value>左下角</value></data><data name="Theme_QuotePosition_BottomRight" xml:space="preserve"><value>右下角</value></data><data name="Theme_ShowTimeInWhiteboard" xml:space="preserve"><value>在白板中顯示當前時間和日期</value></data><data name="Theme_Splash_Autumn" xml:space="preserve"><value>秋季</value></data><data name="Theme_Splash_Custom" xml:space="preserve"><value>自定義</value></data><data name="Theme_Splash_Horse" xml:space="preserve"><value>馬年限定</value></data><data name="Theme_Splash_Random" xml:space="preserve"><value>隨機</value></data><data name="Theme_Splash_Seasonal" xml:space="preserve"><value>跟隨四季</value></data><data name="Theme_Splash_Spring" xml:space="preserve"><value>春季</value></data><data name="Theme_Splash_Summer" xml:space="preserve"><value>夏季</value></data><data name="Theme_Splash_Winter" xml:space="preserve"><value>冬季</value></data><data name="Theme_SplashStyle" xml:space="preserve"><value>啟動動畫樣式</value></data><data name="Theme_System" xml:space="preserve"><value>跟隨系統</value></data><data name="Theme_UnfoldButtonIcon" xml:space="preserve"><value>展開按鈕圖標</value></data><data name="Theme_UnfoldIcon_Arrow" xml:space="preserve"><value>箭頭</value></data><data name="Theme_UnfoldIcon_ClassicArrow" xml:space="preserve"><value>半圓形（箭頭）</value></data><data name="Theme_UnfoldIcon_ClassicPen" xml:space="preserve"><value>半圓形（畫筆）</value></data><data name="Theme_UnfoldIcon_Stripe" xml:space="preserve"><value>條形</value></data><data name="Theme_AllowDragSidePanel" xml:space="preserve"><value>允許拖曳展開按鈕調整偏移</value></data><data name="Theme_Upload" xml:space="preserve"><value>上傳</value></data><data name="Theme_UseLegacyFloatingBarUI" xml:space="preserve"><value>使用老版浮動欄按鈕 UI</value></data><data name="Theme_ShowPenColorOnFloatingBarIcon" xml:space="preserve"><value>批注圖標顯示當前畫筆顏色</value></data><data name="Theme_CompactFloatingBar" xml:space="preserve"><value>緊湊浮動欄模式</value></data><data name="Theme_CompactFloatingBarHint" xml:space="preserve"><value>開啟后隱藏浮動欄按鈕的常駐文字頁籤，圖標將按縱橫比拉伸填滿按鈕空間。</value></data><data name="Theme_HideFloatingBarBorder" xml:space="preserve"><value>隱藏浮動欄邊框</value></data><data name="Theme_HideFloatingBarBorderHint" xml:space="preserve"><value>開啟后將浮動欄邊框厚度設為 0，實現無白邊效果。</value></data><data name="Theme_WindowBackdrop" xml:space="preserve"><value>視窗背景樣式</value></data><data name="Theme_WindowBackdrop_Acrylic" xml:space="preserve"><value>亞克力</value></data><data name="Theme_WindowBackdrop_Acrylic10" xml:space="preserve"><value>亞克力 10</value></data><data name="Theme_WindowBackdrop_Acrylic11" xml:space="preserve"><value>亞克力 11</value></data><data name="Theme_WindowBackdrop_Description" xml:space="preserve"><value>C控制設定、OOBE 等現代視窗的云母、亞克力等背景效果。</value></data><data name="Theme_WindowBackdrop_Mica" xml:space="preserve"><value>云母</value></data><data name="Theme_WindowBackdrop_None" xml:space="preserve"><value>無背景效果</value></data><data name="Theme_WindowBackdrop_Tabbed" xml:space="preserve"><value>頁籤頁背景</value></data><data name="Theme_WindowBackdrop_Transient" xml:space="preserve"><value>臨時視窗背景</value></data><data name="Theme_FloatingBarButtonsDescription" xml:space="preserve"><value>請前往「工具欄」設定頁面管理浮動工具欄的組件顯示與排序。</value></data><data name="Theme_SelectCustomSplashImage" xml:space="preserve"><value>選擇自定義啟動圖片</value></data><data name="Theme_HitokotoCategory_Animation" xml:space="preserve"><value>動畫</value></data><data name="Theme_HitokotoCategory_Manga" xml:space="preserve"><value>漫畫</value></data><data name="Theme_HitokotoCategory_Game" xml:space="preserve"><value>游戲</value></data><data name="Theme_HitokotoCategory_Literature" xml:space="preserve"><value>文學</value></data><data name="Theme_HitokotoCategory_Original" xml:space="preserve"><value>原創</value></data><data name="Theme_HitokotoCategory_FromWeb" xml:space="preserve"><value>來自網路</value></data><data name="Theme_HitokotoCategory_Movie" xml:space="preserve"><value>影視</value></data><data name="Theme_HitokotoCategory_Poetry" xml:space="preserve"><value>詩詞</value></data><data name="Theme_HitokotoCategory_NeteaseCloud" xml:space="preserve"><value>網易云</value></data><data name="Theme_HitokotoCategory_Philosophy" xml:space="preserve"><value>哲學</value></data><data name="Theme_HitokotoCategory_Humor" xml:space="preserve"><value>抖機靈</value></data><data name="Theme_Hitokoto_SelectAll" xml:space="preserve"><value>全選</value></data><data name="Theme_Hitokoto_CustomizeTitle" xml:space="preserve"><value>自定義一言分類</value></data><data name="Theme_QuickPanelOpacity" xml:space="preserve"><value>側邊欄透明度</value></data><data name="Theme_AutoCollapseQuickPanel" xml:space="preserve"><value>打開側邊欄后自動收起</value></data><data name="Theme_AutoCollapseQuickPanelDelay" xml:space="preserve"><value>自動收起前的等待時間</value></data><data name="Theme_FloatingBarMenuOpacity" xml:space="preserve"><value>浮動欄菜單透明度</value></data><data name="Theme_FloatingBarMenuOpacityInPPT" xml:space="preserve"><value>浮欄菜單在 PPT 下透明度</value></data><data name="Theme_BoardMenuOpacity" xml:space="preserve"><value>白板菜單透明度</value></data><data name="Theme_Tips_GlobalSettings" xml:space="preserve"><value>全局設定</value></data><data name="Theme_Tips_GlobalSettingsHint" xml:space="preserve"><value>管理信仰の源的顯示、來源與自動輪換</value></data><data name="Theme_Tips_AutoRotation" xml:space="preserve"><value>自動輪換 Tips</value></data><data name="Theme_Tips_AutoRotationHint" xml:space="preserve"><value>啟用后，白板中的 Tips 將按設定間隔自動切換</value></data><data name="Theme_Tips_RotationInterval" xml:space="preserve"><value>輪換間隔（秒）</value></data><data name="Theme_Tips_RotationIntervalHint" xml:space="preserve"><value>必須輸入&gt;=5的正整數哦</value></data><data name="Theme_Tips_Import" xml:space="preserve"><value>導入</value></data><data name="Theme_Tips_Create" xml:space="preserve"><value>新建</value></data><data name="Theme_Tips_Edit" xml:space="preserve"><value>編輯</value></data><data name="Theme_Tips_Export" xml:space="preserve"><value>導出</value></data><data name="Theme_Tips_SelectTxtFile" xml:space="preserve"><value>+ 選擇一個 txt 檔案</value></data><data name="Theme_Tips_SchemeName" xml:space="preserve"><value>名稱</value></data><data name="Theme_Tips_SchemeContent" xml:space="preserve"><value>內容</value></data><data name="Theme_Tips_CancelConfirm" xml:space="preserve"><value>取消之後不可恢復，確定嗎？</value></data><data name="Theme_Tips_Abandon" xml:space="preserve"><value>放棄</value></data><data name="Theme_Tips_SelectSchemeFirst" xml:space="preserve"><value>請先在列表中選擇一個方案</value></data><data name="Theme_Tips_PresetLocked" xml:space="preserve"><value>預設方案不可修改</value></data><data name="Theme_Tips_NewDialogTitle" xml:space="preserve"><value>新建方案</value></data><data name="Theme_Tips_ImportDialogTitle" xml:space="preserve"><value>導入方案</value></data><data name="Theme_Tips_EditDialogTitle" xml:space="preserve"><value>編輯方案</value></data><data name="Theme_Tips_NameRequired" xml:space="preserve"><value>請輸入方案名稱</value></data><data name="Theme_Tips_ContentRequired" xml:space="preserve"><value>請輸入方案內容</value></data><data name="Theme_Tips_NameExists" xml:space="preserve"><value>已存在同名方案，請更換名稱</value></data><data name="Theme_Tips_Title" xml:space="preserve"><value>信仰の源</value></data><data name="Theme_FloatingIcon_LtscLight" xml:space="preserve"><value>ICC CE Lite 淺色</value></data><data name="Theme_FloatingIcon_LtscDark" xml:space="preserve"><value>ICC CE Lite 深色</value></data>  <data name="Theme_Language_ChineseTraditional" xml:space="preserve">
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppearancePanel_24HourTimeFormat" xml:space="preserve">
+    <value>使用24小時制顯示時間</value>
+  </data>
+  <data name="Theme_BlackboardScale80" xml:space="preserve">
+    <value>白板 UI 縮放倍數</value>
+  </data>
+  <data name="Theme_BoardToolbarOpacity" xml:space="preserve">
+    <value>白板工具欄透明度</value>
+  </data>
+  <data name="Theme_BoardToolbarOpacityLeft" xml:space="preserve">
+    <value>左下角透明度</value>
+  </data>
+  <data name="Theme_BoardToolbarOpacityCenter" xml:space="preserve">
+    <value>中間透明度</value>
+  </data>
+  <data name="Theme_BoardToolbarOpacityRight" xml:space="preserve">
+    <value>右下角透明度</value>
+  </data>
+  <data name="Theme_BoardScaleLeft" xml:space="preserve">
+    <value>左下角縮放倍數</value>
+  </data>
+  <data name="Theme_BoardScaleCenter" xml:space="preserve">
+    <value>中間縮放倍數</value>
+  </data>
+  <data name="Theme_BoardScaleRight" xml:space="preserve">
+    <value>右下角縮放倍數</value>
+  </data>
+  <data name="Theme_CustomFloatingIconLabel" xml:space="preserve">
+    <value>自定義浮動欄圖標</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>深色主題</value>
+  </data>
+  <data name="Theme_EnableQuickPanel" xml:space="preserve">
+    <value>點選展開按鈕后顯示側邊欄</value>
+  </data>
+  <data name="Theme_FloatingBarIcon" xml:space="preserve">
+    <value>浮動工具欄圖標</value>
+  </data>
+  <data name="Theme_FloatingBarOpacity" xml:space="preserve">
+    <value>浮動工具欄透明度</value>
+  </data>
+  <data name="Theme_FloatingBarOpacityInPPT" xml:space="preserve">
+    <value>浮欄在 PPT 下透明度</value>
+  </data>
+  <data name="Theme_FloatingBarOpacityInPPTHint" xml:space="preserve">
+    <value>重新進入 PPT 放映后生效</value>
+  </data>
+  <data name="Theme_FloatingBarScale" xml:space="preserve">
+    <value>浮動工具欄縮放倍數</value>
+  </data>
+  <data name="Theme_GroupTitle" xml:space="preserve">
+    <value>個性化</value>
+  </data>
+  <data name="Theme_SidebarGroupTitle" xml:space="preserve">
+    <value>側邊欄</value>
+  </data>
+  <data name="Theme_Label" xml:space="preserve">
+    <value>主題</value>
+  </data>
+  <data name="Theme_Language_ChineseSimplified" xml:space="preserve">
+    <value>簡體中文</value>
+  </data>
+  <data name="Theme_Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Theme_Language_MemeChinese" xml:space="preserve">
+    <value>梗體中文</value>
+  </data>
+  <data name="Theme_Language_RestartHint" xml:space="preserve">
+    <value>更改介面語言后需要重啟應用程序才能完全生效。</value>
+  </data>
+  <data name="Theme_LanguageLabel" xml:space="preserve">
+    <value>介面語言</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>淺色主題</value>
+  </data>
+  <data name="Theme_Manage" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="Theme_QuickPalette_DoubleRow" xml:space="preserve">
+    <value>雙行顯示（8 種顏色）</value>
+  </data>
+  <data name="Theme_QuickPalette_SingleRow" xml:space="preserve">
+    <value>單行顯示（6 種顏色）</value>
+  </data>
+  <data name="Theme_QuickPanelBottomOffset" xml:space="preserve">
+    <value>展開按鈕與側邊欄的位置偏移</value>
+  </data>
+  <data name="Theme_QuickPanelBottomOffset_Description" xml:space="preserve">
+    <value>調整側邊欄在垂直方向上的偏移，右上左下</value>
+  </data>
+  <data name="Theme_QuoteSource" xml:space="preserve">
+    <value>信仰の源出自 Where？</value>
+  </data>
+  <data name="Theme_ShowQuoteInWhiteboard" xml:space="preserve">
+    <value>在白板中顯示信仰の源 1（好喝的/毒的雞湯）</value>
+  </data>
+  <data name="Theme_QuotePosition" xml:space="preserve">
+    <value>信仰の源在白板中的位置</value>
+  </data>
+  <data name="Theme_QuotePosition_TopLeft" xml:space="preserve">
+    <value>左上角</value>
+  </data>
+  <data name="Theme_QuotePosition_TopRight" xml:space="preserve">
+    <value>右上角</value>
+  </data>
+  <data name="Theme_QuotePosition_BottomLeft" xml:space="preserve">
+    <value>左下角</value>
+  </data>
+  <data name="Theme_QuotePosition_BottomRight" xml:space="preserve">
+    <value>右下角</value>
+  </data>
+  <data name="Theme_ShowTimeInWhiteboard" xml:space="preserve">
+    <value>在白板中顯示當前時間和日期</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>跟隨系統</value>
+  </data>
+  <data name="Theme_UnfoldButtonIcon" xml:space="preserve">
+    <value>展開按鈕圖標</value>
+  </data>
+  <data name="Theme_UnfoldIcon_ClassicArrow" xml:space="preserve">
+    <value>半圓形（箭頭）</value>
+  </data>
+  <data name="Theme_UnfoldIcon_ClassicPen" xml:space="preserve">
+    <value>半圓形（畫筆）</value>
+  </data>
+  <data name="Theme_UnfoldIcon_Stripe" xml:space="preserve">
+    <value>條形</value>
+  </data>
+  <data name="Theme_AllowDragSidePanel" xml:space="preserve">
+    <value>允許拖曳展開按鈕調整偏移</value>
+  </data>
+  <data name="Theme_Upload" xml:space="preserve">
+    <value>上傳</value>
+  </data>
+  <data name="Theme_ShowPenColorOnFloatingBarIcon" xml:space="preserve">
+    <value>批注圖標顯示當前畫筆顏色</value>
+  </data>
+  <data name="Theme_CompactFloatingBar" xml:space="preserve">
+    <value>緊湊浮動欄模式</value>
+  </data>
+  <data name="Theme_CompactFloatingBarHint" xml:space="preserve">
+    <value>開啟后隱藏浮動欄按鈕的常駐文字頁籤，圖標將按縱橫比拉伸填滿按鈕空間。</value>
+  </data>
+  <data name="Theme_HideFloatingBarBorder" xml:space="preserve">
+    <value>隱藏浮動欄邊框</value>
+  </data>
+  <data name="Theme_HideFloatingBarBorderHint" xml:space="preserve">
+    <value>開啟后將浮動欄邊框厚度設為 0，實現無白邊效果。</value>
+  </data>
+  <data name="Theme_WindowBackdrop" xml:space="preserve">
+    <value>視窗背景樣式</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Acrylic" xml:space="preserve">
+    <value>亞克力</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Acrylic10" xml:space="preserve">
+    <value>亞克力 10</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Acrylic11" xml:space="preserve">
+    <value>亞克力 11</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Description" xml:space="preserve">
+    <value>C控制設定、OOBE 等現代視窗的云母、亞克力等背景效果。</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Mica" xml:space="preserve">
+    <value>云母</value>
+  </data>
+  <data name="Theme_WindowBackdrop_None" xml:space="preserve">
+    <value>無背景效果</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Tabbed" xml:space="preserve">
+    <value>頁籤頁背景</value>
+  </data>
+  <data name="Theme_WindowBackdrop_Transient" xml:space="preserve">
+    <value>臨時視窗背景</value>
+  </data>
+  <data name="Theme_QuickPanelOpacity" xml:space="preserve">
+    <value>側邊欄透明度</value>
+  </data>
+  <data name="Theme_AutoCollapseQuickPanel" xml:space="preserve">
+    <value>打開側邊欄后自動收起</value>
+  </data>
+  <data name="Theme_AutoCollapseQuickPanelDelay" xml:space="preserve">
+    <value>自動收起前的等待時間</value>
+  </data>
+  <data name="Theme_FloatingBarMenuOpacity" xml:space="preserve">
+    <value>浮動欄菜單透明度</value>
+  </data>
+  <data name="Theme_FloatingBarMenuOpacityInPPT" xml:space="preserve">
+    <value>浮欄菜單在 PPT 下透明度</value>
+  </data>
+  <data name="Theme_BoardMenuOpacity" xml:space="preserve">
+    <value>白板菜單透明度</value>
+  </data>
+  <data name="Theme_Tips_GlobalSettings" xml:space="preserve">
+    <value>全局設定</value>
+  </data>
+  <data name="Theme_Tips_AutoRotation" xml:space="preserve">
+    <value>自動輪換 Tips</value>
+  </data>
+  <data name="Theme_Tips_AutoRotationHint" xml:space="preserve">
+    <value>啟用后，白板中的 Tips 將按設定間隔自動切換</value>
+  </data>
+  <data name="Theme_Tips_RotationInterval" xml:space="preserve">
+    <value>輪換間隔（秒）</value>
+  </data>
+  <data name="Theme_Tips_RotationIntervalHint" xml:space="preserve">
+    <value>必須輸入&gt;=5的正整數哦</value>
+  </data>
+  <data name="Theme_Tips_Import" xml:space="preserve">
+    <value>導入</value>
+  </data>
+  <data name="Theme_Tips_Create" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="Theme_Tips_Edit" xml:space="preserve">
+    <value>編輯</value>
+  </data>
+  <data name="Theme_Tips_Export" xml:space="preserve">
+    <value>導出</value>
+  </data>
+  <data name="Theme_Tips_SelectTxtFile" xml:space="preserve">
+    <value>+ 選擇一個 txt 檔案</value>
+  </data>
+  <data name="Theme_Tips_SchemeName" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="Theme_Tips_SchemeContent" xml:space="preserve">
+    <value>內容</value>
+  </data>
+  <data name="Theme_Tips_NewDialogTitle" xml:space="preserve">
+    <value>新建方案</value>
+  </data>
+  <data name="Theme_Tips_ImportDialogTitle" xml:space="preserve">
+    <value>導入方案</value>
+  </data>
+  <data name="Theme_Tips_EditDialogTitle" xml:space="preserve">
+    <value>編輯方案</value>
+  </data>
+  <data name="Theme_Tips_NameRequired" xml:space="preserve">
+    <value>請輸入方案名稱</value>
+  </data>
+  <data name="Theme_Tips_Title" xml:space="preserve">
+    <value>信仰の源</value>
+  </data>
+  <data name="Theme_FloatingIcon_LtscLight" xml:space="preserve">
+    <value>ICC CE Lite 淺色</value>
+  </data>
+  <data name="Theme_FloatingIcon_LtscDark" xml:space="preserve">
+    <value>ICC CE Lite 深色</value>
+  </data>
+  <data name="Theme_Language_ChineseTraditional" xml:space="preserve">
     <value>繁體中文</value>
   </data>
 </root>

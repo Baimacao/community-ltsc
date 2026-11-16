@@ -153,12 +153,6 @@
   <data name="Hotkey_ScreenshotDesc" xml:space="preserve">
     <value>Save screenshot to desktop</value>
   </data>
-  <data name="Hotkey_QuickDraw" xml:space="preserve">
-    <value>Quick Draw</value>
-  </data>
-  <data name="Hotkey_QuickDrawDesc" xml:space="preserve">
-    <value>Open quick draw window (same as floating quick draw button)</value>
-  </data>
   <data name="Hotkey_HideDesc" xml:space="preserve">
     <value>Hide application</value>
   </data>

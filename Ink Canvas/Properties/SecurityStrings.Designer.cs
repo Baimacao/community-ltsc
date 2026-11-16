@@ -55,9 +55,6 @@ namespace Ink_Canvas.Properties
         public static string SecurityPanel_Hint_1 => ResourceManager.GetString(nameof(SecurityPanel_Hint_1), _resourceCulture);
 
         public static string SecurityPanel_Hint_2 => ResourceManager.GetString(nameof(SecurityPanel_Hint_2), _resourceCulture);
-
-        public static string SecurityPanel_Hint_4 => ResourceManager.GetString(nameof(SecurityPanel_Hint_4), _resourceCulture);
-
         public static string Security_SectionPassword => ResourceManager.GetString(nameof(Security_SectionPassword), _resourceCulture);
 
         public static string Security_InfoBarTitle => ResourceManager.GetString(nameof(Security_InfoBarTitle), _resourceCulture);
@@ -69,17 +66,6 @@ namespace Ink_Canvas.Properties
         public static string Security_PasswordManagement => ResourceManager.GetString(nameof(Security_PasswordManagement), _resourceCulture);
 
         public static string Security_SetOrChangePassword => ResourceManager.GetString(nameof(Security_SetOrChangePassword), _resourceCulture);
-
-        public static string Security_EnableTotp => ResourceManager.GetString(nameof(Security_EnableTotp), _resourceCulture);
-
-        public static string Security_EnableTotpHint => ResourceManager.GetString(nameof(Security_EnableTotpHint), _resourceCulture);
-
-        public static string Security_TotpSecretKey => ResourceManager.GetString(nameof(Security_TotpSecretKey), _resourceCulture);
-
-        public static string Security_TotpSecretKeyHint => ResourceManager.GetString(nameof(Security_TotpSecretKeyHint), _resourceCulture);
-
-        public static string Security_GenerateOrResetKey => ResourceManager.GetString(nameof(Security_GenerateOrResetKey), _resourceCulture);
-
         public static string Security_RequirePasswordOnExit => ResourceManager.GetString(nameof(Security_RequirePasswordOnExit), _resourceCulture);
 
         public static string Security_RequirePasswordOnEnterSettings => ResourceManager.GetString(nameof(Security_RequirePasswordOnEnterSettings), _resourceCulture);
@@ -89,53 +75,8 @@ namespace Ink_Canvas.Properties
         public static string Security_RequirePasswordOnModifyOrClearNameList => ResourceManager.GetString(nameof(Security_RequirePasswordOnModifyOrClearNameList), _resourceCulture);
 
         public static string Security_RequirePasswordOnModifyOrClearNameList_Hint => ResourceManager.GetString(nameof(Security_RequirePasswordOnModifyOrClearNameList_Hint), _resourceCulture);
-
-        public static string Security_ProcessProtection => ResourceManager.GetString(nameof(Security_ProcessProtection), _resourceCulture);
-
-        public static string Security_ProcessProtectionInfoBarMessage => ResourceManager.GetString(nameof(Security_ProcessProtectionInfoBarMessage), _resourceCulture);
-
         public static string Security_DisablePasswordTitle => ResourceManager.GetString(nameof(Security_DisablePasswordTitle), _resourceCulture);
 
         public static string Security_DisablePasswordMessage => ResourceManager.GetString(nameof(Security_DisablePasswordMessage), _resourceCulture);
-
-        public static string Security_ResetTotpTitle => ResourceManager.GetString(nameof(Security_ResetTotpTitle), _resourceCulture);
-
-        public static string Security_ResetTotpMessage => ResourceManager.GetString(nameof(Security_ResetTotpMessage), _resourceCulture);
-
-        public static string Security_UsbSectionHeader => ResourceManager.GetString(nameof(Security_UsbSectionHeader), _resourceCulture);
-
-        public static string Security_UsbInfoBarMessage => ResourceManager.GetString(nameof(Security_UsbInfoBarMessage), _resourceCulture);
-
-        public static string Security_EnableUsbVerification => ResourceManager.GetString(nameof(Security_EnableUsbVerification), _resourceCulture);
-
-        public static string Security_EnableUsbVerification_Hint => ResourceManager.GetString(nameof(Security_EnableUsbVerification_Hint), _resourceCulture);
-
-        public static string Security_UsbAuthorizedSns => ResourceManager.GetString(nameof(Security_UsbAuthorizedSns), _resourceCulture);
-
-        public static string Security_UsbAuthorizedSns_Hint => ResourceManager.GetString(nameof(Security_UsbAuthorizedSns_Hint), _resourceCulture);
-
-        public static string Security_UsbDetectAndAuthorize => ResourceManager.GetString(nameof(Security_UsbDetectAndAuthorize), _resourceCulture);
-
-        public static string Security_UsbDetectAndAuthorize_Hint => ResourceManager.GetString(nameof(Security_UsbDetectAndAuthorize_Hint), _resourceCulture);
-
-        public static string Security_UsbRefreshDrives => ResourceManager.GetString(nameof(Security_UsbRefreshDrives), _resourceCulture);
-
-        public static string Security_UsbAuthorizeDrive => ResourceManager.GetString(nameof(Security_UsbAuthorizeDrive), _resourceCulture);
-
-        public static string Security_UsbPromptNoValidSn => ResourceManager.GetString(nameof(Security_UsbPromptNoValidSn), _resourceCulture);
-
-        public static string Security_UsbPromptAlreadyAuthorized => ResourceManager.GetString(nameof(Security_UsbPromptAlreadyAuthorized), _resourceCulture);
-
-        public static string Security_UsbPromptAuthorizeSuccess => ResourceManager.GetString(nameof(Security_UsbPromptAuthorizeSuccess), _resourceCulture);
-
-        public static string Security_UsbPromptSelectDrive => ResourceManager.GetString(nameof(Security_UsbPromptSelectDrive), _resourceCulture);
-
-        public static string Security_UsbPromptNoDriveDetected => ResourceManager.GetString(nameof(Security_UsbPromptNoDriveDetected), _resourceCulture);
-
-        public static string Security_UsbPromptLocalDisk => ResourceManager.GetString(nameof(Security_UsbPromptLocalDisk), _resourceCulture);
-
-        public static string Security_UsbBypassDialogHint => ResourceManager.GetString(nameof(Security_UsbBypassDialogHint), _resourceCulture);
-
-        public static string Security_UsbBypassDialogHintShort => ResourceManager.GetString(nameof(Security_UsbBypassDialogHintShort), _resourceCulture);
     }
 }

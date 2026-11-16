@@ -113,11 +113,6 @@ namespace Ink_Canvas.Properties
         public static string Hotkey_DrawLineDesc => ResourceManager.GetString(nameof(Hotkey_DrawLineDesc), _resourceCulture);
 
         public static string Hotkey_ScreenshotDesc => ResourceManager.GetString(nameof(Hotkey_ScreenshotDesc), _resourceCulture);
-
-        public static string Hotkey_QuickDraw => ResourceManager.GetString(nameof(Hotkey_QuickDraw), _resourceCulture);
-
-        public static string Hotkey_QuickDrawDesc => ResourceManager.GetString(nameof(Hotkey_QuickDrawDesc), _resourceCulture);
-
         public static string Hotkey_HideDesc => ResourceManager.GetString(nameof(Hotkey_HideDesc), _resourceCulture);
 
         public static string Hotkey_ExitDesc => ResourceManager.GetString(nameof(Hotkey_ExitDesc), _resourceCulture);

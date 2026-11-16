@@ -51,9 +51,6 @@
   <data name="Backup_AutoPeriodic" xml:space="preserve">
     <value>定期自动备份</value>
   </data>
-  <data name="Backup_Desc" xml:space="preserve">
-    <value>可手动备份当前设置或还原之前的备份，自动更新前也会自动备份</value>
-  </data>
   <data name="Backup_Interval" xml:space="preserve">
     <value>备份间隔</value>
   </data>
@@ -99,9 +96,6 @@
   <data name="Storage_AutoSaveInterval_10Min" xml:space="preserve">
     <value>10 分钟</value>
   </data>
-  <data name="Storage_AutoSaveInterval_15Min" xml:space="preserve">
-    <value>15 分钟</value>
-  </data>
   <data name="Storage_AutoSaveInterval_1Min" xml:space="preserve">
     <value>1 分钟</value>
   </data>
@@ -113,9 +107,6 @@
   </data>
   <data name="Storage_AutoSaveInterval_5Min" xml:space="preserve">
     <value>5 分钟</value>
-  </data>
-  <data name="Storage_AutoSaveInterval_60Min" xml:space="preserve">
-    <value>60 分钟</value>
   </data>
   <data name="Storage_AutoScreenshotOnClear" xml:space="preserve">
     <value>清屏时自动截图</value>
@@ -163,9 +154,6 @@
   <data name="Storage_Custom_Desc" xml:space="preserve">
     <value>自定义图标与点名背景图（icons / backgrounds 等 .png）</value>
   </data>
-  <data name="Storage_Custom_Header" xml:space="preserve">
-    <value>自定义文件</value>
-  </data>
   <data name="Storage_Custom_Hint" xml:space="preserve">
     <value>自定义文件由用户手动添加，不会自动清理，如需删除请前往对应管理界面。</value>
   </data>
@@ -193,12 +181,6 @@
   <data name="Storage_Legend_Other" xml:space="preserve">
     <value>其他</value>
   </data>
-  <data name="Storage_Legend_Update" xml:space="preserve">
-    <value>自动更新</value>
-  </data>
-  <data name="Storage_Legend_Plugins" xml:space="preserve">
-    <value>插件</value>
-  </data>
   <data name="Storage_Logs_Desc" xml:space="preserve">
     <value>位于 Logs / Crashes 目录下的 .txt 日志与崩溃报告，可清理</value>
   </data>
@@ -217,18 +199,6 @@
   <data name="Storage_Other_Desc" xml:space="preserve">
     <value>未归类至上述项目的其他文件</value>
   </data>
-  <data name="Storage_PathBrowse" xml:space="preserve">
-    <value>浏览</value>
-  </data>
-  <data name="Storage_Plugins_Desc" xml:space="preserve">
-    <value>位于 Plugins / PluginPackages / PluginConfigs 目录的 .icpx 插件包</value>
-  </data>
-  <data name="Storage_Plugins_Header" xml:space="preserve">
-    <value>插件</value>
-  </data>
-  <data name="Storage_Plugins_Hint" xml:space="preserve">
-    <value>插件请前往插件管理页面进行卸载。</value>
-  </data>
   <data name="Storage_Refresh" xml:space="preserve">
     <value>刷新</value>
   </data>
@@ -246,12 +216,6 @@
   </data>
   <data name="Storage_TotalUsage" xml:space="preserve">
     <value>ICC CE Lite 总占用</value>
-  </data>
-  <data name="Storage_Update_Desc" xml:space="preserve">
-    <value>AutoUpdate 目录中的安装包与下载缓存，每次更新完成后会被清理</value>
-  </data>
-  <data name="Storage_Update_Header" xml:space="preserve">
-    <value>自动更新</value>
   </data>
   <data name="Backup_SuccessTitle" xml:space="preserve">
     <value>备份成功</value>

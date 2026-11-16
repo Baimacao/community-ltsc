@@ -45,56 +45,14 @@
   <data name="Timer_Title" xml:space="preserve">
     <value>Timer</value>
   </data>
-  <data name="Timer_HourUp" xml:space="preserve">
-    <value>Increase hour tens digit</value>
-  </data>
-  <data name="Timer_HourDown" xml:space="preserve">
-    <value>Decrease hour tens digit</value>
-  </data>
-  <data name="Timer_HourDigitUp" xml:space="preserve">
-    <value>Increase hour ones digit</value>
-  </data>
-  <data name="Timer_HourDigitDown" xml:space="preserve">
-    <value>Decrease hour ones digit</value>
-  </data>
-  <data name="Timer_MinuteUp" xml:space="preserve">
-    <value>Increase minute tens digit</value>
-  </data>
-  <data name="Timer_MinuteDown" xml:space="preserve">
-    <value>Decrease minute tens digit</value>
-  </data>
-  <data name="Timer_MinuteDigitUp" xml:space="preserve">
-    <value>Increase minute ones digit</value>
-  </data>
-  <data name="Timer_MinuteDigitDown" xml:space="preserve">
-    <value>Decrease minute ones digit</value>
-  </data>
-  <data name="Timer_SecondUp" xml:space="preserve">
-    <value>Increase second tens digit</value>
-  </data>
-  <data name="Timer_SecondDown" xml:space="preserve">
-    <value>Decrease second tens digit</value>
-  </data>
-  <data name="Timer_SecondDigitUp" xml:space="preserve">
-    <value>Increase second ones digit</value>
-  </data>
-  <data name="Timer_SecondDigitDown" xml:space="preserve">
-    <value>Decrease second ones digit</value>
-  </data>
   <data name="Timer_CommonTab" xml:space="preserve">
     <value>Common</value>
   </data>
   <data name="Timer_RecentTab" xml:space="preserve">
     <value>Recent</value>
   </data>
-  <data name="Timer_45Minutes" xml:space="preserve">
-    <value>45 min</value>
-  </data>
   <data name="Timer_FullScreen" xml:space="preserve">
     <value>Fullscreen</value>
-  </data>
-  <data name="Timer_StartPause" xml:space="preserve">
-    <value>Start or Pause</value>
   </data>
   <data name="Timer_Reset" xml:space="preserve">
     <value>Reset Timer</value>
@@ -143,9 +101,6 @@
   </data>
   <data name="Timer_SelectProgressiveSound" xml:space="preserve">
     <value>Select Progressive Reminder Sound</value>
-  </data>
-  <data name="Timer_AdjustPanel" xml:space="preserve">
-    <value>Adjust time</value>
   </data>
   <data name="Timer_SlimMode" xml:space="preserve">
     <value>Mini</value>

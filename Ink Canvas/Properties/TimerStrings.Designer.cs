@@ -52,12 +52,6 @@ namespace Ink_Canvas.Properties
         public static string Timer_ProgressiveSelectFile => ResourceManager.GetString(nameof(Timer_ProgressiveSelectFile), _resourceCulture);
 
         public static string Timer_ProgressiveVolume => ResourceManager.GetString(nameof(Timer_ProgressiveVolume), _resourceCulture);
-
-        /// <summary>
-        ///   查找类似 调整时间 的本地化字符串。
-        /// </summary>
-        public static string Timer_AdjustPanel => ResourceManager.GetString(nameof(Timer_AdjustPanel), _resourceCulture);
-
         /// <summary>
         ///   查找类似 小窗 的本地化字符串。
         /// </summary>
@@ -67,40 +61,10 @@ namespace Ink_Canvas.Properties
 
         public static string Timer_Title => ResourceManager.GetString(nameof(Timer_Title), _resourceCulture);
         public static string Timer_Volume => ResourceManager.GetString(nameof(Timer_Volume), _resourceCulture);
-
-        public static string Timer_HourUp => ResourceManager.GetString(nameof(Timer_HourUp), _resourceCulture);
-
-        public static string Timer_HourDown => ResourceManager.GetString(nameof(Timer_HourDown), _resourceCulture);
-
-        public static string Timer_HourDigitUp => ResourceManager.GetString(nameof(Timer_HourDigitUp), _resourceCulture);
-
-        public static string Timer_HourDigitDown => ResourceManager.GetString(nameof(Timer_HourDigitDown), _resourceCulture);
-
-        public static string Timer_MinuteUp => ResourceManager.GetString(nameof(Timer_MinuteUp), _resourceCulture);
-
-        public static string Timer_MinuteDown => ResourceManager.GetString(nameof(Timer_MinuteDown), _resourceCulture);
-
-        public static string Timer_MinuteDigitUp => ResourceManager.GetString(nameof(Timer_MinuteDigitUp), _resourceCulture);
-
-        public static string Timer_MinuteDigitDown => ResourceManager.GetString(nameof(Timer_MinuteDigitDown), _resourceCulture);
-
-        public static string Timer_SecondUp => ResourceManager.GetString(nameof(Timer_SecondUp), _resourceCulture);
-
-        public static string Timer_SecondDown => ResourceManager.GetString(nameof(Timer_SecondDown), _resourceCulture);
-
-        public static string Timer_SecondDigitUp => ResourceManager.GetString(nameof(Timer_SecondDigitUp), _resourceCulture);
-
-        public static string Timer_SecondDigitDown => ResourceManager.GetString(nameof(Timer_SecondDigitDown), _resourceCulture);
-
         public static string Timer_CommonTab => ResourceManager.GetString(nameof(Timer_CommonTab), _resourceCulture);
 
         public static string Timer_RecentTab => ResourceManager.GetString(nameof(Timer_RecentTab), _resourceCulture);
-
-        public static string Timer_45Minutes => ResourceManager.GetString(nameof(Timer_45Minutes), _resourceCulture);
-
         public static string Timer_FullScreen => ResourceManager.GetString(nameof(Timer_FullScreen), _resourceCulture);
-
-        public static string Timer_StartPause => ResourceManager.GetString(nameof(Timer_StartPause), _resourceCulture);
         /// <summary>
         ///   查找类似 选择提示音 的本地化字符串。
         /// </summary>

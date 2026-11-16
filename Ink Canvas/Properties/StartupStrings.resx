@@ -42,32 +42,14 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="SilentUpdate_TimeRange" xml:space="preserve">
-    <value>静默更新时间段</value>
-  </data>
-  <data name="AutoUpdateHint" xml:space="preserve">
-    <value>开启后将在软件启动时自动检查更新。</value>
-  </data>
   <data name="EnableNibMode" xml:space="preserve">
     <value>笔尖模式</value>
-  </data>
-  <data name="EnableNibModeHint" xml:space="preserve">
-    <value>启用后仅响应笔尖触摸，忽略手掌和手指</value>
   </data>
   <data name="ExternalProtocol" xml:space="preserve">
     <value>外部协议调用 (icc://)</value>
   </data>
   <data name="ExternalProtocolHint" xml:space="preserve">
     <value>通过 icc:// 协议从外部控制软件</value>
-  </data>
-  <data name="FastStartup" xml:space="preserve">
-    <value>快速启动模式</value>
-  </data>
-  <data name="FastStartupHint" xml:space="preserve">
-    <value>尽快显示主界面，并将插件、PPT、通知、自动化、监控等非首屏功能延迟到启动完成后加载。下次启动时生效。</value>
-  </data>
-  <data name="FixVersionHint" xml:space="preserve">
-    <value>版本修复会根据当前选择的通道下载最新版本并执行安装，可用于修复损坏的安装</value>
   </data>
   <data name="FoldAtStartup" xml:space="preserve">
     <value>开机运行后收纳到侧边栏</value>
@@ -93,26 +75,11 @@
   <data name="RunAtStartupHint" xml:space="preserve">
     <value>系统启动时自动运行软件</value>
   </data>
-  <data name="SilentUpdateFullHint" xml:space="preserve">
-    <value>关闭后更新前会先问你。开启后，晚上空闲时自动更新，条件是不在书写、不在画板里。</value>
-  </data>
-  <data name="SilentUpdateHint" xml:space="preserve">
-    <value>静默更新将在软件不使用时自动安装，无需手动操作</value>
-  </data>
-  <data name="SmartUpdate" xml:space="preserve">
-    <value>智慧更新</value>
-  </data>
-  <data name="SmartUpdateHint" xml:space="preserve">
-    <value>开启后使用统一平台 API 检查更新并获取下载链接。</value>
-  </data>
   <data name="Start" xml:space="preserve">
     <value>启动</value>
   </data>
   <data name="Startup_Behavior" xml:space="preserve">
     <value>行为</value>
-  </data>
-  <data name="TimePeriodHint" xml:space="preserve">
-    <value>若终止时间小于起始时间，即将终止时间视为第二天的时间。若起始时间与终止时间相同，即视为全天候时间。</value>
   </data>
   <data name="TopMost" xml:space="preserve">
     <value>窗口置顶</value>
@@ -128,9 +95,6 @@
   </data>
   <data name="TopMostMode_Normal_RestartRequired" xml:space="preserve">
     <value>切换到普通置顶模式需要重启软件才能生效，是否立即重启？</value>
-  </data>
-  <data name="TopMostMode_RestartAsAdmin" xml:space="preserve">
-    <value>重启到管理员模式（用于覆盖任务栏）</value>
   </data>
   <data name="TopMostMode_CurrentUIAccessNormal" xml:space="preserve">
     <value>当前为拥有 UIA 权限的降权进程</value>
@@ -155,17 +119,5 @@
   </data>
   <data name="UIAMode_Description" xml:space="preserve">
     <value>选择 UIA 置顶的令牌获取方案。基于用户令牌从 explorer.exe 获取令牌，基于原进程令牌从原始进程复制令牌。</value>
-  </data>
-  <data name="UpdateChannel" xml:space="preserve">
-    <value>更新通道</value>
-  </data>
-  <data name="UpdateChannelHint" xml:space="preserve">
-    <value>稳定版提供可靠更新，预览版提供新功能体验同时拥有较 Beta 版版更强的稳定性，测试版提供新功能抢先体验</value>
-  </data>
-  <data name="UpdatePackageArchitecture" xml:space="preserve">
-    <value>软件架构</value>
-  </data>
-  <data name="UpdatePackageArchitectureHint" xml:space="preserve">
-    <value>选择要下载的更新包架构，默认跟随当前软件架构</value>
   </data>
 </root>

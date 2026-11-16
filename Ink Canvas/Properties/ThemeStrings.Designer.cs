@@ -57,29 +57,10 @@ namespace Ink_Canvas.Properties
         public static string Theme_BoardScaleCenter => ResourceManager.GetString(nameof(Theme_BoardScaleCenter), _resourceCulture);
 
         public static string Theme_BoardScaleRight => ResourceManager.GetString(nameof(Theme_BoardScaleRight), _resourceCulture);
-
-        public static string Theme_Clear => ResourceManager.GetString(nameof(Theme_Clear), _resourceCulture);
-
         public static string Theme_CustomFloatingIconLabel => ResourceManager.GetString(nameof(Theme_CustomFloatingIconLabel), _resourceCulture);
-
-        public static string Theme_CustomSplash_NotSelected => ResourceManager.GetString(nameof(Theme_CustomSplash_NotSelected), _resourceCulture);
-
-        public static string Theme_CustomSplashImage => ResourceManager.GetString(nameof(Theme_CustomSplashImage), _resourceCulture);
-
-        public static string Theme_CustomSplashImage_Desc => ResourceManager.GetString(nameof(Theme_CustomSplashImage_Desc), _resourceCulture);
-
-        public static string Theme_CustomSplashTextPosition => ResourceManager.GetString(nameof(Theme_CustomSplashTextPosition), _resourceCulture);
-
-        public static string Theme_CustomSplashTextPosition_Desc => ResourceManager.GetString(nameof(Theme_CustomSplashTextPosition_Desc), _resourceCulture);
-
         public static string Theme_Dark => ResourceManager.GetString(nameof(Theme_Dark), _resourceCulture);
 
         public static string Theme_EnableQuickPanel => ResourceManager.GetString(nameof(Theme_EnableQuickPanel), _resourceCulture);
-
-        public static string Theme_EnableSplash => ResourceManager.GetString(nameof(Theme_EnableSplash), _resourceCulture);
-
-        public static string Theme_FloatingBarButtonsTitle => ResourceManager.GetString(nameof(Theme_FloatingBarButtonsTitle), _resourceCulture);
-
         public static string Theme_FloatingBarIcon => ResourceManager.GetString(nameof(Theme_FloatingBarIcon), _resourceCulture);
 
         public static string Theme_FloatingBarOpacity => ResourceManager.GetString(nameof(Theme_FloatingBarOpacity), _resourceCulture);
@@ -89,31 +70,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_FloatingBarOpacityInPPTHint => ResourceManager.GetString(nameof(Theme_FloatingBarOpacityInPPTHint), _resourceCulture);
 
         public static string Theme_FloatingBarScale => ResourceManager.GetString(nameof(Theme_FloatingBarScale), _resourceCulture);
-
-        public static string Theme_FloatingIcon_CoolapkAbused => ResourceManager.GetString(nameof(Theme_FloatingIcon_CoolapkAbused), _resourceCulture);
-
-        public static string Theme_FloatingIcon_CoolapkCrossEye => ResourceManager.GetString(nameof(Theme_FloatingIcon_CoolapkCrossEye), _resourceCulture);
-
-        public static string Theme_FloatingIcon_CoolapkGreenHatDoge => ResourceManager.GetString(nameof(Theme_FloatingIcon_CoolapkGreenHatDoge), _resourceCulture);
-
-        public static string Theme_FloatingIcon_CoolapkSmile => ResourceManager.GetString(nameof(Theme_FloatingIcon_CoolapkSmile), _resourceCulture);
-
-        public static string Theme_FloatingIcon_CoolapkUnderwear => ResourceManager.GetString(nameof(Theme_FloatingIcon_CoolapkUnderwear), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccBlackTransparent => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccBlackTransparent), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccDark => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccDark), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccDarkBreath => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccDarkBreath), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccDefault => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccDefault), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccNoShadow => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccNoShadow), _resourceCulture);
-
-        public static string Theme_FloatingIcon_IccWhiteTransparent => ResourceManager.GetString(nameof(Theme_FloatingIcon_IccWhiteTransparent), _resourceCulture);
-
-        public static string Theme_FloatingIcon_TiebaEmoji => ResourceManager.GetString(nameof(Theme_FloatingIcon_TiebaEmoji), _resourceCulture);
-
         public static string Theme_GroupTitle => ResourceManager.GetString(nameof(Theme_GroupTitle), _resourceCulture);
 
         public static string Theme_SidebarGroupTitle => ResourceManager.GetString(nameof(Theme_SidebarGroupTitle), _resourceCulture);
@@ -143,39 +99,9 @@ namespace Ink_Canvas.Properties
         public static string Theme_QuickPanelBottomOffset_Description => ResourceManager.GetString(nameof(Theme_QuickPanelBottomOffset_Description), _resourceCulture);
 
         public static string Theme_QuoteSource => ResourceManager.GetString(nameof(Theme_QuoteSource), _resourceCulture);
-
-        public static string Theme_QuoteSource_GaokaoBless => ResourceManager.GetString(nameof(Theme_QuoteSource_GaokaoBless), _resourceCulture);
-
-        public static string Theme_QuoteSource_Hitokoto => ResourceManager.GetString(nameof(Theme_QuoteSource_Hitokoto), _resourceCulture);
-
-        public static string Theme_QuoteSource_Mottos => ResourceManager.GetString(nameof(Theme_QuoteSource_Mottos), _resourceCulture);
-
-        public static string Theme_QuoteSource_OsuQuotes => ResourceManager.GetString(nameof(Theme_QuoteSource_OsuQuotes), _resourceCulture);
-
-        public static string Theme_QuoteSource_PhigrosTips => ResourceManager.GetString(nameof(Theme_QuoteSource_PhigrosTips), _resourceCulture);
-
         public static string Theme_ShowQuoteInWhiteboard => ResourceManager.GetString(nameof(Theme_ShowQuoteInWhiteboard), _resourceCulture);
 
         public static string Theme_ShowTimeInWhiteboard => ResourceManager.GetString(nameof(Theme_ShowTimeInWhiteboard), _resourceCulture);
-
-        public static string Theme_Splash_Autumn => ResourceManager.GetString(nameof(Theme_Splash_Autumn), _resourceCulture);
-
-        public static string Theme_Splash_Custom => ResourceManager.GetString(nameof(Theme_Splash_Custom), _resourceCulture);
-
-        public static string Theme_Splash_Horse => ResourceManager.GetString(nameof(Theme_Splash_Horse), _resourceCulture);
-
-        public static string Theme_Splash_Random => ResourceManager.GetString(nameof(Theme_Splash_Random), _resourceCulture);
-
-        public static string Theme_Splash_Seasonal => ResourceManager.GetString(nameof(Theme_Splash_Seasonal), _resourceCulture);
-
-        public static string Theme_Splash_Spring => ResourceManager.GetString(nameof(Theme_Splash_Spring), _resourceCulture);
-
-        public static string Theme_Splash_Summer => ResourceManager.GetString(nameof(Theme_Splash_Summer), _resourceCulture);
-
-        public static string Theme_Splash_Winter => ResourceManager.GetString(nameof(Theme_Splash_Winter), _resourceCulture);
-
-        public static string Theme_SplashStyle => ResourceManager.GetString(nameof(Theme_SplashStyle), _resourceCulture);
-
         /// <summary>
         ///   查找类似 繁體中文 的本地化字符串。
         /// </summary>
@@ -184,9 +110,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_System => ResourceManager.GetString(nameof(Theme_System), _resourceCulture);
 
         public static string Theme_UnfoldButtonIcon => ResourceManager.GetString(nameof(Theme_UnfoldButtonIcon), _resourceCulture);
-
-        public static string Theme_UnfoldIcon_Arrow => ResourceManager.GetString(nameof(Theme_UnfoldIcon_Arrow), _resourceCulture);
-
         public static string Theme_UnfoldIcon_ClassicArrow => ResourceManager.GetString(nameof(Theme_UnfoldIcon_ClassicArrow), _resourceCulture);
 
         public static string Theme_UnfoldIcon_ClassicPen => ResourceManager.GetString(nameof(Theme_UnfoldIcon_ClassicPen), _resourceCulture);
@@ -224,37 +147,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_WindowBackdrop_Tabbed => ResourceManager.GetString(nameof(Theme_WindowBackdrop_Tabbed), _resourceCulture);
 
         public static string Theme_WindowBackdrop_Transient => ResourceManager.GetString(nameof(Theme_WindowBackdrop_Transient), _resourceCulture);
-
-        public static string Theme_FloatingBarButtonsDescription => ResourceManager.GetString(nameof(Theme_FloatingBarButtonsDescription), _resourceCulture);
-
-        public static string Theme_SelectCustomSplashImage => ResourceManager.GetString(nameof(Theme_SelectCustomSplashImage), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Animation => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Animation), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Manga => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Manga), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Game => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Game), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Literature => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Literature), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Original => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Original), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_FromWeb => ResourceManager.GetString(nameof(Theme_HitokotoCategory_FromWeb), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Movie => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Movie), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Poetry => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Poetry), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_NeteaseCloud => ResourceManager.GetString(nameof(Theme_HitokotoCategory_NeteaseCloud), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Philosophy => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Philosophy), _resourceCulture);
-
-        public static string Theme_HitokotoCategory_Humor => ResourceManager.GetString(nameof(Theme_HitokotoCategory_Humor), _resourceCulture);
-
-        public static string Theme_Hitokoto_SelectAll => ResourceManager.GetString(nameof(Theme_Hitokoto_SelectAll), _resourceCulture);
-
-        public static string Theme_Hitokoto_CustomizeTitle => ResourceManager.GetString(nameof(Theme_Hitokoto_CustomizeTitle), _resourceCulture);
-
         public static string Theme_QuickPanelOpacity => ResourceManager.GetString(nameof(Theme_QuickPanelOpacity), _resourceCulture);
 
         public static string Theme_AutoCollapseQuickPanel => ResourceManager.GetString(nameof(Theme_AutoCollapseQuickPanel), _resourceCulture);
@@ -278,9 +170,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_BoardMenuOpacity => ResourceManager.GetString(nameof(Theme_BoardMenuOpacity), _resourceCulture);
 
         public static string Theme_Tips_GlobalSettings => ResourceManager.GetString(nameof(Theme_Tips_GlobalSettings), _resourceCulture);
-
-        public static string Theme_Tips_GlobalSettingsHint => ResourceManager.GetString(nameof(Theme_Tips_GlobalSettingsHint), _resourceCulture);
-
         public static string Theme_Tips_AutoRotation => ResourceManager.GetString(nameof(Theme_Tips_AutoRotation), _resourceCulture);
 
         public static string Theme_Tips_AutoRotationHint => ResourceManager.GetString(nameof(Theme_Tips_AutoRotationHint), _resourceCulture);
@@ -302,15 +191,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_Tips_SchemeName => ResourceManager.GetString(nameof(Theme_Tips_SchemeName), _resourceCulture);
 
         public static string Theme_Tips_SchemeContent => ResourceManager.GetString(nameof(Theme_Tips_SchemeContent), _resourceCulture);
-
-        public static string Theme_Tips_CancelConfirm => ResourceManager.GetString(nameof(Theme_Tips_CancelConfirm), _resourceCulture);
-
-        public static string Theme_Tips_Abandon => ResourceManager.GetString(nameof(Theme_Tips_Abandon), _resourceCulture);
-
-        public static string Theme_Tips_SelectSchemeFirst => ResourceManager.GetString(nameof(Theme_Tips_SelectSchemeFirst), _resourceCulture);
-
-        public static string Theme_Tips_PresetLocked => ResourceManager.GetString(nameof(Theme_Tips_PresetLocked), _resourceCulture);
-
         public static string Theme_Tips_NewDialogTitle => ResourceManager.GetString(nameof(Theme_Tips_NewDialogTitle), _resourceCulture);
 
         public static string Theme_Tips_ImportDialogTitle => ResourceManager.GetString(nameof(Theme_Tips_ImportDialogTitle), _resourceCulture);
@@ -318,11 +198,6 @@ namespace Ink_Canvas.Properties
         public static string Theme_Tips_EditDialogTitle => ResourceManager.GetString(nameof(Theme_Tips_EditDialogTitle), _resourceCulture);
 
         public static string Theme_Tips_NameRequired => ResourceManager.GetString(nameof(Theme_Tips_NameRequired), _resourceCulture);
-
-        public static string Theme_Tips_ContentRequired => ResourceManager.GetString(nameof(Theme_Tips_ContentRequired), _resourceCulture);
-
-        public static string Theme_Tips_NameExists => ResourceManager.GetString(nameof(Theme_Tips_NameExists), _resourceCulture);
-
         public static string Theme_Tips_Title => ResourceManager.GetString(nameof(Theme_Tips_Title), _resourceCulture);
 
         public static string Theme_FloatingIcon_LtscLight => ResourceManager.GetString(nameof(Theme_FloatingIcon_LtscLight), _resourceCulture);

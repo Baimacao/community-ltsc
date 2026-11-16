@@ -45,56 +45,14 @@
   <data name="Timer_Title" xml:space="preserve">
     <value xml:space="preserve">倒计时咯</value>
   </data>
-  <data name="Timer_HourUp" xml:space="preserve">
-    <value xml:space="preserve">小时十位 +1</value>
-  </data>
-  <data name="Timer_HourDown" xml:space="preserve">
-    <value xml:space="preserve">小时十位 -1</value>
-  </data>
-  <data name="Timer_HourDigitUp" xml:space="preserve">
-    <value xml:space="preserve">小时个位 +1</value>
-  </data>
-  <data name="Timer_HourDigitDown" xml:space="preserve">
-    <value xml:space="preserve">小时个位 -1</value>
-  </data>
-  <data name="Timer_MinuteUp" xml:space="preserve">
-    <value xml:space="preserve">分钟十位 +1</value>
-  </data>
-  <data name="Timer_MinuteDown" xml:space="preserve">
-    <value xml:space="preserve">分钟十位 -1</value>
-  </data>
-  <data name="Timer_MinuteDigitUp" xml:space="preserve">
-    <value xml:space="preserve">分钟个位 +1</value>
-  </data>
-  <data name="Timer_MinuteDigitDown" xml:space="preserve">
-    <value xml:space="preserve">分钟个位 -1</value>
-  </data>
-  <data name="Timer_SecondUp" xml:space="preserve">
-    <value xml:space="preserve">秒十位 +1</value>
-  </data>
-  <data name="Timer_SecondDown" xml:space="preserve">
-    <value xml:space="preserve">秒十位 -1</value>
-  </data>
-  <data name="Timer_SecondDigitUp" xml:space="preserve">
-    <value xml:space="preserve">秒个位 +1</value>
-  </data>
-  <data name="Timer_SecondDigitDown" xml:space="preserve">
-    <value xml:space="preserve">秒个位 -1</value>
-  </data>
   <data name="Timer_CommonTab" xml:space="preserve">
     <value xml:space="preserve">常用时长</value>
   </data>
   <data name="Timer_RecentTab" xml:space="preserve">
     <value xml:space="preserve">用过的</value>
   </data>
-  <data name="Timer_45Minutes" xml:space="preserve">
-    <value xml:space="preserve">45 分钟（一节课）</value>
-  </data>
   <data name="Timer_FullScreen" xml:space="preserve">
     <value xml:space="preserve">全屏起飞</value>
-  </data>
-  <data name="Timer_StartPause" xml:space="preserve">
-    <value xml:space="preserve">开始 / 暂停</value>
   </data>
   <data name="Timer_Reset" xml:space="preserve">
     <value xml:space="preserve">一键重来</value>
@@ -143,9 +101,6 @@
   </data>
   <data name="Timer_SelectProgressiveSound" xml:space="preserve">
     <value xml:space="preserve">选个提前提醒的音</value>
-  </data>
-  <data name="Timer_AdjustPanel" xml:space="preserve">
-    <value xml:space="preserve">调整时间</value>
   </data>
   <data name="Timer_SlimMode" xml:space="preserve">
     <value xml:space="preserve">小窗</value>

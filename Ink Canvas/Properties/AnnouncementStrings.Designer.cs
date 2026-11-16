@@ -39,43 +39,5 @@ namespace Ink_Canvas.Properties
         {
             return ResourceManager.GetString(key, _resourceCulture);
         }
-
-        public static string ApiBaseUrl => ResourceManager.GetString(nameof(ApiBaseUrl), _resourceCulture);
-
-        public static string ApiBaseUrlHint => ResourceManager.GetString(nameof(ApiBaseUrlHint), _resourceCulture);
-
-        public static string CenterHint => ResourceManager.GetString(nameof(CenterHint), _resourceCulture);
-
-        public static string CenterTitle => ResourceManager.GetString(nameof(CenterTitle), _resourceCulture);
-
-        public static string ClearHistory => ResourceManager.GetString(nameof(ClearHistory), _resourceCulture);
-
-        public static string ConnectionHint => ResourceManager.GetString(nameof(ConnectionHint), _resourceCulture);
-
-        public static string ConnectionTitle => ResourceManager.GetString(nameof(ConnectionTitle), _resourceCulture);
-
-        public static string ItemCount => ResourceManager.GetString(nameof(ItemCount), _resourceCulture);
-
-        public static string MarkAllAsRead => ResourceManager.GetString(nameof(MarkAllAsRead), _resourceCulture);
-
-        public static string NavTooltip => ResourceManager.GetString(nameof(NavTooltip), _resourceCulture);
-
-        public static string NoItems => ResourceManager.GetString(nameof(NoItems), _resourceCulture);
-
-        public static string PageTitle => ResourceManager.GetString(nameof(PageTitle), _resourceCulture);
-
-        public static string Token => ResourceManager.GetString(nameof(Token), _resourceCulture);
-
-        public static string TokenHint => ResourceManager.GetString(nameof(TokenHint), _resourceCulture);
-
-        public static string WebSocketUrl => ResourceManager.GetString(nameof(WebSocketUrl), _resourceCulture);
-
-        public static string WebSocketUrlHint => ResourceManager.GetString(nameof(WebSocketUrlHint), _resourceCulture);
-
-        public static string StartupUnreadTitle => ResourceManager.GetString(nameof(StartupUnreadTitle), _resourceCulture);
-
-        public static string StartupUnreadSummary => ResourceManager.GetString(nameof(StartupUnreadSummary), _resourceCulture);
-
-        public static string StartupUnreadAction => ResourceManager.GetString(nameof(StartupUnreadAction), _resourceCulture);
     }
 }

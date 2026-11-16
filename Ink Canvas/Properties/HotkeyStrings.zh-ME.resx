@@ -153,12 +153,6 @@
   <data name="Hotkey_ScreenshotDesc" xml:space="preserve">
     <value>保存屏幕截图到桌面，留下证据</value>
   </data>
-  <data name="Hotkey_QuickDraw" xml:space="preserve">
-    <value>快抽</value>
-  </data>
-  <data name="Hotkey_QuickDrawDesc" xml:space="preserve">
-    <value>打开快抽窗口（跟悬浮快抽按钮一样的效果）</value>
-  </data>
   <data name="Hotkey_HideDesc" xml:space="preserve">
     <value>隐身术：隐藏应用程序</value>
   </data>

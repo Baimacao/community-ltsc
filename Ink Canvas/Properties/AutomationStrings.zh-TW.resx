@@ -38,8 +38,268 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="AutoFold_App_AdmoxBoard" xml:space="preserve"><value>安道白板</value></data><data name="AutoFold_App_AdmoxBooth" xml:space="preserve"><value>安道展臺</value></data><data name="AutoFold_App_HiteBoard" xml:space="preserve"><value>鴻合白板</value></data><data name="AutoFold_App_HiteCamera" xml:space="preserve"><value>鴻合展臺</value></data><data name="AutoFold_App_HiteLightBoard" xml:space="preserve"><value>鴻合輕量白板</value></data><data name="AutoFold_App_MaxHubBoard" xml:space="preserve"><value>MaxHub白板</value></data><data name="AutoFold_App_MSWhiteboard" xml:space="preserve"><value>微軟白板</value></data><data name="AutoFold_App_SeewoBoard3" xml:space="preserve"><value>希沃白板 3</value></data><data name="AutoFold_App_SeewoBoard5" xml:space="preserve"><value>希沃白板 5</value></data><data name="AutoFold_App_SeewoCamera" xml:space="preserve"><value>希沃展臺</value></data><data name="AutoFold_App_SeewoLightBoard" xml:space="preserve"><value>希沃輕白板</value></data><data name="AutoFold_App_SeewoLightBoard5C" xml:space="preserve"><value>希沃輕白板 5C</value></data><data name="AutoFold_App_WenXiangBoard" xml:space="preserve"><value>文香白板</value></data><data name="AutoFold_App_YiYunBoard" xml:space="preserve"><value>藝云白板</value></data><data name="AutoFold_App_YiYunBooth" xml:space="preserve"><value>藝云展臺</value></data><data name="AutoFold_Mode" xml:space="preserve"><value>收納模式</value></data><data name="AutoFold_OldZyBoard" xml:space="preserve"><value>中原舊白板</value></data><data name="AutoKill_EasiNote5" xml:space="preserve"><value>自動查殺 希沃白板 5</value></data><data name="AutoKill_HiteAfterKillEnterAnnotation" xml:space="preserve"><value>鴻合螢幕書寫查殺后自動進入批注</value></data><data name="AutoKill_HiteAnnotation" xml:space="preserve"><value>自動查殺 鴻合螢幕書寫</value></data><data name="AutoKill_ICA" xml:space="preserve"><value>自動查殺 ICA （新版舊版通殺）</value></data><data name="AutoKill_InkCanvasIC" xml:space="preserve"><value>自動查殺 Ink Canvas 和 IC+</value></data><data name="AutoKill_Inkeys" xml:space="preserve"><value>自動查殺 智繪教 Inkeys（僅限新版）</value></data><data name="AutoKill_PPTTools" xml:space="preserve"><value>自動查殺 希沃 PPT 小工具</value></data><data name="AutoKill_PPTToolsHint" xml:space="preserve"><value>打開 PPT 時不會彈出希沃的工具欄，避免擋住畫面。注意：希沃課堂授課助手會因此不能用。</value></data><data name="AutoKill_SeewoDesktop2Anno" xml:space="preserve"><value>自動查殺 希沃桌面 2.0 桌面批注</value></data><data name="AutoKill_SeewoDesktop2AnnoHint" xml:space="preserve"><value>希沃桌面 2.0 的桌面批注是 64 位程序，本程序無法精確識別，只能按處理程序名匹配。如果電腦上有同名軟體，先關掉這個選項。</value></data><data name="AutoKill_Title" xml:space="preserve"><value>自動查殺</value></data><data name="AutoKill_YouJiao" xml:space="preserve"><value>自動查殺 優教授課端</value></data><data name="Automation_AutoFoldInPPT" xml:space="preserve"><value>播放 PPT 時自動收納</value></data><data name="Automation_AutoFoldTitle" xml:space="preserve"><value>自動收納</value></data><data name="Automation_KeepFoldAfterExit" xml:space="preserve"><value>軟體退出后保持收納模式</value></data><data name="Automation_KeepFoldAfterExitHint" xml:space="preserve"><value>開啟后，執行自動收納的軟體在軟體退出后不退出收納模式，保持收納狀態</value></data><data name="Automation_SaveFileName_Custom" xml:space="preserve"><value>自定義...</value></data><data name="Automation_SaveFileName_CustomTemplate_Desc" xml:space="preserve"><value>可用占位符：{date} {time} {datetime} {mode} {page} {count} {type}</value></data><data name="Automation_SaveFileName_CustomTemplate_Header" xml:space="preserve"><value>自定義模板</value></data><data name="Automation_SaveFileName_Date" xml:space="preserve"><value>日期</value></data><data name="Automation_SaveFileName_DateMode" xml:space="preserve"><value>日期 + 模式</value></data><data name="Automation_SaveFileName_DateModePage" xml:space="preserve"><value>日期 + 模式 + 頁碼</value></data><data name="Automation_SaveFileName_DateModePageCount" xml:space="preserve"><value>日期 + 模式 + 頁碼 + 筆畫數</value></data><data name="Automation_SaveFileName_DateTime" xml:space="preserve"><value>日期 + 時間</value></data><data name="Automation_SaveFileName_Timestamp" xml:space="preserve"><value>時間戳（預設）</value></data><data name="Automation_SaveFileNameFormat" xml:space="preserve"><value>檔案名格式</value></data><data name="Automation_Title" xml:space="preserve"><value>自動化</value></data><data name="Automation_UseCustomSaveFileName_Desc" xml:space="preserve"><value>開啟后可選擇儲存檔案的命名方式</value></data><data name="Automation_UseCustomSaveFileName_Header" xml:space="preserve"><value>使用自定義儲存檔案名</value></data><data name="FloatingInterceptor_App_ChangYanClass" xml:space="preserve"><value>暢言智慧課堂</value></data><data name="FloatingInterceptor_App_ChangYanPPT" xml:space="preserve"><value>暢言 PPT</value></data><data name="FloatingInterceptor_App_HiteAnnotation" xml:space="preserve"><value>鴻合螢幕書寫</value></data><data name="FloatingInterceptor_App_IntelligentClass" xml:space="preserve"><value>天喻教育云</value></data><data name="FloatingInterceptor_App_SeewoBoard5C" xml:space="preserve"><value>希沃白板 5C</value></data><data name="FloatingInterceptor_App_SeewoDesktopAnnotation" xml:space="preserve"><value>希沃桌面畫筆</value></data><data name="FloatingInterceptor_App_SeewoDesktopSideBar" xml:space="preserve"><value>希沃桌面側欄</value></data><data name="FloatingInterceptor_App_SeewoPinco" xml:space="preserve"><value>希沃品課</value></data><data name="FloatingInterceptor_App_SeewoPincoDrawing" xml:space="preserve"><value>希沃品課畫筆</value></data><data name="FloatingInterceptor_App_SeewoPPTTools" xml:space="preserve"><value>希沃 PPT 小工具</value></data><data name="FloatingInterceptor_Enable" xml:space="preserve"><value>啟用懸浮窗攔截</value></data><data name="FloatingInterceptor_Title" xml:space="preserve"><value>懸浮窗攔截</value></data><data name="FoldMode_AutoFoldAfterPPT" xml:space="preserve"><value>退出 PPT 放映模式后自動收納浮動欄</value></data><data name="FoldMode_AutoFoldAfterPPTHint" xml:space="preserve"><value>開啟后，退出 PPT 放映模式后會自動收納浮動欄</value></data><data name="FoldMode_AutoFoldAfterWhiteboard" xml:space="preserve"><value>退出白板時自動收納</value></data><data name="FoldMode_AutoFoldAfterWhiteboardHint" xml:space="preserve"><value>開啟后，退出白板模式時會自動收納到側邊欄</value></data><data name="FoldMode_ExitToAnnotation" xml:space="preserve"><value>退出收納模式時自動切換至批注模式</value></data><data name="FoldMode_ExitToAnnotationHint" xml:space="preserve"><value>開啟后，退出收納模式時將自動切換至批注模式，便于快速批注</value></data><data name="AutoFold_Group_Seewo" xml:space="preserve"><value>希沃</value></data><data name="AutoFold_Group_Hite" xml:space="preserve"><value>鴻合</value></data><data name="AutoFold_Group_Other" xml:space="preserve"><value>其他白板</value></data><data name="FloatingInterceptor_Group_Seewo" xml:space="preserve"><value>希沃</value></data><data name="FileAssoc_CheckDesc" xml:space="preserve"><value>查看 .icstk 檔案是否已關聯到 Ink Canvas</value></data><data name="FileAssoc_RegisterHeader" xml:space="preserve"><value>注冊檔案關聯</value></data><data name="FileAssoc_RegisterDesc" xml:space="preserve"><value>將 .icstk 檔案關聯到 Ink Canvas</value></data><data name="FileAssoc_UnregisterDesc" xml:space="preserve"><value>移除 .icstk 檔案與 Ink Canvas 的關聯</value></data><data name="FileAssoc_NotChecked" xml:space="preserve"><value>未檢查</value></data><data name="FileAssoc_RegisterSuccess" xml:space="preserve"><value>檔案關聯注冊成功</value></data><data name="FileAssoc_RegisterFailed" xml:space="preserve"><value>檔案關聯注冊失敗</value></data><data name="FileAssoc_UnregisterSuccess" xml:space="preserve"><value>檔案關聯已取消</value></data><data name="FileAssoc_UnregisterFailed" xml:space="preserve"><value>取消檔案關聯失敗</value></data><data name="FileAssoc_Registered" xml:space="preserve"><value>? .icstk檔案關聯已注冊</value></data><data name="FileAssoc_NotRegistered" xml:space="preserve"><value>? .icstk檔案關聯未注冊</value></data><data name="FileAssoc_CheckError" xml:space="preserve"><value>? 檢查檔案關聯狀態時出錯</value></data><data name="Storage_AutoDeleteDaysThreshold" xml:space="preserve"><value>自動刪除天數閾值</value></data><data name="Storage_MinAutomationStrokes" xml:space="preserve"><value>自動化最小筆畫數</value></data><data name="FileAssoc_LoadedStrokesFile" xml:space="preserve"><value>已載入墨跡檔案: {0}</value></data><data name="FileAssoc_SwitchedToBoardMode" xml:space="preserve"><value>已切換到白板模式</value></data><data name="FileAssoc_ExitedFoldMode" xml:space="preserve"><value>已退出收納模式并恢復浮動欄</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AutoFold_App_AdmoxBoard" xml:space="preserve">
+    <value>安道白板</value>
+  </data>
+  <data name="AutoFold_App_AdmoxBooth" xml:space="preserve">
+    <value>安道展臺</value>
+  </data>
+  <data name="AutoFold_App_HiteBoard" xml:space="preserve">
+    <value>鴻合白板</value>
+  </data>
+  <data name="AutoFold_App_HiteCamera" xml:space="preserve">
+    <value>鴻合展臺</value>
+  </data>
+  <data name="AutoFold_App_HiteLightBoard" xml:space="preserve">
+    <value>鴻合輕量白板</value>
+  </data>
+  <data name="AutoFold_App_MaxHubBoard" xml:space="preserve">
+    <value>MaxHub白板</value>
+  </data>
+  <data name="AutoFold_App_MSWhiteboard" xml:space="preserve">
+    <value>微軟白板</value>
+  </data>
+  <data name="AutoFold_App_SeewoBoard3" xml:space="preserve">
+    <value>希沃白板 3</value>
+  </data>
+  <data name="AutoFold_App_SeewoBoard5" xml:space="preserve">
+    <value>希沃白板 5</value>
+  </data>
+  <data name="AutoFold_App_SeewoCamera" xml:space="preserve">
+    <value>希沃展臺</value>
+  </data>
+  <data name="AutoFold_App_SeewoLightBoard" xml:space="preserve">
+    <value>希沃輕白板</value>
+  </data>
+  <data name="AutoFold_App_SeewoLightBoard5C" xml:space="preserve">
+    <value>希沃輕白板 5C</value>
+  </data>
+  <data name="AutoFold_App_WenXiangBoard" xml:space="preserve">
+    <value>文香白板</value>
+  </data>
+  <data name="AutoFold_App_YiYunBoard" xml:space="preserve">
+    <value>藝云白板</value>
+  </data>
+  <data name="AutoFold_App_YiYunBooth" xml:space="preserve">
+    <value>藝云展臺</value>
+  </data>
+  <data name="AutoFold_Mode" xml:space="preserve">
+    <value>收納模式</value>
+  </data>
+  <data name="AutoFold_OldZyBoard" xml:space="preserve">
+    <value>中原舊白板</value>
+  </data>
+  <data name="AutoKill_EasiNote5" xml:space="preserve">
+    <value>自動查殺 希沃白板 5</value>
+  </data>
+  <data name="AutoKill_HiteAfterKillEnterAnnotation" xml:space="preserve">
+    <value>鴻合螢幕書寫查殺后自動進入批注</value>
+  </data>
+  <data name="AutoKill_HiteAnnotation" xml:space="preserve">
+    <value>自動查殺 鴻合螢幕書寫</value>
+  </data>
+  <data name="AutoKill_ICA" xml:space="preserve">
+    <value>自動查殺 ICA （新版舊版通殺）</value>
+  </data>
+  <data name="AutoKill_InkCanvasIC" xml:space="preserve">
+    <value>自動查殺 Ink Canvas 和 IC+</value>
+  </data>
+  <data name="AutoKill_Inkeys" xml:space="preserve">
+    <value>自動查殺 智繪教 Inkeys（僅限新版）</value>
+  </data>
+  <data name="AutoKill_PPTTools" xml:space="preserve">
+    <value>自動查殺 希沃 PPT 小工具</value>
+  </data>
+  <data name="AutoKill_PPTToolsHint" xml:space="preserve">
+    <value>打開 PPT 時不會彈出希沃的工具欄，避免擋住畫面。注意：希沃課堂授課助手會因此不能用。</value>
+  </data>
+  <data name="AutoKill_SeewoDesktop2Anno" xml:space="preserve">
+    <value>自動查殺 希沃桌面 2.0 桌面批注</value>
+  </data>
+  <data name="AutoKill_SeewoDesktop2AnnoHint" xml:space="preserve">
+    <value>希沃桌面 2.0 的桌面批注是 64 位程序，本程序無法精確識別，只能按處理程序名匹配。如果電腦上有同名軟體，先關掉這個選項。</value>
+  </data>
+  <data name="AutoKill_Title" xml:space="preserve">
+    <value>自動查殺</value>
+  </data>
+  <data name="AutoKill_YouJiao" xml:space="preserve">
+    <value>自動查殺 優教授課端</value>
+  </data>
+  <data name="Automation_AutoFoldInPPT" xml:space="preserve">
+    <value>播放 PPT 時自動收納</value>
+  </data>
+  <data name="Automation_AutoFoldTitle" xml:space="preserve">
+    <value>自動收納</value>
+  </data>
+  <data name="Automation_KeepFoldAfterExit" xml:space="preserve">
+    <value>軟體退出后保持收納模式</value>
+  </data>
+  <data name="Automation_KeepFoldAfterExitHint" xml:space="preserve">
+    <value>開啟后，執行自動收納的軟體在軟體退出后不退出收納模式，保持收納狀態</value>
+  </data>
+  <data name="Automation_SaveFileName_Custom" xml:space="preserve">
+    <value>自定義...</value>
+  </data>
+  <data name="Automation_SaveFileName_CustomTemplate_Desc" xml:space="preserve">
+    <value>可用占位符：{date} {time} {datetime} {mode} {page} {count} {type}</value>
+  </data>
+  <data name="Automation_SaveFileName_CustomTemplate_Header" xml:space="preserve">
+    <value>自定義模板</value>
+  </data>
+  <data name="Automation_SaveFileName_Date" xml:space="preserve">
+    <value>日期</value>
+  </data>
+  <data name="Automation_SaveFileName_DateMode" xml:space="preserve">
+    <value>日期 + 模式</value>
+  </data>
+  <data name="Automation_SaveFileName_DateModePage" xml:space="preserve">
+    <value>日期 + 模式 + 頁碼</value>
+  </data>
+  <data name="Automation_SaveFileName_DateModePageCount" xml:space="preserve">
+    <value>日期 + 模式 + 頁碼 + 筆畫數</value>
+  </data>
+  <data name="Automation_SaveFileName_DateTime" xml:space="preserve">
+    <value>日期 + 時間</value>
+  </data>
+  <data name="Automation_SaveFileName_Timestamp" xml:space="preserve">
+    <value>時間戳（預設）</value>
+  </data>
+  <data name="Automation_SaveFileNameFormat" xml:space="preserve">
+    <value>檔案名格式</value>
+  </data>
+  <data name="Automation_Title" xml:space="preserve">
+    <value>自動化</value>
+  </data>
+  <data name="Automation_UseCustomSaveFileName_Desc" xml:space="preserve">
+    <value>開啟后可選擇儲存檔案的命名方式</value>
+  </data>
+  <data name="Automation_UseCustomSaveFileName_Header" xml:space="preserve">
+    <value>使用自定義儲存檔案名</value>
+  </data>
+  <data name="FloatingInterceptor_App_ChangYanClass" xml:space="preserve">
+    <value>暢言智慧課堂</value>
+  </data>
+  <data name="FloatingInterceptor_App_ChangYanPPT" xml:space="preserve">
+    <value>暢言 PPT</value>
+  </data>
+  <data name="FloatingInterceptor_App_HiteAnnotation" xml:space="preserve">
+    <value>鴻合螢幕書寫</value>
+  </data>
+  <data name="FloatingInterceptor_App_IntelligentClass" xml:space="preserve">
+    <value>天喻教育云</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoBoard5C" xml:space="preserve">
+    <value>希沃白板 5C</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoDesktopAnnotation" xml:space="preserve">
+    <value>希沃桌面畫筆</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoDesktopSideBar" xml:space="preserve">
+    <value>希沃桌面側欄</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoPinco" xml:space="preserve">
+    <value>希沃品課</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoPincoDrawing" xml:space="preserve">
+    <value>希沃品課畫筆</value>
+  </data>
+  <data name="FloatingInterceptor_App_SeewoPPTTools" xml:space="preserve">
+    <value>希沃 PPT 小工具</value>
+  </data>
+  <data name="FloatingInterceptor_Title" xml:space="preserve">
+    <value>懸浮窗攔截</value>
+  </data>
+  <data name="FoldMode_AutoFoldAfterPPT" xml:space="preserve">
+    <value>退出 PPT 放映模式后自動收納浮動欄</value>
+  </data>
+  <data name="FoldMode_AutoFoldAfterPPTHint" xml:space="preserve">
+    <value>開啟后，退出 PPT 放映模式后會自動收納浮動欄</value>
+  </data>
+  <data name="FoldMode_AutoFoldAfterWhiteboard" xml:space="preserve">
+    <value>退出白板時自動收納</value>
+  </data>
+  <data name="FoldMode_AutoFoldAfterWhiteboardHint" xml:space="preserve">
+    <value>開啟后，退出白板模式時會自動收納到側邊欄</value>
+  </data>
+  <data name="FoldMode_ExitToAnnotation" xml:space="preserve">
+    <value>退出收納模式時自動切換至批注模式</value>
+  </data>
+  <data name="FoldMode_ExitToAnnotationHint" xml:space="preserve">
+    <value>開啟后，退出收納模式時將自動切換至批注模式，便于快速批注</value>
+  </data>
+  <data name="AutoFold_Group_Seewo" xml:space="preserve">
+    <value>希沃</value>
+  </data>
+  <data name="AutoFold_Group_Hite" xml:space="preserve">
+    <value>鴻合</value>
+  </data>
+  <data name="AutoFold_Group_Other" xml:space="preserve">
+    <value>其他白板</value>
+  </data>
+  <data name="FloatingInterceptor_Group_Seewo" xml:space="preserve">
+    <value>希沃</value>
+  </data>
+  <data name="FileAssoc_CheckDesc" xml:space="preserve">
+    <value>查看 .icstk 檔案是否已關聯到 Ink Canvas</value>
+  </data>
+  <data name="FileAssoc_RegisterHeader" xml:space="preserve">
+    <value>注冊檔案關聯</value>
+  </data>
+  <data name="FileAssoc_RegisterDesc" xml:space="preserve">
+    <value>將 .icstk 檔案關聯到 Ink Canvas</value>
+  </data>
+  <data name="FileAssoc_UnregisterDesc" xml:space="preserve">
+    <value>移除 .icstk 檔案與 Ink Canvas 的關聯</value>
+  </data>
+  <data name="FileAssoc_NotChecked" xml:space="preserve">
+    <value>未檢查</value>
+  </data>
+  <data name="FileAssoc_RegisterSuccess" xml:space="preserve">
+    <value>檔案關聯注冊成功</value>
+  </data>
+  <data name="FileAssoc_RegisterFailed" xml:space="preserve">
+    <value>檔案關聯注冊失敗</value>
+  </data>
+  <data name="FileAssoc_UnregisterSuccess" xml:space="preserve">
+    <value>檔案關聯已取消</value>
+  </data>
+  <data name="FileAssoc_UnregisterFailed" xml:space="preserve">
+    <value>取消檔案關聯失敗</value>
+  </data>
+  <data name="FileAssoc_Registered" xml:space="preserve">
+    <value>? .icstk檔案關聯已注冊</value>
+  </data>
+  <data name="FileAssoc_NotRegistered" xml:space="preserve">
+    <value>? .icstk檔案關聯未注冊</value>
+  </data>
+  <data name="FileAssoc_CheckError" xml:space="preserve">
+    <value>? 檢查檔案關聯狀態時出錯</value>
+  </data>
+  <data name="Storage_AutoDeleteDaysThreshold" xml:space="preserve">
+    <value>自動刪除天數閾值</value>
+  </data>
+  <data name="Storage_MinAutomationStrokes" xml:space="preserve">
+    <value>自動化最小筆畫數</value>
+  </data>
+  <data name="FileAssoc_LoadedStrokesFile" xml:space="preserve">
+    <value>已載入墨跡檔案: {0}</value>
+  </data>
+  <data name="FileAssoc_SwitchedToBoardMode" xml:space="preserve">
+    <value>已切換到白板模式</value>
+  </data>
+  <data name="FileAssoc_ExitedFoldMode" xml:space="preserve">
+    <value>已退出收納模式并恢復浮動欄</value>
+  </data>
+</root>

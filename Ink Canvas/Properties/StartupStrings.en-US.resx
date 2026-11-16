@@ -42,32 +42,14 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="SilentUpdate_TimeRange" xml:space="preserve">
-    <value>Silent update time range</value>
-  </data>
-  <data name="AutoUpdateHint" xml:space="preserve">
-    <value>Automatically check for updates when the app starts.</value>
-  </data>
   <data name="EnableNibMode" xml:space="preserve">
     <value>Pen-only Mode</value>
-  </data>
-  <data name="EnableNibModeHint" xml:space="preserve">
-    <value>Only respond to pen tip touch, ignore palm and finger</value>
   </data>
   <data name="ExternalProtocol" xml:space="preserve">
     <value>External protocol (icc://)</value>
   </data>
   <data name="ExternalProtocolHint" xml:space="preserve">
     <value>Control via icc:// protocol</value>
-  </data>
-  <data name="FastStartup" xml:space="preserve">
-    <value>Fast startup mode</value>
-  </data>
-  <data name="FastStartupHint" xml:space="preserve">
-    <value>Show the main interface sooner and load non-essential features such as plugins, PowerPoint integration, notifications, automation, and monitoring after startup. Takes effect on next launch.</value>
-  </data>
-  <data name="FixVersionHint" xml:space="preserve">
-    <value>Downloads and reinstalls the latest build from the selected channel to fix broken installations.</value>
   </data>
   <data name="FoldAtStartup" xml:space="preserve">
     <value>Dock to sidebar after startup</value>
@@ -93,26 +75,11 @@
   <data name="RunAtStartupHint" xml:space="preserve">
     <value>Automatically run the software when system starts</value>
   </data>
-  <data name="SilentUpdateFullHint" xml:space="preserve">
-    <value>Off: asks before updating. On: updates automatically when idle at night, as long as you are not writing or in the whiteboard.</value>
-  </data>
-  <data name="SilentUpdateHint" xml:space="preserve">
-    <value>Silent update installs when the app is idle; no manual action needed.</value>
-  </data>
-  <data name="SmartUpdate" xml:space="preserve">
-    <value>Smart update</value>
-  </data>
-  <data name="SmartUpdateHint" xml:space="preserve">
-    <value>Use the unified platform API to check for updates and get download links.</value>
-  </data>
   <data name="Start" xml:space="preserve">
     <value>Startup</value>
   </data>
   <data name="Startup_Behavior" xml:space="preserve">
     <value>Behavior</value>
-  </data>
-  <data name="TimePeriodHint" xml:space="preserve">
-    <value>If the end time is earlier than the start time, the window spans into the next day. Setting both times equal creates a 24-hour window.</value>
   </data>
   <data name="TopMost" xml:space="preserve">
     <value>Topmost</value>
@@ -128,9 +95,6 @@
   </data>
   <data name="TopMostMode_Normal_RestartRequired" xml:space="preserve">
     <value>Switching to normal topmost mode requires a restart to take effect. Restart now?</value>
-  </data>
-  <data name="TopMostMode_RestartAsAdmin" xml:space="preserve">
-    <value>Restart with admin rights (to cover the taskbar)</value>
   </data>
   <data name="TopMostMode_RestartAsNormal" xml:space="preserve">
     <value>Switch to Non-Admin Mode</value>
@@ -155,17 +119,5 @@
   </data>
   <data name="UIAMode_Description" xml:space="preserve">
     <value>Choose the token acquisition scheme for UIA topmost. User Token obtains the token from explorer.exe, while Original Process Token duplicates the token from the original process.</value>
-  </data>
-  <data name="UpdateChannel" xml:space="preserve">
-    <value>Update channel</value>
-  </data>
-  <data name="UpdateChannelHint" xml:space="preserve">
-    <value>Stable: reliable updates. Preview: new features with better stability than Beta. Beta: earliest new features.</value>
-  </data>
-  <data name="UpdatePackageArchitecture" xml:space="preserve">
-    <value>Software architecture</value>
-  </data>
-  <data name="UpdatePackageArchitectureHint" xml:space="preserve">
-    <value>Select the architecture for the update package. By default, it matches the current software architecture.</value>
   </data>
 </root>
