@@ -1,43 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -297,7 +297,7 @@
     <value>下一步</value>
   </data>
   <data name="Oobe_Skip" xml:space="preserve">
-    <value>跳過引導</value>
+    <value xml:space="preserve">跳过引导</value>
   </data>
   <data name="Oobe_LtscIntroTitle" xml:space="preserve">
     <value>为课堂而改的版本</value>
@@ -381,7 +381,7 @@
     <value>双指缩放/平移、手掌擦等，搓手党狂喜。</value>
   </data>
   <data name="Oobe_Step4Subtitle" xml:space="preserve">
-    <value>防止翻頁筆的特殊鍵在課堂上誤觸黑屏或退出放映。</value>
+    <value xml:space="preserve">防止翻页笔的特殊键在课堂上误触黑屏或退出放映。</value>
   </data>
   <data name="Oobe_Step5Subtitle" xml:space="preserve">
     <value>放映联动、墨迹与截屏自动保存、时间胶囊，PPT 党福音。</value>
@@ -420,30 +420,30 @@
     <value>重新引导</value>
   </data>
   <data name="Oobe_Step4Title" xml:space="preserve">
-    <value>翻頁筆適配</value>
+    <value xml:space="preserve">翻页笔适配</value>
   </data>
   <data name="Oobe_NavPresenter" xml:space="preserve">
-    <value>翻頁筆</value>
+    <value xml:space="preserve">翻页笔</value>
   </data>
   <data name="Common_Off" xml:space="preserve">
-    <value>關</value>
+    <value xml:space="preserve">关</value>
   </data>
   <data name="Common_On" xml:space="preserve">
-    <value>開</value>
+    <value xml:space="preserve">开</value>
   </data>
   <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
-    <value>啟用翻頁筆適配</value>
+    <value xml:space="preserve">打开翻页笔适配</value>
   </data>
   <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
-    <value>開啟後，配對的功能鍵會正常工作；關閉時只攔截不回應，用來防止誤觸。</value>
+    <value xml:space="preserve">开了之后，配好的功能键就正常干活；关着只管拦截不响应，防误触。</value>
   </data>
   <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
-    <value>其他模式下這些鍵完全不受影響，走系統原有邏輯。退出放映時會立刻卸載鍵盤鉤子。之後可以在「設定 → PPT → 翻頁筆適配」裡改鍵。</value>
+    <value xml:space="preserve">其他模式下这些键照旧走系统逻辑，一点不受影响。退出放映时钩子立刻卸掉。之后可以在「设置 → PPT → 翻页笔适配」里改键。</value>
   </data>
   <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
-    <value>只在 PPT 關聯放映時生效</value>
+    <value xml:space="preserve">只在 PPT 放映时管用</value>
   </data>
   <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
-    <value>翻頁筆適配</value>
+    <value xml:space="preserve">翻页笔适配</value>
   </data>
 </root>
