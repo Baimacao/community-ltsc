@@ -1499,8 +1499,8 @@ namespace Ink_Canvas.Windows
 
             // 瘦窗态下缩放由 AnimateDigitScale 单独控制，这里不抢
             double targetScale = folded
-                ? (_isSlimMode ? SlimDigitScale : FoldedDigitScale)
-                : (_isSlimMode ? SlimDigitScale : 1.0);
+                ? (_isSlimMode ? CalcSlimDigitScale() : FoldedDigitScale)
+                : (_isSlimMode ? CalcSlimDigitScale() : 1.0);
 
             // 平移量：把数字区中心对到窗口中心。
             // RenderTransformOrigin=0.5,0.5 时缩放绕自身中心，所以只需要补左偏的那部分。
@@ -1620,8 +1620,10 @@ namespace Ink_Canvas.Windows
         private const double SlimWindowWidth = 430;
         private const double SlimWindowHeight = 208;
 
-        /// <summary>瘦窗态的缩放比例。240 宽装下 500 宽的数字区，约 0.46。</summary>
-        private const double SlimDigitScale = 0.78;
+        /// <summary>
+        /// 瘦窗里数字区四周留的边距。铺满但不贴死，留一点呼吸。
+        /// </summary>
+        private const double SlimDigitPadding = 14;
 
         /// <summary>进瘦窗之前记住原尺寸与位置，退出时还原。</summary>
         private Rect _rectBeforeSlim;
@@ -1674,7 +1676,7 @@ namespace Ink_Canvas.Windows
                 Top = workArea.Top + 8;
 
                 // 数字缩到能塞进小窗
-                AnimateDigitScale(SlimDigitScale);
+                AnimateDigitScale(CalcSlimDigitScale());
 
                 LogHelper.WriteLogToFile($"计时器 | 进入瘦窗态 {SlimWindowWidth}x{SlimWindowHeight}", LogHelper.LogType.Event);
             }
@@ -1740,6 +1742,53 @@ namespace Ink_Canvas.Windows
                 if (!(FindName(name) is System.Windows.Controls.TextBlock colon)) continue;
                 var m = colon.Margin;
                 colon.Margin = new Thickness(m.Left, top, m.Right, m.Bottom);
+            }
+        }
+
+        /// <summary>
+        /// 算出瘦窗里数字要放大到多少才铺满。
+        ///
+        /// 判据是「铺满但不贴死」：取窗口可用区域和数字区原尺寸的比值，
+        /// 再留 SlimDigitPadding 的边距。
+        ///
+        /// 为什么不在 XAML 里用 Viewbox 硬拉：数字区外面还套着
+        /// MainViewController（Viewbox，StretchDirection=DownOnly），
+        /// 它在窗口缩小后会先缩放一次，再叠一层 Viewbox 会双重缩放、算不准。
+        /// 直接算倍数更可控。
+        /// </summary>
+        private double CalcSlimDigitScale()
+        {
+            try
+            {
+                if (MainDisplayGrid == null) return 1.0;
+
+                // 数字区当前实际尺寸（受 Viewbox 缩放后的视觉尺寸）
+                double visualW = MainDisplayGrid.ActualWidth;
+                double visualH = MainDisplayGrid.ActualHeight;
+
+                if (visualW < 1 || visualH < 1)
+                {
+                    // 还没布局过，用设计值兜底
+                    visualW = 500;
+                    visualH = 166;
+                }
+
+                // 窗口内可用区域：去掉标题栏、内边距
+                double availW = Width - SlimDigitPadding * 2;
+                double availH = Height - SlimDigitPadding * 2;
+
+                if (availW < 1 || availH < 1) return 1.0;
+
+                // 取两个方向的较小值，保证不溢出
+                double scale = Math.Min(availW / visualW, availH / visualH);
+
+                // 夹到合理范围：太小看不清，太大没意义
+                return Math.Max(0.5, Math.Min(4.0, scale));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"计算瘦窗缩放失败: {ex.Message}", LogHelper.LogType.Warning);
+                return 1.0;
             }
         }
 
