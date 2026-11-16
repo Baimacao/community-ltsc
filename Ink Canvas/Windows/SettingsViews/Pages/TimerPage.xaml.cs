@@ -55,23 +55,11 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             var settings = SettingsManager.Settings;
             if (settings?.RandSettings == null) return;
 
-            ComboBoxTimerUIStyle.SelectedIndex = settings.RandSettings.UseLegacyTimerUI ? 0
-                : settings.RandSettings.UseNewStyleUI ? 1 : 0;
             ToggleSwitchEnableOvertimeCountUp.IsOn = settings.RandSettings.EnableOvertimeCountUp;
             ToggleSwitchEnableOvertimeRedText.IsOn = settings.RandSettings.EnableOvertimeRedText;
             TimerVolumeSlider.Value = settings.RandSettings.TimerVolume;
             ToggleSwitchEnableProgressiveReminder.IsOn = settings.RandSettings.EnableProgressiveReminder;
             ProgressiveReminderVolumeSlider.Value = settings.RandSettings.ProgressiveReminderVolume;
-        }
-
-        private void ComboBoxTimerUIStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!_isLoaded) return;
-            var selectedItem = ComboBoxTimerUIStyle.SelectedItem as ComboBoxItem;
-            var tag = selectedItem?.Tag?.ToString() ?? "Default";
-            SettingsManager.Settings.RandSettings.UseLegacyTimerUI = tag == "Legacy";
-            SettingsManager.Settings.RandSettings.UseNewStyleUI = tag == "NewStyle";
-            SettingsManager.SaveSettingsToFile();
         }
 
         private void ToggleSwitchEnableOvertimeCountUp_Toggled(object sender, RoutedEventArgs e)

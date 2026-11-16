@@ -123,15 +123,6 @@
   <data name="Timer_ProgressiveSelectFile" xml:space="preserve">
     <value>选择文件</value>
   </data>
-  <data name="Timer_NewUI" xml:space="preserve">
-    <value>标准版（窗口，数字进度）</value>
-  </data>
-  <data name="Timer_UseLegacyButtons" xml:space="preserve">
-    <value>简洁版（无边框，环形进度）</value>
-  </data>
-  <data name="Timer_UIStyle" xml:space="preserve">
-    <value>计时器界面</value>
-  </data>
   <data name="Timer_SelectSound" xml:space="preserve">
     <value>Select Sound</value>
   </data>

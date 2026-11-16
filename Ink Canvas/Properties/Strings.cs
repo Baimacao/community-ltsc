@@ -1112,7 +1112,6 @@ namespace Ink_Canvas.Properties
             dict["Timer_AdjustPanel"] = ("TimerStrings", "Timer_AdjustPanel");
             dict["Timer_CustomSoundLabel"] = ("TimerStrings", "Timer_CustomSoundLabel");
             dict["Timer_EnableCountUp"] = ("TimerStrings", "Timer_EnableCountUp");
-            dict["Timer_NewUI"] = ("TimerStrings", "Timer_NewUI");
             dict["Timer_OvertimeHighlight"] = ("TimerStrings", "Timer_OvertimeHighlight");
             dict["Timer_Progressive"] = ("TimerStrings", "Timer_Progressive");
             dict["Timer_ProgressiveCustomLabel"] = ("TimerStrings", "Timer_ProgressiveCustomLabel");
@@ -1121,7 +1120,6 @@ namespace Ink_Canvas.Properties
             dict["Timer_Reset"] = ("TimerStrings", "Timer_Reset");
             dict["Timer_SlimMode"] = ("TimerStrings", "Timer_SlimMode");
             dict["Timer_Title"] = ("TimerStrings", "Timer_Title");
-            dict["Timer_UseLegacyButtons"] = ("TimerStrings", "Timer_UseLegacyButtons");
             dict["Timer_Volume"] = ("TimerStrings", "Timer_Volume");
             dict["Tools_Manual"] = ("FloatingBarStrings", "Tools_Manual");
             dict["Tools_MoreFeaturesTitle"] = ("FloatingBarStrings", "Tools_MoreFeaturesTitle");

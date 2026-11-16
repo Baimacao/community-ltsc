@@ -1265,10 +1265,9 @@ namespace Ink_Canvas
     {
         [JsonProperty("showRandomAndSingleDraw")]
         public bool ShowRandomAndSingleDraw { get; set; } = true;
-        [JsonProperty("useLegacyTimerUI")]
-        public bool UseLegacyTimerUI { get; set; } = false;
-        [JsonProperty("useNewStyleUI")]
-        public bool UseNewStyleUI { get; set; } = true;
+        // useLegacyTimerUI / useNewStyleUI 已删除：
+        // 旧版计时窗口（CountdownTimerWindow）整个删掉了，只留 NewStyleTimerWindow。
+        // 旧配置里残留的这两个键会被 Newtonsoft 忽略，不影响加载。
         [JsonProperty("timerVolume")]
         public double TimerVolume { get; set; } = 1.0;
         [JsonProperty("customTimerSoundPath")]

@@ -1406,30 +1406,12 @@ namespace Ink_Canvas
             AnimationsHelper.HidePopupWithSlideAndFade(BoardBorderToolsPopup);
             AnimationsHelper.HideWithSlideAndFade(BoardImageOptionsPanel);
 
-            if (Settings.RandSettings?.UseNewStyleUI == true)
+            var timerWindow = new Windows.NewStyleTimerWindow
             {
-                var timerWindow = new Windows.NewStyleTimerWindow
-                {
-                    Owner = this
-                };
+                Owner = this
+            };
 
-
-                timerWindow.Show();
-            }
-            else
-            {
-                if (currentMode == 1)
-                {
-                    Topmost = false;
-                }
-
-                var timerWindow = CountdownTimerWindow.CreateTimerWindow();
-                timerWindow.Show();
-                if (currentMode == 1)
-                {
-                    timerWindow.Topmost = true;
-                }
-            }
+            timerWindow.Show();
         }
 
         /// <summary>

@@ -43,9 +43,6 @@ namespace Ink_Canvas.Properties
         public static string Timer_CustomSoundLabel => ResourceManager.GetString(nameof(Timer_CustomSoundLabel), _resourceCulture);
 
         public static string Timer_EnableCountUp => ResourceManager.GetString(nameof(Timer_EnableCountUp), _resourceCulture);
-
-        public static string Timer_NewUI => ResourceManager.GetString(nameof(Timer_NewUI), _resourceCulture);
-
         public static string Timer_OvertimeHighlight => ResourceManager.GetString(nameof(Timer_OvertimeHighlight), _resourceCulture);
 
         public static string Timer_Progressive => ResourceManager.GetString(nameof(Timer_Progressive), _resourceCulture);
@@ -69,9 +66,6 @@ namespace Ink_Canvas.Properties
         public static string Timer_Reset => ResourceManager.GetString(nameof(Timer_Reset), _resourceCulture);
 
         public static string Timer_Title => ResourceManager.GetString(nameof(Timer_Title), _resourceCulture);
-
-        public static string Timer_UseLegacyButtons => ResourceManager.GetString(nameof(Timer_UseLegacyButtons), _resourceCulture);
-
         public static string Timer_Volume => ResourceManager.GetString(nameof(Timer_Volume), _resourceCulture);
 
         public static string Timer_HourUp => ResourceManager.GetString(nameof(Timer_HourUp), _resourceCulture);
@@ -107,12 +101,6 @@ namespace Ink_Canvas.Properties
         public static string Timer_FullScreen => ResourceManager.GetString(nameof(Timer_FullScreen), _resourceCulture);
 
         public static string Timer_StartPause => ResourceManager.GetString(nameof(Timer_StartPause), _resourceCulture);
-        
-        /// <summary>
-        ///   查找类似 计时器样式 的本地化字符串。
-        /// </summary>
-        public static string Timer_UIStyle => ResourceManager.GetString(nameof(Timer_UIStyle), _resourceCulture);
-        
         /// <summary>
         ///   查找类似 选择提示音 的本地化字符串。
         /// </summary>

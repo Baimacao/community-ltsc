@@ -31,14 +31,6 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:TimerStrings.Timer_Title}" />
 
-                    <ui:SettingsCard Header="{x:Static props:TimerStrings.Timer_UIStyle}">
-                        <ComboBox x:Name="ComboBoxTimerUIStyle"
-                                  SelectionChanged="ComboBoxTimerUIStyle_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static props:TimerStrings.Timer_UseLegacyButtons}" Tag="Legacy" />
-                            <ComboBoxItem Content="{x:Static props:TimerStrings.Timer_NewUI}" Tag="NewStyle" />
-                        </ComboBox>
-                    </ui:SettingsCard>
-
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchEnableOvertimeCountUp"
                         Header="{x:Static props:TimerStrings.Timer_EnableCountUp}"
                         IsOn="False"
