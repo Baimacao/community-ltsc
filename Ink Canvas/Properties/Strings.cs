@@ -413,14 +413,7 @@ namespace Ink_Canvas.Properties
             dict["FloatingBar_Unfreeze"] = ("FloatingBarStrings", "FloatingBar_Unfreeze");
             dict["FloatingBar_Whiteboard"] = ("FloatingBarStrings", "FloatingBar_Whiteboard");
             dict["FloatingBar_MiniWhiteboard"] = ("FloatingBarStrings", "FloatingBar_MiniWhiteboard");
-            dict["MiniWhiteboard_Undo"] = ("FloatingBarStrings", "MiniWhiteboard_Undo");
-            dict["MiniWhiteboard_Redo"] = ("FloatingBarStrings", "MiniWhiteboard_Redo");
             dict["MiniWhiteboard_Clear"] = ("FloatingBarStrings", "MiniWhiteboard_Clear");
-            dict["MiniWhiteboard_NewPage"] = ("FloatingBarStrings", "MiniWhiteboard_NewPage");
-            dict["MiniWhiteboard_DeletePage"] = ("FloatingBarStrings", "MiniWhiteboard_DeletePage");
-            dict["MiniWhiteboard_PageInfo"] = ("FloatingBarStrings", "MiniWhiteboard_PageInfo");
-            dict["MiniWhiteboard_Pen"] = ("FloatingBarStrings", "MiniWhiteboard_Pen");
-            dict["MiniWhiteboard_Eraser"] = ("FloatingBarStrings", "MiniWhiteboard_Eraser");
             dict["MiniWhiteboard_Settings_Enable"] = ("FloatingBarStrings", "MiniWhiteboard_Settings_Enable");
             dict["MiniWhiteboard_Settings_SyncPPT"] = ("FloatingBarStrings", "MiniWhiteboard_Settings_SyncPPT");
             dict["MiniWhiteboard_Settings_DefaultSize"] = ("FloatingBarStrings", "MiniWhiteboard_Settings_DefaultSize");
@@ -1090,10 +1083,8 @@ namespace Ink_Canvas.Properties
             dict["Timer_SlimMode"] = ("TimerStrings", "Timer_SlimMode");
             dict["Timer_Title"] = ("TimerStrings", "Timer_Title");
             dict["Timer_Volume"] = ("TimerStrings", "Timer_Volume");
-            dict["Tools_Manual"] = ("FloatingBarStrings", "Tools_Manual");
             dict["Tools_MoreFeaturesTitle"] = ("FloatingBarStrings", "Tools_MoreFeaturesTitle");
             dict["Tools_Open"] = ("FloatingBarStrings", "Tools_Open");
-            dict["Tools_RandomDraw"] = ("FloatingBarStrings", "Tools_RandomDraw");
             dict["Tools_Replay"] = ("FloatingBarStrings", "Tools_Replay");
             dict["Tools_Save"] = ("FloatingBarStrings", "Tools_Save");
             dict["Tools_Screenshot"] = ("FloatingBarStrings", "Tools_Screenshot");

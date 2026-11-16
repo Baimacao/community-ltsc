@@ -141,15 +141,9 @@ namespace Ink_Canvas.Properties
         public static string QuickPanel_SingleDraw => ResourceManager.GetString(nameof(QuickPanel_SingleDraw), _resourceCulture);
 
         public static string QuickPanel_Timer => ResourceManager.GetString(nameof(QuickPanel_Timer), _resourceCulture);
-
-        public static string Tools_Manual => ResourceManager.GetString(nameof(Tools_Manual), _resourceCulture);
-
         public static string Tools_MoreFeaturesTitle => ResourceManager.GetString(nameof(Tools_MoreFeaturesTitle), _resourceCulture);
 
         public static string Tools_Open => ResourceManager.GetString(nameof(Tools_Open), _resourceCulture);
-
-        public static string Tools_RandomDraw => ResourceManager.GetString(nameof(Tools_RandomDraw), _resourceCulture);
-
         public static string Tools_Replay => ResourceManager.GetString(nameof(Tools_Replay), _resourceCulture);
 
         public static string Tools_Save => ResourceManager.GetString(nameof(Tools_Save), _resourceCulture);
@@ -345,65 +339,17 @@ namespace Ink_Canvas.Properties
         public static string FloatingBar_FadeSpeed => ResourceManager.GetString(nameof(FloatingBar_FadeSpeed), _resourceCulture);
 
         public static string FloatingBar_ColorThemeLight => ResourceManager.GetString(nameof(FloatingBar_ColorThemeLight), _resourceCulture);
-
-        public static string BoardToolbarPage_AddComponent2 => ResourceManager.GetString(nameof(BoardToolbarPage_AddComponent2), _resourceCulture);
-
-        public static string BoardToolbarPage_AddGroup => ResourceManager.GetString(nameof(BoardToolbarPage_AddGroup), _resourceCulture);
-
         public static string BoardToolbarPage_AddGroup2 => ResourceManager.GetString(nameof(BoardToolbarPage_AddGroup2), _resourceCulture);
 
         public static string BoardToolbarPage_Areas => ResourceManager.GetString(nameof(BoardToolbarPage_Areas), _resourceCulture);
-
-        public static string BoardToolbarPage_AtLeastOneConfig => ResourceManager.GetString(nameof(BoardToolbarPage_AtLeastOneConfig), _resourceCulture);
-
         public static string BoardToolbarPage_CenterArea => ResourceManager.GetString(nameof(BoardToolbarPage_CenterArea), _resourceCulture);
-
-        public static string BoardToolbarPage_ComponentLibrary => ResourceManager.GetString(nameof(BoardToolbarPage_ComponentLibrary), _resourceCulture);
-
         public static string BoardToolbarPage_ConfigProfiles => ResourceManager.GetString(nameof(BoardToolbarPage_ConfigProfiles), _resourceCulture);
-
-        public static string BoardToolbarPage_ConfirmDeleteConfig => ResourceManager.GetString(nameof(BoardToolbarPage_ConfirmDeleteConfig), _resourceCulture);
-
         public static string BoardToolbarPage_DeleteProfile => ResourceManager.GetString(nameof(BoardToolbarPage_DeleteProfile), _resourceCulture);
-
-        public static string BoardToolbarPage_DuplicateProfile => ResourceManager.GetString(nameof(BoardToolbarPage_DuplicateProfile), _resourceCulture);
-
-        public static string BoardToolbarPage_EnterNewConfigName => ResourceManager.GetString(nameof(BoardToolbarPage_EnterNewConfigName), _resourceCulture);
-
         public static string BoardToolbarPage_LeftArea => ResourceManager.GetString(nameof(BoardToolbarPage_LeftArea), _resourceCulture);
-
-        public static string BoardToolbarPage_NewGroupName => ResourceManager.GetString(nameof(BoardToolbarPage_NewGroupName), _resourceCulture);
-
-        public static string BoardToolbarPage_NewProfile => ResourceManager.GetString(nameof(BoardToolbarPage_NewProfile), _resourceCulture);
-
-        public static string BoardToolbarPage_ResetConfirm => ResourceManager.GetString(nameof(BoardToolbarPage_ResetConfirm), _resourceCulture);
-
         public static string BoardToolbarPage_ResetDefault => ResourceManager.GetString(nameof(BoardToolbarPage_ResetDefault), _resourceCulture);
 
         public static string BoardToolbarPage_RightArea => ResourceManager.GetString(nameof(BoardToolbarPage_RightArea), _resourceCulture);
-
-        public static string BoardToolbarPage_AreaComponents => ResourceManager.GetString(nameof(BoardToolbarPage_AreaComponents), _resourceCulture);
-
-        public static string BoardToolbarPage_AreaComponentsHint => ResourceManager.GetString(nameof(BoardToolbarPage_AreaComponentsHint), _resourceCulture);
-
         public static string BoardToolbarPage_AreaGroups => ResourceManager.GetString(nameof(BoardToolbarPage_AreaGroups), _resourceCulture);
-
-        public static string BoardToolbarPage_Position => ResourceManager.GetString(nameof(BoardToolbarPage_Position), _resourceCulture);
-
-        public static string BoardToolbarPage_PositionDesc => ResourceManager.GetString(nameof(BoardToolbarPage_PositionDesc), _resourceCulture);
-
-        public static string BoardToolbarPage_PositionFirst => ResourceManager.GetString(nameof(BoardToolbarPage_PositionFirst), _resourceCulture);
-
-        public static string BoardToolbarPage_PositionMiddle => ResourceManager.GetString(nameof(BoardToolbarPage_PositionMiddle), _resourceCulture);
-
-        public static string BoardToolbarPage_PositionLast => ResourceManager.GetString(nameof(BoardToolbarPage_PositionLast), _resourceCulture);
-
-        public static string BoardToolbarPage_PositionSingle => ResourceManager.GetString(nameof(BoardToolbarPage_PositionSingle), _resourceCulture);
-
-        public static string BoardToolbarPage_MoveUp => ResourceManager.GetString(nameof(BoardToolbarPage_MoveUp), _resourceCulture);
-
-        public static string BoardToolbarPage_MoveDown => ResourceManager.GetString(nameof(BoardToolbarPage_MoveDown), _resourceCulture);
-
         public static string BoardToolbarPage_GroupNavigation => ResourceManager.GetString(nameof(BoardToolbarPage_GroupNavigation), _resourceCulture);
 
         public static string BoardToolbarPage_GroupVideoBooth => ResourceManager.GetString(nameof(BoardToolbarPage_GroupVideoBooth), _resourceCulture);
@@ -419,23 +365,7 @@ namespace Ink_Canvas.Properties
         public static string BoardToolbarPage_Title => ResourceManager.GetString(nameof(BoardToolbarPage_Title), _resourceCulture);
 
         public static string FloatingBar_MiniWhiteboard => ResourceManager.GetString(nameof(FloatingBar_MiniWhiteboard), _resourceCulture);
-
-        public static string MiniWhiteboard_Undo => ResourceManager.GetString(nameof(MiniWhiteboard_Undo), _resourceCulture);
-
-        public static string MiniWhiteboard_Redo => ResourceManager.GetString(nameof(MiniWhiteboard_Redo), _resourceCulture);
-
         public static string MiniWhiteboard_Clear => ResourceManager.GetString(nameof(MiniWhiteboard_Clear), _resourceCulture);
-
-        public static string MiniWhiteboard_NewPage => ResourceManager.GetString(nameof(MiniWhiteboard_NewPage), _resourceCulture);
-
-        public static string MiniWhiteboard_DeletePage => ResourceManager.GetString(nameof(MiniWhiteboard_DeletePage), _resourceCulture);
-
-        public static string MiniWhiteboard_PageInfo => ResourceManager.GetString(nameof(MiniWhiteboard_PageInfo), _resourceCulture);
-
-        public static string MiniWhiteboard_Pen => ResourceManager.GetString(nameof(MiniWhiteboard_Pen), _resourceCulture);
-
-        public static string MiniWhiteboard_Eraser => ResourceManager.GetString(nameof(MiniWhiteboard_Eraser), _resourceCulture);
-
         public static string MiniWhiteboard_Settings_Enable => ResourceManager.GetString(nameof(MiniWhiteboard_Settings_Enable), _resourceCulture);
 
         public static string MiniWhiteboard_Settings_SyncPPT => ResourceManager.GetString(nameof(MiniWhiteboard_Settings_SyncPPT), _resourceCulture);

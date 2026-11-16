@@ -198,17 +198,11 @@
   <data name="QuickPanel_Timer" xml:space="preserve">
     <value>计时器</value>
   </data>
-  <data name="Tools_Manual" xml:space="preserve">
-    <value>说明书</value>
-  </data>
   <data name="Tools_MoreFeaturesTitle" xml:space="preserve">
     <value>更多功能</value>
   </data>
   <data name="Tools_Open" xml:space="preserve">
     <value>打开...</value>
-  </data>
-  <data name="Tools_RandomDraw" xml:space="preserve">
-    <value>随机抽</value>
   </data>
   <data name="Tools_Replay" xml:space="preserve">
     <value>重播</value>
@@ -507,12 +501,6 @@
   <data name="BoardToolbarPage_ConfigProfiles" xml:space="preserve">
     <value>配置方案</value>
   </data>
-  <data name="BoardToolbarPage_NewProfile" xml:space="preserve">
-    <value>新建配置</value>
-  </data>
-  <data name="BoardToolbarPage_DuplicateProfile" xml:space="preserve">
-    <value>复制配置</value>
-  </data>
   <data name="BoardToolbarPage_DeleteProfile" xml:space="preserve">
     <value>删除配置</value>
   </data>
@@ -528,68 +516,14 @@
   <data name="BoardToolbarPage_RightArea" xml:space="preserve">
     <value>右侧区域</value>
   </data>
-  <data name="BoardToolbarPage_ComponentLibrary" xml:space="preserve">
-    <value>组件库</value>
-  </data>
-  <data name="BoardToolbarPage_AddGroup" xml:space="preserve">
-    <value>+ 新建分组</value>
-  </data>
   <data name="BoardToolbarPage_AddGroup2" xml:space="preserve">
     <value>新建分组</value>
-  </data>
-  <data name="BoardToolbarPage_AddComponent2" xml:space="preserve">
-    <value>添加组件</value>
-  </data>
-  <data name="BoardToolbarPage_NewGroupName" xml:space="preserve">
-    <value>请输入新分组名称</value>
   </data>
   <data name="BoardToolbarPage_ResetDefault" xml:space="preserve">
     <value>恢复默认布局</value>
   </data>
-  <data name="BoardToolbarPage_AtLeastOneConfig" xml:space="preserve">
-    <value>至少保留一个配置文件。</value>
-  </data>
-  <data name="BoardToolbarPage_ConfirmDeleteConfig" xml:space="preserve">
-    <value>确定要删除此配置吗？</value>
-  </data>
-  <data name="BoardToolbarPage_EnterNewConfigName" xml:space="preserve">
-    <value>请输入新配置名称：</value>
-  </data>
-  <data name="BoardToolbarPage_ResetConfirm" xml:space="preserve">
-    <value>确定要恢复为默认布局吗？当前布局将被覆盖。</value>
-  </data>
-  <data name="BoardToolbarPage_AreaComponents" xml:space="preserve">
-    <value>区域独立组件</value>
-  </data>
-  <data name="BoardToolbarPage_AreaComponentsHint" xml:space="preserve">
-    <value>不属于任何分组的组件将独立显示在此区域中。可从组件库拖拽添加。</value>
-  </data>
   <data name="BoardToolbarPage_AreaGroups" xml:space="preserve">
     <value>区域分组</value>
-  </data>
-  <data name="BoardToolbarPage_Position" xml:space="preserve">
-    <value>按钮位置</value>
-  </data>
-  <data name="BoardToolbarPage_PositionDesc" xml:space="preserve">
-    <value>控制按钮在分组中的位置样式</value>
-  </data>
-  <data name="BoardToolbarPage_PositionFirst" xml:space="preserve">
-    <value>首个</value>
-  </data>
-  <data name="BoardToolbarPage_PositionMiddle" xml:space="preserve">
-    <value>中间</value>
-  </data>
-  <data name="BoardToolbarPage_PositionLast" xml:space="preserve">
-    <value>末个</value>
-  </data>
-  <data name="BoardToolbarPage_PositionSingle" xml:space="preserve">
-    <value>独立</value>
-  </data>
-  <data name="BoardToolbarPage_MoveUp" xml:space="preserve">
-    <value>上移</value>
-  </data>
-  <data name="BoardToolbarPage_MoveDown" xml:space="preserve">
-    <value>下移</value>
   </data>
   <data name="BoardToolbarPage_GroupNavigation" xml:space="preserve">
     <value>页面导航</value>
@@ -615,29 +549,8 @@
   <data name="FloatingBar_MiniWhiteboard" xml:space="preserve">
     <value>小白板</value>
   </data>
-  <data name="MiniWhiteboard_Undo" xml:space="preserve">
-    <value>撤销</value>
-  </data>
-  <data name="MiniWhiteboard_Redo" xml:space="preserve">
-    <value>重做</value>
-  </data>
   <data name="MiniWhiteboard_Clear" xml:space="preserve">
     <value>清除</value>
-  </data>
-  <data name="MiniWhiteboard_NewPage" xml:space="preserve">
-    <value>新建页面</value>
-  </data>
-  <data name="MiniWhiteboard_DeletePage" xml:space="preserve">
-    <value>删除页面</value>
-  </data>
-  <data name="MiniWhiteboard_PageInfo" xml:space="preserve">
-    <value>页码</value>
-  </data>
-  <data name="MiniWhiteboard_Pen" xml:space="preserve">
-    <value>画笔</value>
-  </data>
-  <data name="MiniWhiteboard_Eraser" xml:space="preserve">
-    <value>橡皮擦</value>
   </data>
   <data name="MiniWhiteboard_Settings_Enable" xml:space="preserve">
     <value>启用小白板</value>

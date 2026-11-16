@@ -38,8 +38,538 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Board_Background" xml:space="preserve"><value>背景</value></data><data name="Board_ClearInk" xml:space="preserve"><value>清空墨跡</value></data><data name="Board_ClearInkAndHistory" xml:space="preserve"><value>清空墨跡和歷史</value></data><data name="Board_DeleteThisPage" xml:space="preserve"><value>刪除此頁</value></data><data name="Board_Eraser" xml:space="preserve"><value>橡皮</value></data><data name="Board_EraserOptions" xml:space="preserve"><value>橡皮選項</value></data><data name="Board_EraserShape_Blackboard" xml:space="preserve"><value>黑板擦</value></data><data name="Board_EraserShape_Circle" xml:space="preserve"><value>圓形擦</value></data><data name="Board_Gesture" xml:space="preserve"><value>手勢</value></data><data name="Board_Highlighter" xml:space="preserve"><value>熒光筆</value></data><data name="Board_InsertImage" xml:space="preserve"><value>插入檔案</value></data><data name="Board_LaserPen" xml:space="preserve"><value>激光筆</value></data><data name="Board_NewPage" xml:space="preserve"><value>新頁面</value></data><data name="Board_NextPage" xml:space="preserve"><value>下一頁</value></data><data name="Board_Page" xml:space="preserve"><value>頁面</value></data><data name="Board_Pen" xml:space="preserve"><value>筆</value></data><data name="Board_PreviousPage" xml:space="preserve"><value>上一頁</value></data><data name="Board_Redo" xml:space="preserve"><value>重做</value></data><data name="Board_Screenshot" xml:space="preserve"><value>截圖</value></data><data name="Board_Select" xml:space="preserve"><value>選擇</value></data><data name="Board_SelectImage" xml:space="preserve"><value>插入檔案</value></data><data name="Board_Shape" xml:space="preserve"><value>圖形</value></data><data name="Board_Size" xml:space="preserve"><value>大小</value></data><data name="Board_StrokeEraser" xml:space="preserve"><value>線擦</value></data><data name="Board_Tools" xml:space="preserve"><value>工具</value></data><data name="Board_TwoFingerMove" xml:space="preserve"><value>雙指移動</value></data><data name="Board_Undo" xml:space="preserve"><value>撤銷</value></data><data name="Board_VideoBooth" xml:space="preserve"><value>影片展臺</value></data><data name="FloatingBar_Annotate" xml:space="preserve"><value>批注</value></data><data name="FloatingBar_AreaEraser" xml:space="preserve"><value>面積擦</value></data><data name="FloatingBar_Clear" xml:space="preserve"><value>清空</value></data><data name="FloatingBar_ClearAndMouse" xml:space="preserve"><value>清并鼠</value></data><data name="FloatingBar_ExitButton" xml:space="preserve"><value>退出</value></data><data name="FloatingBar_Freeze" xml:space="preserve"><value>凍結</value></data><data name="FloatingBar_Geometry" xml:space="preserve"><value>幾何</value></data><data name="FloatingBar_Gesture_MultiTouchWriting" xml:space="preserve"><value>多指書寫</value></data><data name="FloatingBar_Gesture_TwoFingerRotate" xml:space="preserve"><value>雙指旋轉</value></data><data name="FloatingBar_Gesture_TwoFingerZoom" xml:space="preserve"><value>雙指縮放</value></data><data name="FloatingBar_GestureButton" xml:space="preserve"><value>手勢</value></data><data name="FloatingBar_Hide" xml:space="preserve"><value>隱藏</value></data><data name="FloatingBar_LassoSelect" xml:space="preserve"><value>套索選</value></data><data name="FloatingBar_Mouse" xml:space="preserve"><value>滑鼠</value></data><data name="FloatingBar_StrokeEraser" xml:space="preserve"><value>線擦</value></data><data name="FloatingBar_Unfreeze" xml:space="preserve"><value>解凍</value></data><data name="FloatingBar_Whiteboard" xml:space="preserve"><value>白板</value></data><data name="Theme_Dark" xml:space="preserve"><value>深色</value></data><data name="Action_Exit" xml:space="preserve"><value>退出</value></data><data name="Pen_Thickness" xml:space="preserve"><value>粗細</value></data><data name="QuickPanel_ExitShow" xml:space="preserve"><value>退出放映</value></data><data name="QuickPanel_Show" xml:space="preserve"><value>批注欄</value></data><data name="QuickPanel_SingleDraw" xml:space="preserve"><value>單次抽</value></data><data name="QuickPanel_Timer" xml:space="preserve"><value>計時器</value></data><data name="Tools_Manual" xml:space="preserve"><value>說明書</value></data><data name="Tools_MoreFeaturesTitle" xml:space="preserve"><value>更多功能</value></data><data name="Tools_Open" xml:space="preserve"><value>打開...</value></data><data name="Tools_RandomDraw" xml:space="preserve"><value>隨機抽</value></data><data name="Tools_Replay" xml:space="preserve"><value>重播</value></data><data name="Tools_Save" xml:space="preserve"><value>儲存</value></data><data name="Tools_Screenshot" xml:space="preserve"><value>截屏</value></data><data name="ToolbarPage_ConfigProfiles" xml:space="preserve"><value>配置檔案</value></data><data name="ToolbarPage_NewProfile" xml:space="preserve"><value>新建</value></data><data name="ToolbarPage_DuplicateProfile" xml:space="preserve"><value>復制</value></data><data name="ToolbarPage_DeleteProfile" xml:space="preserve"><value>刪除</value></data><data name="ToolbarPage_RefreshProfile" xml:space="preserve"><value>重新整理</value></data><data name="ToolbarPage_OpenConfigFolder" xml:space="preserve"><value>打開配置資料夾</value></data><data name="ToolbarPage_AddedComponentsHint" xml:space="preserve"><value>以下組件將顯示在浮動工具欄上，從組件庫拖曳組件以添加。</value></data><data name="ToolbarPage_AddedComponents" xml:space="preserve"><value>已添加組件</value></data><data name="ToolbarPage_GroupChildren" xml:space="preserve"><value>分組內組件</value></data><data name="ToolbarPage_GroupChildrenHint" xml:space="preserve"><value>拖曳組件庫中的組件到此處添加，或拖曳已有組件排序。</value></data><data name="ToolbarPage_ComponentLibrary" xml:space="preserve"><value>組件庫</value></data><data name="ToolbarPage_ComponentLibraryHint" xml:space="preserve"><value>拖曳組件到上方已添加列表或分組內組件列表以添加到工具欄。</value></data><data name="ToolbarPage_ComponentSettings" xml:space="preserve"><value>組件設定</value></data><data name="ToolbarPage_ComponentProperties" xml:space="preserve"><value>組件屬性</value></data><data name="ToolbarPage_SeparateBorder" xml:space="preserve"><value>獨立邊框</value></data><data name="ToolbarPage_SeparateBorderDesc" xml:space="preserve"><value>為此組件顯示獨立的邊框包裝</value></data><data name="ToolbarPage_DisplayMode" xml:space="preserve"><value>顯示模式</value></data><data name="ToolbarPage_QuickPaletteDisplayModeDesc" xml:space="preserve"><value>選擇快捷調色盤的顏色數量</value></data><data name="ToolbarPage_Size" xml:space="preserve"><value>尺寸</value></data><data name="ToolbarPage_FixedWidth" xml:space="preserve"><value>固定寬度</value></data><data name="ToolbarPage_FixedHeight" xml:space="preserve"><value>固定高度</value></data><data name="ToolbarPage_MinWidth" xml:space="preserve"><value>最小寬度</value></data><data name="ToolbarPage_MaxWidth" xml:space="preserve"><value>最大寬度</value></data><data name="ToolbarPage_MinHeight" xml:space="preserve"><value>最小高度</value></data><data name="ToolbarPage_MaxHeight" xml:space="preserve"><value>最大高度</value></data><data name="ToolbarPage_Alignment" xml:space="preserve"><value>對齊</value></data><data name="ToolbarPage_HorizontalAlignment" xml:space="preserve"><value>水平對齊</value></data><data name="ToolbarPage_VerticalAlignment" xml:space="preserve"><value>垂直對齊</value></data><data name="ToolbarPage_Left" xml:space="preserve"><value>左</value></data><data name="ToolbarPage_Center" xml:space="preserve"><value>居中</value></data><data name="ToolbarPage_Right" xml:space="preserve"><value>右</value></data><data name="ToolbarPage_Top" xml:space="preserve"><value>上</value></data><data name="ToolbarPage_Bottom" xml:space="preserve"><value>下</value></data><data name="ToolbarPage_Stretch" xml:space="preserve"><value>拉伸</value></data><data name="ToolbarPage_Appearance" xml:space="preserve"><value>外觀</value></data><data name="ToolbarPage_FontSize" xml:space="preserve"><value>字型大小</value></data><data name="ToolbarPage_IconSize" xml:space="preserve"><value>圖標大小</value></data><data name="ToolbarPage_Opacity" xml:space="preserve"><value>不透明度</value></data><data name="ToolbarPage_RedStyle" xml:space="preserve"><value>紅色強調</value></data><data name="ToolbarPage_RedStyleDesc" xml:space="preserve"><value>將該組件的圖標和文字顯示為紅色</value></data><data name="ToolbarPage_Margin" xml:space="preserve"><value>邊距</value></data><data name="ToolbarPage_MarginHint" xml:space="preserve"><value>左、上、右、下</value></data><data name="ToolbarPage_ResetComponentSettings" xml:space="preserve"><value>重設組件設定</value></data><data name="ToolbarPage_HideByRules" xml:space="preserve"><value>按規則隱藏</value></data><data name="ToolbarPage_HideByRulesDesc" xml:space="preserve"><value>當規則集滿足時隱藏此組件。</value></data><data name="ToolbarPage_AnyConditionGroupMet" xml:space="preserve"><value>當以下任意條件組滿足時</value></data><data name="ToolbarPage_AllConditionGroupsMet" xml:space="preserve"><value>當以下所有條件組滿足時</value></data><data name="ToolbarPage_Reverse" xml:space="preserve"><value>反轉</value></data><data name="ToolbarPage_AddGroup" xml:space="preserve"><value>添加組</value></data><data name="ToolbarPage_AnyConditionMet" xml:space="preserve"><value>當以下任意條件滿足時</value></data><data name="ToolbarPage_AllConditionsMet" xml:space="preserve"><value>當以下所有條件滿足時</value></data><data name="ToolbarPage_Rule" xml:space="preserve"><value>規則</value></data><data name="ToolbarPage_EnableConditionGroup" xml:space="preserve"><value>啟用條件組</value></data><data name="ToolbarPage_ResetLayout" xml:space="preserve"><value>恢復預設布局</value></data><data name="ToolbarPage_AddToAdded" xml:space="preserve"><value>添加到已添加組件</value></data><data name="ToolbarPage_Duplicate" xml:space="preserve"><value>復制</value></data><data name="ToolbarPage_NewConfig" xml:space="preserve"><value>新建配置</value></data><data name="ToolbarPage_CopyConfig" xml:space="preserve"><value>復制配置</value></data><data name="ToolbarPage_EnterConfigName" xml:space="preserve"><value>請輸入配置檔案名稱：</value></data><data name="ToolbarPage_EnterNewConfigName" xml:space="preserve"><value>請輸入新配置檔案名稱：</value></data><data name="ToolbarPage_DuplicateConfigExists" xml:space="preserve"><value>同名配置檔案已存在。</value></data><data name="ToolbarPage_Hint" xml:space="preserve"><value>提示</value></data><data name="ToolbarPage_AtLeastOneConfig" xml:space="preserve"><value>至少需要保留一個配置檔案。</value></data><data name="ToolbarPage_ConfirmDeleteConfig" xml:space="preserve"><value>確定要刪除配置</value></data><data name="ToolbarPage_ConfirmDelete" xml:space="preserve"><value>確認刪除</value></data><data name="ToolbarPage_OK" xml:space="preserve"><value>確定</value></data><data name="ToolbarPage_Cancel" xml:space="preserve"><value>取消</value></data><data name="ToolbarItem_Desc_Cursor" xml:space="preserve"><value>光標工具</value></data><data name="ToolbarItem_Desc_Pen" xml:space="preserve"><value>畫筆工具</value></data><data name="ToolbarItem_Desc_Clear" xml:space="preserve"><value>清除墨跡</value></data><data name="ToolbarItem_Desc_InkFreeze" xml:space="preserve"><value>墨跡凍結</value></data><data name="ToolbarItem_Desc_Eraser" xml:space="preserve"><value>區域橡皮擦</value></data><data name="ToolbarItem_Desc_StrokeEraser" xml:space="preserve"><value>筆畫橡皮擦</value></data><data name="ToolbarItem_Desc_Select" xml:space="preserve"><value>套索選擇</value></data><data name="ToolbarItem_Desc_CursorWithDel" xml:space="preserve"><value>清除并切換光標</value></data><data name="ToolbarItem_Desc_Fold" xml:space="preserve"><value>折疊工具欄</value></data><data name="ToolbarItem_Desc_Gesture" xml:space="preserve"><value>手勢操作</value></data><data name="ToolbarItem_Desc_Exit" xml:space="preserve"><value>退出PPT演示</value></data><data name="ToolbarItem_Desc_QuickColorPalette" xml:space="preserve"><value>快速選色面板</value></data><data name="ToolbarItem_Desc_Group" xml:space="preserve"><value>將多個工具組合在一起顯示</value></data><data name="ToolbarItem_Desc_Separator" xml:space="preserve"><value>分割線</value></data><data name="FloatingBar_QuickPaletteMode" xml:space="preserve"><value>快捷調色盤</value></data><data name="ToolbarCondition_Annotating" xml:space="preserve"><value>批注模式</value></data><data name="ToolbarCondition_PPTMode" xml:space="preserve"><value>PPT模式</value></data><data name="ToolbarCondition_Collapsed" xml:space="preserve"><value>工具欄已折疊</value></data><data name="FloatingBar_PenTipStyle" xml:space="preserve"><value>筆鋒</value></data><data name="FloatingBar_PenStyle_RealTime" xml:space="preserve"><value>實時筆鋒</value></data><data name="FloatingBar_PenStyle_PointSet" xml:space="preserve"><value>基于點集</value></data><data name="FloatingBar_PenStyle_Velocity" xml:space="preserve"><value>基于速率</value></data><data name="FloatingBar_PenStyle_Off" xml:space="preserve"><value>關閉筆鋒</value></data><data name="FloatingBar_HighlighterOverlap" xml:space="preserve"><value>重疊加深</value></data><data name="FloatingBar_Opacity" xml:space="preserve"><value>透明</value></data><data name="FloatingBar_FadeDelay" xml:space="preserve"><value>延遲</value></data><data name="FloatingBar_FadeSpeed" xml:space="preserve"><value>倍速</value></data><data name="FloatingBar_ColorThemeLight" xml:space="preserve"><value>亮系</value></data><data name="BoardToolbarPage_ConfigProfiles" xml:space="preserve"><value>配置方案</value></data><data name="BoardToolbarPage_NewProfile" xml:space="preserve"><value>新建配置</value></data><data name="BoardToolbarPage_DuplicateProfile" xml:space="preserve"><value>復制配置</value></data><data name="BoardToolbarPage_DeleteProfile" xml:space="preserve"><value>刪除配置</value></data><data name="BoardToolbarPage_Areas" xml:space="preserve"><value>區域配置</value></data><data name="BoardToolbarPage_LeftArea" xml:space="preserve"><value>左側區域</value></data><data name="BoardToolbarPage_CenterArea" xml:space="preserve"><value>中間區域</value></data><data name="BoardToolbarPage_RightArea" xml:space="preserve"><value>右側區域</value></data><data name="BoardToolbarPage_ComponentLibrary" xml:space="preserve"><value>組件庫</value></data><data name="BoardToolbarPage_AddGroup" xml:space="preserve"><value>+ 新建分組</value></data><data name="BoardToolbarPage_AddGroup2" xml:space="preserve"><value>新建分組</value></data><data name="BoardToolbarPage_AddComponent2" xml:space="preserve"><value>添加組件</value></data><data name="BoardToolbarPage_NewGroupName" xml:space="preserve"><value>請輸入新分組名稱</value></data><data name="BoardToolbarPage_ResetDefault" xml:space="preserve"><value>恢復預設布局</value></data><data name="BoardToolbarPage_AtLeastOneConfig" xml:space="preserve"><value>至少保留一個配置檔案。</value></data><data name="BoardToolbarPage_ConfirmDeleteConfig" xml:space="preserve"><value>確定要刪除此配置嗎？</value></data><data name="BoardToolbarPage_EnterNewConfigName" xml:space="preserve"><value>請輸入新配置名稱：</value></data><data name="BoardToolbarPage_ResetConfirm" xml:space="preserve"><value>確定要恢復為預設布局嗎？當前布局將被覆蓋。</value></data><data name="BoardToolbarPage_AreaComponents" xml:space="preserve"><value>區域獨立組件</value></data><data name="BoardToolbarPage_AreaComponentsHint" xml:space="preserve"><value>不屬于任何分組的組件將獨立顯示在此區域中。可從組件庫拖拽添加。</value></data><data name="BoardToolbarPage_AreaGroups" xml:space="preserve"><value>區域分組</value></data><data name="BoardToolbarPage_Position" xml:space="preserve"><value>按鈕位置</value></data><data name="BoardToolbarPage_PositionDesc" xml:space="preserve"><value>控制按鈕在分組中的位置樣式</value></data><data name="BoardToolbarPage_PositionFirst" xml:space="preserve"><value>首個</value></data><data name="BoardToolbarPage_PositionMiddle" xml:space="preserve"><value>中間</value></data><data name="BoardToolbarPage_PositionLast" xml:space="preserve"><value>末個</value></data><data name="BoardToolbarPage_PositionSingle" xml:space="preserve"><value>獨立</value></data><data name="BoardToolbarPage_MoveUp" xml:space="preserve"><value>上移</value></data><data name="BoardToolbarPage_MoveDown" xml:space="preserve"><value>下移</value></data><data name="BoardToolbarPage_GroupNavigation" xml:space="preserve"><value>頁面導航</value></data><data name="BoardToolbarPage_GroupVideoBooth" xml:space="preserve"><value>影片展臺</value></data><data name="BoardToolbarPage_GroupGesture" xml:space="preserve"><value>手勢與背景</value></data><data name="BoardToolbarPage_GroupTools" xml:space="preserve"><value>批注工具</value></data><data name="BoardToolbarPage_GroupSystem" xml:space="preserve"><value>系統</value></data><data name="BoardToolbarPage_GroupAddPage" xml:space="preserve"><value>新增頁面</value></data><data name="BoardToolbarPage_Title" xml:space="preserve"><value>白板工具欄</value></data><data name="FloatingBar_MiniWhiteboard" xml:space="preserve"><value>小白板</value></data><data name="MiniWhiteboard_Undo" xml:space="preserve"><value>撤銷</value></data><data name="MiniWhiteboard_Redo" xml:space="preserve"><value>重做</value></data><data name="MiniWhiteboard_Clear" xml:space="preserve"><value>清除</value></data><data name="MiniWhiteboard_NewPage" xml:space="preserve"><value>新建頁面</value></data><data name="MiniWhiteboard_DeletePage" xml:space="preserve"><value>刪除頁面</value></data><data name="MiniWhiteboard_PageInfo" xml:space="preserve"><value>頁碼</value></data><data name="MiniWhiteboard_Pen" xml:space="preserve"><value>畫筆</value></data><data name="MiniWhiteboard_Eraser" xml:space="preserve"><value>橡皮擦</value></data><data name="MiniWhiteboard_Settings_Enable" xml:space="preserve"><value>啟用小白板</value></data><data name="MiniWhiteboard_Settings_SyncPPT" xml:space="preserve"><value>頁面與PPT聯動</value></data><data name="MiniWhiteboard_Settings_DefaultSize" xml:space="preserve"><value>預設大小</value></data><data name="MiniWhiteboard_Settings_Opacity" xml:space="preserve"><value>不透明度</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Board_Background" xml:space="preserve">
+    <value>背景</value>
+  </data>
+  <data name="Board_ClearInk" xml:space="preserve">
+    <value>清空墨跡</value>
+  </data>
+  <data name="Board_ClearInkAndHistory" xml:space="preserve">
+    <value>清空墨跡和歷史</value>
+  </data>
+  <data name="Board_DeleteThisPage" xml:space="preserve">
+    <value>刪除此頁</value>
+  </data>
+  <data name="Board_Eraser" xml:space="preserve">
+    <value>橡皮</value>
+  </data>
+  <data name="Board_EraserOptions" xml:space="preserve">
+    <value>橡皮選項</value>
+  </data>
+  <data name="Board_EraserShape_Blackboard" xml:space="preserve">
+    <value>黑板擦</value>
+  </data>
+  <data name="Board_EraserShape_Circle" xml:space="preserve">
+    <value>圓形擦</value>
+  </data>
+  <data name="Board_Gesture" xml:space="preserve">
+    <value>手勢</value>
+  </data>
+  <data name="Board_Highlighter" xml:space="preserve">
+    <value>熒光筆</value>
+  </data>
+  <data name="Board_InsertImage" xml:space="preserve">
+    <value>插入檔案</value>
+  </data>
+  <data name="Board_LaserPen" xml:space="preserve">
+    <value>激光筆</value>
+  </data>
+  <data name="Board_NewPage" xml:space="preserve">
+    <value>新頁面</value>
+  </data>
+  <data name="Board_NextPage" xml:space="preserve">
+    <value>下一頁</value>
+  </data>
+  <data name="Board_Page" xml:space="preserve">
+    <value>頁面</value>
+  </data>
+  <data name="Board_Pen" xml:space="preserve">
+    <value>筆</value>
+  </data>
+  <data name="Board_PreviousPage" xml:space="preserve">
+    <value>上一頁</value>
+  </data>
+  <data name="Board_Redo" xml:space="preserve">
+    <value>重做</value>
+  </data>
+  <data name="Board_Screenshot" xml:space="preserve">
+    <value>截圖</value>
+  </data>
+  <data name="Board_Select" xml:space="preserve">
+    <value>選擇</value>
+  </data>
+  <data name="Board_SelectImage" xml:space="preserve">
+    <value>插入檔案</value>
+  </data>
+  <data name="Board_Shape" xml:space="preserve">
+    <value>圖形</value>
+  </data>
+  <data name="Board_Size" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="Board_StrokeEraser" xml:space="preserve">
+    <value>線擦</value>
+  </data>
+  <data name="Board_Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="Board_TwoFingerMove" xml:space="preserve">
+    <value>雙指移動</value>
+  </data>
+  <data name="Board_Undo" xml:space="preserve">
+    <value>撤銷</value>
+  </data>
+  <data name="Board_VideoBooth" xml:space="preserve">
+    <value>影片展臺</value>
+  </data>
+  <data name="FloatingBar_Annotate" xml:space="preserve">
+    <value>批注</value>
+  </data>
+  <data name="FloatingBar_AreaEraser" xml:space="preserve">
+    <value>面積擦</value>
+  </data>
+  <data name="FloatingBar_Clear" xml:space="preserve">
+    <value>清空</value>
+  </data>
+  <data name="FloatingBar_ClearAndMouse" xml:space="preserve">
+    <value>清并鼠</value>
+  </data>
+  <data name="FloatingBar_ExitButton" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="FloatingBar_Freeze" xml:space="preserve">
+    <value>凍結</value>
+  </data>
+  <data name="FloatingBar_Geometry" xml:space="preserve">
+    <value>幾何</value>
+  </data>
+  <data name="FloatingBar_Gesture_MultiTouchWriting" xml:space="preserve">
+    <value>多指書寫</value>
+  </data>
+  <data name="FloatingBar_Gesture_TwoFingerRotate" xml:space="preserve">
+    <value>雙指旋轉</value>
+  </data>
+  <data name="FloatingBar_Gesture_TwoFingerZoom" xml:space="preserve">
+    <value>雙指縮放</value>
+  </data>
+  <data name="FloatingBar_GestureButton" xml:space="preserve">
+    <value>手勢</value>
+  </data>
+  <data name="FloatingBar_Hide" xml:space="preserve">
+    <value>隱藏</value>
+  </data>
+  <data name="FloatingBar_LassoSelect" xml:space="preserve">
+    <value>套索選</value>
+  </data>
+  <data name="FloatingBar_Mouse" xml:space="preserve">
+    <value>滑鼠</value>
+  </data>
+  <data name="FloatingBar_StrokeEraser" xml:space="preserve">
+    <value>線擦</value>
+  </data>
+  <data name="FloatingBar_Unfreeze" xml:space="preserve">
+    <value>解凍</value>
+  </data>
+  <data name="FloatingBar_Whiteboard" xml:space="preserve">
+    <value>白板</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>深色</value>
+  </data>
+  <data name="Action_Exit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Pen_Thickness" xml:space="preserve">
+    <value>粗細</value>
+  </data>
+  <data name="QuickPanel_ExitShow" xml:space="preserve">
+    <value>退出放映</value>
+  </data>
+  <data name="QuickPanel_Show" xml:space="preserve">
+    <value>批注欄</value>
+  </data>
+  <data name="QuickPanel_SingleDraw" xml:space="preserve">
+    <value>單次抽</value>
+  </data>
+  <data name="QuickPanel_Timer" xml:space="preserve">
+    <value>計時器</value>
+  </data>
+  <data name="Tools_MoreFeaturesTitle" xml:space="preserve">
+    <value>更多功能</value>
+  </data>
+  <data name="Tools_Open" xml:space="preserve">
+    <value>打開...</value>
+  </data>
+  <data name="Tools_Replay" xml:space="preserve">
+    <value>重播</value>
+  </data>
+  <data name="Tools_Save" xml:space="preserve">
+    <value>儲存</value>
+  </data>
+  <data name="Tools_Screenshot" xml:space="preserve">
+    <value>截屏</value>
+  </data>
+  <data name="ToolbarPage_ConfigProfiles" xml:space="preserve">
+    <value>配置檔案</value>
+  </data>
+  <data name="ToolbarPage_NewProfile" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="ToolbarPage_DuplicateProfile" xml:space="preserve">
+    <value>復制</value>
+  </data>
+  <data name="ToolbarPage_DeleteProfile" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="ToolbarPage_RefreshProfile" xml:space="preserve">
+    <value>重新整理</value>
+  </data>
+  <data name="ToolbarPage_OpenConfigFolder" xml:space="preserve">
+    <value>打開配置資料夾</value>
+  </data>
+  <data name="ToolbarPage_AddedComponentsHint" xml:space="preserve">
+    <value>以下組件將顯示在浮動工具欄上，從組件庫拖曳組件以添加。</value>
+  </data>
+  <data name="ToolbarPage_AddedComponents" xml:space="preserve">
+    <value>已添加組件</value>
+  </data>
+  <data name="ToolbarPage_GroupChildren" xml:space="preserve">
+    <value>分組內組件</value>
+  </data>
+  <data name="ToolbarPage_GroupChildrenHint" xml:space="preserve">
+    <value>拖曳組件庫中的組件到此處添加，或拖曳已有組件排序。</value>
+  </data>
+  <data name="ToolbarPage_ComponentLibrary" xml:space="preserve">
+    <value>組件庫</value>
+  </data>
+  <data name="ToolbarPage_ComponentLibraryHint" xml:space="preserve">
+    <value>拖曳組件到上方已添加列表或分組內組件列表以添加到工具欄。</value>
+  </data>
+  <data name="ToolbarPage_ComponentSettings" xml:space="preserve">
+    <value>組件設定</value>
+  </data>
+  <data name="ToolbarPage_ComponentProperties" xml:space="preserve">
+    <value>組件屬性</value>
+  </data>
+  <data name="ToolbarPage_SeparateBorder" xml:space="preserve">
+    <value>獨立邊框</value>
+  </data>
+  <data name="ToolbarPage_SeparateBorderDesc" xml:space="preserve">
+    <value>為此組件顯示獨立的邊框包裝</value>
+  </data>
+  <data name="ToolbarPage_DisplayMode" xml:space="preserve">
+    <value>顯示模式</value>
+  </data>
+  <data name="ToolbarPage_QuickPaletteDisplayModeDesc" xml:space="preserve">
+    <value>選擇快捷調色盤的顏色數量</value>
+  </data>
+  <data name="ToolbarPage_Size" xml:space="preserve">
+    <value>尺寸</value>
+  </data>
+  <data name="ToolbarPage_FixedWidth" xml:space="preserve">
+    <value>固定寬度</value>
+  </data>
+  <data name="ToolbarPage_FixedHeight" xml:space="preserve">
+    <value>固定高度</value>
+  </data>
+  <data name="ToolbarPage_MinWidth" xml:space="preserve">
+    <value>最小寬度</value>
+  </data>
+  <data name="ToolbarPage_MaxWidth" xml:space="preserve">
+    <value>最大寬度</value>
+  </data>
+  <data name="ToolbarPage_MinHeight" xml:space="preserve">
+    <value>最小高度</value>
+  </data>
+  <data name="ToolbarPage_MaxHeight" xml:space="preserve">
+    <value>最大高度</value>
+  </data>
+  <data name="ToolbarPage_Alignment" xml:space="preserve">
+    <value>對齊</value>
+  </data>
+  <data name="ToolbarPage_HorizontalAlignment" xml:space="preserve">
+    <value>水平對齊</value>
+  </data>
+  <data name="ToolbarPage_VerticalAlignment" xml:space="preserve">
+    <value>垂直對齊</value>
+  </data>
+  <data name="ToolbarPage_Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="ToolbarPage_Center" xml:space="preserve">
+    <value>居中</value>
+  </data>
+  <data name="ToolbarPage_Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="ToolbarPage_Top" xml:space="preserve">
+    <value>上</value>
+  </data>
+  <data name="ToolbarPage_Bottom" xml:space="preserve">
+    <value>下</value>
+  </data>
+  <data name="ToolbarPage_Stretch" xml:space="preserve">
+    <value>拉伸</value>
+  </data>
+  <data name="ToolbarPage_Appearance" xml:space="preserve">
+    <value>外觀</value>
+  </data>
+  <data name="ToolbarPage_FontSize" xml:space="preserve">
+    <value>字型大小</value>
+  </data>
+  <data name="ToolbarPage_IconSize" xml:space="preserve">
+    <value>圖標大小</value>
+  </data>
+  <data name="ToolbarPage_Opacity" xml:space="preserve">
+    <value>不透明度</value>
+  </data>
+  <data name="ToolbarPage_RedStyle" xml:space="preserve">
+    <value>紅色強調</value>
+  </data>
+  <data name="ToolbarPage_RedStyleDesc" xml:space="preserve">
+    <value>將該組件的圖標和文字顯示為紅色</value>
+  </data>
+  <data name="ToolbarPage_Margin" xml:space="preserve">
+    <value>邊距</value>
+  </data>
+  <data name="ToolbarPage_MarginHint" xml:space="preserve">
+    <value>左、上、右、下</value>
+  </data>
+  <data name="ToolbarPage_ResetComponentSettings" xml:space="preserve">
+    <value>重設組件設定</value>
+  </data>
+  <data name="ToolbarPage_HideByRules" xml:space="preserve">
+    <value>按規則隱藏</value>
+  </data>
+  <data name="ToolbarPage_HideByRulesDesc" xml:space="preserve">
+    <value>當規則集滿足時隱藏此組件。</value>
+  </data>
+  <data name="ToolbarPage_AnyConditionGroupMet" xml:space="preserve">
+    <value>當以下任意條件組滿足時</value>
+  </data>
+  <data name="ToolbarPage_AllConditionGroupsMet" xml:space="preserve">
+    <value>當以下所有條件組滿足時</value>
+  </data>
+  <data name="ToolbarPage_Reverse" xml:space="preserve">
+    <value>反轉</value>
+  </data>
+  <data name="ToolbarPage_AddGroup" xml:space="preserve">
+    <value>添加組</value>
+  </data>
+  <data name="ToolbarPage_AnyConditionMet" xml:space="preserve">
+    <value>當以下任意條件滿足時</value>
+  </data>
+  <data name="ToolbarPage_AllConditionsMet" xml:space="preserve">
+    <value>當以下所有條件滿足時</value>
+  </data>
+  <data name="ToolbarPage_Rule" xml:space="preserve">
+    <value>規則</value>
+  </data>
+  <data name="ToolbarPage_EnableConditionGroup" xml:space="preserve">
+    <value>啟用條件組</value>
+  </data>
+  <data name="ToolbarPage_ResetLayout" xml:space="preserve">
+    <value>恢復預設布局</value>
+  </data>
+  <data name="ToolbarPage_AddToAdded" xml:space="preserve">
+    <value>添加到已添加組件</value>
+  </data>
+  <data name="ToolbarPage_Duplicate" xml:space="preserve">
+    <value>復制</value>
+  </data>
+  <data name="ToolbarPage_NewConfig" xml:space="preserve">
+    <value>新建配置</value>
+  </data>
+  <data name="ToolbarPage_CopyConfig" xml:space="preserve">
+    <value>復制配置</value>
+  </data>
+  <data name="ToolbarPage_EnterConfigName" xml:space="preserve">
+    <value>請輸入配置檔案名稱：</value>
+  </data>
+  <data name="ToolbarPage_EnterNewConfigName" xml:space="preserve">
+    <value>請輸入新配置檔案名稱：</value>
+  </data>
+  <data name="ToolbarPage_DuplicateConfigExists" xml:space="preserve">
+    <value>同名配置檔案已存在。</value>
+  </data>
+  <data name="ToolbarPage_Hint" xml:space="preserve">
+    <value>提示</value>
+  </data>
+  <data name="ToolbarPage_AtLeastOneConfig" xml:space="preserve">
+    <value>至少需要保留一個配置檔案。</value>
+  </data>
+  <data name="ToolbarPage_ConfirmDeleteConfig" xml:space="preserve">
+    <value>確定要刪除配置</value>
+  </data>
+  <data name="ToolbarPage_ConfirmDelete" xml:space="preserve">
+    <value>確認刪除</value>
+  </data>
+  <data name="ToolbarPage_OK" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="ToolbarPage_Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ToolbarItem_Desc_Cursor" xml:space="preserve">
+    <value>光標工具</value>
+  </data>
+  <data name="ToolbarItem_Desc_Pen" xml:space="preserve">
+    <value>畫筆工具</value>
+  </data>
+  <data name="ToolbarItem_Desc_Clear" xml:space="preserve">
+    <value>清除墨跡</value>
+  </data>
+  <data name="ToolbarItem_Desc_InkFreeze" xml:space="preserve">
+    <value>墨跡凍結</value>
+  </data>
+  <data name="ToolbarItem_Desc_Eraser" xml:space="preserve">
+    <value>區域橡皮擦</value>
+  </data>
+  <data name="ToolbarItem_Desc_StrokeEraser" xml:space="preserve">
+    <value>筆畫橡皮擦</value>
+  </data>
+  <data name="ToolbarItem_Desc_Select" xml:space="preserve">
+    <value>套索選擇</value>
+  </data>
+  <data name="ToolbarItem_Desc_CursorWithDel" xml:space="preserve">
+    <value>清除并切換光標</value>
+  </data>
+  <data name="ToolbarItem_Desc_Fold" xml:space="preserve">
+    <value>折疊工具欄</value>
+  </data>
+  <data name="ToolbarItem_Desc_Gesture" xml:space="preserve">
+    <value>手勢操作</value>
+  </data>
+  <data name="ToolbarItem_Desc_Exit" xml:space="preserve">
+    <value>退出PPT演示</value>
+  </data>
+  <data name="ToolbarItem_Desc_QuickColorPalette" xml:space="preserve">
+    <value>快速選色面板</value>
+  </data>
+  <data name="ToolbarItem_Desc_Group" xml:space="preserve">
+    <value>將多個工具組合在一起顯示</value>
+  </data>
+  <data name="ToolbarItem_Desc_Separator" xml:space="preserve">
+    <value>分割線</value>
+  </data>
+  <data name="FloatingBar_QuickPaletteMode" xml:space="preserve">
+    <value>快捷調色盤</value>
+  </data>
+  <data name="ToolbarCondition_Annotating" xml:space="preserve">
+    <value>批注模式</value>
+  </data>
+  <data name="ToolbarCondition_PPTMode" xml:space="preserve">
+    <value>PPT模式</value>
+  </data>
+  <data name="ToolbarCondition_Collapsed" xml:space="preserve">
+    <value>工具欄已折疊</value>
+  </data>
+  <data name="FloatingBar_PenTipStyle" xml:space="preserve">
+    <value>筆鋒</value>
+  </data>
+  <data name="FloatingBar_PenStyle_RealTime" xml:space="preserve">
+    <value>實時筆鋒</value>
+  </data>
+  <data name="FloatingBar_PenStyle_PointSet" xml:space="preserve">
+    <value>基于點集</value>
+  </data>
+  <data name="FloatingBar_PenStyle_Velocity" xml:space="preserve">
+    <value>基于速率</value>
+  </data>
+  <data name="FloatingBar_PenStyle_Off" xml:space="preserve">
+    <value>關閉筆鋒</value>
+  </data>
+  <data name="FloatingBar_HighlighterOverlap" xml:space="preserve">
+    <value>重疊加深</value>
+  </data>
+  <data name="FloatingBar_Opacity" xml:space="preserve">
+    <value>透明</value>
+  </data>
+  <data name="FloatingBar_FadeDelay" xml:space="preserve">
+    <value>延遲</value>
+  </data>
+  <data name="FloatingBar_FadeSpeed" xml:space="preserve">
+    <value>倍速</value>
+  </data>
+  <data name="FloatingBar_ColorThemeLight" xml:space="preserve">
+    <value>亮系</value>
+  </data>
+  <data name="BoardToolbarPage_ConfigProfiles" xml:space="preserve">
+    <value>配置方案</value>
+  </data>
+  <data name="BoardToolbarPage_DeleteProfile" xml:space="preserve">
+    <value>刪除配置</value>
+  </data>
+  <data name="BoardToolbarPage_Areas" xml:space="preserve">
+    <value>區域配置</value>
+  </data>
+  <data name="BoardToolbarPage_LeftArea" xml:space="preserve">
+    <value>左側區域</value>
+  </data>
+  <data name="BoardToolbarPage_CenterArea" xml:space="preserve">
+    <value>中間區域</value>
+  </data>
+  <data name="BoardToolbarPage_RightArea" xml:space="preserve">
+    <value>右側區域</value>
+  </data>
+  <data name="BoardToolbarPage_AddGroup2" xml:space="preserve">
+    <value>新建分組</value>
+  </data>
+  <data name="BoardToolbarPage_ResetDefault" xml:space="preserve">
+    <value>恢復預設布局</value>
+  </data>
+  <data name="BoardToolbarPage_AreaGroups" xml:space="preserve">
+    <value>區域分組</value>
+  </data>
+  <data name="BoardToolbarPage_GroupNavigation" xml:space="preserve">
+    <value>頁面導航</value>
+  </data>
+  <data name="BoardToolbarPage_GroupVideoBooth" xml:space="preserve">
+    <value>影片展臺</value>
+  </data>
+  <data name="BoardToolbarPage_GroupGesture" xml:space="preserve">
+    <value>手勢與背景</value>
+  </data>
+  <data name="BoardToolbarPage_GroupTools" xml:space="preserve">
+    <value>批注工具</value>
+  </data>
+  <data name="BoardToolbarPage_GroupSystem" xml:space="preserve">
+    <value>系統</value>
+  </data>
+  <data name="BoardToolbarPage_GroupAddPage" xml:space="preserve">
+    <value>新增頁面</value>
+  </data>
+  <data name="BoardToolbarPage_Title" xml:space="preserve">
+    <value>白板工具欄</value>
+  </data>
+  <data name="FloatingBar_MiniWhiteboard" xml:space="preserve">
+    <value>小白板</value>
+  </data>
+  <data name="MiniWhiteboard_Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="MiniWhiteboard_Settings_Enable" xml:space="preserve">
+    <value>啟用小白板</value>
+  </data>
+  <data name="MiniWhiteboard_Settings_SyncPPT" xml:space="preserve">
+    <value>頁面與PPT聯動</value>
+  </data>
+  <data name="MiniWhiteboard_Settings_DefaultSize" xml:space="preserve">
+    <value>預設大小</value>
+  </data>
+  <data name="MiniWhiteboard_Settings_Opacity" xml:space="preserve">
+    <value>不透明度</value>
+  </data>
+</root>
