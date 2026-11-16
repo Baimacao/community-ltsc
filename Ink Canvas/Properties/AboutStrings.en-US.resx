@@ -48,6 +48,18 @@
   <data name="DevelopersLabel" xml:space="preserve">
     <value>Developers:</value>
   </data>
+  <data name="Dev_ICA" xml:space="preserve">
+    <value>Developer of ICA</value>
+  </data>
+  <data name="Dev_ICC" xml:space="preserve">
+    <value>Developer of ICC</value>
+  </data>
+  <data name="Dev_ICCCE" xml:space="preserve">
+    <value>Developer of ICC CE</value>
+  </data>
+  <data name="Dev_InkCanvas" xml:space="preserve">
+    <value>Developer of Ink Canvas</value>
+  </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>Released under GNU GPL v3. All upstream contributor credits and license notices are retained in full; any modification is likewise released under GPL v3.</value>
   </data>

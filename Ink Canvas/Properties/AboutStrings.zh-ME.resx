@@ -48,6 +48,18 @@
   <data name="DevelopersLabel" xml:space="preserve">
     <value>大佬们：</value>
   </data>
+  <data name="Dev_ICA" xml:space="preserve">
+    <value>ICA 的大佬</value>
+  </data>
+  <data name="Dev_ICC" xml:space="preserve">
+    <value>ICC 的大佬</value>
+  </data>
+  <data name="Dev_ICCCE" xml:space="preserve">
+    <value>ICC CE 的大佬</value>
+  </data>
+  <data name="Dev_InkCanvas" xml:space="preserve">
+    <value>Ink Canvas 的大佬</value>
+  </data>
   <data name="LicenseBody" xml:space="preserve">
     <value xml:space="preserve">本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
   </data>

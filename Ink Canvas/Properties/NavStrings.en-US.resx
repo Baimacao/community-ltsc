@@ -213,6 +213,9 @@
   <data name="Nav_BoardMenu_Tooltip" xml:space="preserve">
     <value>Board menu order and visibility</value>
   </data>
+  <data name="Nav_WhiteboardTips" xml:space="preserve">
+    <value>Quotes</value>
+  </data>
   <data name="Nav_ToolbarMenu" xml:space="preserve">
     <value>Menu</value>
   </data>

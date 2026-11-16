@@ -188,6 +188,9 @@
   <data name="Nav_BoardMenu_Tooltip" xml:space="preserve">
     <value>白板菜單排序與可見性</value>
   </data>
+  <data name="Nav_WhiteboardTips" xml:space="preserve">
+    <value>信仰の源</value>
+  </data>
   <data name="Nav_PPT_Tooltip" xml:space="preserve">
     <value>PPT聯動設定</value>
   </data>

@@ -56,6 +56,18 @@
   <data name="DevelopersLabel" xml:space="preserve">
     <value>開發者：</value>
   </data>
+  <data name="Dev_ICA" xml:space="preserve">
+    <value>ICA 的開發者</value>
+  </data>
+  <data name="Dev_ICC" xml:space="preserve">
+    <value>ICC 的開發者</value>
+  </data>
+  <data name="Dev_ICCCE" xml:space="preserve">
+    <value>ICC CE 的開發者</value>
+  </data>
+  <data name="Dev_InkCanvas" xml:space="preserve">
+    <value>Ink Canvas 的開發者</value>
+  </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>本項目遵循 GNU GPL v3。上游所有貢獻者的署名與許可聲明完整保留，任何修改同樣以 GPL v3 開放。</value>
   </data>

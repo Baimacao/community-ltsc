@@ -146,7 +146,5 @@ namespace Ink_Canvas.Properties
 
         public static string Settings_Description => ResourceManager.GetString(nameof(Settings_Description), _resourceCulture);
         public static string Nav_WhiteboardTips => ResourceManager.GetString(nameof(Nav_WhiteboardTips), _resourceCulture);
-
-        public static string Nav_WhiteboardTips_Tooltip => ResourceManager.GetString(nameof(Nav_WhiteboardTips_Tooltip), _resourceCulture);
     }
 }

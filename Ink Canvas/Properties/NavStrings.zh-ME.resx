@@ -219,4 +219,7 @@
   <data name="Nav_ToolbarMenu_Tooltip" xml:space="preserve">
     <value xml:space="preserve">工具栏菜单的顺序和显隐</value>
   </data>
+  <data name="Nav_WhiteboardTips" xml:space="preserve">
+    <value>信仰の源</value>
+  </data>
 </root>

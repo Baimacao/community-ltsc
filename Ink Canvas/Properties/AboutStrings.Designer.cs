@@ -44,6 +44,12 @@ namespace Ink_Canvas.Properties
         public static string LicenseBody => ResourceManager.GetString(nameof(LicenseBody), _resourceCulture);
 
         public static string DevelopersLabel => ResourceManager.GetString(nameof(DevelopersLabel), _resourceCulture);
+        public static string Dev_ICA => ResourceManager.GetString(nameof(Dev_ICA), _resourceCulture);
+        public static string Dev_ICC => ResourceManager.GetString(nameof(Dev_ICC), _resourceCulture);
+        public static string Dev_ICCCE => ResourceManager.GetString(nameof(Dev_ICCCE), _resourceCulture);
+        public static string Dev_InkCanvas => ResourceManager.GetString(nameof(Dev_InkCanvas), _resourceCulture);
+        public static string About_Dev_AI => ResourceManager.GetString(nameof(About_Dev_AI), _resourceCulture);
+        public static string About_Dev_ICCLTSC => ResourceManager.GetString(nameof(About_Dev_ICCLTSC), _resourceCulture);
         public static string LicenseTitle => ResourceManager.GetString(nameof(LicenseTitle), _resourceCulture);
 
         public static string OpenSourceSlogan => ResourceManager.GetString(nameof(OpenSourceSlogan), _resourceCulture);
