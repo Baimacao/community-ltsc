@@ -270,4 +270,16 @@
   <data name="Nav_Timer_Tooltip" xml:space="preserve">
     <value>Classroom timer and countdown</value>
   </data>
+  <data name="Nav_BoardMenu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Nav_BoardMenu_Tooltip" xml:space="preserve">
+    <value>Board menu order and visibility</value>
+  </data>
+  <data name="Nav_ToolbarMenu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Nav_ToolbarMenu_Tooltip" xml:space="preserve">
+    <value>Toolbar menu order and visibility</value>
+  </data>
 </root>

@@ -425,4 +425,25 @@
   <data name="Oobe_NavPresenter" xml:space="preserve">
     <value>翻頁筆</value>
   </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>關</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>開</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
+    <value>啟用翻頁筆適配</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
+    <value>開啟後，配對的功能鍵會正常工作；關閉時只攔截不回應，用來防止誤觸。</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
+    <value>其他模式下這些鍵完全不受影響，走系統原有邏輯。退出放映時會立刻卸載鍵盤鉤子。之後可以在「設定 → PPT → 翻頁筆適配」裡改鍵。</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
+    <value>只在 PPT 關聯放映時生效</value>
+  </data>
+  <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
+    <value>翻頁筆適配</value>
+  </data>
 </root>

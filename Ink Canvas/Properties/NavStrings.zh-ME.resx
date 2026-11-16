@@ -270,4 +270,16 @@
   <data name="Nav_Timer_Tooltip" xml:space="preserve">
     <value>课堂计时与倒计时</value>
   </data>
+  <data name="Nav_BoardMenu" xml:space="preserve">
+    <value>選單</value>
+  </data>
+  <data name="Nav_BoardMenu_Tooltip" xml:space="preserve">
+    <value>白板選單排序與可見度</value>
+  </data>
+  <data name="Nav_ToolbarMenu" xml:space="preserve">
+    <value>選單</value>
+  </data>
+  <data name="Nav_ToolbarMenu_Tooltip" xml:space="preserve">
+    <value>工具列選單排序與可見度</value>
+  </data>
 </root>

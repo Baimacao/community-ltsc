@@ -425,4 +425,25 @@
   <data name="Oobe_NavPresenter" xml:space="preserve">
     <value>Presenter</value>
   </data>
+  <data name="Common_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Common_On" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnable" xml:space="preserve">
+    <value>Enable clicker support</value>
+  </data>
+  <data name="Oobe_Step4PresenterEnableDesc" xml:space="preserve">
+    <value>When on, paired keys work normally. When off, they are only blocked, which prevents accidental presses.</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteBody" xml:space="preserve">
+    <value>In other modes these keys are untouched and behave as usual. The keyboard hook is removed as soon as the slideshow ends. You can rebind later in Settings → PPT → Clicker.</value>
+  </data>
+  <data name="Oobe_Step4PresenterNoteTitle" xml:space="preserve">
+    <value>Only applies during PowerPoint slideshows</value>
+  </data>
+  <data name="Oobe_Step4SectionPresenter" xml:space="preserve">
+    <value>Clicker support</value>
+  </data>
 </root>
