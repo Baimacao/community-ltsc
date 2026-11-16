@@ -1119,6 +1119,7 @@ namespace Ink_Canvas.Properties
             dict["Timer_ProgressiveSelectFile"] = ("TimerStrings", "Timer_ProgressiveSelectFile");
             dict["Timer_ProgressiveVolume"] = ("TimerStrings", "Timer_ProgressiveVolume");
             dict["Timer_Reset"] = ("TimerStrings", "Timer_Reset");
+            dict["Timer_SlimMode"] = ("TimerStrings", "Timer_SlimMode");
             dict["Timer_Title"] = ("TimerStrings", "Timer_Title");
             dict["Timer_UseLegacyButtons"] = ("TimerStrings", "Timer_UseLegacyButtons");
             dict["Timer_Volume"] = ("TimerStrings", "Timer_Volume");

@@ -9,8 +9,8 @@
         Title="{x:Static props:TimerStrings.Timer_Title}"
         Width="860"
         Height="520"
-        MinWidth="680"
-        MinHeight="420"
+        MinWidth="220"
+        MinHeight="70"
         Topmost="True"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
@@ -94,8 +94,11 @@
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
-                                <TextBlock x:Name="Colon1Display" Text=":" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource NewTimerWindowDigitForeground}" Margin="-20,-55,0,0"/>
+                                <Grid Height="166" Margin="-20,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="Colon1Display" Text=":" FontSize="48" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource NewTimerWindowDigitForeground}"/>
+                                </Grid>
                                 <!-- MM group -->
                                 <Grid Margin="0,0,20,0" Width="120">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -131,8 +134,11 @@
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
-                                <TextBlock x:Name="Colon2Display" Text=":" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource NewTimerWindowDigitForeground}" Margin="-20,-55,0,0"/>
+                                <Grid Height="166" Margin="-20,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="Colon2Display" Text=":" FontSize="48" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource NewTimerWindowDigitForeground}"/>
+                                </Grid>
                                 <!-- SS group -->
                                 <Grid Width="120">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -298,6 +304,38 @@
                         </Grid>
                         </Grid>
                     </Grid>
+                    <!-- 瘦小窗口按钮。
+                         折叠只是收起调时间控件，窗口本身还是 860×520；
+                         投影时这个尺寸会挡住课件，所以要能缩成一条挂在角落。
+                         「瘦窗」和「折叠」是两个独立状态：瘦窗里点数字恢复原窗口。 -->
+                    <Button x:Name="BtnSlimMode"
+                            Height="44" MinWidth="120"
+                            Padding="20,0"
+                            HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Margin="0,0,24,20"
+                            Cursor="Hand"
+                            Click="BtnSlimMode_Click"
+                            Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}"
+                            BorderThickness="0"
+                            ToolTipService.ToolTip="缩成小窗">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="22">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Path Data="M4 14h6 M14 4v6 M4 14l7 -7 M14 10v4a2 2 0 0 1 -2 2h-4"
+                                  Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"
+                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                  Fill="Transparent" Width="18" Height="18" Stretch="Uniform" Margin="0,0,8,0"/>
+                            <TextBlock Text="{x:Static props:TimerStrings.Timer_SlimMode}"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- Bottom bar -->
                     <Grid x:Name="BottomControlBar" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20" RenderTransformOrigin="0.5,0.5">
                         <Grid.RenderTransform>

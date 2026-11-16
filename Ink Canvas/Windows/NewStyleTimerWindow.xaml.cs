@@ -1485,7 +1485,10 @@ namespace Ink_Canvas.Windows
         {
             if (MainDisplayGrid == null) return;
 
-            double targetScale = folded ? FoldedDigitScale : 1.0;
+            // 瘦窗态下缩放由 AnimateDigitScale 单独控制，这里不抢
+            double targetScale = folded
+                ? (_isSlimMode ? SlimDigitScale : FoldedDigitScale)
+                : (_isSlimMode ? SlimDigitScale : 1.0);
 
             // 平移量：把数字区中心对到窗口中心。
             // RenderTransformOrigin=0.5,0.5 时缩放绕自身中心，所以只需要补左偏的那部分。
@@ -1580,6 +1583,142 @@ namespace Ink_Canvas.Windows
             }
         }
 
+        // ── 瘦小窗口 ─────────────────────────────────────────────
+        //
+        // 折叠只收起调时间控件，窗口还是 860×520，投影时会挡住课件。
+        // 瘦窗是把整个窗口缩成一条：只留数字，贴在角落不碍事。
+        //
+        // 瘦窗和折叠是两个独立状态，但瘦窗优先：
+        //   · 进瘦窗 = 先折叠（收起所有控件），再把窗口缩到 240×86
+        //   · 出瘦窗 = 恢复原尺寸，再展开（回到调时间状态）
+        // 所以用户点「小窗」时不需要先手动折叠。
+        //
+        // 窗口尺寸没法做弹簧动画（WPF 改 Window.Width/Height 是逐帧重排外框，
+        // 高 DPI 下会抖且掉帧），这里直接设值，但数字的缩放仍然走弹簧，
+        // 视觉上「窗口一步到位、数字弹过去」，比全程抖要好。
+
+        /// <summary>是否处于瘦窗态。</summary>
+        private bool _isSlimMode;
+
+        /// <summary>瘦窗尺寸。</summary>
+        private const double SlimWindowWidth = 240;
+        private const double SlimWindowHeight = 86;
+
+        /// <summary>瘦窗态的缩放比例。240 宽装下 500 宽的数字区，约 0.46。</summary>
+        private const double SlimDigitScale = 0.44;
+
+        /// <summary>进瘦窗之前记住原尺寸与位置，退出时还原。</summary>
+        private Rect _rectBeforeSlim;
+        private bool _hasRectBeforeSlim;
+
+        private void BtnSlimMode_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleSlimMode();
+        }
+
+        /// <summary>切换瘦窗。重复调用安全。</summary>
+        private void ToggleSlimMode()
+        {
+            if (_isSlimMode) ExitSlimMode();
+            else EnterSlimMode();
+        }
+
+        /// <summary>进入瘦窗态：先折叠，再缩窗口，贴到屏幕右下角。</summary>
+        private void EnterSlimMode()
+        {
+            if (_isSlimMode) return;
+
+            try
+            {
+                // 记住原尺寸位置
+                _rectBeforeSlim = new Rect(Left, Top, Width, Height);
+                _hasRectBeforeSlim = true;
+
+                _isSlimMode = true;
+
+                // 先折叠（收起所有控件，只留数字）
+                FoldAdjustPanel();
+                StopAdjustIdleCountdown();
+
+                // 缩窗口
+                MinWidth = 120;
+                MinHeight = 60;
+                Width = SlimWindowWidth;
+                Height = SlimWindowHeight;
+
+                // 贴到工作区右下角，留一点边距
+                var workArea = SystemParameters.WorkArea;
+                Left = workArea.Right - SlimWindowWidth - 24;
+                Top = workArea.Bottom - SlimWindowHeight - 24;
+
+                // 数字缩到能塞进小窗
+                AnimateDigitScale(SlimDigitScale);
+
+                LogHelper.WriteLogToFile($"计时器 | 进入瘦窗态 {SlimWindowWidth}x{SlimWindowHeight}", LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"进入瘦窗态失败: {ex.Message}", LogHelper.LogType.Error);
+                _isSlimMode = false;
+            }
+        }
+
+        /// <summary>退出瘦窗：还原尺寸位置，展开调时间。</summary>
+        private void ExitSlimMode()
+        {
+            if (!_isSlimMode) return;
+
+            try
+            {
+                _isSlimMode = false;
+
+                MinWidth = 220;
+                MinHeight = 70;
+
+                if (_hasRectBeforeSlim)
+                {
+                    Width = _rectBeforeSlim.Width;
+                    Height = _rectBeforeSlim.Height;
+                    Left = _rectBeforeSlim.X;
+                    Top = _rectBeforeSlim.Y;
+                }
+                else
+                {
+                    Width = 860;
+                    Height = 520;
+                }
+
+                UnfoldAdjustPanel();
+
+                LogHelper.WriteLogToFile("计时器 | 退出瘦窗态", LogHelper.LogType.Event);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"退出瘦窗态失败: {ex.Message}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>只动缩放，不动位置。瘦窗进出用。</summary>
+        private void AnimateDigitScale(double targetScale)
+        {
+            if (MainDisplayScale == null) return;
+
+            TrackSpringKey(MainDisplayScale);
+            SpringAnimator.AnimateScalar(MainDisplayScale, targetScale, v =>
+            {
+                try
+                {
+                    double sc = Math.Max(0.2, v);
+                    MainDisplayScale.ScaleX = sc;
+                    MainDisplayScale.ScaleY = sc;
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"计时器缩放动画失败: {ex.Message}", LogHelper.LogType.Warning);
+                }
+            }, SpringAnimator.Smooth);
+        }
+
         /// <summary>对元素透明度做弹簧驱动。</summary>
         private void AnimateOpacity(System.Windows.UIElement element, double target,
             SpringAnimator.SpringPreset preset, Action finished = null)
@@ -1604,7 +1743,7 @@ namespace Ink_Canvas.Windows
 
         private void MainBorder_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!_isAdjustPanelFolded) return;
+            if (!_isAdjustPanelFolded && !_isSlimMode) return;
 
             _foldPressPoint = e.GetPosition(this);
             _foldPressStarted = true;
@@ -1612,7 +1751,7 @@ namespace Ink_Canvas.Windows
 
         private void MainBorder_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isAdjustPanelFolded || !_foldPressStarted) return;
+            if ((!_isAdjustPanelFolded && !_isSlimMode) || !_foldPressStarted) return;
             if (e.LeftButton != MouseButtonState.Pressed) return;
 
             var now = e.GetPosition(this);
@@ -1633,11 +1772,21 @@ namespace Ink_Canvas.Windows
 
         private void MainBorder_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!_isAdjustPanelFolded) return;
             if (!_foldPressStarted) return;
 
             _foldPressStarted = false;
-            UnfoldAdjustPanel();
+
+            // 瘦窗里点一下 = 回大窗（ExitSlimMode 内部会展开）
+            if (_isSlimMode)
+            {
+                ExitSlimMode();
+                return;
+            }
+
+            if (_isAdjustPanelFolded)
+            {
+                UnfoldAdjustPanel();
+            }
         }
 
     }

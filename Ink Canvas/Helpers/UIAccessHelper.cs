@@ -213,6 +213,15 @@ namespace Ink_Canvas.Helpers
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern void GetStartupInfoW(ref STARTUPINFOW lpStartupInfo);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
+
+        private const uint WAIT_TIMEOUT = 0x00000102;
+
         [DllImport("userenv.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool CreateEnvironmentBlock(out IntPtr lpEnvironment, IntPtr hToken, bool bInherit);
@@ -870,9 +879,52 @@ namespace Ink_Canvas.Helpers
                     return false;
                 }
 
-                CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
-                LogHelper.WriteLogToFile($"UIAccess | 已使用 UIAccess 令牌启动新进程 (PID={pi.dwProcessId}, Exe={exePath})");
+
+                uint newPid = pi.dwProcessId;
+
+                // 存活校验。
+                //
+                // CreateProcessWithTokenW 返回 true 只说明进程被创建了，不代表它活着。
+                // 实测：点了「以普通权限重启」，日志显示新进程 PID 已起，然后就没有然后了 ——
+                // 新进程在几百毫秒内自己退了，旧进程也已经 Shutdown，用户看到的就是「程序没了」。
+                // 不查这一步，日志会一直骗人。
+                bool survived = false;
+                int exitCode = 0;
+                try
+                {
+                    // 1.5 秒够它走完启动早期的初始化和互斥体检查
+                    if (WaitForSingleObject(pi.hProcess, 1500) == WAIT_TIMEOUT)
+                    {
+                        survived = true;
+                    }
+                    else
+                    {
+                        GetExitCodeProcess(pi.hProcess, out uint code);
+                        exitCode = unchecked((int)code);
+                    }
+                }
+                catch (Exception probeEx)
+                {
+                    LogHelper.WriteLogToFile($"UIAccess | 新进程存活校验异常: {probeEx.Message}", LogHelper.LogType.Warning);
+                    // 校验本身出错不算失败，按 survived 处理，避免误判导致双重启动
+                    survived = true;
+                }
+                finally
+                {
+                    CloseHandle(pi.hProcess);
+                }
+
+                if (!survived)
+                {
+                    LogHelper.WriteLogToFile(
+                        $"UIAccess | 新进程启动后立即退出 (PID={newPid}, 退出码=0x{exitCode:X8}/{exitCode})。" +
+                        $"Exe={exePath}; Cmd={cmdBuilder}; 新进程自己的启动日志在 Logs 目录下，按时间找。",
+                        LogHelper.LogType.Error);
+                    return false;
+                }
+
+                LogHelper.WriteLogToFile($"UIAccess | 已使用 UIAccess 令牌启动新进程并确认存活 (PID={newPid}, Exe={exePath})");
                 return true;
             }
             finally
@@ -965,21 +1017,31 @@ namespace Ink_Canvas.Helpers
 
         private static string GetExecutablePathForRelaunch()
         {
-            string mainModulePath = null;
-            try
-            {
-                mainModulePath = Process.GetCurrentProcess().MainModule?.FileName;
-            }
-            catch { }
-
-            if (!string.IsNullOrEmpty(mainModulePath) && System.IO.File.Exists(mainModulePath))
-                return mainModulePath;
-
+            // 优先用 Environment.ProcessPath：.NET 6+ 的正式 API，
+            // 不需要任何权限，也不会因为跨会话 / 线程状态返回空。
+            //
+            // 原来的第一选择是 Process.GetCurrentProcess().MainModule.FileName，
+            // 那个属性在权限受限或模块信息尚未就绪时会抛异常或给 null，
+            // 而下面的兜底又直接把它（不加 try）再取一次 —— 一旦走到兜底就必崩。
             string processPath = Environment.ProcessPath;
             if (!string.IsNullOrEmpty(processPath) && System.IO.File.Exists(processPath))
                 return processPath;
 
-            return System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            try
+            {
+                var mainModulePath = Process.GetCurrentProcess().MainModule?.FileName;
+                if (!string.IsNullOrEmpty(mainModulePath) && System.IO.File.Exists(mainModulePath))
+                    return mainModulePath;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"UIAccess | 取主模块路径失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+
+            // 最后兜底：从 BaseDirectory 拼。exe 一定在输出根目录。
+            string dir = AppDomain.CurrentDomain.BaseDirectory;
+            string name = System.IO.Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]);
+            return System.IO.Path.Combine(dir, name + ".exe");
         }
 
         private static void AppendQuoted(StringBuilder sb, string arg)

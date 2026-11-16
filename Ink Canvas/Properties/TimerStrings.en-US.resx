@@ -156,4 +156,7 @@
   <data name="Timer_AdjustPanel" xml:space="preserve">
     <value>Adjust time</value>
   </data>
+  <data name="Timer_SlimMode" xml:space="preserve">
+    <value>Mini</value>
+  </data>
 </root>

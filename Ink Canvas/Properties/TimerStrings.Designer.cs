@@ -61,6 +61,11 @@ namespace Ink_Canvas.Properties
         /// </summary>
         public static string Timer_AdjustPanel => ResourceManager.GetString(nameof(Timer_AdjustPanel), _resourceCulture);
 
+        /// <summary>
+        ///   查找类似 小窗 的本地化字符串。
+        /// </summary>
+        public static string Timer_SlimMode => ResourceManager.GetString(nameof(Timer_SlimMode), _resourceCulture);
+
         public static string Timer_Reset => ResourceManager.GetString(nameof(Timer_Reset), _resourceCulture);
 
         public static string Timer_Title => ResourceManager.GetString(nameof(Timer_Title), _resourceCulture);

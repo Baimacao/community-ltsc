@@ -156,4 +156,7 @@
   <data name="Timer_AdjustPanel" xml:space="preserve">
     <value>调整时间</value>
   </data>
+  <data name="Timer_SlimMode" xml:space="preserve">
+    <value>小窗</value>
+  </data>
 </root>
