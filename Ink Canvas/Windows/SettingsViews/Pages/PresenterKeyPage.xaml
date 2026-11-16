@@ -6,9 +6,15 @@
          xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
          xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
          xmlns:props="clr-namespace:Ink_Canvas.Properties"
-         mc:Ignorable="d">
+         mc:Ignorable="d"
+         Title="{x:Static props:SettingsStrings.Nav_PresenterKey}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,12,24,24">
+    <!-- PanningMode：触摸屏专用。没有它只能用滚轮或拖滚动条，
+         而触摸屏上滚轮不存在、滚动条细得戳不中。 -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  PanningMode="VerticalFirst"
+                  PanningDeceleration="0.001"
+                  Padding="24,12,24,24">
         <ikw:SimpleStackPanel Spacing="12" MaxWidth="900" HorizontalAlignment="Left">
 
             <!-- 总开关 -->

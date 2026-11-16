@@ -206,6 +206,10 @@
                         <Setter Property="BorderBrush" Value="Transparent"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Style.Triggers>
+                            <!-- 鼠标悬停高亮。触摸屏没有 hover，所以这个高亮在触摸下不出现 ——
+                                 但这只是"这一整块属于一组"的视觉提示，不是操作入口，
+                                 底下的按钮和开关都能正常点。不为了它加 TouchDown 处理器：
+                                 那要在每个 Border 上挂事件，收益远小于复杂度。 -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#15000000"/>
                             </Trigger>
