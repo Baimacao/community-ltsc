@@ -89,11 +89,29 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 var settings = SettingsManager.Settings;
                 if (settings == null) return;
 
+                // 和首次引导一样标上"OOBE 正在显示"。
+                //
+                // OnLanguageChanged 靠这个标志判断"现在是不是在引导里"：
+                // 在那儿换语言意味着要清掉"已看过引导"的标记，重启后自动再弹一遍。
+                // 不标的话，从设置页重跑引导时换语言、重启后就进不了引导了。
+                var languageBeforeOobe = settings.Appearance?.Language;
+
                 var oobe = new OobeWindow(settings) { Owner = Application.Current.MainWindow };
-                oobe.ShowDialog();
+                try
+                {
+                    App.IsOobeShowing = true;
+                    oobe.ShowDialog();
+                }
+                finally
+                {
+                    App.IsOobeShowing = false;
+                }
 
                 // OOBE 内部已经写回 Settings，这里补一次落盘。
                 SettingsManager.SaveSettingsToFile();
+
+                // 引导里换过语言但用户点了"稍后"，这里再问一次。
+                _ = SettingsActionHub.PromptRestartIfLanguageChangedDuringOobeAsync(languageBeforeOobe);
             }
             catch (Exception ex)
             {

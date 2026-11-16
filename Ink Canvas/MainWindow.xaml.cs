@@ -66,7 +66,17 @@ namespace Ink_Canvas
 
         // 设置面板相关状态
         // _isApplyingLanguageFromSettings migrated to AppearancePage
+        // Window_Closing 里据此跳过关闭确认（语言切换走重启路线时不再关主窗口）。
         internal bool _isReloadingForLanguageChange;
+
+        /// <summary>
+        /// OOBE 因为换语言被打断（用户选了立即重启）。
+        ///
+        /// 作用：拦住 OnOobeCompleted 把 HasShownOobe 写回 true。
+        /// 不拦的话，用户在 OOBE 里换了语言、点了重启，重启回来发现引导不再弹，
+        /// 界面还是旧的 —— 等于这次重启白做了。
+        /// </summary>
+        internal static bool _oobeInterruptedForLanguageChange;
 
         // 全屏处理状态标志
         public bool isFullScreenApplied = false;
@@ -885,6 +895,10 @@ namespace Ink_Canvas
                                 ViewboxFloatingBar.Visibility = Visibility.Collapsed;
                             }
 
+                            // 记下进 OOBE 之前的语言。引导里改过语言的话，
+                            // 引导结束后要补一次重启提示 —— 界面文案不会热切换。
+                            var languageBeforeOobe = Settings?.Appearance?.Language;
+
                             var oobeWindow = new OobeWindow(Settings);
                             oobeWindow.Owner = this;
                             try
@@ -898,6 +912,9 @@ namespace Ink_Canvas
                             }
 
                             OnOobeCompleted();
+
+                            _ = Ink_Canvas.Windows.SettingsViews.Helpers.SettingsActionHub
+                                .PromptRestartIfLanguageChangedDuringOobeAsync(languageBeforeOobe);
                         }
                         catch (Exception ex)
                         {
@@ -927,10 +944,33 @@ namespace Ink_Canvas
         {
             try
             {
-                if (Settings?.Startup != null)
+                // OOBE 里换过语言、且用户点了重启的话，这个标记已经被
+                // ResetOobeCompletionForLanguageChange 清成 false 了。
+                // 这里不能再无条件写回 true —— 否则重启回来不会重新弹引导，
+                // 老师就停在一个半旧半新的界面上。
+                if (Settings?.Startup != null && !_oobeInterruptedForLanguageChange)
                 {
                     Settings.Startup.HasShownOobe = true;
                     SaveSettingsToFile();
+                }
+
+                // 窗口已经在关闭就别再碰控件了。
+                //
+                // 触发路径：OOBE 里换语言 → 用户点重启 → OOBE 关窗 → 这里被调到，
+                // 但同时主窗口也进了 Window_Closing。LoadSettings 会去设
+                // ViewboxFloatingBar.* 、RightUnFoldBtnImgChevron.* 这些控件，
+                // 那时它们已经被销毁，于是抛 NullReferenceException。
+                //
+                // 重启流程下这些界面恢复动作本来就没有意义 —— 进程马上就没了。
+                //
+                // 判据用 IsLoaded：窗口关闭过程中 IsLoaded 会变 false，
+                // 而且它不会像自定义标志那样在"关闭被取消"时卡住不复位。
+                if (!IsLoaded)
+                {
+                    LogHelper.WriteLogToFile(
+                        "OOBE 结束时窗口已在关闭，跳过界面恢复",
+                        LogHelper.LogType.Event);
+                    return;
                 }
 
                 LoadSettings(false, skipAutoUpdateCheck: true);

@@ -155,6 +155,8 @@ namespace Ink_Canvas.Windows.SettingsViews
             global::Ink_Canvas.Helpers.WindowBackdropHelper.Apply(this, Helpers.SettingsManager.Settings);
         }
 
+
+
         public void ApplyWindowBackdrop(string backdropName)
         {
             global::Ink_Canvas.Helpers.WindowBackdropHelper.Apply(this, backdropName);

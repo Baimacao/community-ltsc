@@ -122,6 +122,20 @@
   <data name="Theme_Language_RestartHint" xml:space="preserve">
     <value>更改介面語言后需要重啟應用程序才能完全生效。</value>
   </data>
+  <data name="Theme_Language_Restart_Title" xml:space="preserve">
+    <value>重啟以套用語言</value>
+  </data>
+  <data name="Theme_Language_Restart_Body" xml:space="preserve">
+    <value>介面語言已儲存。重啟後所有介面才會換成新語言。
+
+現在就重啟嗎？</value>
+  </data>
+  <data name="Theme_Language_Restart_Now" xml:space="preserve">
+    <value>立即重啟</value>
+  </data>
+  <data name="Theme_Language_Restart_Later" xml:space="preserve">
+    <value>稍後</value>
+  </data>
   <data name="Theme_LanguageLabel" xml:space="preserve">
     <value>介面語言</value>
   </data>

@@ -114,6 +114,20 @@
   <data name="Theme_Language_RestartHint" xml:space="preserve">
     <value>You need to restart the app for language changes to fully take effect.</value>
   </data>
+  <data name="Theme_Language_Restart_Title" xml:space="preserve">
+    <value>Restart to apply language</value>
+  </data>
+  <data name="Theme_Language_Restart_Body" xml:space="preserve">
+    <value>The UI language has been saved. Restart to apply it to the whole interface.
+
+Restart now?</value>
+  </data>
+  <data name="Theme_Language_Restart_Now" xml:space="preserve">
+    <value>Restart now</value>
+  </data>
+  <data name="Theme_Language_Restart_Later" xml:space="preserve">
+    <value>Later</value>
+  </data>
   <data name="Theme_LanguageLabel" xml:space="preserve">
     <value>UI language</value>
   </data>

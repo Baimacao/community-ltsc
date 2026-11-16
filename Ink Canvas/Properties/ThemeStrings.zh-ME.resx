@@ -114,6 +114,20 @@
   <data name="Theme_Language_RestartHint" xml:space="preserve">
     <value>换了语言得重启才能完全生效哦~</value>
   </data>
+  <data name="Theme_Language_Restart_Title" xml:space="preserve">
+    <value>重启一下换个语言</value>
+  </data>
+  <data name="Theme_Language_Restart_Body" xml:space="preserve">
+    <value>语言存好了。得重启一下，整个界面才都变过来。
+
+现在就重启？</value>
+  </data>
+  <data name="Theme_Language_Restart_Now" xml:space="preserve">
+    <value>重启</value>
+  </data>
+  <data name="Theme_Language_Restart_Later" xml:space="preserve">
+    <value>待会儿</value>
+  </data>
   <data name="Theme_LanguageLabel" xml:space="preserve">
     <value xml:space="preserve">界面用啥语言</value>
   </data>

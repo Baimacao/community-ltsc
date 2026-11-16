@@ -114,6 +114,20 @@
   <data name="Theme_Language_RestartHint" xml:space="preserve">
     <value>更改界面语言后需要重启应用程序才能完全生效。</value>
   </data>
+  <data name="Theme_Language_Restart_Title" xml:space="preserve">
+    <value>重启以应用语言</value>
+  </data>
+  <data name="Theme_Language_Restart_Body" xml:space="preserve">
+    <value>界面语言已保存。重启后所有界面才会换成新语言。
+
+现在就重启吗？</value>
+  </data>
+  <data name="Theme_Language_Restart_Now" xml:space="preserve">
+    <value>立即重启</value>
+  </data>
+  <data name="Theme_Language_Restart_Later" xml:space="preserve">
+    <value>稍后</value>
+  </data>
   <data name="Theme_LanguageLabel" xml:space="preserve">
     <value>界面语言</value>
   </data>

@@ -650,6 +650,10 @@ namespace Ink_Canvas.Properties
             dict["Theme_Language_English"] = ("ThemeStrings", "Theme_Language_English");
             dict["Theme_Language_MemeChinese"] = ("ThemeStrings", "Theme_Language_MemeChinese");
             dict["Theme_Language_RestartHint"] = ("ThemeStrings", "Theme_Language_RestartHint");
+            dict["Theme_Language_Restart_Title"] = ("ThemeStrings", "Theme_Language_Restart_Title");
+            dict["Theme_Language_Restart_Body"] = ("ThemeStrings", "Theme_Language_Restart_Body");
+            dict["Theme_Language_Restart_Now"] = ("ThemeStrings", "Theme_Language_Restart_Now");
+            dict["Theme_Language_Restart_Later"] = ("ThemeStrings", "Theme_Language_Restart_Later");
             dict["Theme_LanguageLabel"] = ("ThemeStrings", "Theme_LanguageLabel");
             dict["Theme_Light"] = ("ThemeStrings", "Theme_Light");
             dict["Theme_Manage"] = ("ThemeStrings", "Theme_Manage");
