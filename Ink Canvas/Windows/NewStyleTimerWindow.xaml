@@ -26,12 +26,18 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border x:Name="MainBorder" Background="Transparent" MouseLeftButtonDown="MainBorder_MouseLeftButtonDown">
+    <Border x:Name="MainBorder" Background="Transparent" MouseLeftButtonDown="MainBorder_MouseLeftButtonDown"
+            PreviewMouseLeftButtonDown="MainBorder_PreviewMouseLeftButtonDown"
+            PreviewMouseMove="MainBorder_PreviewMouseMove"
+            PreviewMouseLeftButtonUp="MainBorder_PreviewMouseLeftButtonUp">
         <Grid>
             <Viewbox x:Name="MainViewController" StretchDirection="DownOnly" MaxWidth="860" MaxHeight="520">
                 <Grid Width="900" Height="400">
                     <!-- Title bar -->
-                    <Grid Height="50" x:Name="TitleBar" VerticalAlignment="Top" Margin="0,0,450,0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                    <Grid Height="50" x:Name="TitleBar" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" Margin="0,0,450,0" Background="Transparent" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="TitleBarTransform" X="0" Y="0" />
+                        </Grid.RenderTransform>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="22,0,0,0">
                             <Path Data="M5 13a7 7 0 1 0 14 0a7 7 0 0 0 -14 0z M14.5 10.5l-2.5 2.5 M17 8l1 -1 M14 3h-4"
                                   Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"
@@ -47,7 +53,10 @@
                         <!-- Left: 6-digit display -->
                         <Grid x:Name="MainDisplayGrid" Width="500" HorizontalAlignment="Left" Margin="-10,0,0,0" RenderTransformOrigin="0.5,0.5">
                             <Grid.RenderTransform>
-                                <TranslateTransform x:Name="MainDisplayTransform" X="0" />
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="MainDisplayScale" ScaleX="1" ScaleY="1" />
+                                    <TranslateTransform x:Name="MainDisplayTransform" X="0" Y="0" />
+                                </TransformGroup>
                             </Grid.RenderTransform>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" x:Name="DigitsPanel">
                                 <!-- HH group -->
@@ -289,34 +298,11 @@
                         </Grid>
                         </Grid>
                     </Grid>
-
-                    <!-- 折叠态的显式展开入口。
-                         运行中闲置 5 秒，步进按钮和右侧快捷时长会弹簧收起。
-                         触摸屏没有 hover，收起来的东西必须留一个看得见、够大的入口，
-                         否则老师只能靠猜哪里能点。 -->
-                    <Border x:Name="BorderExpandAdjust"
-                            Height="44" MinWidth="196"
-                            CornerRadius="22"
-                            Visibility="Collapsed" Opacity="0"
-                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                            Margin="0,0,0,100"
-                            Cursor="Hand"
-                            Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}"
-                            MouseLeftButtonUp="BorderExpandAdjust_MouseLeftButtonUp"
-                            TouchUp="BorderExpandAdjust_TouchUp">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Path Data="M12 5l0 14 M5 12l14 0"
-                                  Stroke="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"
-                                  StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                                  Fill="Transparent" Width="18" Height="18" Stretch="Uniform" Margin="0,0,8,0"/>
-                            <TextBlock Text="{x:Static props:TimerStrings.Timer_AdjustPanel}"
-                                       FontSize="16"
-                                       Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorPrimaryBrushKey}}"/>
-                        </StackPanel>
-                    </Border>
-
                     <!-- Bottom bar -->
-                    <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
+                    <Grid x:Name="BottomControlBar" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20" RenderTransformOrigin="0.5,0.5">
+                        <Grid.RenderTransform>
+                            <TranslateTransform x:Name="BottomControlTransform" X="0" Y="0" />
+                        </Grid.RenderTransform>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button x:Name="FullscreenBtn" Width="110" Height="44" Cursor="Hand" Click="Fullscreen_Click" Margin="0,0,30,0" IsEnabled="False"
                                     Background="{DynamicResource {x:Static ui:ThemeKeys.ControlFillColorDefaultBrushKey}}" BorderThickness="0">

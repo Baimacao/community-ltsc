@@ -1339,23 +1339,42 @@ namespace Ink_Canvas.Windows
             lastActivityTime = DateTime.Now;
         }
 
-        // ── 调时间组件的折叠 ───────────────────────────────────────
+        // ── 折叠态：整窗只剩数字 ──────────────────────────────────
         //
-        // 需求：进入倒计时状态后 5 秒，把「调时间」的组件折起来，
-        // 让老师看倒计时的时候视线里只剩数字和起停按钮。
+        // 需求（ta 2026-11-16）：
+        //   「其他除了时间显示的控件都可以收纳（就直接整个窗口都是时间显示），
+        //     让它被点击时恢复就行，收纳状态也要可以拖动」
         //
-        // 折叠范围（ta 确认）：右侧常用时长 / 最近记录整块 + 六个数字上下的
-        // +/- 步进按钮 + 中间那条竖分隔线。大数字和底部控制条保留。
+        // 所以折叠态 = 只有大数字。标题、右侧快捷时长、十二个步进按钮、
+        // 中间竖分隔线、底部控制条，全部收起，数字本身放大并居中。
         //
-        // 全部用 SpringAnimator —— 项目里那套六预设弹簧引擎，浮动栏和翻页条在用，
-        // 计时器之前一次都没接过。不用 DoubleAnimation：线性缓动和项目其他动效手感不一致。
+        // 交互：
+        //   · 折叠态点窗口任意位置 → 恢复调时间
+        //   · 折叠态按住拖动 → 仍然能挪窗口（老师可能把它挪到角落挂着）
+        //   · 拖动结束不算点击，不会误触恢复
         //
-        // 折叠只动 Opacity 和 TranslateTransform，**不动 Width/Height**：
-        // 动画期间改尺寸会触发父级反复重排，数字会抖；位移和透明度只参与合成，
-        // 一帧一个值，稳定得多。
+        // 动画只用 SpringAnimator 的 Opacity + TranslateTransform + ScaleTransform，
+        // **不动 Width/Height**：改尺寸会触发父级反复重排，数字全程在抖。
 
-        /// <summary>调时间组件是否处于折叠态。</summary>
+        /// <summary>是否处于折叠态（整窗只剩数字）。</summary>
         private bool _isAdjustPanelFolded;
+
+        /// <summary>折叠态下数字放大到多少。1.9 让 6 位数基本铺满原窗口宽度。</summary>
+        private const double FoldedDigitScale = 1.9;
+
+        /// <summary>折叠态下数字上移多少，抵消放大后偏下的视觉重心。</summary>
+        private const double FoldedDigitOffsetY = 0;
+
+        /// <summary>折叠时各控件向外滑出的距离，让「收起来」有方向感。</summary>
+        private const double FoldedSlideOutX = 40;
+        private const double FoldedSlideOutY = 30;
+
+        /// <summary>按下时的屏幕坐标，用来区分「点击」和「拖动」。</summary>
+        private Point _foldPressPoint;
+        private bool _foldPressStarted;
+
+        /// <summary>拖动位移超过这个距离就算拖动，不算点击。</summary>
+        private const double FoldClickThreshold = 6;
 
         /// <summary>
         /// 本窗口用过的弹簧标量 key。
@@ -1370,12 +1389,6 @@ namespace Ink_Canvas.Windows
             if (key == null || _springScalarKeys.Contains(key)) return;
             _springScalarKeys.Add(key);
         }
-
-        /// <summary>折叠后大数字要平移多少才居中。窗口内容宽 900，数字区宽 500，原本左偏 10。</summary>
-        private const double FoldedDisplayOffsetX = 210;
-
-        /// <summary>折叠时右侧快捷区向右侧滑出的距离。</summary>
-        private const double QuickOptionsSlideOutX = 32;
 
         /// <summary>进入倒计时状态后开始计 5 秒闲置。已在跑就不重开。</summary>
         private void StartAdjustIdleCountdown()
@@ -1392,7 +1405,7 @@ namespace Ink_Canvas.Windows
             hideTimer?.Stop();
         }
 
-        /// <summary>折叠调时间组件。重复调用安全。</summary>
+        /// <summary>折叠成「只有数字」。重复调用安全。</summary>
         private void FoldAdjustPanel()
         {
             if (_isAdjustPanelFolded) return;
@@ -1400,48 +1413,34 @@ namespace Ink_Canvas.Windows
 
             try
             {
-                // 右侧快捷区：向右滑出 + 淡出，落定后再摘出布局
-                if (QuickOptionsHost != null)
-                {
-                    if (QuickOptionsTransform != null)
-                    {
-                        SpringAnimator.Animate(QuickOptionsTransform, (float)QuickOptionsSlideOutX, 0f,
-                            SpringAnimator.Snappy, SpringAnimator.Snappy);
-                    }
-                    AnimateOpacity(QuickOptionsHost, 0, SpringAnimator.Snappy, () =>
-                    {
-                        if (_isAdjustPanelFolded && QuickOptionsHost != null)
-                            QuickOptionsHost.Visibility = Visibility.Collapsed;
-                    });
-                }
-
-                // 六个 +/- 步进按钮一起收起
+                // 六个 +/- 步进按钮：整组淡出，但**不摘布局**
                 FoldStepButtons(true);
 
-                // 竖分隔线淡掉
+                // 右侧快捷时长整块：向右滑出 + 淡出
+                AnimateSlideFade(QuickOptionsHost, QuickOptionsTransform,
+                    FoldedSlideOutX, 0, false, SpringAnimator.Snappy);
+
+                // 竖分隔线
                 AnimateOpacity(DividerAdjustSeparator, 0, SpringAnimator.Smooth);
 
-                // 大数字平移到窗口正中
-                if (MainDisplayTransform != null)
-                {
-                    SpringAnimator.Animate(MainDisplayTransform, (float)FoldedDisplayOffsetX, 0f,
-                        SpringAnimator.Smooth, SpringAnimator.Smooth);
-                }
+                // 标题栏：向上滑出
+                AnimateSlideFade(TitleBar, TitleBarTransform,
+                    0, -FoldedSlideOutY, false, SpringAnimator.Snappy);
 
-                // 露出「调整时间」入口
-                if (BorderExpandAdjust != null)
-                {
-                    BorderExpandAdjust.Visibility = Visibility.Visible;
-                    AnimateOpacity(BorderExpandAdjust, 1, SpringAnimator.Smooth);
-                }
+                // 底部控制条：向下滑出
+                AnimateSlideFade(BottomControlBar, BottomControlTransform,
+                    0, FoldedSlideOutY, false, SpringAnimator.Snappy);
+
+                // 大数字：放大 + 居中
+                AnimateDigitLayout(true);
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"折叠调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
+                LogHelper.WriteLogToFile($"折叠成纯数字失败: {ex.Message}", LogHelper.LogType.Error);
             }
         }
 
-        /// <summary>展开调时间组件。重复调用安全。</summary>
+        /// <summary>从「只有数字」恢复到调时间状态。重复调用安全。</summary>
         private void UnfoldAdjustPanel()
         {
             StopAdjustIdleCountdown();
@@ -1452,49 +1451,117 @@ namespace Ink_Canvas.Windows
 
             try
             {
-                if (QuickOptionsHost != null)
-                {
-                    QuickOptionsHost.Visibility = Visibility.Visible;
-                    if (QuickOptionsTransform != null)
-                    {
-                        SpringAnimator.Animate(QuickOptionsTransform, 0f, 0f,
-                            SpringAnimator.Snappy, SpringAnimator.Snappy);
-                    }
-                    AnimateOpacity(QuickOptionsHost, 1, SpringAnimator.Snappy);
-                }
-
                 FoldStepButtons(false);
+
+                AnimateSlideFade(QuickOptionsHost, QuickOptionsTransform,
+                    0, 0, true, SpringAnimator.Snappy);
 
                 AnimateOpacity(DividerAdjustSeparator, 0.3, SpringAnimator.Smooth);
 
-                if (MainDisplayTransform != null)
-                {
-                    SpringAnimator.Animate(MainDisplayTransform, 0f, 0f,
-                        SpringAnimator.Smooth, SpringAnimator.Smooth);
-                }
+                AnimateSlideFade(TitleBar, TitleBarTransform,
+                    0, 0, true, SpringAnimator.Snappy);
 
-                if (BorderExpandAdjust != null)
-                {
-                    AnimateOpacity(BorderExpandAdjust, 0, SpringAnimator.Smooth, () =>
-                    {
-                        if (!_isAdjustPanelFolded && BorderExpandAdjust != null)
-                            BorderExpandAdjust.Visibility = Visibility.Collapsed;
-                    });
-                }
+                AnimateSlideFade(BottomControlBar, BottomControlTransform,
+                    0, 0, true, SpringAnimator.Snappy);
+
+                AnimateDigitLayout(false);
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLogToFile($"展开调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
+                LogHelper.WriteLogToFile($"恢复调时间组件失败: {ex.Message}", LogHelper.LogType.Error);
             }
         }
 
         /// <summary>
-        /// 六个数字上下的 +/- 按钮一起折叠/展开。
+        /// 大数字在两种形态之间的位置与缩放。
+        ///
+        /// 折叠态：放大到 FoldedDigitScale，水平居中。
+        /// 展开态：原尺寸，回到原本左偏 10 的位置。
+        ///
+        /// 用 RenderTransform 而不是改 Width/Margin —— 改布局属性会触发父级测量，
+        /// 数字会在整个动画过程中抖动，而且放大后居中的位置算不准。
+        /// </summary>
+        private void AnimateDigitLayout(bool folded)
+        {
+            if (MainDisplayGrid == null) return;
+
+            double targetScale = folded ? FoldedDigitScale : 1.0;
+
+            // 平移量：把数字区中心对到窗口中心。
+            // RenderTransformOrigin=0.5,0.5 时缩放绕自身中心，所以只需要补左偏的那部分。
+            double targetX = 0;
+            if (folded)
+            {
+                double rootWidth = 900;
+                double displayWidth = MainDisplayGrid.ActualWidth > 0 ? MainDisplayGrid.ActualWidth : 500;
+                double baseLeft = MainDisplayGrid.Margin.Left;
+                targetX = (rootWidth - displayWidth) / 2 - baseLeft;
+            }
+
+            if (MainDisplayScale != null)
+            {
+                TrackSpringKey(MainDisplayScale);
+                SpringAnimator.AnimateScalar(MainDisplayScale, targetScale, v =>
+                {
+                    try
+                    {
+                        double sc = Math.Max(0.5, v);
+                        MainDisplayScale.ScaleX = sc;
+                        MainDisplayScale.ScaleY = sc;
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"计时器缩放动画失败: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                }, SpringAnimator.Smooth);
+            }
+
+            if (MainDisplayTransform != null)
+            {
+                SpringAnimator.Animate(MainDisplayTransform,
+                    (float)targetX, (float)FoldedDigitOffsetY,
+                    SpringAnimator.Smooth, SpringAnimator.Smooth);
+            }
+        }
+
+        /// <summary>
+        /// 一个元素「滑出去 + 淡出」（或反过来）。
+        /// 折叠时落定后切 Collapsed，把布局也让出来；
+        /// 展开时先恢复 Visible 再动，否则没有起点。
+        /// </summary>
+        private void AnimateSlideFade(System.Windows.FrameworkElement element,
+            TranslateTransform transform, double targetX, double targetY, bool show,
+            SpringAnimator.SpringPreset preset)
+        {
+            if (element == null) return;
+
+            if (show && element.Visibility != Visibility.Visible)
+            {
+                element.Visibility = Visibility.Visible;
+            }
+
+            if (transform != null)
+            {
+                SpringAnimator.Animate(transform, (float)targetX, (float)targetY, preset, preset);
+            }
+
+            AnimateOpacity(element, show ? 1 : 0, preset, () =>
+            {
+                if (element == null) return;
+                // 只有「还是折叠态」时才允许摘出布局，避免打断动画中途的反向操作
+                bool shouldHide = !show && _isAdjustPanelFolded;
+                bool shouldShow = show && !_isAdjustPanelFolded;
+                if (shouldHide) element.Visibility = Visibility.Collapsed;
+                else if (shouldShow) element.Visibility = Visibility.Visible;
+            });
+        }
+
+        /// <summary>
+        /// 十二个 +/- 步进按钮一起淡出/淡入。
         ///
         /// **不切 Visibility，只切 Opacity + IsHitTestVisible**：
-        /// Collapsed 会让按钮退出布局，StackPanel 高度一变，中间那排数字
-        /// 就会在整个折叠过程中上下抖 —— 这是「动画流畅」的反面。
-        /// 留着占位，数字原地不动，只是按钮看不见也点不到。
+        /// Collapsed 会让按钮退出布局，StackPanel 高度一变，
+        /// 中间那排数字就会在整个折叠过程中上下抖。
         /// </summary>
         private void FoldStepButtons(bool fold)
         {
@@ -1508,7 +1575,6 @@ namespace Ink_Canvas.Windows
             foreach (var btn in buttons)
             {
                 if (btn == null) continue;
-                // 动画一开始就断开命中测试，避免折叠过程中点到半透明的按钮
                 btn.IsHitTestVisible = !fold;
                 AnimateOpacity(btn, fold ? 0 : 1, SpringAnimator.Snappy);
             }
@@ -1527,17 +1593,50 @@ namespace Ink_Canvas.Windows
             }, preset, finished);
         }
 
-        /// <summary>折叠态入口：点一下把调时间组件拿回来。</summary>
-        private void BorderExpandAdjust_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        // ── 折叠态的点击恢复 + 拖动 ───────────────────────────────
+        //
+        // 折叠后整窗只剩数字，用户可能想把它拖到屏幕角落挂着。
+        // 所以折叠态的拖动不能再用原来「拖标题栏」那套（标题栏已经收起来了），
+        // 改成整窗都能拖：按下记坐标，移动超过阈值算拖动，没超过就是点击。
+        //
+        // 拖动实现直接用窗口自带的 DragMove()，行为和拖标题栏一致，
+        // 不自己算 Win32 SetWindowPos —— 那套在多屏 + DPI 缩放下容易偏。
+
+        private void MainBorder_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
-            UnfoldAdjustPanel();
+            if (!_isAdjustPanelFolded) return;
+
+            _foldPressPoint = e.GetPosition(this);
+            _foldPressStarted = true;
         }
 
-        /// <summary>触摸屏也要能点开 —— 触摸不会触发 MouseLeftButtonUp。</summary>
-        private void BorderExpandAdjust_TouchUp(object sender, TouchEventArgs e)
+        private void MainBorder_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            e.Handled = true;
+            if (!_isAdjustPanelFolded || !_foldPressStarted) return;
+            if (e.LeftButton != MouseButtonState.Pressed) return;
+
+            var now = e.GetPosition(this);
+            if (Math.Abs(now.X - _foldPressPoint.X) < FoldClickThreshold &&
+                Math.Abs(now.Y - _foldPressPoint.Y) < FoldClickThreshold)
+            {
+                return;
+            }
+
+            // 超过阈值 = 拖动。先结束这次手势，再走系统拖动。
+            _foldPressStarted = false;
+            try { DragMove(); }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"折叠态拖动窗口失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        private void MainBorder_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!_isAdjustPanelFolded) return;
+            if (!_foldPressStarted) return;
+
+            _foldPressStarted = false;
             UnfoldAdjustPanel();
         }
 

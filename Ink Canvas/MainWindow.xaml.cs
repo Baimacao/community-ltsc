@@ -1674,6 +1674,13 @@ namespace Ink_Canvas
 
             isLoaded = true;
 
+            // 重启过来的实例主动提到前台。
+            //
+            // 主窗口是 ShowInTaskbar=false 的透明置顶窗。新进程起来后如果焦点还在
+            // 旧窗口（或别的程序）上，用户看到的就是「点了重启，程序没了」——
+            // 实际上新实例已经在后台跑起来了。这里补一次激活。
+            BringSelfToFrontAfterRelaunch();
+
             // 应用颜色主题，这将考虑自定义背景色
             CheckColorTheme(true);
 
@@ -3281,5 +3288,61 @@ namespace Ink_Canvas
         }
 
         #endregion
+
+        /// <summary>
+        /// 重启后把自己提到前台。
+        ///
+        /// 只在本次启动带 --skip-mutex-check 时做 —— 那是重启助手生成的命令行，
+        /// 普通双击启动没有这个参数，不需要抢焦点。
+        /// </summary>
+        private void BringSelfToFrontAfterRelaunch()
+        {
+            try
+            {
+                if (App.StartArgs == null) return;
+
+                bool isRelaunch = false;
+                foreach (var arg in App.StartArgs)
+                {
+                    if (string.Equals(arg, "--skip-mutex-check", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isRelaunch = true;
+                        break;
+                    }
+                }
+                if (!isRelaunch) return;
+
+                LogHelper.WriteLogToFile("重启 | 检测到重启启动，主动提到前台", LogHelper.LogType.Event);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        // 先 Show 再 Activate：窗口若因快速启动处于隐藏态，直接 Activate 无效。
+                        if (!IsVisible) Show();
+
+                        Activate();
+
+                        // 主窗口是全屏透明窗，Topmost 由设置维护；
+                        // 这里再顶一次，避免被刚才那个资源管理器的焦点压住。
+                        Topmost = false;
+                        Topmost = true;
+
+                        if (ViewboxFloatingBar != null)
+                        {
+                            ViewboxFloatingBar.Visibility = Visibility.Visible;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"重启后提到前台失败: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                }), DispatcherPriority.ApplicationIdle);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"重启后提到前台检查失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
     }
 }

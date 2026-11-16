@@ -40,20 +40,51 @@ namespace Ink_Canvas.Helpers
                 else
                 {
                     // 当前已是管理员时，直接通过用户令牌降权启动，避免经由 explorer 中转的延迟
-                    if (IsRunningAsAdmin() && UIAccessHelper.RestartAsNormalUser())
+                    if (IsRunningAsAdmin())
                     {
-                        Application.Current.Shutdown();
-                        return;
+                        if (UIAccessHelper.RestartAsNormalUser())
+                        {
+                            LogHelper.WriteLogToFile("重启 | 已用普通权限令牌启动新进程", LogHelper.LogType.Event);
+                            Application.Current.Shutdown();
+                            return;
+                        }
+
+                        // 令牌方案失败，退回 explorer 中转。
+                        // 这条路径会丢掉命令行参数，但至少能起来一个普通权限的实例。
+                        LogHelper.WriteLogToFile(
+                            "重启 | 普通权限令牌启动失败，退回 explorer 中转（会丢掉命令行参数）",
+                            LogHelper.LogType.Warning);
                     }
 
                     Process.Start("explorer.exe", "\"" + exePath + "\"");
+                    LogHelper.WriteLogToFile($"重启 | 已通过 explorer 启动: {exePath}", LogHelper.LogType.Event);
                 }
 
                 Application.Current.Shutdown();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"重启应用时出错: {ex.Message}");
+                // 原来是 Debug.WriteLine —— 只在调试器里看得见。
+                // 用户点了「以普通权限重启」却什么都没发生的现场，必须留痕。
+                LogHelper.WriteLogToFile($"重启应用失败: {ex}", LogHelper.LogType.Error);
+
+                // 失败时不能静默退出：复位标记，让当前进程继续跑，
+                // 至少老师手上的白板还在，而不是点一下就没了。
+                App.IsAppExitByUser = false;
+
+                try
+                {
+                    MessageBox.Show(
+                        "重启失败，程序会继续以当前权限运行。\n\n" +
+                        "如果你想以普通权限启动，关掉程序后从桌面图标重新打开即可。",
+                        "无法重启",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+                catch (Exception showEx)
+                {
+                    LogHelper.WriteLogToFile($"重启失败后提示用户也失败了: {showEx.Message}", LogHelper.LogType.Warning);
+                }
             }
         }
 
