@@ -80,12 +80,6 @@
   <data name="Home_PPTSettings" xml:space="preserve">
     <value>PPT聯動設定</value>
   </data>
-  <data name="Home_Privacy" xml:space="preserve">
-    <value>隱私</value>
-  </data>
-  <data name="Home_PrivacySettings" xml:space="preserve">
-    <value>隱私與遙測設定</value>
-  </data>
   <data name="Home_Title" xml:space="preserve">
     <value>首頁</value>
   </data>

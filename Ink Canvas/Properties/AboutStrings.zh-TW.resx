@@ -80,23 +80,8 @@
   <data name="PhigrosCr" xml:space="preserve">
     <value>部分內容取自 Phigros</value>
   </data>
-  <data name="PrivacyAgreement" xml:space="preserve">
-    <value>我已閱讀并同意 privacy 中的隱私說明</value>
-  </data>
   <data name="PrivacyAndTelemetry" xml:space="preserve">
     <value>隱私與遙測</value>
-  </data>
-  <data name="Telemetry_Basic" xml:space="preserve">
-    <value>上傳基礎資料</value>
-  </data>
-  <data name="Telemetry_Off" xml:space="preserve">
-    <value>關閉（不上傳）</value>
-  </data>
-  <data name="Telemetry_Optional" xml:space="preserve">
-    <value>上傳基礎 + 可選資料</value>
-  </data>
-  <data name="TelemetryLabel" xml:space="preserve">
-    <value>匿名使用資料上傳：</value>
   </data>
   <data name="ThanksContributors" xml:space="preserve">
     <value>感謝下列貢獻者：</value>
@@ -106,34 +91,6 @@
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>版本：</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
-    <value>關閉匿名使用資料上傳后，將無法繼續使用預覽/測試通道，系統會自動切換回正式通道（Release）。
-
-是否確認關閉？</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve">
-    <value>確認關閉遙測</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve">
-    <value>在開啟匿名使用資料上傳前，請先閱讀并勾選上方的隱私說明。</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Title" xml:space="preserve">
-    <value>需要同意隱私說明</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Message" xml:space="preserve">
-    <value>未找到隱私說明檔案（privacy / privacy.txt），暫時無法啟用匿名使用資料上傳。</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Title" xml:space="preserve">
-    <value>隱私說明缺失</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Message" xml:space="preserve">
-    <value>取消同意隱私說明后，將關閉匿名使用資料上傳，并切回正式通道（Release）。
-
-是否確認？</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve">
-    <value>確認取消隱私同意</value>
   </data>
   <data name="About_LtscTitle" xml:space="preserve">
     <value>Lite 精簡版</value>

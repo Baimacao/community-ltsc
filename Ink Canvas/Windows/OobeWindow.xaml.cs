@@ -391,10 +391,6 @@ namespace Ink_Canvas.Windows
         /// 每个控件已经被填成「当前设置」的值。
         /// 所以 ApplySelection() 写回去的是「用户改过的那些 + 其余原值」，
         /// 不会把设置清成默认值。
-        ///
-        /// 但有一个例外必须处理：隐私协议（CheckBoxPrivacyAccepted）。
-        /// 那是法律层面的同意，用户没勾就是没同意，跳过不能替他勾。
-        /// 所以跳过时不动它。
         /// </summary>
         /// <summary>
         /// 反馈入口：智教联盟。
@@ -501,37 +497,6 @@ namespace Ink_Canvas.Windows
             finally
             {
                 _suppressNavSelection = false;
-            }
-        }
-
-        private void CheckBoxPrivacyAccepted_Changed(object sender, RoutedEventArgs e)
-        {
-            UpdateConfirmEnabled();
-        }
-
-        private bool _privacyDialogShown;
-
-        private void HyperlinkPrivacy_Click(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-            if (_privacyDialogShown) return;
-            _privacyDialogShown = true;
-            try
-            {
-                var dialog = new PrivacyAgreementWindow { Owner = this };
-                bool? result = dialog.ShowDialog();
-                if (result == true && dialog.UserAccepted)
-                {
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
-            finally
-            {
-                Dispatcher.BeginInvoke(new Action(() => _privacyDialogShown = false),
-                    System.Windows.Threading.DispatcherPriority.Background);
             }
         }
 

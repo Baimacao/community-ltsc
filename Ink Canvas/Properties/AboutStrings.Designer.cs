@@ -55,40 +55,12 @@ namespace Ink_Canvas.Properties
         public static string OpenSourceSlogan => ResourceManager.GetString(nameof(OpenSourceSlogan), _resourceCulture);
 
         public static string PhigrosCr => ResourceManager.GetString(nameof(PhigrosCr), _resourceCulture);
-
-        public static string PrivacyAgreement => ResourceManager.GetString(nameof(PrivacyAgreement), _resourceCulture);
-
         public static string PrivacyAndTelemetry => ResourceManager.GetString(nameof(PrivacyAndTelemetry), _resourceCulture);
-
-        public static string Telemetry_Basic => ResourceManager.GetString(nameof(Telemetry_Basic), _resourceCulture);
-
-        public static string Telemetry_Off => ResourceManager.GetString(nameof(Telemetry_Off), _resourceCulture);
-
-        public static string Telemetry_Optional => ResourceManager.GetString(nameof(Telemetry_Optional), _resourceCulture);
-
-        public static string TelemetryLabel => ResourceManager.GetString(nameof(TelemetryLabel), _resourceCulture);
-
         public static string ThanksContributors => ResourceManager.GetString(nameof(ThanksContributors), _resourceCulture);
 
         public static string Title => ResourceManager.GetString(nameof(Title), _resourceCulture);
 
         public static string VersionLabel => ResourceManager.GetString(nameof(VersionLabel), _resourceCulture);
-        public static string Privacy_ConfirmDisableTelemetry_Message => ResourceManager.GetString(nameof(Privacy_ConfirmDisableTelemetry_Message), _resourceCulture);
-
-        public static string Privacy_ConfirmDisableTelemetry_Title => ResourceManager.GetString(nameof(Privacy_ConfirmDisableTelemetry_Title), _resourceCulture);
-
-        public static string Privacy_PrivacyAgreementRequired_Message => ResourceManager.GetString(nameof(Privacy_PrivacyAgreementRequired_Message), _resourceCulture);
-
-        public static string Privacy_PrivacyAgreementRequired_Title => ResourceManager.GetString(nameof(Privacy_PrivacyAgreementRequired_Title), _resourceCulture);
-
-        public static string Privacy_PrivacyFileNotFound_Message => ResourceManager.GetString(nameof(Privacy_PrivacyFileNotFound_Message), _resourceCulture);
-
-        public static string Privacy_PrivacyFileNotFound_Title => ResourceManager.GetString(nameof(Privacy_PrivacyFileNotFound_Title), _resourceCulture);
-
-        public static string Privacy_ConfirmRevokePrivacy_Message => ResourceManager.GetString(nameof(Privacy_ConfirmRevokePrivacy_Message), _resourceCulture);
-
-        public static string Privacy_ConfirmRevokePrivacy_Title => ResourceManager.GetString(nameof(Privacy_ConfirmRevokePrivacy_Title), _resourceCulture);
-
         public static string About_LtscTitle => ResourceManager.GetString(nameof(About_LtscTitle), _resourceCulture);
         public static string About_LtscBody => ResourceManager.GetString(nameof(About_LtscBody), _resourceCulture);
     }

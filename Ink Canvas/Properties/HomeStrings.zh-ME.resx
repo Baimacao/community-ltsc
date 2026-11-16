@@ -38,10 +38,18 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Home_ExitApp" xml:space="preserve">
     <value xml:space="preserve">溜了溜了</value>
   </data>
@@ -68,12 +76,6 @@
   </data>
   <data name="Home_PPTSettings" xml:space="preserve">
     <value xml:space="preserve">PPT 联动调教</value>
-  </data>
-  <data name="Home_Privacy" xml:space="preserve">
-    <value xml:space="preserve">小秘密</value>
-  </data>
-  <data name="Home_PrivacySettings" xml:space="preserve">
-    <value xml:space="preserve">小秘密与遥测调教</value>
   </data>
   <data name="Home_Title" xml:space="preserve">
     <value xml:space="preserve">大本营</value>

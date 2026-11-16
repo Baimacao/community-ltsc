@@ -494,12 +494,6 @@
   <data name="Main_Screenshot_DefaultHint" xml:space="preserve">
     <value>拖拽選擇區域，右鍵或雙擊可全選螢幕；自由繪制松開后需點選確認</value>
   </data>
-  <data name="Main_Privacy_FileNotFound" xml:space="preserve">
-    <value>未找到隱私說明檔案（privacy.txt）。</value>
-  </data>
-  <data name="Main_Privacy_ReadError" xml:space="preserve">
-    <value>讀取隱私說明檔案時出錯。</value>
-  </data>
   <data name="Main_App_UnexpectedError" xml:space="preserve">
     <value>抱歉，出現未預期的異常，可能導致 ICC CE Lite 運行不穩定。
     建議儲存墨跡后重啟應用。</value>

@@ -329,10 +329,6 @@ namespace Ink_Canvas.Properties
         public static string Main_Screenshot_CameraNotConnected => ResourceManager.GetString(nameof(Main_Screenshot_CameraNotConnected), _resourceCulture);
 
         public static string Main_Screenshot_DefaultHint => ResourceManager.GetString(nameof(Main_Screenshot_DefaultHint), _resourceCulture);
-
-        public static string Main_Privacy_FileNotFound => ResourceManager.GetString(nameof(Main_Privacy_FileNotFound), _resourceCulture);
-
-        public static string Main_Privacy_ReadError => ResourceManager.GetString(nameof(Main_Privacy_ReadError), _resourceCulture);
         public static string Main_App_UnexpectedError => ResourceManager.GetString(nameof(Main_App_UnexpectedError), _resourceCulture);
 
         public static string Main_DisplayChanged => ResourceManager.GetString(nameof(Main_DisplayChanged), _resourceCulture);

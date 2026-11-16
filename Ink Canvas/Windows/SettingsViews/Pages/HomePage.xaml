@@ -76,13 +76,6 @@
                         </ui:SettingsCard.HeaderIcon>
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Header="{x:Static props:HomeStrings.Home_Privacy}" Description="{x:Static props:HomeStrings.Home_PrivacySettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="SecurityPage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Shield}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
                     <ui:SettingsCard Header="{x:Static props:NavStrings.Settings_Nav_Security}" Description="{x:Static props:NavStrings.Settings_Nav_Security_Tooltip}"
                         IsClickEnabled="True" Click="QuickNavCard_Click" Tag="SecurityPage">
                         <ui:SettingsCard.HeaderIcon>

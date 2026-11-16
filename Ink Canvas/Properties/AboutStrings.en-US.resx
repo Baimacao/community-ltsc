@@ -1,47 +1,55 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Copyright" xml:space="preserve">
     <value>A continuation of InkCanvasForClass · ICA · ICC · ICC-CE</value>
   </data>
@@ -72,23 +80,8 @@
   <data name="PhigrosCr" xml:space="preserve">
     <value>Some content is taken from Phigros</value>
   </data>
-  <data name="PrivacyAgreement" xml:space="preserve">
-    <value>I have read and agree to the privacy statement</value>
-  </data>
   <data name="PrivacyAndTelemetry" xml:space="preserve">
     <value>Privacy &amp; Telemetry</value>
-  </data>
-  <data name="Telemetry_Basic" xml:space="preserve">
-    <value>Upload basic data</value>
-  </data>
-  <data name="Telemetry_Off" xml:space="preserve">
-    <value>Off</value>
-  </data>
-  <data name="Telemetry_Optional" xml:space="preserve">
-    <value>Upload basic + optional data</value>
-  </data>
-  <data name="TelemetryLabel" xml:space="preserve">
-    <value>Anonymous usage data upload</value>
   </data>
   <data name="ThanksContributors" xml:space="preserve">
     <value>Thanks to the following contributors:</value>
@@ -98,34 +91,6 @@
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>Version:</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
-    <value>After disabling anonymous usage data upload, you will not be able to continue using the preview/test channel. The system will automatically switch to the Release channel.
-
-Are you sure you want to disable it?</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve">
-    <value>Confirm Disable Telemetry</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve">
-    <value>Before enabling anonymous usage data upload, please read and check the privacy notice above.</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Title" xml:space="preserve">
-    <value>Privacy Agreement Required</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Message" xml:space="preserve">
-    <value>Privacy notice file (privacy / privacy.txt) not found. Cannot enable anonymous usage data upload at this time.</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Title" xml:space="preserve">
-    <value>Privacy Notice Missing</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Message" xml:space="preserve">
-    <value>After revoking privacy agreement, anonymous usage data upload will be disabled and the channel will switch to Release.
-
-Are you sure?</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve">
-    <value>Confirm Revoke Privacy Agreement</value>
   </data>
   <data name="About_LtscTitle" xml:space="preserve">
     <value>Lite edition</value>

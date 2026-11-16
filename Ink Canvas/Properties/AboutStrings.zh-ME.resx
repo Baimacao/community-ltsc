@@ -38,10 +38,18 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
   <data name="Copyright" xml:space="preserve">
     <value xml:space="preserve">InkCanvasForClass · ICA · ICC · ICC-CE 的延续</value>
   </data>
@@ -72,23 +80,8 @@
   <data name="PhigrosCr" xml:space="preserve">
     <value>部分内容偷师于 Phigros</value>
   </data>
-  <data name="PrivacyAgreement" xml:space="preserve">
-    <value>我已阅读并同意 privacy 中的小秘密说明</value>
-  </data>
   <data name="PrivacyAndTelemetry" xml:space="preserve">
     <value>小秘密与遥测</value>
-  </data>
-  <data name="Telemetry_Basic" xml:space="preserve">
-    <value xml:space="preserve">传基础数据</value>
-  </data>
-  <data name="Telemetry_Off" xml:space="preserve">
-    <value>关掉（啥也不传）</value>
-  </data>
-  <data name="Telemetry_Optional" xml:space="preserve">
-    <value xml:space="preserve">传基础 + 可选数据</value>
-  </data>
-  <data name="TelemetryLabel" xml:space="preserve">
-    <value xml:space="preserve">匿名使用数据上传：</value>
   </data>
   <data name="ThanksContributors" xml:space="preserve">
     <value>感谢下列大佬的贡献：</value>
@@ -98,34 +91,6 @@
   </data>
   <data name="VersionLabel" xml:space="preserve">
     <value>版本号：</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Message" xml:space="preserve">
-    <value>关掉匿名数据上传后，就不能用预览/测试通道了，会被踢回正式通道（Release）。
-
-确定要关吗？</value>
-  </data>
-  <data name="Privacy_ConfirmDisableTelemetry_Title" xml:space="preserve">
-    <value xml:space="preserve">确认关掉遥测</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Message" xml:space="preserve">
-    <value>开匿名数据上传之前，先看看上面的小秘密说明打个勾呗。</value>
-  </data>
-  <data name="Privacy_PrivacyAgreementRequired_Title" xml:space="preserve">
-    <value>得先同意小秘密说明</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Message" xml:space="preserve">
-    <value>小秘密说明文件（privacy / privacy.txt）找不到了，暂时开不了匿名数据上传。</value>
-  </data>
-  <data name="Privacy_PrivacyFileNotFound_Title" xml:space="preserve">
-    <value>小秘密说明丢了</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Message" xml:space="preserve">
-    <value>取消同意小秘密说明后，会关掉匿名数据上传，还会被踢回正式通道（Release）。
-
-确定要反悔吗？</value>
-  </data>
-  <data name="Privacy_ConfirmRevokePrivacy_Title" xml:space="preserve">
-    <value>确认取消小秘密同意</value>
   </data>
   <data name="About_LtscTitle" xml:space="preserve">
     <value>Lite 精簡版</value>

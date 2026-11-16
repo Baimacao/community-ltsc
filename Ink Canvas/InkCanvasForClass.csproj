@@ -293,7 +293,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="privacy.txt" />
+    <!-- privacy.txt 已移除：本构建不联网上传任何数据，不需要为上传写的协议。 -->
     <EmbeddedResource Include="telemetry_token.txt" Condition="Exists('telemetry_token.txt') AND '$(DLASS_TELEMETRY_TOKEN)' == ''">
       <Link>telemetry_token.txt</Link>
     </EmbeddedResource>

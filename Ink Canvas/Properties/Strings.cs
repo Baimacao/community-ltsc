@@ -32,12 +32,7 @@ namespace Ink_Canvas.Properties
             dict["About_LicenseTitle"] = ("AboutStrings", "LicenseTitle");
             dict["About_OpenSourceSlogan"] = ("AboutStrings", "OpenSourceSlogan");
             dict["About_PhigrosCr"] = ("AboutStrings", "PhigrosCr");
-            dict["About_PrivacyAgreement"] = ("AboutStrings", "PrivacyAgreement");
             dict["About_PrivacyAndTelemetry"] = ("AboutStrings", "PrivacyAndTelemetry");
-            dict["About_Telemetry_Basic"] = ("AboutStrings", "Telemetry_Basic");
-            dict["About_Telemetry_Off"] = ("AboutStrings", "Telemetry_Off");
-            dict["About_Telemetry_Optional"] = ("AboutStrings", "Telemetry_Optional");
-            dict["About_TelemetryLabel"] = ("AboutStrings", "TelemetryLabel");
             dict["About_ThanksContributors"] = ("AboutStrings", "ThanksContributors");
             dict["About_Title"] = ("AboutStrings", "Title");
             dict["About_VersionLabel"] = ("AboutStrings", "VersionLabel");
@@ -69,14 +64,6 @@ namespace Ink_Canvas.Properties
             dict["Advanced_TouchMultiplierCalibrateHint"] = ("AdvancedStrings", "TouchMultiplierCalibrateHint");
             dict["Advanced_TouchMultiplierHint"] = ("AdvancedStrings", "TouchMultiplierHint");
             dict["Advanced_TouchMultiplierValueHint"] = ("AdvancedStrings", "TouchMultiplierValueHint");
-            dict["About_Privacy_ConfirmDisableTelemetry_Message"] = ("AboutStrings", "Privacy_ConfirmDisableTelemetry_Message");
-            dict["About_Privacy_ConfirmDisableTelemetry_Title"] = ("AboutStrings", "Privacy_ConfirmDisableTelemetry_Title");
-            dict["About_Privacy_PrivacyAgreementRequired_Message"] = ("AboutStrings", "Privacy_PrivacyAgreementRequired_Message");
-            dict["About_Privacy_PrivacyAgreementRequired_Title"] = ("AboutStrings", "Privacy_PrivacyAgreementRequired_Title");
-            dict["About_Privacy_PrivacyFileNotFound_Message"] = ("AboutStrings", "Privacy_PrivacyFileNotFound_Message");
-            dict["About_Privacy_PrivacyFileNotFound_Title"] = ("AboutStrings", "Privacy_PrivacyFileNotFound_Title");
-            dict["About_Privacy_ConfirmRevokePrivacy_Message"] = ("AboutStrings", "Privacy_ConfirmRevokePrivacy_Message");
-            dict["About_Privacy_ConfirmRevokePrivacy_Title"] = ("AboutStrings", "Privacy_ConfirmRevokePrivacy_Title");
             dict["AppearancePanel_24HourTimeFormat"] = ("ThemeStrings", "AppearancePanel_24HourTimeFormat");
             dict["AutoFold_App_AdmoxBoard"] = ("AutomationStrings", "AutoFold_App_AdmoxBoard");
             dict["AutoFold_App_AdmoxBooth"] = ("AutomationStrings", "AutoFold_App_AdmoxBooth");
@@ -386,8 +373,6 @@ namespace Ink_Canvas.Properties
             dict["Home_InkRecognitionSettings"] = ("HomeStrings", "Home_InkRecognitionSettings");
             dict["Home_MainUI"] = ("HomeStrings", "Home_MainUI");
             dict["Home_PPTSettings"] = ("HomeStrings", "Home_PPTSettings");
-            dict["Home_Privacy"] = ("HomeStrings", "Home_Privacy");
-            dict["Home_PrivacySettings"] = ("HomeStrings", "Home_PrivacySettings");
             dict["Home_ResetSettings"] = ("HomeStrings", "Home_ResetSettings");
             dict["Home_RestartApp"] = ("HomeStrings", "Home_RestartApp");
             dict["Home_Title"] = ("HomeStrings", "Home_Title");

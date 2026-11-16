@@ -98,29 +98,13 @@
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                         Text="{x:Static props:AboutStrings.PrivacyAndTelemetry}" />
 
-                    <ui:SettingsExpander Header="{x:Static props:AboutStrings.PrivacyAndTelemetry}"
-                            IsExpanded="True"
-                            d:Visibility="Visible" d:IsExpanded="True">
-                        <ui:SettingsExpander.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Shield}" />
-                        </ui:SettingsExpander.HeaderIcon>
-                        <ui:SettingsExpander.Items>
-                            <ui:SettingsCard ContentAlignment="Left">
-                                <CheckBox x:Name="CheckBoxTelemetryPrivacyAccepted"
-                                          Content="{x:Static props:AboutStrings.PrivacyAgreement}"
-                                          Checked="CheckBoxTelemetryPrivacyAccepted_Checked"
-                                          Unchecked="CheckBoxTelemetryPrivacyAccepted_Checked" />
-                            </ui:SettingsCard>
-                            <ui:SettingsCard Header="{x:Static props:AboutStrings.TelemetryLabel}">
-                                <ComboBox x:Name="ComboBoxTelemetryUploadLevel"
-                                          SelectionChanged="ComboBoxTelemetryUploadLevel_SelectionChanged">
-                                    <ComboBoxItem Tag="0" Content="{x:Static props:AboutStrings.Telemetry_Off}" />
-                                    <ComboBoxItem Tag="1" Content="{x:Static props:AboutStrings.Telemetry_Basic}" />
-                                    <ComboBoxItem Tag="2" Content="{x:Static props:AboutStrings.Telemetry_Optional}" />
-                                </ComboBox>
-                            </ui:SettingsCard>
-                        </ui:SettingsExpander.Items>
-                    </ui:SettingsExpander>
+                    <!-- LTSC N-01：隐私与遥测整块移除。
+                         理由不是"简化界面"，是这些能力真的不存在：
+                         · 没有发送遥测的代码，telemetry_token.txt 也不存在
+                         · 设备 ID 早在 D-06 就删了
+                         · 崩溃日志只写本地 Logs/，不上传
+                         留一份描述这些能力的隐私政策，等于向用户陈述不存在的行为。
+                         没有上传，就不需要为上传写的协议。 -->
 
                     <Rectangle Height="48" />
 
