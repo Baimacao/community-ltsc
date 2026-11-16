@@ -38,8 +38,310 @@
       </xs:complexType>
     </xs:element>
   </xs:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Canvas_AdvancedSmoothing" xml:space="preserve"><value>使用高級曲線平滑（推薦）</value></data><data name="Canvas_AskEachTime" xml:space="preserve"><value>每次詢問</value></data><data name="Canvas_AutoRestoreTimePoints" xml:space="preserve"><value>自動恢復時間點 (HH:mm，可多個，用 ; 分隔)</value></data><data name="Canvas_BrushAutoRestore" xml:space="preserve"><value>啟用畫筆自動恢復</value></data><data name="Canvas_BrushAutoRestoreHint" xml:space="preserve"><value>啟用后，臨時修改畫筆設定后將在指定時間點自動恢復到你在此處配置的顏色 / 透明度 / 粗細</value></data><data name="Canvas_ClearCanvasAlsoClearImages" xml:space="preserve"><value>清空畫布時同時清空圖片</value></data><data name="Canvas_ClearInkAlsoClearHistory" xml:space="preserve"><value>清空墨跡時刪除墨跡歷史記錄</value></data><data name="Canvas_Color_Black" xml:space="preserve"><value>黑色</value></data><data name="Canvas_Color_Blue" xml:space="preserve"><value>藍色</value></data><data name="Canvas_Color_Default" xml:space="preserve"><value>預設</value></data><data name="Canvas_Color_Green" xml:space="preserve"><value>綠色</value></data><data name="Canvas_Color_Orange" xml:space="preserve"><value>橙色</value></data><data name="Canvas_Color_Purple" xml:space="preserve"><value>紫色</value></data><data name="Canvas_Color_Red" xml:space="preserve"><value>紅色</value></data><data name="Canvas_Color_White" xml:space="preserve"><value>白色</value></data><data name="Canvas_Color_Yellow" xml:space="preserve"><value>黃色</value></data><data name="Canvas_CompressPicturesUploaded" xml:space="preserve"><value>插入圖片時自動壓縮（大于1920×1080）</value></data><data name="Canvas_CurveSmoothing_Off" xml:space="preserve"><value>關閉</value></data><data name="Canvas_CurveSmoothingMode" xml:space="preserve"><value>曲線平滑模式</value></data><data name="Canvas_DisableHardwareAcceleration" xml:space="preserve"><value>關閉硬體加速</value></data><data name="Canvas_DisableHardwareAccelerationHint" xml:space="preserve"><value>關閉后可提升兼容性，但可能降低性能；部分效果可能需要重啟程序后完全生效。</value></data><data name="Canvas_DisablePressureHint" xml:space="preserve"><value>開啟后，將忽略所有設備的壓感資訊，使所有筆畫具有統一的粗細。與壓感觸屏模式互斥。</value></data><data name="Canvas_EnablePressureTouch" xml:space="preserve"><value>啟用壓感觸屏模式</value></data><data name="Canvas_EnablePressureTouchHint" xml:space="preserve"><value>開啟后，觸屏設備也將支援壓感效果，適用于部分支援壓感但無法被系統識別的觸屏設備。</value></data><data name="Canvas_EraserSize" xml:space="preserve"><value>橡皮大小</value></data><data name="Canvas_EraserSize_Large" xml:space="preserve"><value>較大</value></data><data name="Canvas_EraserSize_Medium" xml:space="preserve"><value>中等</value></data><data name="Canvas_EraserSize_Small" xml:space="preserve"><value>較小</value></data><data name="Canvas_EraserSize_VeryLarge" xml:space="preserve"><value>很大</value></data><data name="Canvas_EraserSize_VerySmall" xml:space="preserve"><value>很小</value></data><data name="Canvas_EraserSizeHint" xml:space="preserve"><value>非實時切換，下一次使用面積擦時生效。</value></data><data name="Canvas_GroupTitle" xml:space="preserve"><value>畫板</value></data><data name="Canvas_HideInkOnExit" xml:space="preserve"><value>點滑鼠時隱藏筆跡</value></data><data name="Canvas_HideStrokeWhenSelectingHint" xml:space="preserve"><value>開啟后，點「滑鼠」退出批注模式時隱藏當前筆跡；關閉則筆跡繼續顯示在螢幕上。</value></data><data name="Canvas_HyperbolaAsymptoteHint" xml:space="preserve"><value>請注意，若不保留雙曲線漸近線可能會有遇到撤回相關的 BUG 影響使用。</value></data><data name="Canvas_IgnorePressure" xml:space="preserve"><value>屏蔽壓感</value></data><data name="Canvas_KeepAsymptote" xml:space="preserve"><value>保留雙曲線漸近線</value></data><data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth" xml:space="preserve"><value>白板展臺按鈕啟動希沃影片展臺</value></data><data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBoothHint" xml:space="preserve"><value>開啟后，點選白板工具欄「展臺」將打開希沃影片展臺（需已安裝）；關閉則使用內置展臺。</value></data><data name="Canvas_MergeInkSmoothingWithUndo" xml:space="preserve"><value>將墨跡平滑和撤銷合并</value></data><data name="Canvas_MergeInkSmoothingWithUndoHint" xml:space="preserve"><value>開啟后，墨跡平滑產生的替換筆畫會和原始書寫合并為一次撤銷；墨跡糾正不參與合并。</value></data><data name="Canvas_No" xml:space="preserve"><value>否</value></data><data name="Canvas_RestoreColor" xml:space="preserve"><value>恢復目標顏色</value></data><data name="Canvas_RestoreOpacity" xml:space="preserve"><value>恢復透明度</value></data><data name="Canvas_RestoreWidth" xml:space="preserve"><value>恢復筆粗細</value></data><data name="Canvas_ShowCircleCenter" xml:space="preserve"><value>繪制圓時顯示圓心位置</value></data><data name="Canvas_ShowCoordinateUnitMarks" xml:space="preserve"><value>繪制坐標系時顯示厘米刻度</value></data><data name="Canvas_ShowCoordinateUnitMarksHint" xml:space="preserve"><value>開啟后，繪制坐標系會按 1 cm 間隔自動添加刻度。</value></data><data name="Canvas_ShowPenCursor" xml:space="preserve"><value>顯示畫筆光標</value></data><data name="Canvas_PenCursorType" xml:space="preserve"><value>畫筆光標類型</value></data><data name="Canvas_PenCursorTypeHint" xml:space="preserve"><value>選擇顯示畫筆光標時使用的光標樣式</value></data><data name="Canvas_PenCursorType_System" xml:space="preserve"><value>系統光標</value></data><data name="Canvas_PenCursorType_BuiltIn" xml:space="preserve"><value>軟體內置光標</value></data><data name="Canvas_PenCursorType_Custom" xml:space="preserve"><value>使用者自定義光標</value></data><data name="Canvas_CustomPenCursorPath" xml:space="preserve"><value>自定義光標檔案</value></data><data name="Canvas_CustomPenCursorPathHint" xml:space="preserve"><value>未選擇檔案時將回退到軟體內置光標</value></data><data name="Canvas_SelectCustomPenCursor" xml:space="preserve"><value>選擇光標檔案…</value></data><data name="Canvas_CustomPenCursorFilter" xml:space="preserve"><value>光標檔案|*.cur;*.ani</value></data><data name="Canvas_SwitchBackAfterEraser" xml:space="preserve"><value>使用橡皮擦后自動切換回批注模式</value></data><data name="Canvas_SwitchBackAfterEraserHint" xml:space="preserve"><value>開啟后，使用橡皮擦進行擦除操作后靜置一段時間將自動切換回批注模式</value></data><data name="Canvas_SwitchBackDelay" xml:space="preserve"><value>自動切換延遲時間</value></data><data name="Canvas_SwitchBackDelayHint" xml:space="preserve"><value>若在計時時間內再次進行擦除操作，計時器將重新開始計時</value></data><data name="Canvas_WPFBezier" xml:space="preserve"><value>使用 WPF 預設貝塞爾曲線平滑</value></data><data name="Canvas_Yes" xml:space="preserve"><value>是</value></data><data name="CanvasAndInkPanel_1920×1080Hint" xml:space="preserve"><value>插入的圖片大于 1920×1080 時自動壓縮以節省記憶體</value></data><data name="CanvasAndInkPanel_Hint_9" xml:space="preserve"><value>開啟后將在設定時間間隔自動儲存墨跡，僅在畫布可見且有墨跡時才會儲存</value></data><data name="InkRecog_AutoStraightLine" xml:space="preserve"><value>直線自動拉直</value></data><data name="InkRecog_BlockRectFakePressure" xml:space="preserve"><value>阻止矯正后的矩形帶有模擬壓感值</value></data><data name="InkRecog_BlockTriFakePressure" xml:space="preserve"><value>阻止矯正后的三角形帶有模擬壓感值</value></data><data name="InkRecog_EnableInkRecognition" xml:space="preserve"><value>啟用墨跡識別</value></data><data name="InkRecog_FixEllipse" xml:space="preserve"><value>矯正手繪圓形與橢圓</value></data><data name="InkRecog_FixRectangle" xml:space="preserve"><value>矯正手繪矩形</value></data><data name="InkRecog_FixTriangle" xml:space="preserve"><value>矯正手繪三角形</value></data><data name="InkRecog_HandwritingBeautify" xml:space="preserve"><value>WinRT識別轉手寫體字形</value></data><data name="InkRecog_HandwritingBeautifyHint" xml:space="preserve"><value>把潦草的手寫字識別成字，再換一種好看的字型重新畫一遍。</value></data><data name="InkRecog_HandwritingFont" xml:space="preserve"><value>手寫體字形字型</value></data><data name="InkRecog_HandwritingFontHint" xml:space="preserve"><value>選擇用于替換原筆畫的手寫風格字型。若所選字型不存在，將按列表回退。</value></data><data name="InkRecog_HighPrecisionHint" xml:space="preserve"><value>拉直得更準，代價是反應稍慢。靈敏度的值越小越嚴格、越不容易拉直。</value></data><data name="InkRecog_HighPrecisionStraighten" xml:space="preserve"><value>高精度直線拉直</value></data><data name="InkRecog_LengthThreshold" xml:space="preserve"><value>長度閾值</value></data><data name="InkRecog_LineEndpointSnapping" xml:space="preserve"><value>直線端點吸附</value></data><data name="InkRecog_LineEndpointSnappingHint" xml:space="preserve"><value>開啟后，當繪制的直線端點靠近其他直線端點時，將自動吸附連接。</value></data><data name="InkRecog_PauseStraightenDelay" xml:space="preserve"><value>停頓觸發延遲</value></data><data name="InkRecog_PauseStraightenHint" xml:space="preserve"><value>書寫中停頓時，自動將當前筆畫拉直為直線（需同時開啟直線自動拉直）。</value></data><data name="InkRecog_PauseStraightenLine" xml:space="preserve"><value>停頓拉直</value></data><data name="InkRecog_Sensitivity" xml:space="preserve"><value>靈敏度</value></data><data name="InkRecog_ShapeEngine" xml:space="preserve"><value>識別引擎</value></data><data name="InkRecog_ShapeEngineAuto" xml:space="preserve"><value>自動</value></data><data name="InkRecog_ShapeEngineHint" xml:space="preserve"><value>決定用什么引擎識別筆畫。一般保持「自動」就行。</value></data><data name="InkRecog_SnappingDistance" xml:space="preserve"><value>吸附距離</value></data><data name="InkRecog_Title" xml:space="preserve"><value>墨跡糾正</value></data><data name="InkRecog_Font_InkFreeKaiti" xml:space="preserve"><value>Ink Free / 楷體 / Segoe Script</value></data><data name="InkRecog_Font_Kaiti" xml:space="preserve"><value>楷體 (KaiTi)</value></data><data name="InkRecog_Font_STKaiti" xml:space="preserve"><value>華文楷體 (STKaiti)</value></data><data name="InkRecog_Font_STXingkai" xml:space="preserve"><value>華文行楷 (STXingkai)</value></data><data name="InkRecog_Font_FangSong" xml:space="preserve"><value>仿宋 (FangSong)</value></data><data name="InkRecog_Font_STFangsong" xml:space="preserve"><value>華文仿宋 (STFangsong)</value></data><data name="InkRecog_Font_LiSu" xml:space="preserve"><value>隸書 (LiSu)</value></data><data name="InkRecog_Font_YouYuan" xml:space="preserve"><value>幼圓 (YouYuan)</value></data><data name="InkRecog_ShapeCorrection" xml:space="preserve"><value>形狀修正</value></data><data name="Canvas_SecondsFormat" xml:space="preserve"><value>{0:0}秒</value></data><data name="Canvas_BackgroundSettings" xml:space="preserve"><value>背景設定</value></data><data name="Canvas_WhiteboardMode" xml:space="preserve"><value>白板模式</value></data><data name="Canvas_Blackboard" xml:space="preserve"><value>黑板</value></data><data name="Canvas_BackgroundColor" xml:space="preserve"><value>背景顏色</value></data><data name="Canvas_ApplyColor" xml:space="preserve"><value>應用顏色</value></data><data name="Canvas_DarkMode" xml:space="preserve"><value>黑底</value></data><data name="Shape_RemoveAsymptote" xml:space="preserve"><value>是否移除漸近線？</value></data><data name="Canvas_SectionCursor" xml:space="preserve"><value>光標與壓感</value></data><data name="Canvas_SectionInk" xml:space="preserve"><value>筆跡渲染與儲存</value></data><data name="Canvas_SectionBrushRestore" xml:space="preserve"><value>畫筆自動恢復</value></data><data name="Canvas_SectionGesture" xml:space="preserve"><value>手勢</value></data><data name="Canvas_SectionInkRecog" xml:space="preserve"><value>墨跡識別</value></data><data name="Canvas_SectionClearBehavior" xml:space="preserve"><value>清空與壓縮</value></data><data name="Canvas_SectionMouseAndMode" xml:space="preserve"><value>滑鼠與模式切換</value></data><data name="Canvas_SectionSeewo" xml:space="preserve"><value>希沃影片展臺</value></data></root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Canvas_AdvancedSmoothing" xml:space="preserve">
+    <value>使用高級曲線平滑（推薦）</value>
+  </data>
+  <data name="Canvas_AskEachTime" xml:space="preserve">
+    <value>每次詢問</value>
+  </data>
+  <data name="Canvas_AutoRestoreTimePoints" xml:space="preserve">
+    <value>自動恢復時間點 (HH:mm，可多個，用 ; 分隔)</value>
+  </data>
+  <data name="Canvas_BrushAutoRestore" xml:space="preserve">
+    <value>啟用畫筆自動恢復</value>
+  </data>
+  <data name="Canvas_BrushAutoRestoreHint" xml:space="preserve">
+    <value>啟用后，臨時修改畫筆設定后將在指定時間點自動恢復到你在此處配置的顏色 / 透明度 / 粗細</value>
+  </data>
+  <data name="Canvas_ClearCanvasAlsoClearImages" xml:space="preserve">
+    <value>清空畫布時同時清空圖片</value>
+  </data>
+  <data name="Canvas_ClearInkAlsoClearHistory" xml:space="preserve">
+    <value>清空墨跡時刪除墨跡歷史記錄</value>
+  </data>
+  <data name="Canvas_Color_Black" xml:space="preserve">
+    <value>黑色</value>
+  </data>
+  <data name="Canvas_Color_Blue" xml:space="preserve">
+    <value>藍色</value>
+  </data>
+  <data name="Canvas_Color_Default" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="Canvas_Color_Green" xml:space="preserve">
+    <value>綠色</value>
+  </data>
+  <data name="Canvas_Color_Orange" xml:space="preserve">
+    <value>橙色</value>
+  </data>
+  <data name="Canvas_Color_Purple" xml:space="preserve">
+    <value>紫色</value>
+  </data>
+  <data name="Canvas_Color_Red" xml:space="preserve">
+    <value>紅色</value>
+  </data>
+  <data name="Canvas_Color_White" xml:space="preserve">
+    <value>白色</value>
+  </data>
+  <data name="Canvas_Color_Yellow" xml:space="preserve">
+    <value>黃色</value>
+  </data>
+  <data name="Canvas_CompressPicturesUploaded" xml:space="preserve">
+    <value>插入圖片時自動壓縮（大于1920×1080）</value>
+  </data>
+  <data name="Canvas_CurveSmoothing_Off" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Canvas_CurveSmoothingMode" xml:space="preserve">
+    <value>曲線平滑模式</value>
+  </data>
+  <data name="Canvas_DisableHardwareAcceleration" xml:space="preserve">
+    <value>關閉硬體加速</value>
+  </data>
+  <data name="Canvas_DisableHardwareAccelerationHint" xml:space="preserve">
+    <value>關閉后可提升兼容性，但可能降低性能；部分效果可能需要重啟程序后完全生效。</value>
+  </data>
+  <data name="Canvas_DisablePressureHint" xml:space="preserve">
+    <value>開啟后，將忽略所有設備的壓感資訊，使所有筆畫具有統一的粗細。與壓感觸屏模式互斥。</value>
+  </data>
+  <data name="Canvas_EnablePressureTouch" xml:space="preserve">
+    <value>啟用壓感觸屏模式</value>
+  </data>
+  <data name="Canvas_EnablePressureTouchHint" xml:space="preserve">
+    <value>開啟后，觸屏設備也將支援壓感效果，適用于部分支援壓感但無法被系統識別的觸屏設備。</value>
+  </data>
+  <data name="Canvas_EraserSize" xml:space="preserve">
+    <value>橡皮大小</value>
+  </data>
+  <data name="Canvas_EraserSize_Large" xml:space="preserve">
+    <value>較大</value>
+  </data>
+  <data name="Canvas_EraserSize_Medium" xml:space="preserve">
+    <value>中等</value>
+  </data>
+  <data name="Canvas_EraserSize_Small" xml:space="preserve">
+    <value>較小</value>
+  </data>
+  <data name="Canvas_EraserSize_VeryLarge" xml:space="preserve">
+    <value>很大</value>
+  </data>
+  <data name="Canvas_EraserSize_VerySmall" xml:space="preserve">
+    <value>很小</value>
+  </data>
+  <data name="Canvas_EraserSizeHint" xml:space="preserve">
+    <value>非實時切換，下一次使用面積擦時生效。</value>
+  </data>
+  <data name="Canvas_GroupTitle" xml:space="preserve">
+    <value>畫板</value>
+  </data>
+  <data name="Canvas_HideInkOnExit" xml:space="preserve">
+    <value>點滑鼠時隱藏筆跡</value>
+  </data>
+  <data name="Canvas_HideStrokeWhenSelectingHint" xml:space="preserve">
+    <value>開啟后，點「滑鼠」退出批注模式時隱藏當前筆跡；關閉則筆跡繼續顯示在螢幕上。</value>
+  </data>
+  <data name="Canvas_HyperbolaAsymptoteHint" xml:space="preserve">
+    <value>請注意，若不保留雙曲線漸近線可能會有遇到撤回相關的 BUG 影響使用。</value>
+  </data>
+  <data name="Canvas_IgnorePressure" xml:space="preserve">
+    <value>屏蔽壓感</value>
+  </data>
+  <data name="Canvas_KeepAsymptote" xml:space="preserve">
+    <value>保留雙曲線漸近線</value>
+  </data>
+  <data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBooth" xml:space="preserve">
+    <value>白板展臺按鈕啟動希沃影片展臺</value>
+  </data>
+  <data name="Canvas_LaunchSeewoVideoShowcaseForWhiteboardBoothHint" xml:space="preserve">
+    <value>開啟后，點選白板工具欄「展臺」將打開希沃影片展臺（需已安裝）；關閉則使用內置展臺。</value>
+  </data>
+  <data name="Canvas_MergeInkSmoothingWithUndo" xml:space="preserve">
+    <value>將墨跡平滑和撤銷合并</value>
+  </data>
+  <data name="Canvas_MergeInkSmoothingWithUndoHint" xml:space="preserve">
+    <value>開啟后，墨跡平滑產生的替換筆畫會和原始書寫合并為一次撤銷；墨跡糾正不參與合并。</value>
+  </data>
+  <data name="Canvas_No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Canvas_RestoreColor" xml:space="preserve">
+    <value>恢復目標顏色</value>
+  </data>
+  <data name="Canvas_RestoreOpacity" xml:space="preserve">
+    <value>恢復透明度</value>
+  </data>
+  <data name="Canvas_RestoreWidth" xml:space="preserve">
+    <value>恢復筆粗細</value>
+  </data>
+  <data name="Canvas_ShowCircleCenter" xml:space="preserve">
+    <value>繪制圓時顯示圓心位置</value>
+  </data>
+  <data name="Canvas_ShowCoordinateUnitMarks" xml:space="preserve">
+    <value>繪制坐標系時顯示厘米刻度</value>
+  </data>
+  <data name="Canvas_ShowCoordinateUnitMarksHint" xml:space="preserve">
+    <value>開啟后，繪制坐標系會按 1 cm 間隔自動添加刻度。</value>
+  </data>
+  <data name="Canvas_ShowPenCursor" xml:space="preserve">
+    <value>顯示畫筆光標</value>
+  </data>
+  <data name="Canvas_PenCursorType" xml:space="preserve">
+    <value>畫筆光標類型</value>
+  </data>
+  <data name="Canvas_PenCursorTypeHint" xml:space="preserve">
+    <value>選擇顯示畫筆光標時使用的光標樣式</value>
+  </data>
+  <data name="Canvas_PenCursorType_System" xml:space="preserve">
+    <value>系統光標</value>
+  </data>
+  <data name="Canvas_PenCursorType_BuiltIn" xml:space="preserve">
+    <value>軟體內置光標</value>
+  </data>
+  <data name="Canvas_PenCursorType_Custom" xml:space="preserve">
+    <value>使用者自定義光標</value>
+  </data>
+  <data name="Canvas_CustomPenCursorPath" xml:space="preserve">
+    <value>自定義光標檔案</value>
+  </data>
+  <data name="Canvas_CustomPenCursorPathHint" xml:space="preserve">
+    <value>未選擇檔案時將回退到軟體內置光標</value>
+  </data>
+  <data name="Canvas_SelectCustomPenCursor" xml:space="preserve">
+    <value>選擇光標檔案…</value>
+  </data>
+  <data name="Canvas_CustomPenCursorFilter" xml:space="preserve">
+    <value>光標檔案|*.cur;*.ani</value>
+  </data>
+  <data name="Canvas_SwitchBackAfterEraser" xml:space="preserve">
+    <value>使用橡皮擦后自動切換回批注模式</value>
+  </data>
+  <data name="Canvas_SwitchBackAfterEraserHint" xml:space="preserve">
+    <value>開啟后，使用橡皮擦進行擦除操作后靜置一段時間將自動切換回批注模式</value>
+  </data>
+  <data name="Canvas_SwitchBackDelay" xml:space="preserve">
+    <value>自動切換延遲時間</value>
+  </data>
+  <data name="Canvas_SwitchBackDelayHint" xml:space="preserve">
+    <value>若在計時時間內再次進行擦除操作，計時器將重新開始計時</value>
+  </data>
+  <data name="Canvas_WPFBezier" xml:space="preserve">
+    <value>使用 WPF 預設貝塞爾曲線平滑</value>
+  </data>
+  <data name="Canvas_Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="CanvasAndInkPanel_Hint_9" xml:space="preserve">
+    <value>開啟后將在設定時間間隔自動儲存墨跡，僅在畫布可見且有墨跡時才會儲存</value>
+  </data>
+  <data name="InkRecog_AutoStraightLine" xml:space="preserve">
+    <value>直線自動拉直</value>
+  </data>
+  <data name="InkRecog_BlockRectFakePressure" xml:space="preserve">
+    <value>阻止矯正后的矩形帶有模擬壓感值</value>
+  </data>
+  <data name="InkRecog_BlockTriFakePressure" xml:space="preserve">
+    <value>阻止矯正后的三角形帶有模擬壓感值</value>
+  </data>
+  <data name="InkRecog_EnableInkRecognition" xml:space="preserve">
+    <value>啟用墨跡識別</value>
+  </data>
+  <data name="InkRecog_FixEllipse" xml:space="preserve">
+    <value>矯正手繪圓形與橢圓</value>
+  </data>
+  <data name="InkRecog_FixRectangle" xml:space="preserve">
+    <value>矯正手繪矩形</value>
+  </data>
+  <data name="InkRecog_FixTriangle" xml:space="preserve">
+    <value>矯正手繪三角形</value>
+  </data>
+  <data name="InkRecog_HighPrecisionHint" xml:space="preserve">
+    <value>拉直得更準，代價是反應稍慢。靈敏度的值越小越嚴格、越不容易拉直。</value>
+  </data>
+  <data name="InkRecog_HighPrecisionStraighten" xml:space="preserve">
+    <value>高精度直線拉直</value>
+  </data>
+  <data name="InkRecog_LengthThreshold" xml:space="preserve">
+    <value>長度閾值</value>
+  </data>
+  <data name="InkRecog_LineEndpointSnapping" xml:space="preserve">
+    <value>直線端點吸附</value>
+  </data>
+  <data name="InkRecog_LineEndpointSnappingHint" xml:space="preserve">
+    <value>開啟后，當繪制的直線端點靠近其他直線端點時，將自動吸附連接。</value>
+  </data>
+  <data name="InkRecog_PauseStraightenDelay" xml:space="preserve">
+    <value>停頓觸發延遲</value>
+  </data>
+  <data name="InkRecog_PauseStraightenHint" xml:space="preserve">
+    <value>書寫中停頓時，自動將當前筆畫拉直為直線（需同時開啟直線自動拉直）。</value>
+  </data>
+  <data name="InkRecog_PauseStraightenLine" xml:space="preserve">
+    <value>停頓拉直</value>
+  </data>
+  <data name="InkRecog_Sensitivity" xml:space="preserve">
+    <value>靈敏度</value>
+  </data>
+  <data name="InkRecog_SnappingDistance" xml:space="preserve">
+    <value>吸附距離</value>
+  </data>
+  <data name="InkRecog_Title" xml:space="preserve">
+    <value>墨跡糾正</value>
+  </data>
+  <data name="InkRecog_ShapeCorrection" xml:space="preserve">
+    <value>形狀修正</value>
+  </data>
+  <data name="Canvas_SecondsFormat" xml:space="preserve">
+    <value>{0:0}秒</value>
+  </data>
+  <data name="Canvas_BackgroundSettings" xml:space="preserve">
+    <value>背景設定</value>
+  </data>
+  <data name="Canvas_WhiteboardMode" xml:space="preserve">
+    <value>白板模式</value>
+  </data>
+  <data name="Canvas_Blackboard" xml:space="preserve">
+    <value>黑板</value>
+  </data>
+  <data name="Canvas_BackgroundColor" xml:space="preserve">
+    <value>背景顏色</value>
+  </data>
+  <data name="Canvas_ApplyColor" xml:space="preserve">
+    <value>應用顏色</value>
+  </data>
+  <data name="Canvas_DarkMode" xml:space="preserve">
+    <value>黑底</value>
+  </data>
+  <data name="Shape_RemoveAsymptote" xml:space="preserve">
+    <value>是否移除漸近線？</value>
+  </data>
+  <data name="Canvas_SectionCursor" xml:space="preserve">
+    <value>光標與壓感</value>
+  </data>
+  <data name="Canvas_SectionInk" xml:space="preserve">
+    <value>筆跡渲染與儲存</value>
+  </data>
+  <data name="Canvas_SectionBrushRestore" xml:space="preserve">
+    <value>畫筆自動恢復</value>
+  </data>
+  <data name="Canvas_SectionClearBehavior" xml:space="preserve">
+    <value>清空與壓縮</value>
+  </data>
+  <data name="Canvas_SectionMouseAndMode" xml:space="preserve">
+    <value>滑鼠與模式切換</value>
+  </data>
+  <data name="Canvas_SectionSeewo" xml:space="preserve">
+    <value>希沃影片展臺</value>
+  </data>
+</root>

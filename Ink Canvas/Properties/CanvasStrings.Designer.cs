@@ -167,9 +167,6 @@ namespace Ink_Canvas.Properties
         public static string Canvas_WPFBezier => ResourceManager.GetString(nameof(Canvas_WPFBezier), _resourceCulture);
 
         public static string Canvas_Yes => ResourceManager.GetString(nameof(Canvas_Yes), _resourceCulture);
-
-        public static string CanvasAndInkPanel_1920_1080Hint => ResourceManager.GetString("CanvasAndInkPanel_1920×1080Hint", _resourceCulture);
-
         public static string CanvasAndInkPanel_Hint_9 => ResourceManager.GetString(nameof(CanvasAndInkPanel_Hint_9), _resourceCulture);
 
         public static string InkRecog_AutoStraightLine => ResourceManager.GetString(nameof(InkRecog_AutoStraightLine), _resourceCulture);
@@ -185,15 +182,6 @@ namespace Ink_Canvas.Properties
         public static string InkRecog_FixRectangle => ResourceManager.GetString(nameof(InkRecog_FixRectangle), _resourceCulture);
 
         public static string InkRecog_FixTriangle => ResourceManager.GetString(nameof(InkRecog_FixTriangle), _resourceCulture);
-
-        public static string InkRecog_HandwritingBeautify => ResourceManager.GetString(nameof(InkRecog_HandwritingBeautify), _resourceCulture);
-
-        public static string InkRecog_HandwritingBeautifyHint => ResourceManager.GetString(nameof(InkRecog_HandwritingBeautifyHint), _resourceCulture);
-
-        public static string InkRecog_HandwritingFont => ResourceManager.GetString(nameof(InkRecog_HandwritingFont), _resourceCulture);
-
-        public static string InkRecog_HandwritingFontHint => ResourceManager.GetString(nameof(InkRecog_HandwritingFontHint), _resourceCulture);
-
         public static string InkRecog_HighPrecisionHint => ResourceManager.GetString(nameof(InkRecog_HighPrecisionHint), _resourceCulture);
 
         public static string InkRecog_HighPrecisionStraighten => ResourceManager.GetString(nameof(InkRecog_HighPrecisionStraighten), _resourceCulture);
@@ -211,33 +199,9 @@ namespace Ink_Canvas.Properties
         public static string InkRecog_PauseStraightenLine => ResourceManager.GetString(nameof(InkRecog_PauseStraightenLine), _resourceCulture);
 
         public static string InkRecog_Sensitivity => ResourceManager.GetString(nameof(InkRecog_Sensitivity), _resourceCulture);
-
-        public static string InkRecog_ShapeEngine => ResourceManager.GetString(nameof(InkRecog_ShapeEngine), _resourceCulture);
-
-        public static string InkRecog_ShapeEngineAuto => ResourceManager.GetString(nameof(InkRecog_ShapeEngineAuto), _resourceCulture);
-
-        public static string InkRecog_ShapeEngineHint => ResourceManager.GetString(nameof(InkRecog_ShapeEngineHint), _resourceCulture);
-
         public static string InkRecog_SnappingDistance => ResourceManager.GetString(nameof(InkRecog_SnappingDistance), _resourceCulture);
 
         public static string InkRecog_Title => ResourceManager.GetString(nameof(InkRecog_Title), _resourceCulture);
-
-        public static string InkRecog_Font_InkFreeKaiti => ResourceManager.GetString(nameof(InkRecog_Font_InkFreeKaiti), _resourceCulture);
-
-        public static string InkRecog_Font_Kaiti => ResourceManager.GetString(nameof(InkRecog_Font_Kaiti), _resourceCulture);
-
-        public static string InkRecog_Font_STKaiti => ResourceManager.GetString(nameof(InkRecog_Font_STKaiti), _resourceCulture);
-
-        public static string InkRecog_Font_STXingkai => ResourceManager.GetString(nameof(InkRecog_Font_STXingkai), _resourceCulture);
-
-        public static string InkRecog_Font_FangSong => ResourceManager.GetString(nameof(InkRecog_Font_FangSong), _resourceCulture);
-
-        public static string InkRecog_Font_STFangsong => ResourceManager.GetString(nameof(InkRecog_Font_STFangsong), _resourceCulture);
-
-        public static string InkRecog_Font_LiSu => ResourceManager.GetString(nameof(InkRecog_Font_LiSu), _resourceCulture);
-
-        public static string InkRecog_Font_YouYuan => ResourceManager.GetString(nameof(InkRecog_Font_YouYuan), _resourceCulture);
-
         public static string InkRecog_ShapeCorrection => ResourceManager.GetString(nameof(InkRecog_ShapeCorrection), _resourceCulture);
 
         public static string Canvas_SecondsFormat => ResourceManager.GetString(nameof(Canvas_SecondsFormat), _resourceCulture);
@@ -261,11 +225,6 @@ namespace Ink_Canvas.Properties
         public static string Canvas_SectionInk => ResourceManager.GetString(nameof(Canvas_SectionInk), _resourceCulture);
 
         public static string Canvas_SectionBrushRestore => ResourceManager.GetString(nameof(Canvas_SectionBrushRestore), _resourceCulture);
-
-        public static string Canvas_SectionGesture => ResourceManager.GetString(nameof(Canvas_SectionGesture), _resourceCulture);
-
-        public static string Canvas_SectionInkRecog => ResourceManager.GetString(nameof(Canvas_SectionInkRecog), _resourceCulture);
-
         public static string Canvas_SectionClearBehavior => ResourceManager.GetString(nameof(Canvas_SectionClearBehavior), _resourceCulture);
 
         public static string Canvas_SectionMouseAndMode => ResourceManager.GetString(nameof(Canvas_SectionMouseAndMode), _resourceCulture);
