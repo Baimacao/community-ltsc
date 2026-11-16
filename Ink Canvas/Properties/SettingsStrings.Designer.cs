@@ -114,6 +114,12 @@ namespace Ink_Canvas.Properties {
         public static string Auto_AddAction => ResourceManager.GetString(nameof(Auto_AddAction), resourceCulture);
         public static string Auto_RestoreNote => ResourceManager.GetString(nameof(Auto_RestoreNote), resourceCulture);
         public static string Auto_EmptyHint => ResourceManager.GetString(nameof(Auto_EmptyHint), resourceCulture);
+        public static string Auto_PresetToWorkflowTitle => ResourceManager.GetString(nameof(Auto_PresetToWorkflowTitle), resourceCulture);
+        public static string Auto_PresetToWorkflowDesc => ResourceManager.GetString(nameof(Auto_PresetToWorkflowDesc), resourceCulture);
+        public static string Auto_PresetToWorkflowBtn => ResourceManager.GetString(nameof(Auto_PresetToWorkflowBtn), resourceCulture);
+        public static string Auto_PresetToWorkflowEmpty => ResourceManager.GetString(nameof(Auto_PresetToWorkflowEmpty), resourceCulture);
+        public static string Auto_PresetToWorkflowDone => ResourceManager.GetString(nameof(Auto_PresetToWorkflowDone), resourceCulture);
+        public static string Auto_PresetToWorkflowFailed => ResourceManager.GetString(nameof(Auto_PresetToWorkflowFailed), resourceCulture);
         public static string PresenterKey_EnableHeader => ResourceManager.GetString(nameof(PresenterKey_EnableHeader), resourceCulture);
         public static string PresenterKey_EnableDesc => ResourceManager.GetString(nameof(PresenterKey_EnableDesc), resourceCulture);
         public static string PresenterKey_ScopeTitle => ResourceManager.GetString(nameof(PresenterKey_ScopeTitle), resourceCulture);

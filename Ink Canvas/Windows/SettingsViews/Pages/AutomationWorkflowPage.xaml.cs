@@ -260,6 +260,67 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsActionHub.OnAutoFoldChanged();
         }
 
+        /// <summary>
+        /// 把当前勾选好的预设转成工作流。
+        ///
+        /// 为什么是「转」而不是「删」：预设的价值是点一下就生效，老师不用拼规则。
+        /// 但两套系统并行跑、状态互不知道，长期是负担。
+        /// 转成工作流之后，这些场景就归新引擎管，可以在同一个列表里编辑和停用。
+        ///
+        /// 旧开关不动 —— 它们走的固定路径更快（500ms 轮询），
+        /// 而工作流是 1s 计时器 + WinEvent 钩子。老师想要最省心就继续用预设。
+        /// </summary>
+        private void BtnConvertPresetsToWorkflow_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var settings = SettingsManager.Settings;
+                if (settings?.Automation == null) return;
+
+                var workflows = WorkflowAutomation.PresetToWorkflowConverter.Build(settings);
+                if (workflows.Count == 0)
+                {
+                    MessageBox.Show(
+                        SettingsStrings.Auto_PresetToWorkflowEmpty,
+                        SettingsStrings.Auto_PresetToWorkflowTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // 同名工作流不重复添加 —— 老师连点两次不该多出一份。
+                int added = 0;
+                foreach (var wf in workflows)
+                {
+                    string name = wf.ActionSet?.Name;
+                    bool exists = Service.Workflows.Any(x =>
+                        string.Equals(x.ActionSet?.Name, name, StringComparison.Ordinal));
+                    if (exists) continue;
+                    Service.Workflows.Add(wf);
+                    added++;
+                }
+
+                if (added > 0)
+                {
+                    Service.SaveConfig();
+                    RefreshWorkflowList();
+                    LogHelper.WriteLogToFile($"已把 {added} 个预设转成工作流", LogHelper.LogType.Event);
+                }
+
+                MessageBox.Show(
+                    string.Format(SettingsStrings.Auto_PresetToWorkflowDone, added),
+                    SettingsStrings.Auto_PresetToWorkflowTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"预设转工作流失败: {ex.Message}", LogHelper.LogType.Error);
+                MessageBox.Show(
+                    string.Format(SettingsStrings.Auto_PresetToWorkflowFailed, ex.Message),
+                    SettingsStrings.Auto_PresetToWorkflowTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         #endregion
 
         #region AutoKill

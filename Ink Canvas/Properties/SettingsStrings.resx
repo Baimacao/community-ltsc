@@ -281,4 +281,22 @@
   <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
     <value>配置翻页笔的特殊键，防止课堂上误触黑屏/退出放映</value>
   </data>
+  <data name="Auto_PresetToWorkflowTitle" xml:space="preserve">
+    <value>把预设转成工作流</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDesc" xml:space="preserve">
+    <value>上面这些开关是固定预设，和下面的工作流是两套东西。转成工作流后就能自由增删条件，统一在下面管理。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowBtn" xml:space="preserve">
+    <value>转换</value>
+  </data>
+  <data name="Auto_PresetToWorkflowEmpty" xml:space="preserve">
+    <value>当前没有勾选任何预设，先在上面打开需要的项目。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDone" xml:space="preserve">
+    <value>已转换 {0} 个。同名的工作流会跳过，不会重复添加。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
+    <value>转换失败：{0}</value>
+  </data>
 </root>

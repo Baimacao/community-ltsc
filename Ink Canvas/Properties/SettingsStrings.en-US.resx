@@ -281,4 +281,22 @@
   <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
     <value>Configure presenter remote keys to avoid accidentally blanking or exiting a slideshow in class</value>
   </data>
+  <data name="Auto_PresetToWorkflowTitle" xml:space="preserve">
+    <value>Convert presets to workflows</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDesc" xml:space="preserve">
+    <value>The switches above are fixed presets; the list below is a separate workflow engine. Convert them once and you can edit every condition in one place.</value>
+  </data>
+  <data name="Auto_PresetToWorkflowBtn" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="Auto_PresetToWorkflowEmpty" xml:space="preserve">
+    <value>No presets are enabled. Turn some on above first.</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDone" xml:space="preserve">
+    <value>Converted {0}. Workflows with the same name are skipped.</value>
+  </data>
+  <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
+    <value>Conversion failed: {0}</value>
+  </data>
 </root>

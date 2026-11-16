@@ -314,4 +314,22 @@
   <data name="Nav_PresenterKey_Tooltip" xml:space="preserve">
     <value>設定翻頁筆的特殊鍵，防止課堂上誤觸黑屏/退出放映</value>
   </data>
+  <data name="Auto_PresetToWorkflowTitle" xml:space="preserve">
+    <value>把預設轉成工作流程</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDesc" xml:space="preserve">
+    <value>上面這些開關是固定預設，和下面的工作流程是兩套東西。轉成工作流程後就能自由增刪條件，統一在下面管理。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowBtn" xml:space="preserve">
+    <value>轉換</value>
+  </data>
+  <data name="Auto_PresetToWorkflowEmpty" xml:space="preserve">
+    <value>目前沒有勾選任何預設，先在上面開啟需要的項目。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowDone" xml:space="preserve">
+    <value>已轉換 {0} 個。同名的會跳過，不會重複加入。</value>
+  </data>
+  <data name="Auto_PresetToWorkflowFailed" xml:space="preserve">
+    <value>轉換失敗：{0}</value>
+  </data>
 </root>
