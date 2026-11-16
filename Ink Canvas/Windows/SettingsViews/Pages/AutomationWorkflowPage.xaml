@@ -77,8 +77,9 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}">
-                            <ScrollViewer PanningMode="VerticalFirst" HorizontalScrollBarVisibility="Disabled"
-                                          VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto"
+                                          PanningMode="VerticalFirst">
                                 <ItemsPresenter HorizontalAlignment="Stretch"/>
                             </ScrollViewer>
                         </Border>
@@ -532,8 +533,6 @@
             </ScrollViewer>
 
             <!-- ========== 工作流编辑器面板 ========== -->
-            <!-- 工作流编辑器面板。它占右半边整块高度，内容比一屏长 ——
-                 触摸屏上必须能划着滚，否则下面的动作组永远够不到。 -->
             <ScrollViewer x:Name="WorkflowEditorPanel" Visibility="Collapsed" Padding="16,8"
                           PanningMode="VerticalFirst"
                           PanningDeceleration="0.001">
