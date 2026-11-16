@@ -20,7 +20,7 @@ namespace Ink_Canvas.Windows.SettingsViews
         {
             { "HomePage", typeof(HomePage) },
             { "StartupPage", typeof(StartupPage) },
-            { "ClockPage", typeof(ClockPage) },
+            // LTSC N-01：「时钟」页已并入「窗口」页（12/24 小时制），不再单独注册。
             { "SecurityPage", typeof(SecurityPage) },
             { "WindowPage", typeof(WindowPage) },
             { "SidebarPage", typeof(SidebarPage) },

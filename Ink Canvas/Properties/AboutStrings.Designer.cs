@@ -55,7 +55,6 @@ namespace Ink_Canvas.Properties
         public static string OpenSourceSlogan => ResourceManager.GetString(nameof(OpenSourceSlogan), _resourceCulture);
 
         public static string PhigrosCr => ResourceManager.GetString(nameof(PhigrosCr), _resourceCulture);
-        public static string PrivacyAndTelemetry => ResourceManager.GetString(nameof(PrivacyAndTelemetry), _resourceCulture);
         public static string ThanksContributors => ResourceManager.GetString(nameof(ThanksContributors), _resourceCulture);
 
         public static string Title => ResourceManager.GetString(nameof(Title), _resourceCulture);

@@ -32,7 +32,6 @@ namespace Ink_Canvas.Properties
             dict["About_LicenseTitle"] = ("AboutStrings", "LicenseTitle");
             dict["About_OpenSourceSlogan"] = ("AboutStrings", "OpenSourceSlogan");
             dict["About_PhigrosCr"] = ("AboutStrings", "PhigrosCr");
-            dict["About_PrivacyAndTelemetry"] = ("AboutStrings", "PrivacyAndTelemetry");
             dict["About_ThanksContributors"] = ("AboutStrings", "ThanksContributors");
             dict["About_Title"] = ("AboutStrings", "Title");
             dict["About_VersionLabel"] = ("AboutStrings", "VersionLabel");
@@ -378,7 +377,6 @@ namespace Ink_Canvas.Properties
             dict["Home_Title"] = ("HomeStrings", "Home_Title");
             dict["Home_Window"] = ("HomeStrings", "Home_Window");
             dict["Home_WindowSettings"] = ("HomeStrings", "Home_WindowSettings");
-            dict["Home_ClockSettings"] = ("HomeStrings", "Home_ClockSettings");
             dict["Home_BackupSettings"] = ("HomeStrings", "Home_BackupSettings");
             dict["Home_FriendlyLinks"] = ("HomeStrings", "Home_FriendlyLinks");
             dict["Hotkey_NotSet"] = ("CommonStrings", "Hotkey_NotSet");
@@ -542,7 +540,6 @@ namespace Ink_Canvas.Properties
             dict["Nav_Home"] = ("NavStrings", "Nav_Home");
             dict["Nav_Home_Tooltip"] = ("NavStrings", "Nav_Home_Tooltip");
             dict["Nav_ICCSettings"] = ("NavStrings", "Nav_ICCSettings");
-            dict["Nav_Privacy"] = ("NavStrings", "Nav_Privacy");
             dict["Nav_MainInterface"] = ("NavStrings", "Nav_MainInterface");
             dict["Nav_MainInterface_Tooltip"] = ("NavStrings", "Nav_MainInterface_Tooltip");
             dict["Nav_Window"] = ("NavStrings", "Nav_Window");

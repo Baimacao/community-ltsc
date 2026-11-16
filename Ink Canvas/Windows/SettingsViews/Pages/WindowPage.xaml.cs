@@ -43,6 +43,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             try
             {
                 var settings = SettingsManager.Settings;
+
+                // LTSC N-01：从「时钟」页并入的 12/24 小时制。
+                if (settings.Appearance != null)
+                {
+                    ComboBoxTimeFormat.SelectedIndex = settings.Appearance.Use24HourTimeFormat ? 1 : 0;
+                }
+
                 if (settings.Advanced != null)
                 {
                     CardNoFocusMode.IsOn = settings.Advanced.IsNoFocusMode;
@@ -394,7 +401,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
             ComboBoxTheme.SelectedIndex = settings.Appearance.Theme;
             SelectComboBoxItemByTag(ComboBoxWindowBackdrop, settings.Appearance.WindowBackdrop);
-            ToggleSwitchDisableAllAnimations.IsOn = settings.Appearance.DisableAllAnimations;
+
 
             _isApplyingLanguageFromSettings = true;
             try
@@ -471,20 +478,20 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         }
 
         /// <summary>
-        /// LTSC D-05：全局动效开关。写入设置后立即生效——AnimationsHelper.EffectiveDuration
-        /// 每次被调用都会重新读这个字段，所以不需要重启，下一次动画就是新行为。
+        /// 12/24 小时制。原来在「时钟」页，那页只有一个时间显示加这一个下拉框，
+        /// 占一整页太空；它改的是 Appearance，跟本页的主题同属「界面长什么样」，并过来。
         /// </summary>
-        private void ToggleSwitchDisableAllAnimations_Toggled(object sender, RoutedEventArgs e)
+        private void ComboBoxTimeFormat_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!_isLoaded) return;
             try
             {
                 var s = SettingsManager.Settings;
                 if (s?.Appearance == null) return;
-                s.Appearance.DisableAllAnimations = ToggleSwitchDisableAllAnimations.IsOn;
+                s.Appearance.Use24HourTimeFormat = ComboBoxTimeFormat.SelectedIndex == 1;
                 SettingsManager.SaveSettingsToFile();
             }
-            catch (Exception ex) { Debug.WriteLine($"切换界面动效开关时出错: {ex.Message}"); }
+            catch (Exception ex) { Debug.WriteLine($"切换时间格式时出错: {ex.Message}"); }
         }
 
         private void ComboBoxWindowBackdrop_SelectionChanged(object sender, SelectionChangedEventArgs e)

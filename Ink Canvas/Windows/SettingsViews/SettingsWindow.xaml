@@ -148,15 +148,6 @@ Title="{x:Static props:NavStrings.Nav_SettingsWindow_Title}"
                             </ui:NavigationViewItem.Icon>
                         </ui:NavigationViewItem>
                         <ui:NavigationViewItem
-                            x:Name="ClockPageItem"
-                            Content="{x:Static props:NavStrings.Nav_Clock}"
-                            Tag="ClockPage"
-                            ToolTipService.ToolTip="{x:Static props:NavStrings.Nav_Clock_Tooltip}">
-                            <ui:NavigationViewItem.Icon>
-                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}"/>
-                            </ui:NavigationViewItem.Icon>
-                        </ui:NavigationViewItem>
-                        <ui:NavigationViewItem
                             x:Name="SecurityPageItem"
                             Content="{x:Static props:NavStrings.Settings_Nav_Security}"
                             Tag="SecurityPage"

@@ -105,12 +105,6 @@
   <data name="Nav_Startup_Tooltip" xml:space="preserve">
     <value>启动与基本行为设置</value>
   </data>
-  <data name="Nav_Clock" xml:space="preserve">
-    <value>时钟</value>
-  </data>
-  <data name="Nav_Clock_Tooltip" xml:space="preserve">
-    <value>时钟显示设置</value>
-  </data>
   <data name="Nav_ToolbarComponents" xml:space="preserve">
     <value>组件</value>
   </data>
@@ -122,9 +116,6 @@
   </data>
   <data name="Nav_ToolbarAppearance_Tooltip" xml:space="preserve">
     <value>工具栏外观设置</value>
-  </data>
-  <data name="Nav_Privacy" xml:space="preserve">
-    <value>隐私</value>
   </data>
   <data name="Nav_MainInterface" xml:space="preserve">
     <value>主界面</value>

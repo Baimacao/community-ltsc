@@ -105,16 +105,4 @@
   <data name="FollowMouseScreenHint" xml:space="preserve">
     <value>On by default: automatically use the display where the mouse is as the target display</value>
   </data>
-  <data name="Window_DisableAllAnimations" xml:space="preserve">
-    <value>UI animations</value>
-  </data>
-  <data name="Window_DisableAllAnimationsDesc" xml:space="preserve">
-    <value>Turn off to cut animation overhead. Recommended on low-end machines or over remote desktop.</value>
-  </data>
-  <data name="Window_AnimationsClosed" xml:space="preserve">
-    <value>Off</value>
-  </data>
-  <data name="Window_AnimationsOpened" xml:space="preserve">
-    <value>On</value>
-  </data>
 </root>

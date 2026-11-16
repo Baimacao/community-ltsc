@@ -105,12 +105,6 @@
   <data name="Nav_Startup_Tooltip" xml:space="preserve">
     <value>Startup and basic behavior settings</value>
   </data>
-  <data name="Nav_Clock" xml:space="preserve">
-    <value>Clock</value>
-  </data>
-  <data name="Nav_Clock_Tooltip" xml:space="preserve">
-    <value>Clock display settings</value>
-  </data>
   <data name="Nav_ToolbarComponents" xml:space="preserve">
     <value>Components</value>
   </data>
@@ -122,9 +116,6 @@
   </data>
   <data name="Nav_ToolbarAppearance_Tooltip" xml:space="preserve">
     <value>Toolbar appearance settings</value>
-  </data>
-  <data name="Nav_Privacy" xml:space="preserve">
-    <value>Privacy</value>
   </data>
   <data name="Nav_MainInterface" xml:space="preserve">
     <value>Main Interface</value>

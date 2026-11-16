@@ -61,8 +61,6 @@ namespace Ink_Canvas.Properties
         public static string Home_Window => ResourceManager.GetString(nameof(Home_Window), _resourceCulture);
 
         public static string Home_WindowSettings => ResourceManager.GetString(nameof(Home_WindowSettings), _resourceCulture);
-
-        public static string Home_ClockSettings => ResourceManager.GetString(nameof(Home_ClockSettings), _resourceCulture);
         public static string Home_BackupSettings => ResourceManager.GetString(nameof(Home_BackupSettings), _resourceCulture);
         public static string Home_FriendlyLinks => ResourceManager.GetString(nameof(Home_FriendlyLinks), _resourceCulture);
     }

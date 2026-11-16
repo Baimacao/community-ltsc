@@ -33,8 +33,6 @@ namespace Ink_Canvas.Properties {
             get { return resourceCulture; }
             set { resourceCulture = value; }
         }
-
-        public static string Clock_Title => ResourceManager.GetString(nameof(Clock_Title), resourceCulture);
         public static string Clock_12Hour => ResourceManager.GetString(nameof(Clock_12Hour), resourceCulture);
         public static string Clock_24Hour => ResourceManager.GetString(nameof(Clock_24Hour), resourceCulture);
         public static string Menu_ConfigHint => ResourceManager.GetString(nameof(Menu_ConfigHint), resourceCulture);

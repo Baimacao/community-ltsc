@@ -84,11 +84,5 @@ namespace Ink_Canvas.Properties
         public static string FollowMouseScreen => ResourceManager.GetString(nameof(FollowMouseScreen), _resourceCulture);
 
         public static string FollowMouseScreenHint => ResourceManager.GetString(nameof(FollowMouseScreenHint), _resourceCulture);
-
-        public static string Window_DisableAllAnimations => ResourceManager.GetString(nameof(Window_DisableAllAnimations), _resourceCulture);
-        public static string Window_DisableAllAnimationsDesc => ResourceManager.GetString(nameof(Window_DisableAllAnimationsDesc), _resourceCulture);
-
-        public static string Window_AnimationsClosed => ResourceManager.GetString(nameof(Window_AnimationsClosed), _resourceCulture);
-        public static string Window_AnimationsOpened => ResourceManager.GetString(nameof(Window_AnimationsOpened), _resourceCulture);
     }
 }

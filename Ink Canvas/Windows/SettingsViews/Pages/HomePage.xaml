@@ -69,13 +69,6 @@
                         </ui:SettingsCard.HeaderIcon>
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Header="{x:Static props:NavStrings.Nav_Clock}" Description="{x:Static props:HomeStrings.Home_ClockSettings}"
-                        IsClickEnabled="True" Click="QuickNavCard_Click" Tag="ClockPage">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Stopwatch}" />
-                        </ui:SettingsCard.HeaderIcon>
-                    </ui:SettingsCard>
-
                     <ui:SettingsCard Header="{x:Static props:NavStrings.Settings_Nav_Security}" Description="{x:Static props:NavStrings.Settings_Nav_Security_Tooltip}"
                         IsClickEnabled="True" Click="QuickNavCard_Click" Tag="SecurityPage">
                         <ui:SettingsCard.HeaderIcon>

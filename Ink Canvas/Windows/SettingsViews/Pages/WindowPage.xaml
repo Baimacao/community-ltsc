@@ -195,6 +195,21 @@
                         </ComboBox>
                     </ui:SettingsCard>
 
+                    <!-- LTSC N-01：从「时钟」页并入。原来那页只有一个时间显示 + 这个下拉框，
+                         占一整页太空，而且它改的是 Appearance.Use24HourTimeFormat，
+                         跟本页的主题/背景同属「界面长什么样」。 -->
+                    <ui:SettingsCard Header="{x:Static props:ThemeStrings.AppearancePanel_24HourTimeFormat}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Glyph="&#xE917;" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox x:Name="ComboBoxTimeFormat"
+                                  SelectedIndex="0"
+                                  SelectionChanged="ComboBoxTimeFormat_SelectionChanged">
+                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Clock_12Hour}" />
+                            <ComboBoxItem Content="{x:Static props:SettingsStrings.Clock_24Hour}" />
+                        </ComboBox>
+                    </ui:SettingsCard>
+
                     <ui:SettingsCard Header="{x:Static props:ThemeStrings.Theme_WindowBackdrop}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.FullScreen}" />
@@ -229,17 +244,7 @@
                         </ComboBox>
                     </ui:SettingsCard>
 
-                    <!-- LTSC D-05: 全局动效开关。开启后全仓动画时长归零（瞬时完成）。 -->
-                    <ui:SettingsCard Header="{x:Static props:WindowStrings.Window_DisableAllAnimations}"
-                             Description="{x:Static props:WindowStrings.Window_DisableAllAnimationsDesc}">
-                        <ui:SettingsCard.HeaderIcon>
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Play}" />
-                        </ui:SettingsCard.HeaderIcon>
-                        <ui:ToggleSwitch x:Name="ToggleSwitchDisableAllAnimations"
-                                      OnContent="{x:Static props:WindowStrings.Window_AnimationsClosed}"
-                                      OffContent="{x:Static props:WindowStrings.Window_AnimationsOpened}"
-                                      Toggled="ToggleSwitchDisableAllAnimations_Toggled" />
-                    </ui:SettingsCard>
+                    <!-- LTSC N-01：全局动效开关已移除。动画始终开启。 -->
 
                     <Rectangle Height="48" />
 

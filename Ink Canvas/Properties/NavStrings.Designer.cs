@@ -86,11 +86,6 @@ namespace Ink_Canvas.Properties
         public static string Nav_General_Tooltip => ResourceManager.GetString(nameof(Nav_General_Tooltip), _resourceCulture);
 
         public static string Nav_Startup_Tooltip => ResourceManager.GetString(nameof(Nav_Startup_Tooltip), _resourceCulture);
-
-        public static string Nav_Clock => ResourceManager.GetString(nameof(Nav_Clock), _resourceCulture);
-
-        public static string Nav_Clock_Tooltip => ResourceManager.GetString(nameof(Nav_Clock_Tooltip), _resourceCulture);
-
         public static string Nav_ToolbarComponents => ResourceManager.GetString(nameof(Nav_ToolbarComponents), _resourceCulture);
 
         public static string Nav_ToolbarComponents_Tooltip => ResourceManager.GetString(nameof(Nav_ToolbarComponents_Tooltip), _resourceCulture);
@@ -98,7 +93,6 @@ namespace Ink_Canvas.Properties
         public static string Nav_ToolbarAppearance => ResourceManager.GetString(nameof(Nav_ToolbarAppearance), _resourceCulture);
 
         public static string Nav_ToolbarAppearance_Tooltip => ResourceManager.GetString(nameof(Nav_ToolbarAppearance_Tooltip), _resourceCulture);
-        public static string Nav_Privacy => ResourceManager.GetString(nameof(Nav_Privacy), _resourceCulture);
         public static string Nav_MainInterface => ResourceManager.GetString(nameof(Nav_MainInterface), _resourceCulture);
 
         public static string Nav_MainInterface_Tooltip => ResourceManager.GetString(nameof(Nav_MainInterface_Tooltip), _resourceCulture);

@@ -90,14 +90,6 @@
                          原实现长期锁住程序目录并在每次写入前强制 GC，见 REMOVED.md。 -->
 
 
-                    <!-- LTSC：隐私设置并入本页（原 PrivacyPage） -->
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:NavStrings.Nav_Privacy}" />
-
-
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:AboutStrings.PrivacyAndTelemetry}" />
-
                     <!-- LTSC N-01：隐私与遥测整块移除。
                          理由不是"简化界面"，是这些能力真的不存在：
                          · 没有发送遥测的代码，telemetry_token.txt 也不存在

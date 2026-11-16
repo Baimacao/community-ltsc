@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -112,17 +112,5 @@
   </data>
   <data name="FollowMouseScreenHint" xml:space="preserve">
     <value>預設開啟：自動以滑鼠所在顯示屏作為當前目標顯示屏</value>
-  </data>
-  <data name="Window_DisableAllAnimations" xml:space="preserve">
-    <value>介面動效</value>
-  </data>
-  <data name="Window_DisableAllAnimationsDesc" xml:space="preserve">
-    <value>關閉后可減少動畫開銷；低配機器或遠程桌面下建議關閉。</value>
-  </data>
-  <data name="Window_AnimationsClosed" xml:space="preserve">
-    <value>已關閉</value>
-  </data>
-  <data name="Window_AnimationsOpened" xml:space="preserve">
-    <value>已開啟</value>
   </data>
 </root>
