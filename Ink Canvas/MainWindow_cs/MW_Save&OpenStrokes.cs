@@ -601,7 +601,12 @@ namespace Ink_Canvas
                         // 保存元素信息
                         var elementInfos = new List<CanvasElementInfo>();
                         CollectCanvasElementsMetadata(elementInfos);
-                        string elementsPath = Settings.Automation.IsSaveStrokesAsXML ? Path.ChangeExtension(savePathWithName, ".elements.json") : Path.ChangeExtension(savePathWithName, ".elements.json");
+                        // LTSC（2026-11-17）：这里原来是
+                        //   IsSaveStrokesAsXML ? Path.ChangeExtension(x, ".elements.json")
+                        //                       : Path.ChangeExtension(x, ".elements.json")
+                        // 三元两支一模一样，条件白写。看着像「XML 模式存一种、非 XML 模式存另一种」，
+                        // 实际两种模式存同一个文件名。删掉条件，写成它本来就在做的事。
+                        string elementsPath = Path.ChangeExtension(savePathWithName, ".elements.json");
                         File.WriteAllText(elementsPath, JsonConvert.SerializeObject(elementInfos, Newtonsoft.Json.Formatting.Indented));
                     }
                 }
