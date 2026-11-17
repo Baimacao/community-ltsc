@@ -145,6 +145,11 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             catch (Exception ex)
             {
                 action.Exception = ex;
+                // LTSC（2026-11-17）：原来只把异常塞进 action.Exception，而全项目
+                // 没有任何 XAML 绑定这个属性——等于自动化行动失败永远不可见。
+                // 用户配了工作流，点了没反应，也不知道为什么。现在至少落日志。
+                Helpers.LogHelper.WriteLogToFile(
+                    $"自动化行动执行失败 [{action.Id}]：{ex}", Helpers.LogHelper.LogType.Error);
             }
             finally
             {
@@ -189,6 +194,8 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             catch (Exception ex)
             {
                 action.Exception = ex;
+                Helpers.LogHelper.WriteLogToFile(
+                    $"自动化行动恢复失败 [{action.Id}]：{ex}", Helpers.LogHelper.LogType.Error);
             }
             finally
             {

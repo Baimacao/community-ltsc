@@ -346,9 +346,11 @@ namespace Ink_Canvas
         {
             try
             {
-                // 这里可以集成系统通知或自定义通知
-                // 暂时使用调试输出
-                System.Diagnostics.Debug.WriteLine($"通知: {message}");
+                // LTSC（2026-11-17）：这里原来只有 Debug.WriteLine，Release 下等于没有。
+                // 而 ShowNotifications 默认是 true，用户以为"拦截时会有提示"，
+                // 实际永远收不到——他把希沃/畅言的悬浮窗被拦掉当成功能失灵。
+                // 现在写进日志，至少事后能查到拦截发生过。
+                LogHelper.WriteLogToFile("悬浮窗拦截通知：" + message, LogHelper.LogType.Event);
             }
             catch (Exception ex)
             {

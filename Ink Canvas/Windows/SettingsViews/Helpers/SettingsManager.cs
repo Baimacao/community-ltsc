@@ -1,3 +1,4 @@
+using Ink_Canvas.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -27,7 +28,15 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
                 var path = App.RootPath + SettingsFileName;
                 ProcessProtectionManager.WithWriteAccess(path, () => File.WriteAllText(path, text));
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex)
+            {
+                // LTSC（2026-11-17）：这里原来是 Debug.WriteLine，Release 下被编译掉。
+                // 后果是「改设置写盘失败」完全无声——用户看到界面变了，重开却回滚，
+                // 而且永远查不出原因。全项目 281 个地方调这个方法，一条静默等于 281 条。
+                // 判据：这个错误发生时有没有人能知道？原来答不上，现在有日志。
+                LogHelper.WriteLogToFile(
+                    "保存设置到文件失败：" + ex, LogHelper.LogType.Error);
+            }
         }
 
         public static void MigrateChickenSoupSettings()

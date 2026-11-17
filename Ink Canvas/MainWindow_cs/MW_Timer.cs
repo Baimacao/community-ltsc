@@ -371,8 +371,12 @@ namespace Ink_Canvas
                     SaveInkCanvasStrokes(false, false);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // LTSC（2026-11-17）：原来是空的 catch (Exception) { }。
+                // 自动保存是数据安全的底线，它失败了没人知道，用户会以为存上了。
+                LogHelper.WriteLogToFile(
+                    "自动保存墨迹失败：" + ex, LogHelper.LogType.Error);
             }
         }
 
@@ -996,7 +1000,15 @@ namespace Ink_Canvas
                                 else if (prodName.Contains("3C") && Settings.Automation.IsAutoFoldInEasiNote3C)
                                     return true;
                             }
-                            catch { }
+                            catch (Exception verEx)
+                            {
+                                // LTSC（2026-11-17）：读希沃进程版本失败 → 按版本不匹配处理。
+                                // 这是有意的降级：读不到就不自动收纳，比错误收纳安全。
+                                // 但原来空吞让失败不可见，现在至少留一条 Warning。
+                                LogHelper.WriteLogToFile(
+                                    "[自动收纳] 读取希沃进程版本失败，按不匹配处理：" + verEx.Message,
+                                    LogHelper.LogType.Warning);
+                            }
                         }
                     }
                     else if (Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera")
@@ -1038,7 +1050,15 @@ namespace Ink_Canvas
                                 if (version.StartsWith("6.") && prodName == "WhiteBoard")
                                     return true;
                             }
-                            catch { }
+                            catch (Exception verEx)
+                            {
+                                // LTSC（2026-11-17）：读希沃进程版本失败 → 按版本不匹配处理。
+                                // 这是有意的降级：读不到就不自动收纳，比错误收纳安全。
+                                // 但原来空吞让失败不可见，现在至少留一条 Warning。
+                                LogHelper.WriteLogToFile(
+                                    "[自动收纳] 读取希沃进程版本失败，按不匹配处理：" + verEx.Message,
+                                    LogHelper.LogType.Warning);
+                            }
                         }
                     }
                 }
@@ -1091,7 +1111,15 @@ namespace Ink_Canvas
                             else if (prodName.Contains("3C") && Settings.Automation.IsAutoFoldInEasiNote3C)
                                 return true;
                         }
-                        catch { }
+                        catch (Exception verEx)
+                        {
+                            // LTSC（2026-11-17）：读希沃进程版本失败 → 按版本不匹配处理。
+                            // 这是有意的降级：读不到就不自动收纳，比错误收纳安全。
+                            // 但原来空吞让失败不可见，现在至少留一条 Warning。
+                            LogHelper.WriteLogToFile(
+                                "[自动收纳] 读取希沃进程版本失败，按不匹配处理：" + verEx.Message,
+                                LogHelper.LogType.Warning);
+                        }
                     }
                 }
                 else if (Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera")
@@ -1323,7 +1351,15 @@ namespace Ink_Canvas
                             LogHelper.LogType.Trace);
                     }
                 }
-                catch { }
+                catch (Exception diagEx)
+                {
+                    // LTSC（2026-11-17）：这段是自动收纳的【诊断日志】，不是功能本体。
+                    // 吞掉可以接受，但必须标清楚为什么可以吞——否则下一个人会以为
+                    // 这里在保护功能逻辑。真正的收纳逻辑在同方法的其他 try 块里。
+                    LogHelper.WriteLogToFile(
+                        "[自动收纳] 诊断日志写入失败（不影响收纳功能）：" + diagEx.Message,
+                        LogHelper.LogType.Trace);
+                }
 
                 Thickness currentMargin = new Thickness();
                 try
@@ -1560,7 +1596,15 @@ namespace Ink_Canvas
                     StopEraserAutoSwitchBackTimer();
                     LogHelper.WriteLogToFile("橡皮擦自动切换回批注模式", LogHelper.LogType.Event);
                 }
-                catch (Exception) { }
+                catch (Exception switchEx)
+                {
+                    // LTSC（2026-11-17）：原来是 catch (Exception) { }。
+                    // 这是【功能】不是诊断——切不回去老师就得手动点。
+                    // 外层虽然还有一个 catch 记 Error，但这个内层先吞掉了，
+                    // 外层永远收不到。必须在这里记。
+                    LogHelper.WriteLogToFile(
+                        $"橡皮擦自动切回批注失败：{switchEx}", LogHelper.LogType.Error);
+                }
             }
             catch (Exception ex)
             {
