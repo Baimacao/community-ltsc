@@ -368,7 +368,7 @@ namespace Ink_Canvas
                         $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] 记录未处理异常时发生错误: {ex.Message}\r\n"
                     );
                 }
-                catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
         }
 
@@ -466,7 +466,7 @@ namespace Ink_Canvas
                     hasCpuUsageSample = true;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private static ulong ToUInt64(FILETIME fileTime)
@@ -571,7 +571,7 @@ namespace Ink_Canvas
                 // 同时记录到主日志
                 LogHelper.WriteLogToFile(message, LogHelper.LogType.Error);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         // 增加字段保存崩溃后操作设置
@@ -612,7 +612,7 @@ namespace Ink_Canvas
                     var json = File.ReadAllText(settingsPath);
                     dynamic obj = JsonConvert.DeserializeObject(json);
                     int crashAction = 2;
-                    try { crashAction = (int)(obj["startup"]["crashAction"] ?? 2); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    try { crashAction = (int)(obj["startup"]["crashAction"] ?? 2); } catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     CrashAction = (CrashActionType)crashAction;
                 }
                 // 从主窗口同步
@@ -621,7 +621,7 @@ namespace Ink_Canvas
                     CrashAction = (CrashActionType)Ink_Canvas.MainWindow.Settings.Startup.CrashAction;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private static void SyncCrashActionFromParsed(dynamic parsedSettings)
@@ -696,7 +696,7 @@ namespace Ink_Canvas
                         CrashInfo = lastErrorMessage
                     }.ShowDialog();
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 return;
             }
 

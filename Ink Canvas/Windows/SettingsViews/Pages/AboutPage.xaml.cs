@@ -113,10 +113,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 // 引导里换过语言但用户点了"稍后"，这里再问一次。
                 _ = SettingsActionHub.PromptRestartIfLanguageChangedDuringOobeAsync(languageBeforeOobe);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 }
 }

@@ -56,7 +56,7 @@ namespace Ink_Canvas
             {
                 SymbolIconUndo_MouseUp(lastBorderMouseDownObject, null);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Ink_Canvas
             {
                 SymbolIconRedo_MouseUp(lastBorderMouseDownObject, null);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>

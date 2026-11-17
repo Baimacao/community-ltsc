@@ -24,9 +24,9 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
                     {
                         // LTSC（2026-11-17）：原来这里是静默 return。
                         // 同一个文件里画布为空的分支反而记日志，不一致。
-                        Helpers.LogHelper.WriteLogToFile(
+                        Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                             "自动化：保存笔画被触发，但主窗口不可用，已跳过",
-                            Helpers.LogHelper.LogType.Warning);
+                            Ink_Canvas.Helpers.LogHelper.LogType.Warning);
                         return;
                     }
 
@@ -39,9 +39,9 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
 
                     if (!ok)
                     {
-                        Helpers.LogHelper.WriteLogToFile(
+                        Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                             "自动化：保存笔画被触发，但画布为空或保存失败，已跳过",
-                            Helpers.LogHelper.LogType.Warning);
+                            Ink_Canvas.Helpers.LogHelper.LogType.Warning);
                     }
                 });
             });

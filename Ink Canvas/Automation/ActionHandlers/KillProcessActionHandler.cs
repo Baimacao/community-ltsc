@@ -22,9 +22,9 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
                     var targets = Process.GetProcessesByName(s.ProcessName);
                     if (targets.Length == 0)
                     {
-                        Helpers.LogHelper.WriteLogToFile(
+                        Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                             $"自动化：结束进程时找不到进程 {s.ProcessName}，已跳过",
-                            Helpers.LogHelper.LogType.Warning);
+                            Ink_Canvas.Helpers.LogHelper.LogType.Warning);
                         return;
                     }
 
@@ -36,9 +36,9 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
                         }
                         catch (Exception killEx)
                         {
-                            Helpers.LogHelper.WriteLogToFile(
+                            Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                                 $"自动化：结束进程 {s.ProcessName}(PID {process.Id}) 失败：{killEx.Message}",
-                                Helpers.LogHelper.LogType.Error);
+                                Ink_Canvas.Helpers.LogHelper.LogType.Error);
                         }
                         finally
                         {
@@ -48,9 +48,9 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
                 }
                 catch (Exception ex)
                 {
-                    Helpers.LogHelper.WriteLogToFile(
+                    Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                         $"自动化：枚举进程 {s.ProcessName} 失败：{ex.Message}",
-                        Helpers.LogHelper.LogType.Error);
+                        Ink_Canvas.Helpers.LogHelper.LogType.Error);
                 }
             });
         }

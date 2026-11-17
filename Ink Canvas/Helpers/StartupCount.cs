@@ -19,7 +19,7 @@ namespace Ink_Canvas.Helpers
                         return count;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             return 0;
         }
 
@@ -32,7 +32,7 @@ namespace Ink_Canvas.Helpers
                 {
                     File.WriteAllText(CountFilePath, count.ToString());
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
         }
 
@@ -68,7 +68,7 @@ namespace Ink_Canvas.Helpers
                     if (File.Exists(CountFilePath))
                         File.Delete(CountFilePath);
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
         }
     }

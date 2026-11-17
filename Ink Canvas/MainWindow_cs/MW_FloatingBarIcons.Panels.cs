@@ -105,7 +105,7 @@ namespace Ink_Canvas
                 else
                     ((UIElement)((Button)sender).Content).Opacity = 0.25;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         #endregion Left Side Panel

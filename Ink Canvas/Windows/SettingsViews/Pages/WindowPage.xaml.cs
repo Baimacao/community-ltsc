@@ -86,10 +86,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     UpdateUIAModeVisibility();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"加载窗口设置时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("加载窗口设置时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             _isLoaded = true;
         }
@@ -162,10 +159,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置窗口无焦点模式时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置窗口无焦点模式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ToggleSwitchWindowMode_Toggled(object sender, RoutedEventArgs e)
@@ -185,10 +179,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     WindowSettingsHelper.SetWindowMode(window);
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置窗口无边框模式时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置窗口无边框模式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ToggleSwitchAvoidFullScreen_Toggled(object sender, RoutedEventArgs e)
@@ -214,10 +205,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置避免全屏时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置避免全屏时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
 
@@ -247,10 +235,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置窗口置顶时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置窗口置顶时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ToggleSwitchMultiScreenSupport_Toggled(object sender, RoutedEventArgs e)
@@ -268,10 +253,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     mainWindow.ApplyMultiScreenSettings();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置多屏支持时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置多屏支持时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ToggleSwitchFollowMouseScreen_Toggled(object sender, RoutedEventArgs e)
@@ -289,10 +271,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     mainWindow.ApplyMultiScreenSettings();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置自动跟随鼠标选择显示屏时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置自动跟随鼠标选择显示屏时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void RadioTopMostNormal_Checked(object sender, RoutedEventArgs e)
@@ -316,10 +295,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     AppRestartHelper.RestartWithCurrentPrivileges();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置普通置顶模式时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置普通置顶模式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void RadioTopMostUIA_Checked(object sender, RoutedEventArgs e)
@@ -349,10 +325,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     AppRestartHelper.SwitchToUIATopMostAndRestart();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置UIA置顶模式时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置UIA置顶模式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ComboBoxUIAMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -378,10 +351,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     AppRestartHelper.SwitchToUIATopMostAndRestart();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"设置UIA方案时出错: {ex.Message}");
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("设置UIA方案时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void BtnRestart_Click(object sender, RoutedEventArgs e)
@@ -453,7 +423,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SettingsManager.SaveSettingsToFile();
                 SettingsActionHub.OnThemeChanged(ComboBoxTheme.SelectedIndex);
             }
-            catch (Exception ex) { Debug.WriteLine($"切换主题时出错: {ex.Message}"); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("切换主题时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ComboBoxLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -474,7 +444,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SettingsManager.SaveSettingsToFile();
                 SettingsActionHub.OnLanguageChanged(language);
             }
-            catch (Exception ex) { Debug.WriteLine($"切换界面语言时出错: {ex.Message}"); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("切换界面语言时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -491,7 +461,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 s.Appearance.Use24HourTimeFormat = ComboBoxTimeFormat.SelectedIndex == 1;
                 SettingsManager.SaveSettingsToFile();
             }
-            catch (Exception ex) { Debug.WriteLine($"切换时间格式时出错: {ex.Message}"); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("切换时间格式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ComboBoxWindowBackdrop_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -508,7 +478,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                     settingsWindow.ApplyWindowBackdrop(backdrop);
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"切换窗口背景样式时出错: {ex.Message}"); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("切换窗口背景样式时出错: {ex.Message}" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         #endregion

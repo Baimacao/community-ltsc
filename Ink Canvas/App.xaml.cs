@@ -644,7 +644,7 @@ namespace Ink_Canvas
                             watchdogProcess.Kill();
                         }
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     Environment.Exit(0);
                 }
             }
@@ -1069,9 +1069,9 @@ namespace Ink_Canvas
                         SenderScrollViewer.ScrollToVerticalOffset(SenderScrollViewer.VerticalOffset - e.Delta * 10 * SystemInformation.MouseWheelScrollLines / (double)120);
                         e.Handled = true;
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         // 用于设置崩溃后操作类型
@@ -1172,7 +1172,7 @@ namespace Ink_Canvas
                 if (!string.IsNullOrEmpty(watchdogExitSignalFile))
                 {
                     try { File.WriteAllText(watchdogExitSignalFile, "restart"); }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 }
 
                 // 杀掉看门狗进程，避免竞态
@@ -1184,7 +1184,7 @@ namespace Ink_Canvas
                         watchdogProcess = null;
                     }
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                 string exePath = Process.GetCurrentProcess().MainModule.FileName;
                 Process.Start(exePath);
@@ -1368,7 +1368,7 @@ namespace Ink_Canvas
                         // 检查退出信号文件
                         if (File.Exists(exitSignalFile))
                         {
-                            try { File.Delete(exitSignalFile); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                            try { File.Delete(exitSignalFile); } catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                             Environment.Exit(0);
                         }
                         Thread.Sleep(2000);
@@ -1386,7 +1386,7 @@ namespace Ink_Canvas
                         TryRestartWithBreaker("看门狗检测到主进程异常退出");
                     }
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 Environment.Exit(0);
             }
         }
@@ -1458,7 +1458,7 @@ namespace Ink_Canvas
                 {
                     LogHelper.WriteLogToFile($"退出处理时发生错误: {ex.Message}", LogHelper.LogType.Error);
                 }
-                catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
         }
     }

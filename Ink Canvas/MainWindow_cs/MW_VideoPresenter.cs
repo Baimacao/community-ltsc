@@ -184,7 +184,7 @@ namespace Ink_Canvas
                 VideoPresenterPreviewImage.Source = null;
             }
 
-            try { _cameraService?.StopPreview(); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            try { _cameraService?.StopPreview(); } catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             lock (_videoPresenterFrameLock)
             {
                 _lastFrame?.Dispose();
@@ -222,7 +222,7 @@ namespace Ink_Canvas
             {
                 LogHelper.WriteLogToFile($"视频展台摄像头错误: {e}", LogHelper.LogType.Error);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace Ink_Canvas
                 img.Source = preview;
                 img.Visibility = Visibility.Visible;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private const double VideoPresenterLiveFrameScreenRatio = 0.75;
@@ -352,7 +352,7 @@ namespace Ink_Canvas
                 InitializeElementTransform(img);
                 BindElementEvents(img);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             _liveFrameImageByPage[page] = img;
             return img;
@@ -508,7 +508,7 @@ namespace Ink_Canvas
                 UpdateCurrentToolMode("select");
                 HideSubPanels("select");
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             // 立即用侧栏预览刷新一次
             if (VideoPresenterPreviewImage?.Source is ImageSource src)
@@ -538,7 +538,7 @@ namespace Ink_Canvas
                         inkCanvas.Children.Remove(img);
                     }
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
 
             if (_liveEnabledPages.Count == 0)
@@ -600,7 +600,7 @@ namespace Ink_Canvas
 
                 _liveFrameLayoutByPage[page] = (left, top, img.Width);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -645,7 +645,7 @@ namespace Ink_Canvas
                     _cameraService?.StartPreview(idx);
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -879,12 +879,12 @@ namespace Ink_Canvas
                             }
                             img.Visibility = Visibility.Collapsed;
                         }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
 
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>

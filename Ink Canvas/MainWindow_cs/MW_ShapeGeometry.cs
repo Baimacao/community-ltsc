@@ -213,10 +213,7 @@ namespace Ink_Canvas
 
                 stroke.StylusPoints = stylusPoints;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public Point[] FixPointsDirection(Point p1, Point p2)

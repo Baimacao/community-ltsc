@@ -285,7 +285,7 @@ namespace Ink_Canvas.Helpers
                     new AnimKey(target, "slideY"), 0.0,
                     v => initialTransform.Y = v, preset);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void ShowWithSlideFromLeftAndFade(UIElement element, double duration = 0.25)
@@ -312,7 +312,7 @@ namespace Ink_Canvas.Helpers
                     new AnimKey(element, "slideX"), 0.0,
                     v => translate.X = v, preset);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void ShowWithScaleFromLeft(UIElement element, double duration = 0.2)
@@ -337,7 +337,7 @@ namespace Ink_Canvas.Helpers
                 SpringAnimator.AnimateScalar(
                     new AnimKey(element, "scaleY"), 1.0, v => scale.ScaleY = v, preset);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void ShowWithScaleFromRight(UIElement element, double duration = 0.2)
@@ -362,7 +362,7 @@ namespace Ink_Canvas.Helpers
                 SpringAnimator.AnimateScalar(
                     new AnimKey(element, "scaleY"), 1.0, v => scale.ScaleY = v, preset);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void HideWithSlideAndFade(UIElement element, double duration = 0.15)
@@ -389,7 +389,7 @@ namespace Ink_Canvas.Helpers
                     v => translate.Y = v, preset,
                     () => element.Visibility = Visibility.Collapsed);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void HideWithFadeOut(UIElement element, double duration = 0.15)
@@ -449,7 +449,7 @@ namespace Ink_Canvas.Helpers
                     new AnimKey(child, "slideY"), 0.0,
                     v => translate.Y = v, preset);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         public static void HidePopupWithSlideAndFade(Popup popup, double duration = 0.15)
@@ -489,7 +489,7 @@ namespace Ink_Canvas.Helpers
                         child.RenderTransform = new TranslateTransform();
                     });
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -674,7 +674,7 @@ namespace Ink_Canvas.Helpers
                 // 3) 最后解绑 Margin 动画
                 target.BeginAnimation(FrameworkElement.MarginProperty, null);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         #endregion

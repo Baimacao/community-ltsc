@@ -298,10 +298,10 @@ namespace Ink_Canvas
                         // 如果更新失败，确保清理状态
                         if (lastTempStroke != null && inkCanvas.Strokes.Contains(lastTempStroke))
                         {
-                            try { inkCanvas.Strokes.Remove(lastTempStroke); } catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                            try { inkCanvas.Strokes.Remove(lastTempStroke); } catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         }
                         lastTempStroke = newStroke;
-                        try { inkCanvas.Strokes.Add(newStroke); } catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        try { inkCanvas.Strokes.Add(newStroke); } catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }), DispatcherPriority.Render);
             }
@@ -356,11 +356,11 @@ namespace Ink_Canvas
                         {
                             foreach (var stroke in lastTempStrokeCollection)
                             {
-                                try { inkCanvas.Strokes.Remove(stroke); } catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                                try { inkCanvas.Strokes.Remove(stroke); } catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                             }
                         }
                         lastTempStrokeCollection = newStrokeCollection;
-                        try { inkCanvas.Strokes.Add(newStrokeCollection); } catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        try { inkCanvas.Strokes.Add(newStrokeCollection); } catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }), DispatcherPriority.Render);
             }
@@ -788,10 +788,7 @@ namespace Ink_Canvas
                         inkCanvas_StrokeCollected(inkCanvas, new InkCanvasStrokeCollectedEventArgs(stroke));
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 finally
                 {
                     if (VisualCanvasList.TryGetValue(MouseRealtimeStrokeId, out var vc) && inkCanvas.Children.Contains(vc))

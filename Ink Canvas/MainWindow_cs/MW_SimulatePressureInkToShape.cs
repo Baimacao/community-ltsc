@@ -178,7 +178,7 @@ namespace Ink_Canvas
 
                     }
                 }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                 // 「屏蔽压感」已在收笔主路径将点集归一成 0.5；此处若再跑 InkStyle 0/1 会重写 PressureFactor，造成假压感。
                 if (!Settings.Canvas.DisablePressure)
@@ -208,7 +208,7 @@ namespace Ink_Canvas
 
                                     e.Stroke.StylusPoints = stylusPoints;
                                 }
-                                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                             break;
                         case 0:
@@ -257,7 +257,7 @@ namespace Ink_Canvas
 
                                     e.Stroke.StylusPoints = stylusPoints;
                                 }
-                                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                             break;
                         case 3:
@@ -265,7 +265,7 @@ namespace Ink_Canvas
                     }
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             Debug.WriteLine($"墨迹平滑检查: UseAdvancedBezierSmoothing={Settings.Canvas.UseAdvancedBezierSmoothing}, wasStraightened={wasStraightened}");
             Debug.WriteLine($"异步平滑设置: UseAsyncInkSmoothing={Settings.Canvas.UseAsyncInkSmoothing}, _inkSmoothingManager={_inkSmoothingManager != null}");
@@ -482,7 +482,7 @@ namespace Ink_Canvas
                                         touchPressureSimulationApplied = true;
                                         e.Stroke.StylusPoints = stylusPoints;
                                     }
-                                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                                 break;
                             case 0:
                                 if (penType == 0)
@@ -531,7 +531,7 @@ namespace Ink_Canvas
                                         touchPressureSimulationApplied = true;
                                         e.Stroke.StylusPoints = stylusPoints;
                                     }
-                                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                                 break;
                         }
                     }
@@ -950,7 +950,7 @@ namespace Ink_Canvas
                                 }
                             }
                         }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         finally
                         {
                             InkToShapeSerial.Release();
@@ -973,10 +973,7 @@ namespace Ink_Canvas
                                 await InkToShapeProcessCoreAsync();
                                 var strokeAfterTail = RunStrokeCollectedPostShapeRecognitionTail(e, wsTail);
                             }
-                            catch (Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine(ex);
-                            }
+                            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         }), DispatcherPriority.ApplicationIdle);
                         return true;
                     }
@@ -985,7 +982,7 @@ namespace Ink_Canvas
                         return;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             var strokeAfterTailSync = RunStrokeCollectedPostShapeRecognitionTail(e, wasStraightened);
 

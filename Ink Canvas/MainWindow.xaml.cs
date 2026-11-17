@@ -787,7 +787,7 @@ namespace Ink_Canvas
 
                 inkCanvas.Gesture += InkCanvas_Gesture;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -834,7 +834,7 @@ namespace Ink_Canvas
                     return Color.FromArgb(alpha, r, g, b);
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             return Color.FromArgb(alpha, 255, 0, 0);
         }
 
@@ -1049,7 +1049,7 @@ namespace Ink_Canvas
                     }
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             if (!nextInterval.HasValue)
             {
@@ -1172,7 +1172,7 @@ namespace Ink_Canvas
                         }
                     }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void inkCanvas_EditingModeChanged(object sender, RoutedEventArgs e)
@@ -1296,10 +1296,7 @@ namespace Ink_Canvas
                 inkCanvas.ReleaseStylusCapture();
                 inkCanvas.ReleaseAllTouchCaptures();
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             ViewboxFloatingBar.IsHitTestVisible = true;
             FloatingbarUIForInkReplay.IsHitTestVisible = true;
@@ -1317,10 +1314,7 @@ namespace Ink_Canvas
                 inkCanvas.CaptureMouse();
                 inkCanvas.CaptureStylus();
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void CaptureInkCanvasTouchIfNeeded(Point point, TouchDevice touchDevice)
@@ -1331,10 +1325,7 @@ namespace Ink_Canvas
             {
                 inkCanvas.CaptureTouch(touchDevice);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         #endregion Ink Canvas
@@ -1843,7 +1834,7 @@ namespace Ink_Canvas
                     _lastFrame = null;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             // 释放PPT管理器资源
             DisposePPTManagers();

@@ -178,7 +178,7 @@ namespace Ink_Canvas
                 LogHelper.WriteLogToFile($"更新白板名言时出错: {ex.Message}", LogHelper.LogType.Warning);
                 if (BlackBoardWaterMark != null)
                 {
-                    try { BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_Unavailable; } catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                    try { BlackBoardWaterMark.Text = Properties.MainWindowStrings.Main_Hitokoto_Unavailable; } catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 }
             }
         }

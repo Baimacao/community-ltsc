@@ -84,7 +84,7 @@ namespace Ink_Canvas.Windows
                     if (crashAction < 0 || crashAction > 2) crashAction = 0;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -96,7 +96,7 @@ namespace Ink_Canvas.Windows
                     CardEnablePalmEraser.IsOn = _settings.Canvas.EnablePalmEraser;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -106,7 +106,7 @@ namespace Ink_Canvas.Windows
                     CardTwoFingerTranslate.IsOn = _settings.Gesture.IsEnableTwoFingerTranslate;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -115,7 +115,7 @@ namespace Ink_Canvas.Windows
                     CardInkToShapeEnabled.IsOn = _settings.InkToShape.IsInkToShapeEnabled;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -138,7 +138,7 @@ namespace Ink_Canvas.Windows
                     ToggleSwitchPresenterAdapter.IsOn = PresenterKeyAdapter.IsEnabled;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -146,7 +146,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -157,7 +157,7 @@ namespace Ink_Canvas.Windows
                     }
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -165,7 +165,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -173,7 +173,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ApplySelection()
@@ -182,7 +182,7 @@ namespace Ink_Canvas.Windows
             {
                 // LTSC：OOBE 不再涉及遥测/崩溃处理，这些留在「设置 → 启动」里改。
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -194,7 +194,7 @@ namespace Ink_Canvas.Windows
                     _settings.Canvas.EnablePalmEraser = CardEnablePalmEraser.IsOn;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -204,7 +204,7 @@ namespace Ink_Canvas.Windows
                     _settings.Gesture.IsEnableTwoFingerTranslate = CardTwoFingerTranslate.IsOn;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -213,7 +213,7 @@ namespace Ink_Canvas.Windows
                     _settings.InkToShape.IsInkToShapeEnabled = CardInkToShapeEnabled.IsOn;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -243,7 +243,7 @@ namespace Ink_Canvas.Windows
                     _settings.Appearance.EnableHotkeysInMouseMode = CardEnableHotkeysInMouseMode.IsOn;
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -251,7 +251,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -262,7 +262,7 @@ namespace Ink_Canvas.Windows
                     }
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -270,7 +270,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             try
             {
@@ -278,7 +278,7 @@ namespace Ink_Canvas.Windows
                 {
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private static void SelectComboBoxItemByTag(ComboBox comboBox, string tag)
@@ -811,10 +811,7 @@ namespace Ink_Canvas.Windows
                     StepHost.Opacity = 1;
                 }
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void ApplyStepMeta(int step)
@@ -926,10 +923,7 @@ namespace Ink_Canvas.Windows
                 SpringAnimator.AnimateScalar(StepProgressBar, targetPercent,
                     v => StepProgressBar.Value = v, SpringAnimator.Smooth, null);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         private void AnimateContentSlide(int direction)

@@ -210,10 +210,7 @@ namespace Ink_Canvas
                     TryAppendRealtimeVelocityBrushTipInterpolatedPoints(sv, touchId, p);
                     sv.Redraw();
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 return;
             }
 
@@ -234,10 +231,7 @@ namespace Ink_Canvas
                     AppendInterpolatedTouchPoints(sv, touchId, p);
                     sv.Redraw();
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 return;
             }
 
@@ -394,10 +388,7 @@ namespace Ink_Canvas
                     if (TryAppendRealtimeVelocityBrushTipInterpolatedPoints(sv, touchId, p))
                         sv.Redraw();
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 return;
             }
 
@@ -410,10 +401,7 @@ namespace Ink_Canvas
                     AppendInterpolatedTouchPoints(sv, touchId, p);
                     sv.Redraw();
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
             }
         }
 
@@ -457,10 +445,7 @@ namespace Ink_Canvas
                         inkCanvas_StrokeCollected(inkCanvas, new InkCanvasStrokeCollectedEventArgs(stroke));
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 finally
                 {
                     if (VisualCanvasList.TryGetValue(touchId, out var visualCanvas) && inkCanvas.Children.Contains(visualCanvas))
@@ -487,10 +472,7 @@ namespace Ink_Canvas
                         inkCanvas_StrokeCollected(inkCanvas, new InkCanvasStrokeCollectedEventArgs(stroke));
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                }
+                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                 finally
                 {
                     if (VisualCanvasList.TryGetValue(touchId, out var visualCanvas) && inkCanvas.Children.Contains(visualCanvas))
@@ -801,7 +783,7 @@ namespace Ink_Canvas
                             stroke.DrawingAttributes.Width *= md.Scale.X;
                             stroke.DrawingAttributes.Height *= md.Scale.Y;
                         }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
                 else
@@ -816,7 +798,7 @@ namespace Ink_Canvas
                                 stroke.DrawingAttributes.Width *= md.Scale.X;
                                 stroke.DrawingAttributes.Height *= md.Scale.Y;
                             }
-                            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         }
 
                         // 同时变换画布上的图片元素

@@ -1555,7 +1555,7 @@ namespace Ink_Canvas.Windows
                                     System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
                                 presentation = currentPresentationProperty?.GetValue(pptManager) as Microsoft.Office.Interop.PowerPoint.Presentation;
                             }
-                            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                             // 如果 CurrentPresentation 不可用，尝试 GetCurrentActivePresentation
                             if (presentation == null)
@@ -1565,7 +1565,7 @@ namespace Ink_Canvas.Windows
                                     var getCurrentActivePresentationMethod = pptManager.GetType().GetMethod("GetCurrentActivePresentation");
                                     presentation = getCurrentActivePresentationMethod?.Invoke(pptManager, null) as Microsoft.Office.Interop.PowerPoint.Presentation;
                                 }
-                                catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                             }
 
                             if (presentation != null)

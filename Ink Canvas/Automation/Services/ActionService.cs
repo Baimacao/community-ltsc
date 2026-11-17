@@ -21,9 +21,9 @@ namespace Ink_Canvas.WorkflowAutomation.Services
         {
             if (!actionSet.IsEnabled)
             {
-                Helpers.LogHelper.WriteLogToFile(
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                     $"[自动化] 触发被跳过：行动组未启用（{actionSet.Name}）",
-                    Helpers.LogHelper.LogType.Warning);
+                    Ink_Canvas.Helpers.LogHelper.LogType.Warning);
                 return;
             }
 
@@ -31,9 +31,9 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             foreach (var action in actionSet.Actions)
                 action.Exception = null;
 
-            Helpers.LogHelper.WriteLogToFile(
+            Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                 $"[自动化] 触发 {actionSet.Name}，动作数 {actionSet.Actions.Count}",
-                Helpers.LogHelper.LogType.Event);
+                Ink_Canvas.Helpers.LogHelper.LogType.Event);
 
             // IsOn 记录的是「这组动作被执行过」，和「要不要自动恢复」是两件事。
             //
@@ -60,9 +60,9 @@ namespace Ink_Canvas.WorkflowAutomation.Services
         {
             if (!actionSet.IsOn)
             {
-                Helpers.LogHelper.WriteLogToFile(
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                     $"[自动化] 恢复被跳过：IsOn=false（{actionSet.Name}）",
-                    Helpers.LogHelper.LogType.Warning);
+                    Ink_Canvas.Helpers.LogHelper.LogType.Warning);
                 return;
             }
 
@@ -70,9 +70,9 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             foreach (var action in actionSet.Actions)
                 action.Exception = null;
 
-            Helpers.LogHelper.WriteLogToFile(
+            Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
                 $"[自动化] 恢复 {actionSet.Name}，动作数 {actionSet.Actions.Count}",
-                Helpers.LogHelper.LogType.Event);
+                Ink_Canvas.Helpers.LogHelper.LogType.Event);
 
             actionSet.IsOn = false;
 
@@ -148,8 +148,8 @@ namespace Ink_Canvas.WorkflowAutomation.Services
                 // LTSC（2026-11-17）：原来只把异常塞进 action.Exception，而全项目
                 // 没有任何 XAML 绑定这个属性——等于自动化行动失败永远不可见。
                 // 用户配了工作流，点了没反应，也不知道为什么。现在至少落日志。
-                Helpers.LogHelper.WriteLogToFile(
-                    $"自动化行动执行失败 [{action.Id}]：{ex}", Helpers.LogHelper.LogType.Error);
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                    $"自动化行动执行失败 [{action.Id}]：{ex}", Ink_Canvas.Helpers.LogHelper.LogType.Error);
             }
             finally
             {
@@ -194,8 +194,8 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             catch (Exception ex)
             {
                 action.Exception = ex;
-                Helpers.LogHelper.WriteLogToFile(
-                    $"自动化行动恢复失败 [{action.Id}]：{ex}", Helpers.LogHelper.LogType.Error);
+                Ink_Canvas.Helpers.LogHelper.WriteLogToFile(
+                    $"自动化行动恢复失败 [{action.Id}]：{ex}", Ink_Canvas.Helpers.LogHelper.LogType.Error);
             }
             finally
             {

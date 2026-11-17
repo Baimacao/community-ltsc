@@ -83,7 +83,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -141,7 +141,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -341,7 +341,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -366,7 +366,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -383,7 +383,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -402,7 +402,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -428,7 +428,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStroke);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStroke = stroke;
                     inkCanvas.Strokes.Add(stroke);
@@ -490,7 +490,7 @@ namespace Ink_Canvas
                     {
                         inkCanvas.Strokes.Remove(lastTempStrokeCollection);
                     }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                     lastTempStrokeCollection = strokes;
                     inkCanvas.Strokes.Add(strokes);

@@ -448,7 +448,7 @@ namespace Ink_Canvas.Helpers
                     foreach (string file in files)
                     {
                         try { File.Delete(file); cleaned++; }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
                 if (cleaned > 0)
@@ -572,7 +572,7 @@ namespace Ink_Canvas.Helpers
                                 File.Delete(ipcFile);
                             }
                         }
-                        catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
 
@@ -623,7 +623,7 @@ namespace Ink_Canvas.Helpers
                                 File.Delete(ipcFile);
                             }
                         }
-                        catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
 
@@ -678,7 +678,7 @@ namespace Ink_Canvas.Helpers
                                 File.Delete(ipcFile);
                             }
                         }
-                        catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
 
@@ -728,7 +728,7 @@ namespace Ink_Canvas.Helpers
                                 File.Delete(ipcFile);
                             }
                         }
-                        catch (Exception innerEx) { System.Diagnostics.Debug.WriteLine(innerEx); }
+                        catch (Exception innerEx) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + innerEx.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
             }

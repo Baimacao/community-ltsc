@@ -523,7 +523,7 @@ namespace Ink_Canvas.Helpers
                 string path = Path.Combine(folderPath, slideIndex.ToString("0000") + StrokeFileExtension);
                 if (File.Exists(path)) File.Delete(path);
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
         /// <summary>
@@ -578,7 +578,7 @@ namespace Ink_Canvas.Helpers
                 {
                     long len = _memoryStreams[i].Length;
                     try { _memoryStreams[i].Dispose(); freed += len; cleaned++; }
-                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     finally { _memoryStreams[i] = null; }
                 }
             }

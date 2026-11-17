@@ -729,7 +729,7 @@ namespace Ink_Canvas
                     }
                 }
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
         }
 
 
@@ -871,7 +871,7 @@ namespace Ink_Canvas
                                     return true;
                                 }
                             }
-                            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         }
                     }
                     else if (Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera")
@@ -939,7 +939,7 @@ namespace Ink_Canvas
                                     return true;
                                 }
                             }
-                            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                            catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                         }
                     }
                 }
@@ -1210,7 +1210,7 @@ namespace Ink_Canvas
                                 return true;
                             }
                         }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
                 else if (Settings.Automation.IsAutoFoldInEasiCamera && windowProcessName == "EasiCamera" &&
@@ -1299,7 +1299,7 @@ namespace Ink_Canvas
                                 return true;
                             }
                         }
-                        catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                        catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
                     }
                 }
             }

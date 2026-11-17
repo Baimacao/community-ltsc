@@ -361,7 +361,7 @@ namespace Ink_Canvas
                                     {
                                         InkCanvasForInkReplay.Strokes.Remove(s);
                                     }
-                                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                                     stylusPoints.Add(stylusPoint);
                                     s = new Stroke(stylusPoints.Clone())
@@ -398,7 +398,7 @@ namespace Ink_Canvas
                                     {
                                         InkCanvasForInkReplay.Strokes.Remove(s);
                                     }
-                                    catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+                                    catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
                                     stylusPoints.Add(stylusPoint);
                                     s = new Stroke(stylusPoints.Clone())
