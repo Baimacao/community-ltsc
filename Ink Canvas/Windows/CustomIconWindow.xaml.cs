@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     /// <summary>
     /// CustomIconWindow.xaml 的交互逻辑

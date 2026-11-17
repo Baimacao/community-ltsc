@@ -27,6 +27,7 @@ using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Panel = System.Windows.Controls.Panel;
 using Point = System.Windows.Point;
+using Ink_Canvas.Windows;
 
 namespace Ink_Canvas
 {

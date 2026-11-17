@@ -1,4 +1,4 @@
-<UserControl x:Class="Ink_Canvas.CustomIconWindow"
+<UserControl x:Class="Ink_Canvas.Windows.CustomIconWindow"
              xmlns:props="clr-namespace:Ink_Canvas.Properties"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

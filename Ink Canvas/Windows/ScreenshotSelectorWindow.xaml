@@ -1,4 +1,4 @@
-<Window x:Class="Ink_Canvas.ScreenshotSelectorWindow"
+<Window x:Class="Ink_Canvas.Windows.ScreenshotSelectorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:props="clr-namespace:Ink_Canvas.Properties"

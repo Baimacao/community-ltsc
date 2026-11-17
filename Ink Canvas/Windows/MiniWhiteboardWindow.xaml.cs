@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     /// <summary>
     /// MiniWhiteboardWindow.xaml 的交互逻辑

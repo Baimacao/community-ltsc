@@ -1,5 +1,6 @@
 using Ink_Canvas.Controls;
 using Ink_Canvas.Properties;
+using Ink_Canvas.Windows;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 

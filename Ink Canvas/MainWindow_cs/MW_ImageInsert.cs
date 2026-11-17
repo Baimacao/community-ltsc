@@ -19,6 +19,7 @@ using Image = System.Windows.Controls.Image;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Point = System.Windows.Point;
 using Size = System.Drawing.Size;
+using Ink_Canvas.Windows;
 
 namespace Ink_Canvas
 {

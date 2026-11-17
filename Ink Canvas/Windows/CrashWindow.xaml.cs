@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     public partial class CrashWindow : Window
     {

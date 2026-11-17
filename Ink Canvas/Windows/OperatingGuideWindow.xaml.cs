@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     /// <summary>
     /// Interaction logic for StopwatchWindow.xaml

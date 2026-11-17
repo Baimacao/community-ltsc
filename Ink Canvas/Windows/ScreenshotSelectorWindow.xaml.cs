@@ -18,7 +18,7 @@ using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfPoint = System.Windows.Point;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     public partial class ScreenshotSelectorWindow : Window
     {

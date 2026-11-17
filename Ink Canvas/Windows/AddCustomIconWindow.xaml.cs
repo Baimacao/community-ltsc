@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace Ink_Canvas
+namespace Ink_Canvas.Windows
 {
     /// <summary>
     /// AddCustomIconWindow.xaml 的交互逻辑

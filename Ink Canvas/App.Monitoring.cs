@@ -23,6 +23,7 @@ using System.Windows.Threading;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 using Timer = System.Threading.Timer;
+using Ink_Canvas.Windows;
 
 namespace Ink_Canvas
 {
