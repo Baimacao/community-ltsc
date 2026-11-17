@@ -101,11 +101,13 @@ namespace Ink_Canvas.Windows
         {
             SelectedPreset = kind;
 
-            // 重置所有卡片边框
+            // 选中态画在卡片外面那层 Border 上（CardXxxFrame），
+            // 不是 SettingsCard 自己 —— SettingsCard 是 ButtonBase 派生，
+            // 它对 BorderBrush 的处理取决于模板，不保证可见。
             var defaultBrush = (Brush)FindResource("SystemControlForegroundBaseLowBrush");
-            CardStandard.BorderBrush = defaultBrush;
-            CardTeacher.BorderBrush = defaultBrush;
-            CardLite.BorderBrush = defaultBrush;
+            CardStandardFrame.BorderBrush = Brushes.Transparent;
+            CardTeacherFrame.BorderBrush = Brushes.Transparent;
+            CardLiteFrame.BorderBrush = Brushes.Transparent;
             IconStandard.Opacity = 0;
             IconTeacher.Opacity = 0;
             IconLite.Opacity = 0;
@@ -114,26 +116,31 @@ namespace Ink_Canvas.Windows
             switch (kind)
             {
                 case PresetKind.Standard:
-                    CardStandard.BorderBrush = accentBrush;
+                    CardStandardFrame.BorderBrush = accentBrush;
                     IconStandard.Opacity = 1;
                     break;
                 case PresetKind.Teacher:
-                    CardTeacher.BorderBrush = accentBrush;
+                    CardTeacherFrame.BorderBrush = accentBrush;
                     IconTeacher.Opacity = 1;
                     break;
                 case PresetKind.Lite:
-                    CardLite.BorderBrush = accentBrush;
+                    CardLiteFrame.BorderBrush = accentBrush;
                     IconLite.Opacity = 1;
                     break;
             }
 
+            _ = defaultBrush; // 保留变量引用，避免编译器警告
+
             BtnApply.IsEnabled = kind != PresetKind.None;
         }
 
-        private void CardStandard_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Standard);
+        // 2026-11-17：界面从手搭 Border 换成 iNKORE SettingsCard，
+        // 卡片点击走 SettingsCard.Click（RoutedEventHandler），
+        // 不再是原来的 MouseLeftButtonDown（MouseButtonEventArgs）。
+        private void CardStandard_Click(object sender, RoutedEventArgs e) => SelectPreset(PresetKind.Standard);
 
-        private void CardTeacher_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Teacher);
-        private void CardLite_Click(object sender, MouseButtonEventArgs e) => SelectPreset(PresetKind.Lite);
+        private void CardTeacher_Click(object sender, RoutedEventArgs e) => SelectPreset(PresetKind.Teacher);
+        private void CardLite_Click(object sender, RoutedEventArgs e) => SelectPreset(PresetKind.Lite);
 
         private void BtnApply_Click(object sender, RoutedEventArgs e)
         {

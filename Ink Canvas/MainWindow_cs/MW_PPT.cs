@@ -2319,6 +2319,15 @@ namespace Ink_Canvas
         /// </summary>
         private bool _pptNavPendingRestoreAnnotation;
 
+        /// <summary>
+        /// 下一次「点鼠标进穿透」时跳过一次隐藏笔迹。
+        ///
+        /// 用户裁决（2026-11-17）：这个豁免是一次性的，只作用于从页码点击
+        /// 回来后的那一次。不是改 PPT 穿透模式的通用行为 ——
+        /// 后续再点鼠标仍按 HideStrokeWhenSelecting / IsShowStrokeOnSelectInPowerPoint 走。
+        /// </summary>
+        private bool _pptNavSkipHideStrokeOnce;
+
         /// <summary>切页完成后自动回批注态（幂等，只生效一次）。</summary>
         internal void TryRestoreAnnotationAfterPptNavigation(string reason)
         {
@@ -2333,6 +2342,10 @@ namespace Ink_Canvas
                 {
                     try
                     {
+                        // 已经自动回到批注态了，那个「下次点鼠标不隐藏笔迹」的豁免用不上；
+                        // 留着会让用户之后一次正常点鼠标时莫名不隐藏，行为不一致。
+                        _pptNavSkipHideStrokeOnce = false;
+
                         inkCanvas.Visibility = Visibility.Visible;
                         PenIcon_Click(null, null);
                         // LTSC（2026-11-13）：回到批注态时也要清遮罩，
@@ -2405,6 +2418,21 @@ namespace Ink_Canvas
 
             try
             {
+                // 已经是鼠标穿透态：保持现状，不执行后面的切换。
+                //
+                // 需求原话：点击时如果本来就是 ppt 鼠标穿透状态，保持即可，
+                // 不需要遵循后面的逻辑。
+                //
+                // 为什么要单独判：穿透态下点页码，用户只是想看缩略图，
+                // 不该再走一遍「切穿透 + 隐藏笔迹」，否则会重置挂起的恢复状态，
+                // 把上一轮还没消费掉的 _pptNavPendingRestoreAnnotation 覆盖成 false。
+                if (!IsAnnotating)
+                {
+                    LogHelper.WriteLogToFile("[PPT导航] 已处于鼠标穿透态，点页码保持现状",
+                        LogHelper.LogType.Event);
+                    return;
+                }
+
                 // LTSC D-07：记下是否从批注态进来，切页后自动回去。
                 bool wasAnnotating = IsAnnotating;
                 _pptNavPendingRestoreAnnotation = wasAnnotating;
@@ -2417,6 +2445,10 @@ namespace Ink_Canvas
                 // 点页码进导航时必须隐藏笔迹（这是与「点鼠标」不同的行为：
                 // 点鼠标要保留笔迹，点页码要临时藏起来，方便看清缩略图）。
                 if (wasAnnotating) inkCanvas.Visibility = Visibility.Collapsed;
+
+                // 记一笔：用户下次点鼠标退出穿透时，跳过隐藏笔迹，把笔迹还给他。
+                // 只生效一次 —— 见 _pptNavSkipHideStrokeOnce 的注释。
+                _pptNavSkipHideStrokeOnce = true;
 
                 // LTSC P1c：增强预览已整体移除（用户裁决）。
                 // 点页码 = 调 PowerPoint 原版导航，不再画 ICC 自己的缩略图面板。

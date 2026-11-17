@@ -1512,6 +1512,34 @@ namespace Ink_Canvas
                 return;
             }
 
+            if (e.Args.Contains("--check-oobe-preset"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.CheckOobePresetWindow(); }
+                        catch (Exception probeEx)
+                        {
+                            LogHelper.WriteLogToFile("[探针] OOBE 自检失败: " + probeEx, LogHelper.LogType.Error);
+                        }
+                    }));
+                });
+            }
+            if (e.Args.Contains("--dump-scroll"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.DumpScrollDiagnostics(); }
+                        catch (Exception probeEx)
+                        {
+                            LogHelper.WriteLogToFile("[探针] 滚动诊断失败: " + probeEx, LogHelper.LogType.Error);
+                        }
+                    }));
+                });
+            }
             if (e.Args.Contains("--dump-settings-pages"))
             {
                 _ = Task.Delay(4000).ContinueWith(_ =>

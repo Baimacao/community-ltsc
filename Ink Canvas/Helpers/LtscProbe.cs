@@ -408,6 +408,185 @@ namespace Ink_Canvas.Helpers
             Log("=== 三组对照结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 
+
+
+        // ===== 触摸滚动诊断 =====
+        // 目的：不猜。把每个设置页真实构造出来，遍历**可视树**找 ScrollViewer，
+        // 打印它的 PanningMode、CanContentScroll、ExtentHeight、ViewportHeight，
+        // 以及 Page 自身的 IsManipulationEnabled / 是否被上层接管触摸。
+
+
+        // ===== OOBE 预设窗口自检 =====
+        public static void CheckOobePresetWindow()
+        {
+            Log("=== OOBE 预设窗口自检 ===");
+            try
+            {
+                var t = typeof(LtscProbe).Assembly.GetType("Ink_Canvas.Windows.OobePresetWindow");
+                if (t == null) { Log("  [FAIL] 找不到 OobePresetWindow"); return; }
+
+                var win = Activator.CreateInstance(t);
+                var fe = win as FrameworkElement;
+                if (fe == null) { Log("  [FAIL] 非 FrameworkElement"); return; }
+
+                fe.Measure(new Size(680, 560));
+                fe.Arrange(new Rect(0, 0, 680, 560));
+                fe.UpdateLayout();
+                Log("  [PASS] 窗口构造成功");
+
+                var flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public;
+
+                int found = 0;
+                foreach (var n in new[] { "CardStandard", "CardTeacher", "CardLite" })
+                {
+                    if (t.GetField(n, flags)?.GetValue(win) != null) found++;
+                    else Log("  [FAIL] 缺卡片 " + n);
+                }
+                Log("  [" + (found == 3 ? "PASS" : "FAIL") + "] 三张卡片: " + found + "/3");
+
+                int icons = 0;
+                foreach (var n in new[] { "IconStandard", "IconTeacher", "IconLite" })
+                {
+                    if (t.GetField(n, flags)?.GetValue(win) != null) icons++;
+                    else Log("  [FAIL] 缺图标 " + n);
+                }
+                Log("  [" + (icons == 3 ? "PASS" : "FAIL") + "] 三个图标: " + icons + "/3");
+
+                int frames = 0;
+                foreach (var n in new[] { "CardStandardFrame", "CardTeacherFrame", "CardLiteFrame" })
+                {
+                    if (t.GetField(n, flags)?.GetValue(win) != null) frames++;
+                    else Log("  [FAIL] 缺选中框 " + n);
+                }
+                Log("  [" + (frames == 3 ? "PASS" : "FAIL") + "] 三个选中框: " + frames + "/3");
+
+                var selectMethod = t.GetMethod("SelectPreset", flags);
+                var kindType = t.GetNestedType("PresetKind", BindingFlags.NonPublic | BindingFlags.Public);
+                if (selectMethod == null || kindType == null)
+                {
+                    Log("  [FAIL] 找不到 SelectPreset 或 PresetKind");
+                }
+                else
+                {
+                    foreach (var name in new[] { "Standard", "Teacher", "Lite" })
+                    {
+                        try
+                        {
+                            selectMethod.Invoke(win, new object[] { Enum.Parse(kindType, name) });
+                            Log("  [PASS] SelectPreset(" + name + ") 未抛异常");
+                        }
+                        catch (Exception ex)
+                        {
+                            var inner = ex is TargetInvocationException tie ? tie.InnerException : ex;
+                            Log("  [FAIL] SelectPreset(" + name + ") 抛: " + Trim(inner.Message));
+                        }
+                    }
+
+                    try
+                    {
+                        selectMethod.Invoke(win, new object[] { Enum.Parse(kindType, "Lite") });
+                        var frame = t.GetField("CardLiteFrame", flags)?.GetValue(win) as Border;
+                        bool ok = frame != null && frame.BorderBrush != null && frame.BorderBrush != Brushes.Transparent;
+                        Log("  [" + (ok ? "PASS" : "FAIL") + "] 选中后边框变色: " + (frame?.BorderBrush?.ToString() ?? "null"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("  [FAIL] 检查边框: " + Trim(ex.Message));
+                    }
+                }
+
+                try { (win as Window)?.Close(); } catch { }
+            }
+            catch (Exception ex)
+            {
+                Log("  [FAIL] 自检异常: " + Trim(ex.Message));
+            }
+            Log("=== OOBE 预设窗口自检结束 ===");
+        }
+
+        public static void DumpScrollDiagnostics()
+        {
+            Log("=== 触摸滚动诊断开始 ===");
+            var asm = typeof(LtscProbe).Assembly;
+            var winType = asm.GetType("Ink_Canvas.Windows.SettingsViews.SettingsWindow");
+            if (winType == null) { Log("找不到 SettingsWindow"); return; }
+
+            var field = winType.GetField("_pageTypes", BindingFlags.NonPublic | BindingFlags.Instance);
+            object win = Activator.CreateInstance(winType);
+            var pageTypes = field?.GetValue(win) as Dictionary<string, Type>;
+            if (pageTypes == null) { Log("_pageTypes 为空"); return; }
+
+            // 系统触摸/笔能力 —— 触摸滚动（PanningMode）依赖这些
+            try
+            {
+                var devs = System.Windows.Input.Tablet.TabletDevices;
+                Log("  [设备] Tablet 设备数 = " + (devs != null ? devs.Count : -1));
+                if (devs != null)
+                {
+                    foreach (System.Windows.Input.TabletDevice td in devs)
+                    {
+                        Log("    " + td.Name + " 类型=" + td.Type + " 笔设备=" + td.StylusDevices.Count);
+                    }
+                }
+                // 触摸滚动依赖 Tablet 设备枚举。若这里为 0，说明系统没有把触摸设备
+                // 暴露给 WPF，PanningMode 再对也不会生效。
+                Log("  [设备] TabletDevices.Count = " + System.Windows.Input.Tablet.TabletDevices.Count);
+            }
+            catch (Exception ex) { Log("  [设备] 探测异常: " + Trim(ex.Message)); }
+
+            foreach (var kv in pageTypes)
+            {
+                try
+                {
+                    var page = Activator.CreateInstance(kv.Value) as FrameworkElement;
+                    if (page == null) continue;
+
+                    page.Measure(new Size(1000, 800));
+                    page.Arrange(new Rect(0, 0, 1000, 800));
+                    page.UpdateLayout();
+
+                    var scrolls = new List<ScrollViewer>();
+                    CollectScrollViewers(page, scrolls);
+
+                    Log(string.Format("[滚动] {0}: ScrollViewer={1} IsManipulationEnabled={2}",
+                        kv.Key, scrolls.Count, page.IsManipulationEnabled));
+
+                    int i = 0;
+                    foreach (var sv in scrolls)
+                    {
+                        i++;
+                        Log(string.Format("    #{0} PanningMode={1} 自身Manipulation={2} CanContentScroll={3} Extent={4:F0} Viewport={5:F0} 可滚动={6}",
+                            i,
+                            sv.PanningMode,
+                            sv.IsManipulationEnabled,
+                            sv.CanContentScroll,
+                            sv.ExtentHeight,
+                            sv.ViewportHeight,
+                            sv.ExtentHeight > sv.ViewportHeight));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log("  [" + kv.Key + "] 异常: " + Trim(ex.Message));
+                }
+            }
+
+            Log("=== 触摸滚动诊断结束 ===");
+        }
+
+        /// <summary>遍历**可视树**（不是逻辑树 —— 模板生成的 ScrollViewer 只在可视树里）。</summary>
+        private static void CollectScrollViewers(DependencyObject root, List<ScrollViewer> output)
+        {
+            if (root == null) return;
+            if (root is ScrollViewer sv) output.Add(sv);
+
+            int n = System.Windows.Media.VisualTreeHelper.GetChildrenCount(root);
+            for (int i = 0; i < n; i++)
+            {
+                CollectScrollViewers(System.Windows.Media.VisualTreeHelper.GetChild(root, i), output);
+            }
+        }
+
         public static void DumpSettingsPages()
         {
             Log("=== 探针开始 ===");

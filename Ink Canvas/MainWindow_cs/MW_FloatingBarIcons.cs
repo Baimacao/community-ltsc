@@ -3533,7 +3533,24 @@ namespace Ink_Canvas
                 else CaptureAndEnqueueScreenshotSave(true);
             }
 
-            if (!IsInPPTPresentationMode)
+            // 从「点页码进导航」回来后的这一次穿透，不隐藏笔迹。
+            //
+            // 需求原话：再次点击鼠标进入 ppt 鼠标穿透模式不会隐藏笔迹。
+            // 范围是一次性的（用户裁决：不是改 PPT 模式的通用行为）：
+            // 页码点击那次隐藏笔迹是为了看清缩略图，等用户自己点鼠标退出时，
+            // 他要的只是去操作 PPT，笔迹该留着。后续再点鼠标仍按设置走。
+            bool skipHideStrokeOnce = _pptNavSkipHideStrokeOnce;
+            _pptNavSkipHideStrokeOnce = false;
+
+            if (skipHideStrokeOnce)
+            {
+                // 一次性豁免：笔迹留着且仍可见。
+                // 注意 IsHitTestVisible 要设 false —— 不然穿透模式下点击会被
+                // InkCanvas 吃掉，反而去不了 PPT。
+                inkCanvas.IsHitTestVisible = false;
+                inkCanvas.Visibility = Visibility.Visible;
+            }
+            else if (!IsInPPTPresentationMode)
             {
                 if (Settings.Canvas.HideStrokeWhenSelecting)
                 {
