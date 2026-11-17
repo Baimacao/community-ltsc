@@ -108,6 +108,6 @@ dotnet build InkCanvasForClass.csproj -c Release -p:Platform=x64
 
 ## 致谢
 
-本项目站在上游 ICC-CE 与 Ink Canvas 的肩膀上。
+本项目站在上游 ICC CE 与 IC 的肩膀上。
 
-往上追溯：InkCanvasForClass（WXRIW）→ ICA（ChangSakura）→ ICC（Dubi906w）→ ICC-CE（CJK_mkp）→ ICC CE Lite（Baimacao）。
+谱系：IC（WXRIW）→ ICA（ChangSakura）→ ICC（Dubi906w）→ ICC CE（CJK_mkp）→ ICC CE Lite（Baimacao、鲸仔_JZ）。

@@ -168,7 +168,7 @@
     <value>A version rebuilt for the classroom</value>
   </data>
   <data name="Oobe_LtscIntroDesc" xml:space="preserve">
-    <value>A long-term servicing branch of ICC-CE. Distractions removed, unstable parts rebuilt, effort spent on stability and feel.</value>
+    <value>A long-term servicing branch of ICC CE. Distractions removed, unstable parts rebuilt, effort spent on stability and feel.</value>
   </data>
   <data name="Oobe_WhatChanged" xml:space="preserve">
     <value>What this build does</value>

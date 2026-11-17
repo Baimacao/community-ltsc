@@ -94,6 +94,6 @@ Results go to `Logs/Log_*.txt`; search for `[探针]`. All 17 checks currently p
 
 ## Credits
 
-Built on the shoulders of upstream ICC-CE and Ink Canvas.
+Built on the shoulders of upstream ICC CE and IC.
 
-Lineage: InkCanvasForClass (WXRIW) → ICA (ChangSakura) → ICC (Dubi906w) → ICC-CE (CJK_mkp) → ICC CE Lite (Baimacao).
+Lineage: IC (WXRIW) → ICA (ChangSakura) → ICC (Dubi906w) → ICC CE (CJK_mkp) → ICC CE Lite (Baimacao, 鲸仔_JZ).

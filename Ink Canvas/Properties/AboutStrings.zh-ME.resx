@@ -51,7 +51,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Copyright" xml:space="preserve">
-    <value>InkCanvasForClass · ICA · ICC · ICC-CE 的延续</value>
+    <value>IC · ICA · ICC · ICC CE 的延续</value>
   </data>
   <data name="DevelopersLabel" xml:space="preserve">
     <value>大佬们：</value>
@@ -66,7 +66,7 @@
     <value>ICC CE 的大佬</value>
   </data>
   <data name="Dev_InkCanvas" xml:space="preserve">
-    <value>Ink Canvas 的大佬</value>
+    <value>IC 的大佬</value>
   </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>本项目遵循 GNU GPL v3。上游所有贡献者的署名与许可声明完整保留，任何修改同样以 GPL v3 开放。</value>
@@ -93,16 +93,18 @@
     <value>Lite 精簡版</value>
   </data>
   <data name="About_LtscBody" xml:space="preserve">
-    <value>这是基于 ICC-CE（InkCanvasForClass Community Edition）的 Lite 精簡版，面向日常授课场景。
+    <value>ICC CE Lite 是从 ICC CE 分出来的独立分支，给日常上课用。
 
-和上游的区别：优先保证稳定性，功能改动会先在真机上验证再放出；界面文案按一线教师的使用习惯重写；不追新功能。
+谱系：IC → ICA → ICC → ICC CE → ICC CE Lite。本分支 Baimacao 和鲸仔_JZ 一起做。
 
-遇到问题请先说明是哪个版本（关于页顶部能看到），这样才能判断是上游原有的问题还是本分支改出来的。</value>
+跟上游的区别：先保稳，功能改动得在真机上验过才放出来；界面文案按一线老师的习惯重写；不追新功能。
+
+出问题先说版本（关于页顶部有），不然分不清是上游本来就有的还是我们改出来的。</value>
   </data>
   <data name="About_Dev_ICCLTSC" xml:space="preserve">
-    <value>ICC Lite 精簡版</value>
+    <value>ICC CE Lite 的开发者</value>
   </data>
   <data name="About_Dev_AI" xml:space="preserve">
-    <value>AI 搭子</value>
+    <value>ICC CE Lite 的开发者</value>
   </data>
 </root>

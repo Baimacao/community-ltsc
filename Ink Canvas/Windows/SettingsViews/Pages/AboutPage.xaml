@@ -127,11 +127,16 @@
                                 <Separator Opacity="0.2"/>
                             </ikw:SimpleStackPanel>
 
+                            <!-- 谱系：IC → ICA → ICC → ICC CE → ICC CE Lite。
+                                 顺序是历史顺序，从最上游到本分支。
+                                 IC 是起点（WXRIW 的 Ink Canvas 控件项目），
+                                 不是「InkCanvasForClass」—— 后者是 ICC-CE 阶段的仓库名。 -->
                             <ikw:SimpleStackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
                                 <ui:HyperlinkButton Content="ICC CE Lite" NavigateUri="https://github.com/Baimacao/community-ltsc"/>
                                 <ui:HyperlinkButton Content="ICC CE" NavigateUri="https://github.com/InkCanvasForClass/community/"/>
+                                <ui:HyperlinkButton Content="ICC" NavigateUri="https://github.com/Awesome-Iwb/icc-0610fix"/>
                                 <ui:HyperlinkButton Content="ICA" NavigateUri="https://github.com/ChangSakura/Ink-Canvas"/>
-                                <ui:HyperlinkButton Content="Ink Canvas" NavigateUri="https://github.com/WXRIW/Ink-Canvas"/>
+                                <ui:HyperlinkButton Content="IC" NavigateUri="https://github.com/WXRIW/Ink-Canvas"/>
                             </ikw:SimpleStackPanel>
                         </Grid>
                     </Border>

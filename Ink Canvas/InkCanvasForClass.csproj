@@ -75,7 +75,7 @@
     <!-- 版权字段：GPL v3 要求保留所有上游贡献者的署名，不能只写一个人。
          这里如实记录谱系：InkCanvasForClass → ICA → ICC → ICC-CE → 本分支。
          本分支作者与上游作者并列，不覆盖任何人。 -->
-    <Copyright>© 2020-2026 InkCanvasForClass (WXRIW), ICA (ChangSakura), ICC (Dubi906w), ICC-CE (CJK_mkp), ICC CE Lite (Baimacao). Licensed under GPL-3.0.</Copyright>
+    <Copyright>© 2020-2026 IC (WXRIW), ICA (ChangSakura), ICC (Dubi906w), ICC CE (CJK_mkp), ICC CE Lite (Baimacao). Licensed under GPL-3.0.</Copyright>
     <PackageProjectUrl>https://inkcanvasforclass.github.io</PackageProjectUrl>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>

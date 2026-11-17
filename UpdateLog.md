@@ -39,4 +39,4 @@
 
 ---
 
-上游历史更新日志见 InkCanvasForClass/community 仓库。
+上游历史更新日志见 ICC CE 仓库（InkCanvasForClass/community）。

@@ -51,7 +51,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Copyright" xml:space="preserve">
-    <value>A continuation of InkCanvasForClass · ICA · ICC · ICC-CE</value>
+    <value>A continuation of IC · ICA · ICC · ICC CE</value>
   </data>
   <data name="DevelopersLabel" xml:space="preserve">
     <value>Developers:</value>
@@ -66,7 +66,7 @@
     <value>Developer of ICC CE</value>
   </data>
   <data name="Dev_InkCanvas" xml:space="preserve">
-    <value>Developer of Ink Canvas</value>
+    <value>Developer of IC</value>
   </data>
   <data name="LicenseBody" xml:space="preserve">
     <value>Released under GNU GPL v3. All upstream contributor credits and license notices are retained in full; any modification is likewise released under GPL v3.</value>
@@ -93,16 +93,18 @@
     <value>Lite edition</value>
   </data>
   <data name="About_LtscBody" xml:space="preserve">
-    <value>This is the Lite edition of ICC-CE (InkCanvasForClass Community Edition), aimed at day-to-day classroom use.
+    <value>ICC CE Lite is an independent branch forked from ICC CE, aimed at day-to-day classroom use.
 
-How it differs from upstream: stability comes first, changes are verified on real hardware before release; wording is rewritten for how teachers actually use it; no chasing of new features.
+Lineage: IC → ICA → ICC → ICC CE → ICC CE Lite. This branch is developed by Baimacao and 鲸仔_JZ.
 
-When reporting a problem, include the version shown at the top of this page so we can tell whether it is an upstream issue or one introduced here.</value>
+Differences from upstream: stability first — changes are verified on real hardware before release; UI copy rewritten around how teachers actually work; no chasing new features.
+
+When reporting a problem, state the version (shown at the top of this page) so it can be told whether it is an upstream issue or one introduced here.</value>
   </data>
   <data name="About_Dev_ICCLTSC" xml:space="preserve">
-    <value>ICC Lite edition</value>
+    <value>Developer of ICC CE Lite</value>
   </data>
   <data name="About_Dev_AI" xml:space="preserve">
-    <value>AI collaborator</value>
+    <value>Developer of ICC CE Lite</value>
   </data>
 </root>
