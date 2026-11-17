@@ -159,7 +159,6 @@ namespace Ink_Canvas.Windows
 
             // 启动与隐私
             settings.Startup.IsFoldAtStartup = true;
-            settings.Startup.IsAutoUpdate = true;
             settings.Startup.CrashAction = 2; // 弹窗重启
 
             // 画板与墨迹
@@ -349,7 +348,6 @@ namespace Ink_Canvas.Windows
 
             // 启动与隐私
             settings.Startup.IsFoldAtStartup = true;
-            settings.Startup.IsAutoUpdate = true;
             settings.Startup.CrashAction = 0;
 
             // 画板与墨迹

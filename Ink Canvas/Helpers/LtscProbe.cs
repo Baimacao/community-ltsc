@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -191,47 +192,50 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("L-3/L-8", false, Trim(ex.Message)); }
 
-            // --- 5. 心跳 Process 是否已释放（C-5）---
-            // 带对照组：A 用 using（修复后的写法），B 故意不释放（修复前的写法）。
-            // 只看 A 是不是 0 说明不了问题——CLR 的 RCW 终结器本来就会兜底。
-            // 真正要证明的是「A 明显好于 B」，以及 A 本身不随次数线性上涨。
+            // --- 5. 资源释放的对照组（C-5）---
+            // 原来测的是 Process.GetCurrentProcess() 的句柄，但那是伪句柄，
+            // 实测 using 组和不释放组增长都是 0 —— 测不出差别，这条测试等于没测。
+            // 换成真实的文件句柄：它能反映「有没有真的开内核对象」。
+            // 判据仍是「A 明显好于 B」，A 单独为 0 说明不了问题。
             try
             {
                 const int N = 300;
+                string probeFile = Path.Combine(Path.GetTempPath(), "ltsc_handle_probe.tmp");
+                if (!File.Exists(probeFile)) File.WriteAllText(probeFile, "");
 
+                // A：用 using 正确释放
                 int a0 = GetHandles();
                 for (int i = 0; i < N; i++)
                 {
-                    using (var p = System.Diagnostics.Process.GetCurrentProcess())
+                    using (var fs = new FileStream(probeFile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite))
                     {
-                        var _ = p.TotalProcessorTime;
+                        var _ = fs.CanRead;
                     }
                 }
-                int a1 = GetHandles();   // 不强制 GC：看「当场」是否释放
+                int a1 = GetHandles();
 
+                // B：故意持住不释放
                 int b0 = GetHandles();
-                var keep = new List<System.Diagnostics.Process>();
+                var keep = new List<FileStream>();
                 for (int i = 0; i < N; i++)
                 {
-                    var p = System.Diagnostics.Process.GetCurrentProcess();
-                    var _ = p.TotalProcessorTime;
-                    keep.Add(p);         // 故意持有，不让终结器回收
+                    keep.Add(new FileStream(probeFile, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite));
                 }
                 int b1 = GetHandles();
+                foreach (var k in keep) { try { k.Dispose(); } catch { } }
                 keep.Clear();
-
-                GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
-                int a2 = GetHandles();
 
                 int growA = a1 - a0;
                 int growB = b1 - b0;
-                Log("  C-5 明细: using 增长=" + growA + " (基 " + a0 + ") | 不释放增长=" + growB + " (基 " + b0 + ") | GC 后=" + a2);
+                Log("  C-5 明细: using 增长=" + growA + " (基 " + a0 + ") | 不释放增长=" + growB + " (基 " + b0 + ")");
 
-                R("C-5 using 写法增长 <= 5", growA <= 5, "增长=" + growA);
-                R("C-5 using 明显优于不释放", growB < 0 || growA < growB, "A=" + growA + " B=" + growB);
+                R("C-5 using 不泄漏句柄", growA <= 5, "增长=" + growA);
+                R("C-5 对照组确实能测出泄漏", growB >= N / 2, "不释放增长=" + growB + "，若接近 0 说明这条测试无效");
+                R("C-5 using 明显优于不释放", growA < growB, "A=" + growA + " B=" + growB);
+
+                try { File.Delete(probeFile); } catch { }
             }
             catch (Exception ex) { R("C-5", false, Trim(ex.Message)); }
-
             // --- 6. 定时器泄漏（L-2/L-16）：反复 new DispatcherTimer 后检查是否能停 ---
             try
             {

@@ -285,37 +285,8 @@ namespace Ink_Canvas
         public bool IsEnableTwoFingerRotationBoard { get; set; }
     }
 
-    // 更新通道枚举
-    public enum UpdateChannel
-    {
-        Release,
-        Preview,
-        Beta
-    }
-
-    /// <summary>自动更新要下载的安装包架构。默认跟随当前软件进程架构；64 位包对应发布物 ZIP 文件名在 .zip 前增加 -x64。</summary>
-    public enum UpdatePackageArchitecture
-    {
-        /// <summary>32 位包，例如 InkCanvasForClass.CE.1.7.0.0.zip</summary>
-        X86 = 0,
-        /// <summary>64 位包，例如 InkCanvasForClass.CE.1.7.0.0-x64.zip</summary>
-        X64 = 1
-    }
-
     public class Startup
     {
-        [JsonProperty("isAutoUpdate")]
-        public bool IsAutoUpdate { get; set; } = true;
-        [JsonProperty("isAutoUpdateWithSilence")]
-        public bool IsAutoUpdateWithSilence { get; set; }
-        [JsonProperty("isAutoUpdateWithSilenceStartTime")]
-        public string AutoUpdateWithSilenceStartTime { get; set; } = "06:00";
-        [JsonProperty("isAutoUpdateWithSilenceEndTime")]
-        public string AutoUpdateWithSilenceEndTime { get; set; } = "22:00";
-        [JsonProperty("updateChannel")]
-        public UpdateChannel UpdateChannel { get; set; } = UpdateChannel.Release;
-        [JsonProperty("updatePackageArchitecture")]
-        public UpdatePackageArchitecture UpdatePackageArchitecture { get; set; } = Environment.Is64BitProcess ? UpdatePackageArchitecture.X64 : UpdatePackageArchitecture.X86;
         [JsonProperty("isEnableNibMode")]
         public bool IsEnableNibMode { get; set; }
         [JsonProperty("isFoldAtStartup")]

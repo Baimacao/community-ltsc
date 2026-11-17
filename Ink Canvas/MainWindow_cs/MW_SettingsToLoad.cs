@@ -30,7 +30,7 @@ namespace Ink_Canvas
         /// </summary>
         public void ReloadSettingsFromFile()
         {
-            LoadSettings(false, skipAutoUpdateCheck: true);
+            LoadSettings(false);
         }
 
         /// <summary>
@@ -43,8 +43,7 @@ namespace Ink_Canvas
             BtnResetToSuggestion_Click(null, null);
         }
 
-        /// <param name="skipAutoUpdateCheck">指示是否跳过自动更新检查；为 true 时不会在加载设置后执行自动更新检测。</param>
-        private void LoadSettings(bool isStartup = false, bool skipAutoUpdateCheck = false)
+        private void LoadSettings(bool isStartup = false)
         {
             try
             {
@@ -212,20 +211,6 @@ namespace Ink_Canvas
                     ToggleSwitchEnableNibMode.IsOn = false;
                     BoardToggleSwitchEnableNibMode.IsOn = false;
                     BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
-                }
-
-                // 设置自动更新相关选项
-                if (Settings.Startup.IsAutoUpdate && !skipAutoUpdateCheck)
-                {
-                    if (isStartup)
-                    {
-                        _pendingStartupAutoUpdateCheck = true;
-                    }
-                    else
-                    {
-                        LogHelper.WriteLogToFile("AutoUpdate | Running auto-update check after settings change");
-                        AutoUpdate();
-                    }
                 }
             }
             else

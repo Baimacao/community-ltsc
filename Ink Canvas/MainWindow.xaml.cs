@@ -48,8 +48,6 @@ namespace Ink_Canvas
         private List<System.Windows.Controls.Canvas> whiteboardPages = new List<System.Windows.Controls.Canvas>();
         private int currentPageIndex;
         private System.Windows.Controls.Canvas currentCanvas;
-        internal AutoUpdateHelper.UpdateLineGroup AvailableLatestLineGroup;
-
         // 全局快捷键管理器
         private GlobalHotkeyManager _globalHotkeyManager;
         internal GlobalHotkeyManager GlobalHotkeyManagerInstance => _globalHotkeyManager;
@@ -973,7 +971,7 @@ namespace Ink_Canvas
                     return;
                 }
 
-                LoadSettings(false, skipAutoUpdateCheck: true);
+                LoadSettings(false);
 
                 if (ViewboxFloatingBar != null && currentMode == 0)
                 {
@@ -1638,7 +1636,6 @@ namespace Ink_Canvas
         public string _lastAppliedProfileName;
         private bool isLoaded;
         private bool forcePointEraser;
-        private bool _pendingStartupAutoUpdateCheck;
         private bool _sliderTouchSupportInitialized;
         private bool _deferredPhaseBCompleted;
 
@@ -2162,69 +2159,7 @@ namespace Ink_Canvas
 
             LogHelper.WriteLogToFile("Ink Canvas closed", LogHelper.LogType.Event);
 
-            // 检查是否有待安装的更新
-            CheckPendingUpdates();
         }
-
-        private void CheckPendingUpdates()
-        {
-            try
-            {
-                // 如果有可用的更新版本且启用了自动更新
-                if (AvailableLatestVersion != null && Settings.Startup.IsAutoUpdate)
-                {
-                    // 检查更新文件是否已下载
-                    string statusFilePath = AutoUpdateHelper.GetUpdateDownloadStatusFilePath(AvailableLatestVersion);
-
-                    if (File.Exists(statusFilePath) && File.ReadAllText(statusFilePath).Trim().ToLower() == "true")
-                    {
-                        LogHelper.WriteLogToFile($"AutoUpdate | Installing pending update v{AvailableLatestVersion} on application close");
-
-                        // 设置为用户主动退出，避免被看门狗判定为崩溃
-                        App.IsAppExitByUser = true;
-
-                        // 创建批处理脚本并启动，软件关闭后会执行更新操作
-                        AutoUpdateHelper.InstallNewVersionApp(AvailableLatestVersion, true);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"AutoUpdate | Error checking pending updates: {ex.Message}", LogHelper.LogType.Error);
-            }
-        }
-
-        // 使用多线路组下载更新
-        internal async Task<bool> DownloadUpdateWithFallback(string version, AutoUpdateHelper.UpdateLineGroup primaryGroup, UpdateChannel channel)
-        {
-            try
-            {
-                // 如果主要线路组可用，直接使用
-                if (primaryGroup != null)
-                {
-                    LogHelper.WriteLogToFile($"AutoUpdate | 使用主要线路组下载: {primaryGroup.GroupName}");
-                    return await AutoUpdateHelper.DownloadSetupFile(version, primaryGroup);
-                }
-
-                // 如果主要线路组不可用，获取所有可用线路组
-                LogHelper.WriteLogToFile("AutoUpdate | 主要线路组不可用，获取所有可用线路组");
-                var availableGroups = await AutoUpdateHelper.GetAvailableLineGroupsOrdered(channel);
-                if (availableGroups.Count == 0)
-                {
-                    LogHelper.WriteLogToFile("AutoUpdate | 没有可用的线路组", LogHelper.LogType.Error);
-                    return false;
-                }
-
-                LogHelper.WriteLogToFile($"AutoUpdate | 使用 {availableGroups.Count} 个可用线路组进行下载");
-                return await AutoUpdateHelper.DownloadSetupFileWithFallback(version, availableGroups);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"AutoUpdate | 下载更新时出错: {ex.Message}", LogHelper.LogType.Error);
-                return false;
-            }
-        }
-
         /// <summary>
         /// LTSC D-01: 自动更新已整体移除（原方法 139 行：检查 dev-api.dy.ci 与
         /// GitHub Releases、多线路下载、静默时段判断、关闭主程序起 update-mode
@@ -2797,17 +2732,6 @@ namespace Ink_Canvas
             if (Settings.PowerPointSettings.EnablePowerPointEnhancement)
             {
                 StartPowerPointProcessMonitoring();
-            }
-
-            if (_pendingStartupAutoUpdateCheck && Settings.Startup?.IsAutoUpdate == true)
-            {
-                _pendingStartupAutoUpdateCheck = false;
-                await Task.Delay(8000);
-                _ = Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    LogHelper.WriteLogToFile("AutoUpdate | Running deferred auto-update check at UI idle");
-                    _ = Task.Run(() => AutoUpdate());
-                }), DispatcherPriority.ApplicationIdle);
             }
         }
 

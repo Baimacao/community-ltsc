@@ -888,44 +888,6 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
 
         #region Update
 
-        public static void OnSmartUpdateChanged()
-        {
-            if (!SettingsManager.Settings.Startup.IsAutoUpdate) return;
-            var mw = GetMainWindow();
-            if (mw != null)
-            {
-                mw.ResetUpdateCheckRetry();
-                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => mw.AutoUpdate());
-            }
-        }
-
-        public static void OnUpdateChannelChanged()
-        {
-            if (!SettingsManager.Settings.Startup.IsAutoUpdate) return;
-            var mw = GetMainWindow();
-            if (mw != null)
-            {
-                mw.ResetUpdateCheckRetry();
-                System.Threading.Tasks.Task.Run(() =>
-                {
-                    try
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(() => mw.AutoUpdate());
-                    }
-                    catch (Exception ex)
-                    {
-                        LogHelper.WriteLogToFile($"AutoUpdate | Error during channel switch update check: {ex.Message}", LogHelper.LogType.Error);
-                    }
-                });
-            }
-        }
-
-        public static void OnStartSilentUpdateTimer()
-        {
-            var mw = GetMainWindow();
-            if (mw != null) mw.StartSilentUpdateTimer();
-        }
-
         public static void OnReloadSettingsFromFile()
         {
             var mw = GetMainWindow();
