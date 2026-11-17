@@ -929,7 +929,7 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 | N-04 | 默认配置文件落地 | ✅ **完成**（2 个提交） |
 | N-05 | PPT 翻页组件深浅同步修复 | ✅ **完成** |
 | N-06 | 系统深浅模式 logo 适配 | ✅ **完成** |
-| N-07 | 废弃物清理 | ✅ **完成**（`f37f8d8d` 清掉 7 个空壳 resx 类与零引用设置段） |
+| N-07 | 废弃物清理 | ✅ **基本完成**（`f37f8d8d` 清 7 个空壳 resx；零引用属性剩 3 个，见 N-07 节） |
 | N-08 | 回归与交付 | ❌ 未开始 |
 | N-09 | 计时功能重做 | ✅ **完成** |
 
@@ -1065,18 +1065,41 @@ return false → [FAIL] N-03 适配开启时 ESC 被吞 | return=False
 
 | 项 | 内容 |
 |---|---|
-| 状态 | **部分完成** |
-| 影响模块 | `Resources/Settings.cs`（351 个属性）、`Properties/*.resx`、`App.xaml.cs` |
+| 状态 | **基本完成**（空壳 resx 已清；零引用属性清了但还剩 3 个） |
+| 影响模块 | `Resources/Settings.cs`（319 个 JsonProperty 属性）、`Properties/*.resx`、`App.xaml.cs` |
 | 验收标准 | ①删除后 `dotnet build` 无警告新增；②首启仍只生成 6 个正常目录；③旧版 `Settings.json` 能加载且未知键忽略而非崩 |
 
-**已完成**：清掉 686 条死文案（见 N-02）。
+**已完成**：
 
-**未完成**（实测确认）：
+1. 清掉 686 条死文案（见 N-02）。
+2. **7 个空壳 resx 类已删**（`f37f8d8d`）：`CloudStorageStrings` / `PluginStrings` / `FeedbackStrings` /
+   `PerformanceStrings` / `AnnouncementStrings` / `PopupStrings` / `UpdateCenterPanelStrings`，
+   连 `.resx` × 4 语言 + `.Designer.cs` 一起清。核实：`ls Properties/<name>.resx` 七个全部「No such file」。
 
-1. **6 个空壳 resx 类文件仍在**，各自 0 条 key，但 `.resx` × 4 语言 + `.Designer.cs` 都还占着：
-   `CloudStorageStrings` / `PluginStrings` / `FeedbackStrings` / `PerformanceStrings` /
-   `AnnouncementStrings` / `PopupStrings` / `UpdateCenterPanelStrings`。
-2. **`Resources/Settings.cs` 里 351 个属性中的零引用项未清**（上次审计说有 29 个，需重新核）。
+**未完成**（2026-11-17 实测重新核过，原数字要更正）：
+
+原写「351 个属性中的零引用项未清（上次审计说有 29 个）」。**两个数都不对**：
+
+| 原说法 | 实测 | 怎么测的 |
+|---|---|---|
+| 351 个属性 | **319 个** `[JsonProperty]` 属性 | 正则抽 `[JsonProperty("x")]` + `public T X { get; set; }`，去重 |
+| 29 个零引用 | **3 个** | 319 个属性名逐个对 341 个 `.cs`（排除 `Settings.cs` 自身、`obj/`、`bin/`）做 `\bName\b` 全文匹配 |
+
+剩下的 3 个零引用属性：
+
+```
+SplashScreenStyle           (Settings.cs:377)
+CustomSplashImagePath
+CustomSplashTextPosition
+```
+
+三个都只在 `Settings.cs` 里声明，**`.cs` / `.xaml` / `.resx` 全无第二处引用**，
+也没有对应 UI。属于启动闪屏的遗留配置，不影响运行，但按验收标准①「每个可见设置项都能追到一个真实读取点」
+它们连设置项都不算——是彻底的孤儿字段。**未删，等后续一并处理。**
+
+> **方法说明**：这里的「零引用」是**属性名在 `.cs` 源码里零命中**，不含 XAML 绑定与
+> 反射/序列化访问。所以它是「几乎没有引用」的下界证据，不是「确定可删」的证明。
+> 要真删必须先确认没有 XAML 绑定（本轮已查：这三个不在任何 `.xaml` 里）。
 
 ---
 
