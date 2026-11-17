@@ -85,8 +85,6 @@
                             Visibility="{Binding IsOn, ElementName=CardShowPPTButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Toggled="ToggleSwitchEnablePPTButtonLongPressPageTurn_OnToggled"/>
 
-                    <TextBlock Text="{x:Static props:PPTStrings.EnterAnnotationOnShow}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
-
                     <controls:LabeledSettingsCard x:Name="CardShowCanvasAtNewSlideShow"
                             Header="{x:Static props:PPTStrings.EnterAnnotationOnShow}"
                             Icon="{x:Static ui:SegoeFluentIcons.Edit}"
@@ -126,8 +124,6 @@
                             Description="{x:Static props:PPTStrings.AutoSaveStrokesHint}"
                             Icon="{x:Static ui:SegoeFluentIcons.Save}"
                             Toggled="ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled"/>
-
-                    <TextBlock Text="{x:Static props:PPTStrings.RememberLastPage}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
                     <controls:LabeledSettingsCard x:Name="CardNotifyPreviousPage"
                             Header="{x:Static props:PPTStrings.RememberLastPage}"

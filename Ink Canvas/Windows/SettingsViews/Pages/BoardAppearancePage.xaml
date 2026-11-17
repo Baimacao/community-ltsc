@@ -28,9 +28,6 @@
                     HorizontalAlignment="Stretch"
                     Spacing="{StaticResource SettingsCardSpacing}">
 
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:ThemeStrings.Theme_ShowTimeInWhiteboard}" />
-
                     <controls:LabeledSettingsCard x:Name="CardEnableTimeDisplayInWhiteboardMode"
                             Header="{x:Static props:ThemeStrings.Theme_ShowTimeInWhiteboard}"
                             Icon="{x:Static ui:SegoeFluentIcons.Pinned}"
@@ -47,9 +44,6 @@
                         </ui:SettingsCard.HeaderIcon>
 
                     </ui:SettingsCard>
-
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:ThemeStrings.Theme_BoardToolbarOpacity}" />
 
                     <ui:SettingsExpander Header="{x:Static props:ThemeStrings.Theme_BoardToolbarOpacity}"
                                          IsExpanded="True">

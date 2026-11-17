@@ -55,9 +55,6 @@
                         </ui:SettingsExpander.Items>
                     </ui:SettingsExpander>
 
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:ThemeStrings.Theme_FloatingBarIcon}" />
-
                     <ui:SettingsCard Header="{x:Static props:ThemeStrings.Theme_FloatingBarIcon}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Photo}" />

@@ -174,9 +174,6 @@
                         </ui:SettingsExpander.Items>
                     </ui:SettingsExpander>
 
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:AdvancedStrings.Logging}" />
-
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchIsLogEnabled"
                         Header="{x:Static props:AdvancedStrings.Logging}"
                         Icon="{x:Static ui:SegoeFluentIcons.OpenFile}"
