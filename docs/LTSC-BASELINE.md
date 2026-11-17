@@ -23,18 +23,28 @@
 
 ## 分叉后做了什么
 
-分叉后共 **133 个提交**，按作者分两段：
+> **本节数字 2026-11-17 重测。** 原写「133 个提交 / 343 文件 / +15018 −43766」，
+> 那是 2026-11-13 的分叉点统计（当时文档最后一次更新）。
+> 之后本分支又走了 92 个提交，四个数字**全部过期**，已按实测改。
 
-| 阶段 | 作者 | 提交数 | 说明 |
-|---|---|---|---|
-| 早期审计与修复 | whale | 39 | 2026-11-11 至 2026-11-12，PPT 联动与稳定性 |
-| LTSC 重构 | ICC-LTSC | 94 | 2026-11-10 至 2026-11-13，改造成 LTSC 分支 |
+分叉后共 **225 个提交**（`git rev-list --count 083f694e..HEAD`）：
 
-> 注：两个作者的提交时间有重叠，因为 `whale` 的提交是在审计后补录的历史。
+| 阶段 | 作者 | 提交数 | 时间范围 | 说明 |
+|---|---|---|---|---|
+| 早期审计与修复 | whale | 39 | 2026-11-11 → 11-12 | PPT 联动与稳定性 |
+| LTSC 重构 | ICC-LTSC | 180 | 2026-11-10 → 11-17 | 改造成 LTSC 分支，主力 |
+| 发布与收尾 | Baimacao | 5 | 2026-11-17 | 改名、版本号、sorrow 定版 |
+| 文档 | docs-keeper | 1 | 2026-11-17 | 本文件同批的文档合并 |
 
-累计改动：**343 个文件，+15018 / −43766**。
+> 注：`whale` 的提交日期与 `ICC-LTSC` 有重叠，因为 `whale` 的提交是在审计后补录的历史。
+> 表格顺序按提交数排，不按时间排。
 
-删除远多于新增，因为砍掉了整块功能（点名、遥测、WindowChrome 等）。
+累计改动：**539 个文件，+42462 / −78357**（`git diff --shortstat 083f694e..HEAD`）。
+
+删除远多于新增，因为砍掉了整块功能（点名、遥测、WindowChrome、自动更新、PPT Agent 等）。
+
+> **原数字留档**（2026-11-13 时点）：133 个提交，343 个文件，+15018 / −43766。
+> 当时 whale=39、ICC-LTSC=94。
 
 ---
 
@@ -43,20 +53,24 @@
 在仓库根目录执行：
 
 ```bash
-# 1. 确认上游分叉点
+# 1. 确认上游分叉点（这条是历史事实，永久不变）
 git log 083f694e -1 --format="%h %an %ad %s" --date=iso
 # 期望输出：083f694e CJK_mkp 2026-07-15 17:32:59 +0800 更新版本号
 
 # 2. 确认分叉后没有非本分支的提交
 git log 083f694e..HEAD --format="%an" | sort -u
-# 期望输出只有：ICC-LTSC、whale
+# 2026-11-17 实测：Baimacao / ICC-LTSC / docs-keeper / whale
+# （原期望只写「ICC-LTSC、whale」——那是 11-13 时点，之后新增两个作者）
 
-# 3. 确认统计数字
-git rev-list --count 083f694e..HEAD    # 期望 133
-git diff --stat 083f694e..HEAD | tail -1  # 期望 343 files changed
+# 3. 确认统计数字（会随时间增长，不是固定值）
+git rev-list --count 083f694e..HEAD       # 2026-11-17 实测 225
+git diff --stat 083f694e..HEAD | tail -1  # 2026-11-17 实测 539 files changed
 ```
 
-三条都对得上，说明这份记录没写错。
+**第 1 条永久有效；第 2、3 条是随时间变的快照，别当固定值核对。**
+原来这里写「三条都对得上，说明这份记录没写错」——这个说法本身有问题：
+第 2、3 条只要再提交一次就会「对不上」，那不是记录错了，是记录过期了。
+现在只用第 1 条判断记录是否可靠，第 2、3 条改成「当前值应在什么量级」。
 
 ---
 
@@ -97,20 +111,56 @@ git cherry-pick <hash>
 
 ## 版本号是怎么来的
 
+> **本节三条结论全部被推翻，2026-11-17 重写。** 原结论与现在的代码不符，
+> 旧内容留在本节末尾「原结论与为什么改」里，不删。
+
 上游用 Nerdbank.GitVersioning（配置在 `version.json`），但它只认四段数字，
-`1.0a-ltsc` 这种写法进不去。
+`0.1a` 这种带字母的写法进不去。
 
-**做法**：在 csproj 里显式设 `AssemblyVersion` / `FileVersion`，绕开 NBGV。
+**做法**：不改 `version.json`（仍是 `1.0.0`），在 csproj 的 MSBuild Target 里
+覆盖 NBGV 生成的程序集版本属性，位于 `InkCanvasForClass.csproj:612-625`：
 
-实际效果（实测）：
+```xml
+<AssemblyInformationalVersion>0.1a+$(_ShortSha7)</AssemblyInformationalVersion>
+<AssemblyFileVersion>0.1.0.0</AssemblyFileVersion>
+```
+
+还有一处 `<AssemblyVersion>0.1.0.0</AssemblyVersion>`（:73）。
+
+2026-11-17 实测值（来源：提交 `4958b92e` 的实测记录）：
 
 | 字段 | 值 |
 |---|---|
-| FileVersion | 1.0.0.19（随构建递增） |
-| ProductVersion | 1.0a-ltsc+<短 hash> |
+| AssemblyVersion | 0.1.0.0 |
+| FileVersion | 0.1.0.0 |
+| ProductVersion | `0.1a+<短 hash>` |
+| AssemblyName | `ICCCELite` |
 
-`AssemblyName` **没改**，仍是 `InkCanvasForClass`。
-改了会让「检测原版是否在运行」的逻辑失效，也会影响用户已装的快捷方式。
+### 原结论与为什么改
+
+| 项 | 原结论（2026-11-13） | 现在实际 | 什么时候变的 |
+|---|---|---|---|
+| ProductVersion | `1.0a-ltsc+<短 hash>` | `0.1a+<短 hash>` | `bea45925` 产品改名 ICC CE Lite，版本号进 0.1a |
+| FileVersion | `1.0.0.19`（随构建递增） | `0.1.0.0`（固定） | 同上，改为在 Target 里固定写死 |
+| AssemblyName | `InkCanvasForClass`，且「不能改」 | `ICCCELite` | `4958b92e` 进程名改为 ICCCELite |
+
+**为什么第 3 条原来说「不能改」后来却改了**：原文理由是「改了会让检测原版是否在运行的逻辑
+失效，也会影响用户已装的快捷方式」。`4958b92e` 的处理方式是**两条都改对**：
+
+- 自检逻辑改成同时查两个名字（`App.xaml.cs` 里 `GetProcessesByName("ICCCELite")` 与
+  `GetProcessesByName("InkCanvasForClass")` 合并），老版本仍能被识别；
+- 文件关联用 `Process.GetCurrentProcess().MainModule.FileName` 动态取路径，
+  没硬编码名字，下次启动自动重新注册成新 exe。
+
+也就是说原结论担心的两个后果都成立，但**都可解**，所以改了。
+
+### 没改的（原文没提，但容易误以为一起改了）
+
+| 项 | 值 | 为什么不动 |
+|---|---|---|
+| AppUserModelID | `InkCanvasForClass.LTSC` | 用户看不见，改了反而出问题 |
+| 互斥体名 | `InkCanvasForClass CE LTSC` | 同上 |
+| Copyright | 上游 `CJK_mkp` | 不能改 |
 
 ---
 
