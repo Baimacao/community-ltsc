@@ -223,4 +223,6 @@ HEAD    1ffbbd8e
 | `docs/LTSC-CHANGES.md` | 相对上游的全部改动 |
 | `docs/MASTER-PLAN.md` | 历史计划与执行记录 |
 | `docs/FORK-BRANCHES-ARCHIVE.md` | 已删分支的 SHA 与恢复方法 |
+| `docs/REMOVED.md` | 每个删除项的 `git revert` 恢复方法 |
+| `docs/STABILITY-CASE.md` | 为什么这一版比原版更不容易崩（对外论证） |
 | `docs/SORROW-AND-NEXT.md` | 本文件 |
