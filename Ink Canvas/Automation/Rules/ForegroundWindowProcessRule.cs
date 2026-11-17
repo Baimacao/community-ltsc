@@ -119,47 +119,6 @@ namespace Ink_Canvas.WorkflowAutomation.Rules
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
-        public static RuleRegistryInfo Register()
-        {
-            var info = new RuleRegistryInfo(RuleId, "前台窗口进程名", "Window")
-            {
-                SettingsType = typeof(ForegroundWindowProcessRuleSettings)
-            };
-
-            info.Handle = (settings) =>
-            {
-                var s = settings as ForegroundWindowProcessRuleSettings;
-                if (s == null || string.IsNullOrEmpty(s.ProcessName)) return false;
-
-                try
-                {
-                    var handle = GetForegroundWindow();
-                    if (handle == IntPtr.Zero) return false;
-
-                    uint pid;
-                    GetWindowThreadProcessId(handle, out pid);
-                    if (pid == 0) return false;
-
-                    var process = Process.GetProcessById((int)pid);
-                    return Matches(s, process);
-                }
-                catch (Win32Exception)
-                {
-                    return false;
-                }
-                catch (ArgumentException)
-                {
-                    return false;
-                }
-                catch
-                {
-                    return false;
-                }
-            };
-
-            return info;
-        }
-
         public static bool Evaluate(object settings)
         {
             var s = settings as ForegroundWindowProcessRuleSettings;

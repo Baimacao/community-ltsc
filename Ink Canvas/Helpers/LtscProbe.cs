@@ -423,7 +423,7 @@ namespace Ink_Canvas.Helpers
                     withParams == null ? "找不到 (string,bool) 重载——参数没接通" : "签名 OK");
 
                 // 再确认 handler 那边真的读了这两个属性
-                var settingsType = typeof(Ink_Canvas.WorkflowAutomation.Actions.SaveStrokesActionSettings);
+                var settingsType = typeof(Ink_Canvas.WorkflowAutomation.ActionSettings.SaveStrokesActionSettings);
                 bool hasPath = settingsType.GetProperty("SavePath") != null;
                 bool hasXml = settingsType.GetProperty("SaveAsXml") != null;
                 R("SAVE-8 SaveStrokesActionSettings 两个属性都在", hasPath && hasXml,

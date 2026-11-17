@@ -1,24 +1,8 @@
 using Ink_Canvas.WorkflowAutomation.Abstractions;
-using Ink_Canvas.WorkflowAutomation.Models;
 using System.Windows;
 
 namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
 {
-    /// <summary>
-    /// 重置工具栏在桌面模式的位置的行动设置
-    /// </summary>
-    public class ResetDesktopPositionActionSettings
-    {
-    }
-
-    /// <summary>
-    /// 重置工具栏在桌面模式位置的旧式注册（兼容 Actions 目录）
-    /// </summary>
-    public static class ResetDesktopPositionAction
-    {
-        public const string ActionId = "inkcanvas.resetdesktopposition";
-
-    }
 
     /// <summary>
     /// 重置工具栏在桌面模式位置的 ActionHandler。

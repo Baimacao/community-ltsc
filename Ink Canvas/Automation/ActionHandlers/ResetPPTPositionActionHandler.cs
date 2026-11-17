@@ -1,24 +1,8 @@
 using Ink_Canvas.WorkflowAutomation.Abstractions;
-using Ink_Canvas.WorkflowAutomation.Models;
 using System.Windows;
 
 namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
 {
-    /// <summary>
-    /// 重置工具栏在PPT模式的位置的行动设置
-    /// </summary>
-    public class ResetPPTPositionActionSettings
-    {
-    }
-
-    /// <summary>
-    /// 重置工具栏在PPT模式位置的旧式注册（兼容 Actions 目录）
-    /// </summary>
-    public static class ResetPPTPositionAction
-    {
-        public const string ActionId = "inkcanvas.resetpptposition";
-
-    }
 
     /// <summary>
     /// 重置工具栏在PPT模式位置的 ActionHandler。

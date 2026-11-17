@@ -19,34 +19,6 @@ namespace Ink_Canvas.WorkflowAutomation.Rules
     {
         public const string RuleId = "inkcanvas.isforegroundwhiteboard";
 
-        public static RuleRegistryInfo Register()
-        {
-            var info = new RuleRegistryInfo(RuleId, "前台窗口是 ICC-CE 白板", "Whiteboard")
-            {
-                SettingsType = typeof(IsForegroundWhiteboardRuleSettings)
-            };
-
-            info.Handle = (settings) =>
-            {
-                try
-                {
-                    return Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        var mw = Application.Current.MainWindow as MainWindow;
-                        if (mw == null) return false;
-                        if (mw.currentMode != 1) return false;
-                        return mw.IsVisible;
-                    });
-                }
-                catch
-                {
-                    return false;
-                }
-            };
-
-            return info;
-        }
-
         public static bool Evaluate(object settings)
         {
             try

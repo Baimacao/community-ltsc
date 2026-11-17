@@ -138,16 +138,16 @@ namespace Ink_Canvas.WorkflowAutomation
             {
                 wf.ActionSet.Actions.Add(new Models.Action
                 {
-                    Id = Actions.KillProcessAction.ActionId,
-                    Settings = new Actions.KillProcessActionSettings { ProcessName = def.ProcessName },
+                    Id = ActionSettings.KillProcessAction.ActionId,
+                    Settings = new ActionSettings.KillProcessActionSettings { ProcessName = def.ProcessName },
                 });
             }
             else
             {
                 wf.ActionSet.Actions.Add(new Models.Action
                 {
-                    Id = Actions.FoldAction.ActionId,
-                    Settings = new Actions.FoldActionSettings { Fold = true },
+                    Id = ActionSettings.FoldAction.ActionId,
+                    Settings = new ActionSettings.FoldActionSettings { Fold = true },
                 });
             }
 

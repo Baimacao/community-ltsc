@@ -3,7 +3,7 @@ using Ink_Canvas.WorkflowAutomation.Models;
 using System;
 using System.Windows;
 
-namespace Ink_Canvas.WorkflowAutomation.Actions
+namespace Ink_Canvas.WorkflowAutomation.ActionSettings
 {
     /// <summary>
     /// 显示通知行动的设置。

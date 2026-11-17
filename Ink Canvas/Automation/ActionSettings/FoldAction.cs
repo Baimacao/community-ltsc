@@ -1,7 +1,7 @@
 using Ink_Canvas.WorkflowAutomation.Models;
 using System.Windows;
 
-namespace Ink_Canvas.WorkflowAutomation.Actions
+namespace Ink_Canvas.WorkflowAutomation.ActionSettings
 {
     /// <summary>
     /// 折叠/展开浮动栏行动的设置
@@ -20,6 +20,5 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     public static class FoldAction
     {
         public const string ActionId = "inkcanvas.fold";
-
     }
 }

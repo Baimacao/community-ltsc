@@ -1,6 +1,6 @@
 using Ink_Canvas.Helpers;
 using Ink_Canvas.WorkflowAutomation.Abstractions;
-using Ink_Canvas.WorkflowAutomation.Actions;
+using Ink_Canvas.WorkflowAutomation.ActionSettings;
 using System.Windows;
 
 namespace Ink_Canvas.WorkflowAutomation.ActionHandlers

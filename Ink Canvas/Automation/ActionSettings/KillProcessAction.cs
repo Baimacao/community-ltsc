@@ -1,7 +1,7 @@
 using Ink_Canvas.WorkflowAutomation.Models;
 using System.Diagnostics;
 
-namespace Ink_Canvas.WorkflowAutomation.Actions
+namespace Ink_Canvas.WorkflowAutomation.ActionSettings
 {
     /// <summary>
     /// 杀进程行动的设置
@@ -20,6 +20,5 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     public static class KillProcessAction
     {
         public const string ActionId = "inkcanvas.killprocess";
-
     }
 }
