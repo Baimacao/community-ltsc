@@ -431,6 +431,45 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("SAVE-6/7/8", false, Trim(ex.Message)); }
 
+
+            // --- 11. 图标 Geometry / Brush 缓存是否真的生效（2026-11-17）---
+            // 切工具时会给 5 个图标各调一次 Geometry.Parse(静态字符串)，是纯重复劳动。
+            // 判据是「同一 key 返回同一对象」——如果每次都 new，ReferenceEquals 会是 false。
+            try
+            {
+                var mw11 = Application.Current?.MainWindow as MainWindow;
+                if (mw11 != null)
+                {
+                    var geoMethod = typeof(MainWindow).GetMethod("GetCachedIconGeometry",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    R("CACHE-1 GetCachedIconGeometry 存在", geoMethod != null);
+
+                    if (geoMethod != null)
+                    {
+                        var g1 = geoMethod.Invoke(mw11, new object[] { "pen", false });
+                        var g2 = geoMethod.Invoke(mw11, new object[] { "pen", false });
+                        R("CACHE-2 同一图标两次返回同一 Geometry", ReferenceEquals(g1, g2),
+                            g1 == null ? "解析结果为 null" : "类型=" + g1.GetType().Name);
+
+                        var s1 = geoMethod.Invoke(mw11, new object[] { "pen", true });
+                        R("CACHE-3 实心/线框是不同 key", !ReferenceEquals(g1, s1));
+                    }
+
+                    var brushMethod = typeof(MainWindow).GetMethod("GetCachedIconBrush",
+                        BindingFlags.NonPublic | BindingFlags.Static);
+                    R("CACHE-4 GetCachedIconBrush 存在", brushMethod != null);
+                    if (brushMethod != null)
+                    {
+                        var c = System.Windows.Media.Color.FromRgb(37, 99, 235);
+                        var b1 = brushMethod.Invoke(null, new object[] { c });
+                        var b2 = brushMethod.Invoke(null, new object[] { c });
+                        R("CACHE-5 同色两次返回同一 Brush", ReferenceEquals(b1, b2));
+                    }
+                }
+                else R("CACHE 主窗口可用", false, "MainWindow 为 null");
+            }
+            catch (Exception ex) { R("CACHE", false, Trim(ex.Message)); }
+
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 

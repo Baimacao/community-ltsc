@@ -123,7 +123,10 @@ namespace Ink_Canvas
         private ToolbarImageButton _lastHighlightButton;
         private int _indicatorAnimationGeneration;
         private Storyboard _activeIndicatorStoryboard;
-        private string _pendingHighlightMode;
+        // LTSC（2026-11-17）：删掉 _pendingHighlightMode。
+        // 它只在 SetFloatingBarHighlightPosition 里被赋值一次，全项目没有任何读取点——
+        // 是个「看着像状态、其实没人用」的字段。留着会让读代码的人以为
+        // 高亮位置有个「待应用」的延迟队列。
         private int _highlightPositionVersion;
         private int _highlightLayoutRetryCount;
 
@@ -142,7 +145,6 @@ namespace Ink_Canvas
 
             ApplyFloatingBarIconHighlightImmediate(mode);
 
-            _pendingHighlightMode = mode;
             _highlightLayoutRetryCount = 0;
             int version = ++_highlightPositionVersion;
             Dispatcher.BeginInvoke(new Action(() =>
@@ -150,6 +152,56 @@ namespace Ink_Canvas
                 if (_highlightPositionVersion != version) return;
                 AnimateFloatingBarHighlightTo(mode);
             }), System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+
+        // LTSC（2026-11-17）：图标 Geometry 与 Brush 的缓存。
+        //
+        // 为什么需要：切换工具时会调用 ApplyFloatingBarIconHighlightImmediate，
+        // 它对 5 个图标各调一次 Geometry.Parse(GetCorrectIcon(...))。
+        // 那些路径字符串是 XamlGraphicsIconGeometries 里的编译期常量，
+        // 每次解析出来的 Geometry 一模一样，纯属重复劳动。
+        //
+        // 判据：Geometry.Parse 要解析整条路径数据并建对象树，不是零成本。
+        // 老师在课上会反复点笔/橡皮/光标，这条路走得很频繁。
+        //
+        // 用 static 缓存是安全的：Geometry 是 Freezable，只要不修改就可以跨实例共享。
+        // 这里解析出来的从不修改，只赋给 button.Icon.Geometry 显示。
+        private static readonly Dictionary<string, Geometry> _iconGeometryCache
+            = new Dictionary<string, Geometry>(StringComparer.Ordinal);
+        private static readonly Dictionary<uint, SolidColorBrush> _iconBrushCache
+            = new Dictionary<uint, SolidColorBrush>();
+
+        /// <summary>
+        /// 取缓存的图标 Geometry。同一 (iconType, isSolid) 只解析一次。
+        /// </summary>
+        private Geometry GetCachedIconGeometry(string iconType, bool isSolid)
+        {
+            if (string.IsNullOrEmpty(iconType)) return Geometry.Empty;
+
+            string key = iconType + (isSolid ? "|solid" : "|lined");
+            if (_iconGeometryCache.TryGetValue(key, out var cached) && cached != null)
+                return cached;
+
+            var parsed = Geometry.Parse(GetCorrectIcon(iconType, isSolid));
+            if (parsed != null && parsed.CanFreeze && !parsed.IsFrozen)
+                parsed.Freeze();   // 冻结后跨线程共享也安全，且渲染更快
+            _iconGeometryCache[key] = parsed;
+            return parsed;
+        }
+
+        /// <summary>
+        /// 取缓存的纯色画刷。按颜色值做键。
+        /// </summary>
+        private static SolidColorBrush GetCachedIconBrush(Color color)
+        {
+            uint key = ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | color.B;
+            if (_iconBrushCache.TryGetValue(key, out var cached) && cached != null)
+                return cached;
+
+            var brush = new SolidColorBrush(color);
+            if (brush.CanFreeze) brush.Freeze();
+            _iconBrushCache[key] = brush;
+            return brush;
         }
 
         private void ApplyFloatingBarIconHighlightImmediate(string mode)
@@ -170,14 +222,22 @@ namespace Ink_Canvas
                     return;
                 }
 
-                var foregroundBrush = new SolidColorBrush(FloatBarForegroundColor);
+                // LTSC（2026-11-17）：原来每次切工具都 new 一个 SolidColorBrush、
+                // 并且对 5 个图标各调一次 Geometry.Parse(静态字符串)。
+                // 这些字符串是编译期常量，解析结果永远一样，属于纯浪费。
+                // 实测：一次工具切换 = 6 次 Geometry.Parse + 2 次 brush 分配，
+                // 而切换工具是高频操作（老师上课会反复点笔/橡皮/光标）。
+                // 改成缓存：Geometry 按 (图标名, 是否实心) 缓存，brush 按颜色缓存。
+                var foregroundBrush = GetCachedIconBrush(FloatBarForegroundColor);
 
                 void ResetIcon(ToolbarImageButton button, string iconType)
                 {
                     if (button == null) return;
                     if (!ToolbarRegistry.GetUseRedStyle(button))
                         button.Icon.Brush = foregroundBrush;
-                    button.Icon.Geometry = Geometry.Parse(GetCorrectIcon(iconType, false));
+                    var g = GetCachedIconGeometry(iconType, false);
+                    if (!ReferenceEquals(button.Icon.Geometry, g))
+                        button.Icon.Geometry = g;
                 }
 
                 ResetIcon(Cursor_Icon, "cursor");
@@ -221,12 +281,15 @@ namespace Ink_Canvas
                 {
                     if (!ToolbarRegistry.GetUseRedStyle(targetButton))
                     {
-                        if (Settings.Appearance.ShowPenColorOnFloatingBarIcon && targetButton == Pen_Icon)
-                            targetButton.Icon.Brush = new SolidColorBrush(inkCanvas.DefaultDrawingAttributes.Color);
-                        else
-                            targetButton.Icon.Brush = new SolidColorBrush(highlightBarColor);
+                        var desiredBrush = (Settings.Appearance.ShowPenColorOnFloatingBarIcon && targetButton == Pen_Icon)
+                            ? GetCachedIconBrush(inkCanvas.DefaultDrawingAttributes.Color)
+                            : GetCachedIconBrush(highlightBarColor);
+                        if (!ReferenceEquals(targetButton.Icon.Brush, desiredBrush))
+                            targetButton.Icon.Brush = desiredBrush;
                     }
-                    targetButton.Icon.Geometry = Geometry.Parse(GetCorrectIcon(targetIconType, true));
+                    var solidGeom = GetCachedIconGeometry(targetIconType, true);
+                    if (!ReferenceEquals(targetButton.Icon.Geometry, solidGeom))
+                        targetButton.Icon.Geometry = solidGeom;
                 }
             }
             catch (Exception ex)
