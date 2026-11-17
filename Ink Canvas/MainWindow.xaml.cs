@@ -610,6 +610,21 @@ namespace Ink_Canvas
         {
             try
             {
+                // LTSC（2026-11-17）：把判断依据打进日志。
+                //
+                // 用户反馈「oobe 不稳定重触发」——有时明明走过了，下次启动又弹出来。
+                // 光读代码看不出是哪条路径把它清回 false 的，得靠日志。
+                //
+                // 这行会记录：当前值、配置文件路径、文件是否存在。
+                // 如果重新弹出来的那次日志里 HasShownOobe=False，但上一次退出时
+                // 明明写过 true，就说明是「写盘失败」或「启动时读了默认值」。
+                bool hasShownOobe = Settings?.Startup?.HasShownOobe ?? true;
+                LogHelper.WriteLogToFile(
+                    $"[OOBE] 检查触发条件: HasShownOobe={hasShownOobe} " +
+                    $"配置文件={Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.SettingsFileName} " +
+                    $"存在={System.IO.File.Exists(App.RootPath + Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.SettingsFileName)}",
+                    LogHelper.LogType.Event);
+
                 if (Settings?.Startup?.HasShownOobe == false)
                 {
                     var oobeTimer = new DispatcherTimer(DispatcherPriority.Loaded, Dispatcher)

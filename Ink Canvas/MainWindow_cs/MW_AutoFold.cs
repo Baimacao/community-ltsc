@@ -596,7 +596,24 @@ namespace Ink_Canvas
                 // LTSC D-05：左右侧栏改走合成层，动画期间不动 Margin（否则每帧触发布局传递）
                 var leftTarget = new Thickness(MarginFromEdge, 0, 0, Settings.Appearance.QuickPanelBottomOffset);
                 var rightTarget = new Thickness(0, 0, MarginFromEdge, Settings.Appearance.QuickPanelBottomOffset);
-                double sidePanelSeconds = isNoAnimation ? 0 : 0.175;
+                // LTSC（2026-11-17）：0.175 秒原来和浮动栏动画对不上。
+                //
+                // 用户反馈：「隐藏功能与侧边快捷面板的动画不连贯」。
+                //
+                // 实测两条时长：
+                //   浮动栏折叠（弹簧）  约 0.35 秒
+                //   侧边面板（CubicEase）0.175 秒
+                //
+                // 而且这两个是**同时启动**的（FoldFloatingBar 里调
+                // ViewboxFloatingBarMarginAnimation 是 async void，没 await，
+                // 下一句就调 SidePannelMarginAnimation）。
+                //
+                // 结果：侧边栏飞快滑走收完，浮动栏还在慢慢收——
+                // 两条动画各走各的节奏，看起来就是「不连贯」。
+                //
+                // 改成和浮动栏同量级。不用完全相等：侧边栏是简单的平移，
+                // 比弹簧收尾快一点更自然；但差一倍太多。
+                double sidePanelSeconds = isNoAnimation ? 0 : 0.30;
 
                 if (!AnimationsHelper.TryAnimateMarginOnCompositionLayer(
                         LeftSidePanel, leftTarget, sidePanelSeconds, new CubicEase()))

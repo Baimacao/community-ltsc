@@ -1457,11 +1457,46 @@ namespace Ink_Canvas
                         _pptNavSkipHideStrokeOnce = false;
 
                         inkCanvas.Visibility = Visibility.Visible;
+
+                        // LTSC（2026-11-17）：这里原来是直接调 PenIcon_Click(null, null)。
+                        //
+                        // 但 PenIcon_Click 里第一个判断是：
+                        //     if (Pen_Icon.Background == null || !IsAnnotating)
+                        //     {
+                        //         真正切换：SetCurrentToolMode(Ink) + UpdateCurrentToolMode("pen") + ...
+                        //     }
+                        //     else { ...弹/收笔面板，不碰 EditingMode... }
+                        //
+                        // 而 IsAnnotating 是只读属性：
+                        //     internal bool IsAnnotating => _currentToolMode != "cursor";
+                        // 只要 _currentToolMode 已经不是 "cursor"，这里就吃 else 分支，
+                        // **EditingMode 完全没人设**。
+                        //
+                        // 表现就是用户说的：「自动进了批注模式，但写不了字，
+                        // 必须点一下鼠标再点一下批注才能写」——
+                        // 因为那两次点击才真的走了一遍 if 分支。
+                        //
+                        // 修法：恢复批注态这件事不能指望「点一下笔按钮」的副作用，
+                        // 这里显式把状态设到位。PenIcon_Click 仍然照调（它还要管
+                        // 笔属性、面板、高亮等），但 EditingMode 由下面两句保证。
+                        SetCurrentToolMode(InkCanvasEditingMode.Ink);
+                        UpdateCurrentToolMode("pen");
+
+                        // 再调一次让 UI（笔高亮、面板状态）跟上。
+                        // 此时 IsAnnotating 已经是 true，PenIcon_Click 走 else 分支，
+                        // 但那正好是它该做的事——不会再往下改 EditingMode。
                         PenIcon_Click(null, null);
+
                         // LTSC（2026-11-13）：回到批注态时也要清遮罩，
                         // 否则这块半透明层继续挡着底部浮动栏。
                         ResetPptTransparencyOverlay($"回到批注模式（{reason}）");
-                        LogHelper.WriteLogToFile($"[PPT导航] 已自动回到批注模式（{reason}）", LogHelper.LogType.Event);
+
+                        // 打一行能验证的日志：把当时的 EditingMode 一起记下来，
+                        // 以后再有「进了批注却写不了」的反馈，看这一行就知道是不是这个原因。
+                        LogHelper.WriteLogToFile(
+                            $"[PPT导航] 已自动回到批注模式（{reason}）| EditingMode={inkCanvas.EditingMode} " +
+                            $"currentToolMode={GetCurrentSelectedMode()}",
+                            LogHelper.LogType.Event);
                     }
                     catch (Exception ex)
                     {
@@ -1528,46 +1563,56 @@ namespace Ink_Canvas
 
             try
             {
-                // 已经是鼠标穿透态：保持现状，不执行后面的切换。
+                // LTSC（2026-11-17 修正）：这里原来有个 bug。
                 //
-                // 需求原话：点击时如果本来就是 ppt 鼠标穿透状态，保持即可，
-                // 不需要遵循后面的逻辑。
+                // 上一版写法是：
+                //     if (!IsAnnotating) { 记日志; return; }   // 直接退出整个方法
                 //
-                // 为什么要单独判：穿透态下点页码，用户只是想看缩略图，
-                // 不该再走一遍「切穿透 + 隐藏笔迹」，否则会重置挂起的恢复状态，
-                // 把上一轮还没消费掉的 _pptNavPendingRestoreAnnotation 覆盖成 false。
-                if (!IsAnnotating)
-                {
-                    LogHelper.WriteLogToFile("[PPT导航] 已处于鼠标穿透态，点页码保持现状",
-                        LogHelper.LogType.Event);
-                    return;
-                }
-
-                // LTSC D-07：记下是否从批注态进来，切页后自动回去。
+                // 但需求原话是「**保持**即可，不需要遵循后面的逻辑」——
+                // 「保持」指的是**不要改变穿透状态**，不是「什么都别做」。
+                //
+                // 结果：鼠标状态下点页码，整个方法直接 return，
+                // TryShowSlideNavigation() 根本没被调到，页码键看起来完全没反应。
+                //
+                // 现在改成：状态切换只在批注态时做；导航任何状态都执行。
                 bool wasAnnotating = IsAnnotating;
-                _pptNavPendingRestoreAnnotation = wasAnnotating;
 
-                GridTransparencyFakeBackground.Opacity = 1;
-                GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-                SetTransparentNotHitThrough();
-                CursorIcon_Click(null, null);
+                if (wasAnnotating)
+                {
+                    // 只有从批注态进来才需要走切换流程：
+                    // 记下待恢复状态 → 切穿透 → 隐藏笔迹 → 记「下次点鼠标别藏笔迹」。
+                    _pptNavPendingRestoreAnnotation = true;
 
-                // 点页码进导航时必须隐藏笔迹（这是与「点鼠标」不同的行为：
-                // 点鼠标要保留笔迹，点页码要临时藏起来，方便看清缩略图）。
-                if (wasAnnotating) inkCanvas.Visibility = Visibility.Collapsed;
+                    GridTransparencyFakeBackground.Opacity = 1;
+                    GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
+                    SetTransparentNotHitThrough();
+                    CursorIcon_Click(null, null);
 
-                // 记一笔：用户下次点鼠标退出穿透时，跳过隐藏笔迹，把笔迹还给他。
-                // 只生效一次 —— 见 _pptNavSkipHideStrokeOnce 的注释。
-                _pptNavSkipHideStrokeOnce = true;
+                    // 点页码进导航时必须隐藏笔迹（这是与「点鼠标」不同的行为：
+                    // 点鼠标要保留笔迹，点页码要临时藏起来，方便看清缩略图）。
+                    inkCanvas.Visibility = Visibility.Collapsed;
+
+                    // 记一笔：用户下次点鼠标退出穿透时，跳过隐藏笔迹，把笔迹还给他。
+                    // 只生效一次 —— 见 _pptNavSkipHideStrokeOnce 的注释。
+                    _pptNavSkipHideStrokeOnce = true;
+                }
+                else
+                {
+                    // 已经是鼠标穿透态：状态保持不动，不重置挂起的恢复标记，
+                    // 直接去调导航就行。
+                    LogHelper.WriteLogToFile("[PPT导航] 鼠标穿透态下点页码，保持状态并执行导航",
+                        LogHelper.LogType.Event);
+                }
 
                 // LTSC P1c：增强预览已整体移除（用户裁决）。
                 // 点页码 = 调 PowerPoint 原版导航，不再画 ICC 自己的缩略图面板。
+                // 这一句必须在两个分支之外——否则鼠标态下点页码什么都不会发生。
                 if (!_pptManager.TryShowSlideNavigation())
                 {
                     LogHelper.WriteLogToFile("显示PPT幻灯片导航失败", LogHelper.LogType.Warning);
                 }
 
-                if (!isFloatingBarFolded)
+                if (wasAnnotating && !isFloatingBarFolded)
                 {
                     await Task.Delay(100);
                     ViewboxFloatingBarMarginAnimation(60);

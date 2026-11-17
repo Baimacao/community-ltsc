@@ -82,6 +82,31 @@ namespace Ink_Canvas.Helpers
 
             try
             {
+                // LTSC（2026-11-17）：动画前强制刷一次布局。
+                //
+                // 为什么：下面用 fe.ActualWidth / ActualHeight 判断「这块有没有内容」。
+                // 但 ActualWidth 是**上一次布局**的结果——如果调用前刚改过
+                // Visibility / Margin / 内容，这个值可能还是旧值甚至 0。
+                //
+                // 用户反馈的症状：「浮动工具栏被拖动后进入批注功能的展开动画消失」。
+                // 拖动路径重排过 root 的布局，紧接着展开时 ActualWidth 读到 0，
+                // 于是 targets 为空 → 走下面那个 return → RestoreAll 直接切，动画没了。
+                //
+                // UpdateLayout 是同步的，会立刻把 DesiredSize/ActualWidth 刷新到位。
+                // 代价很小（只在折叠/展开时走一次）。
+                try
+                {
+                    root.UpdateLayout();
+                }
+                catch (Exception layoutEx)
+                {
+                    // 布局刷新失败不该让整个动画挂掉，但要留痕——
+                    // 如果这条日志频繁出现，说明布局本身有问题。
+                    LogHelper.WriteLogToFile(
+                        "[折叠动画] 动画前 UpdateLayout 失败：" + layoutEx.Message,
+                        LogHelper.LogType.Warning);
+                }
+
                 // 只对「真正有内容、当前可见」的块做动画。
                 // root.Children 里通常有 4 个：主图标 + 1 个有内容的 Border + 2 个本来就
                 // Collapsed 的空 Border。对空块做动画是白费功夫，还会把时长算偏。
