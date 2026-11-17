@@ -6,6 +6,7 @@ using OSVersionExtension;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -1116,7 +1117,13 @@ namespace Ink_Canvas
 
                 isLoaded = true;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex)
+            {
+                // LTSC（2026-11-17）：原来是 Debug.WriteLine，Release 下被编译掉。
+                // 重置失败而无声，用户会以为重置成功了。
+                LogHelper.WriteLogToFile(
+                    "重置设置到推荐值失败：" + ex, LogHelper.LogType.Error);
+            }
 
             try { ShowNotification(Properties.MainWindowStrings.Main_Settings_ResetDone); } catch { }
         }
@@ -1130,7 +1137,15 @@ namespace Ink_Canvas
                 SetSettingsToRecommendation();
                 Settings.Automation.AutoDelSavedFiles = true;
                 Settings.Automation.AutoDelSavedFilesDaysThreshold = 15;
-                Settings.Automation.AutoSavedStrokesLocation = @"D:\Ink Canvas\AutoSavedStrokes";
+
+                // LTSC（2026-11-17）：原来这里写死 @"D:\Ink Canvas\AutoSavedStrokes"。
+                // 没有 D 盘的机器（C 盘单分区、或者只有 C+E）点完「恢复推荐设置」之后，
+                // 保存路径直接指向一个不存在的盘符——自动保存从此失效。
+                // 启动路径（MainWindow.xaml.cs:2685）虽然有兜底修正，但那要等下次重启。
+                //
+                // 改成跟 Settings.cs 的默认值同一个来源，不再依赖盘符。
+                Settings.Automation.AutoSavedStrokesLocation =
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Saves");
                 SaveSettingsToFile();
 
                 // 确保工具栏配置也被重置为默认值
@@ -1144,7 +1159,13 @@ namespace Ink_Canvas
 
                 isLoaded = true;
             }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
+            catch (Exception ex)
+            {
+                // LTSC（2026-11-17）：原来是 Debug.WriteLine，Release 下被编译掉。
+                // 重置失败而无声，用户会以为重置成功了。
+                LogHelper.WriteLogToFile(
+                    "恢复推荐设置（特殊版本）失败：" + ex, LogHelper.LogType.Error);
+            }
         }
 
         #endregion
