@@ -2152,7 +2152,10 @@ namespace Ink_Canvas
             }
 
             // 停止置顶维护定时器
-            StopTopmostMaintenance();
+            // LTSC（2026-11-17）：原来调的是 MainWindow.StopTopmostMaintenance()，
+            // 那个方法体是 WindowSettingsHelper.PauseTopmostMaintenance()——名字说停止，
+            // 做的是暂停。这里直接调管理器的 Stop，语义对齐。
+            WindowTopmostManager.StopTopmostMaintenance();
 
             // 清理统一窗口置顶管理器
             WindowTopmostManager.Shutdown();
@@ -2513,15 +2516,16 @@ namespace Ink_Canvas
             _popupManager?.OnTopmostSettingChanged();
         }
 
-        private void StartTopmostMaintenance()
-        {
-            WindowSettingsHelper.PauseTopmostMaintenance();
-        }
-
-        private void StopTopmostMaintenance()
-        {
-            WindowSettingsHelper.PauseTopmostMaintenance();
-        }
+        // LTSC（2026-11-17）：这两个 private 方法原本方法体一模一样，都是 Pause。
+        // StartTopmostMaintenance 的名字和行为对不上，StopTopmostMaintenance 在
+        // 关窗路径（:2155）被调用，实际只做了暂停而不是停止——语义造假。
+        //
+        // 核实结果：
+        //   - 全仓没有任何地方调用 private 版的 StartTopmostMaintenance（0 处），是死方法，删掉。
+        //   - StopTopmostMaintenance 是真被调用的，但紧接着 :2158 就有
+        //     WindowTopmostManager.Shutdown()，那里 _maintenanceTimer?.Stop() 会真停定时器，
+        //     所以关窗路径本身没有泄漏。这里仍然改成 Stop，让名字和行为一致，
+        //     免得以后有人删掉 Shutdown 那一行时踩坑。
 
         public void PauseTopmostMaintenance()
         {

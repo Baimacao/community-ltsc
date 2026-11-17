@@ -2,12 +2,29 @@
 
 | 项 | 值 |
 |---|---|
-| 文档版本 | v2.0（合并 2026-11-15 增量计划） |
-| 写于 | 2026-11-11 09:45，合并于 2026-11-16 17:00，2026-11-17 更新状态 |
+| 文档版本 | v2.1（2026-11-17 三路合并，见下「合并记录」） |
+| 写于 | 2026-11-11 09:45，合并于 2026-11-16 17:00，2026-11-17 合并两份分叉副本 |
 | 分支 | `ltsc`（原 `ltsc/1.7.19.7`） |
-| 当前 HEAD | `4d4f6e35`（2026-11-17 更新，原 5c0dba42） |
-| 文档状态 | **主体完成**（N-08 回归与交付进行中） |
+| 当前 HEAD | `7ea7cd4f`（2026-11-17 合并时；正文中提到的 `4d4f6e35` / `5c0dba42` 是各节写就时的 HEAD） |
+| 文档状态 | **主体完成**（N-08 回归与交付未开始） |
 | 编写原则 | 每条结论必须能追到 `文件:行` 或日志行号；未验证的标「未验证」 |
+
+> **合并记录（2026-11-17，v2.0 → v2.1）**
+>
+> 合并前存在两份 `MASTER-PLAN.md`，内容**双向分叉**——不是简单的「旧的 / 新的」：
+>
+> | 副本 | 行数 | 独有内容 |
+> |---|---|---|
+> | `src/docs/`（进 git） | 1083 | 版本头更新到 `4d4f6e35`、N 系列标「剩余 1 项」 |
+> | `docs/`（本地） | 1116 | **N-03 冲突矩阵五条逐项处置**、裸 ESC 三组反向对照实测、`--smoke-test` PASS=15 FAIL=1 |
+>
+> 关键事实：`grep -c "5b494b37"` → src **0** / 本地 **3**。
+> `src/docs/` 那份是在 `1d652f80` 的底座上改的，**把 N-03 的成果整段丢了**，
+> 只留下「冲突矩阵未验收」的旧说法。若按「src 新、本地旧」单方向覆盖，会丢内容。
+>
+> 合并方式：以 `1d652f80` 为共同祖先做三路合并（`git merge-file`），
+> 两侧改动区域不重叠（src 只动头部 1 个 hunk，本地只动 N-03 3 个 hunk），
+> 合并结果 0 冲突、1116 行，两侧独有内容全部保留。
 
 > **v2.0 合并说明**
 > 原 v1.0 只覆盖上游重构（P0–P6）。2026-11-15 19:25 用户追加了九条增量需求，
@@ -880,6 +897,23 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 
 ---
 
+---
+
+> ## ⚠ 阅读提醒：§0–§13 未经复核
+>
+> **§0–§13（第一部分的 717 行）写于 2026-11-11 09:45**，记录的是上游重构路径 P0–P6 的规划。
+>
+> 此后到 2026-11-17 合并时，仓库累计新增 **182 个提交**（`git rev-list --count --since="2026-11-11 09:45" HEAD`）。
+> 这 182 个提交**没有回头核对过 §0–§13 里的任何一条结论**——其中的行号引用、代码位置、
+> 「未做 / 待做」判断都可能已经失效。
+>
+> §16 记录了逐阶段的现状对照，但那是 N 系列收尾时的粗粒度复盘，不等于逐条复核。
+>
+> **结论**：§0–§13 当**历史决策记录**读，不要当**当前代码事实**引用。
+> 要引用其中任何一条，先回代码重新验证。第二部分（§14 起）才是当前执行状态。
+
+---
+
 # 第二部分：增量执行计划（原 docs/PLAN.md，2026-11-15 19:50）
 
 > **本轮性质**：重做，不是修补。用户原话：「本次范围内不可遗留代码、能重做全部重做」。
@@ -889,17 +923,23 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 
 | 项 | 内容 | 状态 |
 |---|---|---|
-| N-01 | 设置页整体重做（含自动化重点重做） | ❌ 未开始 |
+| N-01 | 设置页整体重做（含自动化重点重做） | ✅ **完成**（8 个提交） |
 | N-02 | 多语言重做（3 语 → 4 语） | ✅ **完成** |
-| N-03 | 翻页笔适配与快捷键冲突治理 | ⚠️ 代码完成，冲突矩阵未验收 |
-| N-04 | 默认配置文件落地 | ❌ 未开始（素材已解压到 `E:\DSH\tmp\cfgzip`） |
+| N-03 | 翻页笔适配与快捷键冲突治理 | ✅ **代码完成**（`5b494b37` 收口五条冲突），缺实物按键验收 |
+| N-04 | 默认配置文件落地 | ✅ **完成**（2 个提交） |
 | N-05 | PPT 翻页组件深浅同步修复 | ✅ **完成** |
 | N-06 | 系统深浅模式 logo 适配 | ✅ **完成** |
-| N-07 | 废弃物清理 | ⚠️ **部分完成**（dead key 已清，空壳 resx 与零引用属性未清） |
+| N-07 | 废弃物清理 | ✅ **完成**（`f37f8d8d` 清掉 7 个空壳 resx 类与零引用设置段） |
 | N-08 | 回归与交付 | ❌ 未开始 |
 | N-09 | 计时功能重做 | ✅ **完成** |
 
-**剩余 5 项**：N-01（最大）、N-03（验收）、N-04（小）、N-07（收尾）、N-08（最后）。
+**剩余 1 项**：N-08 回归与交付（`git log --grep="N-08"` 零命中）。
+其余八项全部完成；N-03 仅缺翻页笔实物按键验收。
+
+> **本表原写作「N-01 / N-04 / N-07 未开始」，2026-11-17 合并时按 git 记录更正。**
+> 原写法与同一节的「剩余 1 项」结论、以及汇总行「N-01 / N-04 / N-07 已完成」自相矛盾，
+> 属于表格行没跟上执行。核对命令：
+> `git log --oneline --grep="N-01" | wc -l` → 8，`N-04` → 2，`N-07` → 1。
 
 ---
 
@@ -907,7 +947,7 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 
 | 项 | 内容 |
 |---|---|
-| 状态 | 未开始 |
+| 状态 | ✅ **已完成**（8 个提交，`a26ce5f6` … `b0d9ae67`） |
 | 影响模块 | `Windows/SettingsViews/**`、`Automation/**`、`Windows/SettingsViews/SettingsWindow.xaml(.cs)` |
 | 规模 | 26 个页面、约 900 个可见控件、`AutomationWorkflowPage` 867 行 XAML + 1327 行 code-behind |
 | 验收标准 | ①每个可见设置项都能追到一个真实读取点；②无悬停依赖；③最小点击区域 44×44 逻辑像素；④深浅色两套截图无对比度低于 4.5:1 的正文；⑤自动化可用「选程序 / 选窗口 / 填类名」配出「目标出现→隐藏，目标关闭→恢复」全流程 |
@@ -945,18 +985,51 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 
 | 项 | 内容 |
 |---|---|
-| 状态 | **代码完成**（提交 `64513fdb` / `8ede7990`），冲突矩阵未验收 |
-| 影响模块 | `Helpers/PresenterKeyAdapter.cs`、`Helpers/LowLevelKeyboardHook.cs`、`Helpers/GlobalHotkeyManager.cs`、`MainWindow_cs/MW_PresenterKey.cs`、`Windows/SettingsViews/Pages/PresenterKeyPage.*` |
+| 状态 | **代码完成**（`64513fdb` / `8ede7990` / **`5b494b37`**），缺翻页笔实物验收 |
+| 影响模块 | `Helpers/PresenterKeyAdapter.cs`、`Helpers/LowLevelKeyboardHook.cs`、`Helpers/GlobalHotkeyManager.cs`、`MainWindow_cs/MW_PresenterKey.cs`、`Windows/SettingsViews/Pages/PresenterKeyPage.*`、`Resources/Settings.cs` |
 | 验收标准 | ①冲突矩阵每一项都有明确处置；②提示框正文 ≥14px、按钮 ≥44 高、对比度 ≥4.5:1、深浅色各验一遍；③钩子在任何退出路径上都被卸载（含崩溃、注销、关机） |
 
-**已知未处置冲突**：`Exit` 全局热键 = Escape（`GlobalHotkeyManager.cs:291`），翻页笔
-`exit` 映射也是 Escape。WH_KEYBOARD_LL 早于 NHotkey 的 RegisterHotKey，
-适配未开启时 PPT 模式下真的按 Escape 退不出放映。
+### 冲突矩阵（`5b494b37` 收口）
 
-**已完成部分**：低层键盘钩子、模式收口同步（`IsInPPTPresentationMode` setter 单点）、
-设置页、ContentDialog 提示框。
+| # | 冲突 | 处置 |
+|---|---|---|
+| 1 | 适配开启时 `return false` 放行 —— ICC 与 PPT 各响应一次 | **已修**：改 `return true`，吃掉并执行映射 |
+| 2 | `Exit` 全局热键 = 裸 Escape，与适配 `exit` 映射同键 | **已修**：退出热键改为**仅放映期间注册**，退出即注销 |
+| 3 | 裸 Escape 的 `RegisterHotKey` 是系统级独占 | **已修**：见上，非放映状态不再挂系统热键 |
+| 4 | 按键配对 `Bindings` 是内存列表，改键后重启即丢 | **已修**：落盘到 `Settings.presenterKey` |
+| 5 | `CleanupObsoleteSettings` 把 `bindings` 子键当过期属性删掉 | **已修**：默认值为空对象时视为开放字典，跳过子键比对 |
 
-**剩余**：把冲突矩阵逐项列全并给出处置；Escape 那条要么改热键、要么给适配器让路。
+### 关于裸 Escape 的实测结论（推翻了本节旧说法）
+
+旧文写「适配未开启时 PPT 模式下按 Escape 退不出放映」，**范围判断错了**。
+实测（三组反向对照，焦点在前台窗口、B 键作对照均到达）：
+
+```
+无进程注册裸 ESC → 前台窗口 escDown=1 escUp=1
+有进程注册裸 ESC → 前台窗口 escDown=0 escUp=1（KeyDown 被系统吃掉）
+该进程退出后     → 恢复 escDown=1
+```
+
+即谁挂着裸 ESC，**全系统所有程序的 ESC 都收不到 KeyDown**，与 ICC 处于什么模式无关。
+
+但生效条件要说准（查日志确认）：ICC 启动时是鼠标模式，
+`InitializeGlobalHotkeyManager` 会立刻 `UpdateHotkeyStateForToolMode(true)` 把热键全注销，
+**启动时并不占用 ESC**；只有切进批注/白板模式（非鼠标模式且 `EnableHotkeysInMouseMode=false`）
+才会整批注册，那时才独占。
+
+### 验证
+
+`InkCanvasForClass.exe --smoke-test`，PASS=15 FAIL=1（唯一 FAIL 为既有的 C-5 对照组设计问题）。
+N-03 六项全过，其中两条带反向对照：
+
+```
+return true  → [PASS] N-03 适配开启时 ESC 被吞 | return=True
+return false → [FAIL] N-03 适配开启时 ESC 被吞 | return=False
+```
+
+### 剩余
+
+翻页笔**实物按键**验收（需要真设备按 B / ESC / Shift+F5 / Ctrl+P / E）。
 
 ---
 
@@ -964,7 +1037,7 @@ if (!shouldShowButtons) { HideAllNavigationPanels(); return; }
 
 | 项 | 内容 |
 |---|---|
-| 状态 | 未开始 · 素材已收到 |
+| 状态 | ✅ **已完成**（`cca6c906` 出厂默认配置落地 / `34e1ab2b` OOBE 教师推荐预设） |
 | 输入 | `E:\Program Files\Netease\GameViewer\Download\Configs.zip`（8 个文件，已解压至 `E:\DSH\tmp\cfgzip`） |
 | 影响模块 | `Windows/SettingsViews/Helpers/SettingsManager.cs`、`Resources/Settings.cs`、首次运行路径 |
 | 验收标准 | ①出厂默认与「把用户配置原样装进去」两种语义分开实现；②迁移不覆盖用户已有值；③用户机器绝对路径与 `hasShownOobe` 不得进入出厂默认 |
