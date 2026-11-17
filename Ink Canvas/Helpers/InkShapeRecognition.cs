@@ -4,12 +4,6 @@ using System.Windows.Media;
 
 namespace Ink_Canvas.Helpers
 {
-    /// <summary>墨迹形状识别后端。当前只有 IACore 一种实现。</summary>
-    public enum ShapeRecognitionEngineMode
-    {
-        /// <summary>IACore（通过 x86 辅助进程的 IPC 调用）。</summary>
-        IACore = 1,
-    }
 
     public static class ShapeRecognitionRouter
     {

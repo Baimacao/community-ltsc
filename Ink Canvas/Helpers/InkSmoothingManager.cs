@@ -186,23 +186,6 @@ namespace Ink_Canvas.Helpers
         public InkSmoothingPerformanceMonitor PerformanceMonitor => _performanceMonitor;
 
         /// <summary>
-        /// 获取详细的墨迹纠正性能统计
-        /// </summary>
-        public InkSmoothingDetailedStats GetDetailedStats()
-        {
-            return new InkSmoothingDetailedStats
-            {
-                SampleCount = _performanceMonitor.GetSampleCount(),
-                AvgTotalMs = _performanceMonitor.GetAverageProcessingTimeMs(),
-                MaxTotalMs = _performanceMonitor.GetMaxProcessingTimeMs(),
-                AvgBezierMs = _performanceMonitor.GetAverageBezierTimeMs(),
-                AvgResampleMs = _performanceMonitor.GetAverageResampleTimeMs(),
-                AvgInputPoints = _performanceMonitor.GetAverageInputPointCount(),
-                AvgOutputPoints = _performanceMonitor.GetAverageOutputPointCount()
-            };
-        }
-
-        /// <summary>
         /// 取消所有正在进行的任务
         /// </summary>
         public void CancelAllTasks()
@@ -288,31 +271,5 @@ namespace Ink_Canvas.Helpers
                 _disposed = true;
             }
         }
-    }
-
-    /// <summary>
-    /// 墨迹平滑事件参数
-    /// </summary>
-    public class InkSmoothingEventArgs : EventArgs
-    {
-        public Stroke OriginalStroke { get; set; }
-        public Stroke SmoothedStroke { get; set; }
-        public TimeSpan ProcessingTime { get; set; }
-        public bool WasAsync { get; set; }
-        public bool UsedHardwareAcceleration { get; set; }
-    }
-
-    /// <summary>
-    /// 墨迹纠正详细性能统计
-    /// </summary>
-    public class InkSmoothingDetailedStats
-    {
-        public int SampleCount { get; set; }
-        public double AvgTotalMs { get; set; }
-        public double MaxTotalMs { get; set; }
-        public double AvgBezierMs { get; set; }
-        public double AvgResampleMs { get; set; }
-        public double AvgInputPoints { get; set; }
-        public double AvgOutputPoints { get; set; }
     }
 }
