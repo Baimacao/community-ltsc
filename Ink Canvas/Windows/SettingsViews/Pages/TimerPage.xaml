@@ -28,9 +28,6 @@
                     HorizontalAlignment="Stretch"
                     Spacing="{StaticResource SettingsCardSpacing}">
 
-                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Text="{x:Static props:TimerStrings.Timer_Title}" />
-
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchEnableOvertimeCountUp"
                         Header="{x:Static props:TimerStrings.Timer_EnableCountUp}"
                         IsOn="False"

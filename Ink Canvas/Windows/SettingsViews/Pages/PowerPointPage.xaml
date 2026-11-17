@@ -31,8 +31,6 @@
                     HorizontalAlignment="Stretch"
                     Spacing="{StaticResource SettingsCardSpacing}">
 
-                    <TextBlock Text="{x:Static props:PPTStrings.GroupTitle}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
-
                     <controls:LabeledSettingsCard x:Name="CardSupportPowerPoint"
                             Header="{x:Static props:PPTStrings.SupportPowerPoint}"
                             Icon="{x:Static ui:SegoeFluentIcons.Slideshow}"
