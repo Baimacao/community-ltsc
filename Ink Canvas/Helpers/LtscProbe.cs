@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -321,8 +322,11 @@ namespace Ink_Canvas.Helpers
             try
             {
                 var mwType = typeof(MainWindow);
+                // 不能用 GetMethod(名字) —— 现在有两个重载，会抛 AmbiguousMatch。
+                // 明确取无参的那个。
                 var invoke = mwType.GetMethod("InvokeSaveForAutomation",
-                    BindingFlags.NonPublic | BindingFlags.Instance);
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null, Type.EmptyTypes, null);
                 R("SAVE-1 保存转发入口存在且可被自动化调用", invoke != null,
                     invoke == null ? "找不到 InvokeSaveForAutomation" : "返回类型=" + invoke.ReturnType.Name);
 
@@ -395,6 +399,37 @@ namespace Ink_Canvas.Helpers
                 }
             }
             catch (Exception ex) { R("SAVE", false, Trim(ex.Message)); }
+
+
+            // --- 10. 保存笔画的两个 UI 参数真的接通了（2026-11-17）---
+            // SaveStrokesActionSettings 上有 SavePath / SaveAsXml 两个字段，
+            // UI 会给它们生成输入框，但之前全项目零处读取——用户填了等于没填。
+            // 判据不是「字段存在」，而是「有代码路径消费它」。
+            try
+            {
+                var mwType = typeof(MainWindow);
+                var overloads = mwType.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(m => m.Name == "InvokeSaveForAutomation").ToArray();
+                R("SAVE-6 InvokeSaveForAutomation 有无参重载",
+                    overloads.Any(m => m.GetParameters().Length == 0),
+                    "找到 " + overloads.Length + " 个重载");
+
+                var withParams = overloads.FirstOrDefault(m =>
+                {
+                    var p = m.GetParameters();
+                    return p.Length == 2 && p[0].ParameterType == typeof(string) && p[1].ParameterType == typeof(bool);
+                });
+                R("SAVE-7 带 (自定义路径, 是否XML) 的重载存在", withParams != null,
+                    withParams == null ? "找不到 (string,bool) 重载——参数没接通" : "签名 OK");
+
+                // 再确认 handler 那边真的读了这两个属性
+                var settingsType = typeof(Ink_Canvas.WorkflowAutomation.Actions.SaveStrokesActionSettings);
+                bool hasPath = settingsType.GetProperty("SavePath") != null;
+                bool hasXml = settingsType.GetProperty("SaveAsXml") != null;
+                R("SAVE-8 SaveStrokesActionSettings 两个属性都在", hasPath && hasXml,
+                    "SavePath=" + hasPath + " SaveAsXml=" + hasXml);
+            }
+            catch (Exception ex) { R("SAVE-6/7/8", false, Trim(ex.Message)); }
 
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }

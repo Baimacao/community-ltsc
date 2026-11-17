@@ -214,6 +214,56 @@ namespace Ink_Canvas
         }
 
         /// <summary>
+        /// 按自动化行动里配置的参数保存笔画。
+        ///
+        /// LTSC（2026-11-17）：`SaveStrokesActionSettings` 上有 `SavePath` 和 `SaveAsXml`
+        /// 两个字段，UI 会给它们生成输入框（AutomationWorkflowPage.xaml.cs:1458-1459
+        /// 有中文名映射），但全项目没有任何代码读它们——用户填了路径、勾了 XML，
+        /// 一点效果都没有，还不报错。这里把两个字段真正接上。
+        /// </summary>
+        /// <param name="customPath">自定义保存目录；空则用全局设置里的默认路径。</param>
+        /// <param name="saveAsXml">是否存成 XML，而不是默认的 .icstk 二进制。</param>
+        /// <returns>是否成功发起保存。画布为空返回 false。</returns>
+        internal bool InvokeSaveForAutomation(string customPath, bool saveAsXml)
+        {
+            if (inkCanvas == null || inkCanvas.Strokes.Count == 0) return false;
+
+            // 两个参数都为空时走原路径，行为和以前完全一致
+            bool useCustomPath = !string.IsNullOrWhiteSpace(customPath);
+            bool needOverride = useCustomPath || saveAsXml;
+            if (!needOverride)
+            {
+                SaveInkCanvasStrokes(true, true);
+                return true;
+            }
+
+            // 有覆盖参数时：临时改全局设置 → 保存 → 立刻还原。
+            // 用 try/finally 保证即使保存抛异常，用户的全局设置也不会被改坏。
+            var automation = Settings.Automation;
+            string originalLocation = automation.AutoSavedStrokesLocation;
+            bool originalXml = automation.IsSaveStrokesAsXML;
+            try
+            {
+                if (useCustomPath) automation.AutoSavedStrokesLocation = customPath;
+                if (saveAsXml) automation.IsSaveStrokesAsXML = true;
+
+                SaveInkCanvasStrokes(true, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(
+                    "自动化：按自定义参数保存笔画失败：" + ex, LogHelper.LogType.Error);
+                return false;
+            }
+            finally
+            {
+                automation.AutoSavedStrokesLocation = originalLocation;
+                automation.IsSaveStrokesAsXML = originalXml;
+            }
+        }
+
+        /// <summary>
         /// 保存墨迹画布的墨迹
         /// </summary>
         /// <param name="newNotice">是否显示新的通知</param>
