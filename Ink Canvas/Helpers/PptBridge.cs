@@ -409,7 +409,19 @@ namespace Ink_Canvas.Helpers
 
             LogHelper.WriteLogToFile("PptBridge 已连接 PowerPoint", LogHelper.LogType.Trace);
             VerboseLog($"连接成功: 放映中={IsInSlideShow} 当前页={_currentSlide}");
-            try { PPTConnectionChanged?.Invoke(true); } catch { }
+            try
+            {
+                PPTConnectionChanged?.Invoke(true);
+            }
+            catch (Exception evtEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                // 但日志里什么都没有。事件派发失败必须可见。
+                LogHelper.WriteLogToFile(
+                    "PPT 事件 PPTConnectionChanged 的订阅方抛异常：" + evtEx,
+                    LogHelper.LogType.Error);
+            }
         }
 
         void Disconnect(string reason)
@@ -423,7 +435,19 @@ namespace Ink_Canvas.Helpers
             if (string.IsNullOrEmpty(LastFailureReason)) LastFailureReason = reason;
             LogHelper.WriteLogToFile($"PptBridge 断开连接：{reason}", LogHelper.LogType.Trace);
             VerboseLog($"断开原因={reason} 断开前: 放映中={IsInSlideShow} 当前页={_currentSlide} 上次失败={LastFailureReason}");
-            try { PPTConnectionChanged?.Invoke(false); } catch { }
+            try
+            {
+                PPTConnectionChanged?.Invoke(false);
+            }
+            catch (Exception evtEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                // 但日志里什么都没有。事件派发失败必须可见。
+                LogHelper.WriteLogToFile(
+                    "PPT 事件 PPTConnectionChanged 的订阅方抛异常：" + evtEx,
+                    LogHelper.LogType.Error);
+            }
         }
 
         bool IsPptProcessAlive()
@@ -864,20 +888,56 @@ namespace Ink_Canvas.Helpers
                         VerboseLog("[PPT详细] 轮询路径已补取放映窗口");
                 }
                 VerboseLog($"轮询检测到放映开始(COM事件未触发) comSlide={comSlide} 窗口={(_comSlideShowWindow != null ? "有" : "无")}");
-                try { SlideShowBegin?.Invoke(_comSlideShowWindow); } catch { }
+                try
+                {
+                    SlideShowBegin?.Invoke(_comSlideShowWindow);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 SlideShowBegin 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
             else if (!nowInShow && _inSlideShow)
             {
                 SetInSlideShow(false);
                 _currentSlide = -1;
                 VerboseLog($"轮询检测到放映结束 comSlide={comSlide}");
-                try { SlideShowEnd?.Invoke(null); } catch { }
+                try
+                {
+                    SlideShowEnd?.Invoke(null);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 SlideShowEnd 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
 
             if (nowInShow && comSlide > 0 && comSlide != _currentSlide)
             {
                 _currentSlide = comSlide;
-                try { SlideShowNextSlide?.Invoke(_comSlideShowWindow); } catch { }
+                try
+                {
+                    SlideShowNextSlide?.Invoke(_comSlideShowWindow);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 SlideShowNextSlide 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
         }
 
@@ -885,7 +945,19 @@ namespace Ink_Canvas.Helpers
         {
             if (_inSlideShow == value) return;
             _inSlideShow = value;
-            try { SlideShowStateChanged?.Invoke(value); } catch { }
+            try
+            {
+                SlideShowStateChanged?.Invoke(value);
+            }
+            catch (Exception evtEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                // 但日志里什么都没有。事件派发失败必须可见。
+                LogHelper.WriteLogToFile(
+                    "PPT 事件 SlideShowStateChanged 的订阅方抛异常：" + evtEx,
+                    LogHelper.LogType.Error);
+            }
         }
 
         void RefreshSlidesCount()
@@ -929,7 +1001,19 @@ namespace Ink_Canvas.Helpers
             else if (oldCount > 0 && newCount == 0)
             {
                 _hasPresentation = false;
-                try { PresentationClose?.Invoke(null); } catch { }
+                try
+                {
+                    PresentationClose?.Invoke(null);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 PresentationClose 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
 
             SafeRelease(pres);
@@ -1460,7 +1544,19 @@ namespace Ink_Canvas.Helpers
             // 不依赖轮询那条路（它只在 COM 事件缺失时才该兜底）。
             if (_currentSlide > 0 && _currentSlide != prev)
             {
-                try { SlideShowNextSlide?.Invoke(_comSlideShowWindow); } catch { }
+                try
+                {
+                    SlideShowNextSlide?.Invoke(_comSlideShowWindow);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 SlideShowNextSlide 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
         }
 
@@ -1490,7 +1586,19 @@ namespace Ink_Canvas.Helpers
             if (_hasPresentation)
             {
                 _hasPresentation = false;
-                try { PresentationClose?.Invoke(pres); } catch { }
+                try
+                {
+                    PresentationClose?.Invoke(pres);
+                }
+                catch (Exception evtEx)
+                {
+                    // LTSC（2026-11-17）：原来这里是 catch { }。
+                    // 订阅方抛异常被完全吞掉——表现是翻页组件不出现、页码不动，
+                    // 但日志里什么都没有。事件派发失败必须可见。
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 PresentationClose 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
             }
         }
 
