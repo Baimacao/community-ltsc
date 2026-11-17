@@ -146,7 +146,9 @@ namespace Ink_Canvas.Helpers
                 }
                 catch
                 {
-                    // LTSC UI-1：原来是 Thread.Sleep(100) 忙等。
+                    // LTSC UI-4：原来是 Thread.Sleep(100) 忙等。
+                    // （2026-11-17 更正：这里原来误标成 UI-1。UI-4 才是 IpcIACoreClient
+                    //   的 3 秒忙等，UI-1 是 PptBridge 那两处。）
                     // 这个方法的调用方里 Start() 可能落在 UI 线程上，
                     // 最长 3 秒会把界面一起拖住。
                     // 换成「谁调用谁决定要不要等」——同步版本改为让出时间片而不是睡死，

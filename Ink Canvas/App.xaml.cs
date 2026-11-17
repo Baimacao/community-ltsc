@@ -686,9 +686,14 @@ namespace Ink_Canvas
                 ulong currentIdleTime = ToUInt64(idleTime);
                 ulong currentKernelTime = ToUInt64(kernelTime);
                 ulong currentUserTime = ToUInt64(userTime);
-                // LTSC C-5：Process 实现了 IDisposable，GetCurrentProcess() 每次都会开一个内核句柄。
-                // 这一句由 heartbeat 定时器每秒执行一次，45 分钟约 2700 次，从不释放。
-                // 实测里观察到的「句柄只涨不落」有一部分就是它。
+                // LTSC C-5：Process 实现了 IDisposable，这里用 using 是正确的写法。
+                //
+                // 2026-11-17 更正：上面原来写着「GetCurrentProcess() 每次都会开一个内核句柄，
+                // 45 分钟约 2700 次，从不释放」——**这个结论被实测推翻了**。
+                // 实测：Process.GetCurrentProcess() 返回的是缓存伪句柄，
+                // 300 次往返句柄增长为 0，对照组（故意不释放真实 FileStream）涨 300。
+                // 也就是说这条从来就不是泄漏点，加 using 是对的写法，但不是修复了泄漏。
+                // 详见 docs/PRIORITY.md 的 C-5 节：P1 → P3，标「实测不成立」。
                 TimeSpan currentProcessCpuTime;
                 using (var selfProcess = Process.GetCurrentProcess())
                 {
