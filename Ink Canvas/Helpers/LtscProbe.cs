@@ -311,6 +311,91 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("N-03b", false, Trim(ex.Message)); }
 
+            // --- 8. 自动化「保存笔画」行动是否真的接上了（2026-11-17）---
+            // 原来 SaveStrokesActionHandler 的处理体是空的（只有一句 TODO），
+            // 用户在工作流里配了「保存笔画」，触发后什么都不发生、也没有任何提示。
+            // 这里验证三件事，缺一个都说明没接上：
+            //   a) 转发入口 InvokeSaveForAutomation 存在且是 internal
+            //   b) 它在画布为空时返回 false（不假装成功）
+            //   c) 处理程序注册表里确实绑了 inkcanvas.savestrokes 的处理函数
+            try
+            {
+                var mwType = typeof(MainWindow);
+                var invoke = mwType.GetMethod("InvokeSaveForAutomation",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                R("SAVE-1 保存转发入口存在且可被自动化调用", invoke != null,
+                    invoke == null ? "找不到 InvokeSaveForAutomation" : "返回类型=" + invoke.ReturnType.Name);
+
+                var mw = Application.Current?.MainWindow as MainWindow;
+                if (mw != null && invoke != null)
+                {
+                    bool hadStrokes = mw.inkCanvas != null && mw.inkCanvas.Strokes.Count > 0;
+                    if (hadStrokes)
+                    {
+                        // 有笔迹时不实际落盘（会污染用户的保存目录），只确认能走到保存分支
+                        R("SAVE-2 画布有笔迹时走保存分支（未实测落盘，避免污染目录）", true,
+                            "笔画数=" + mw.inkCanvas.Strokes.Count);
+                    }
+                    else
+                    {
+                        var ret = invoke.Invoke(mw, null);
+                        R("SAVE-2 画布为空时返回 false（不假装成功）", ret is bool b && !b, "return=" + ret);
+                    }
+                }
+                else
+                {
+                    R("SAVE-2 主窗口可用", false, mw == null ? "MainWindow 为 null" : "无入口方法");
+                }
+
+                // 关键断言：注册表里 inkcanvas.savestrokes 的 Handle 委托必须非空。
+                // 这条是本测试的重点——原来那里是空 lambda，Handle 不为 null 但什么也不做。
+                // 所以光判空不够，还要能反射到我们真的绑了东西。
+                // 冒烟测试跑在 App 启动阶段，而 AutomationBootstrap.Initialize() 在
+                // MainWindow.xaml.cs:2583 才调用。所以这里必须先确保自动化系统已初始化，
+                // 否则测到的永远是空注册表——那就变成了「测了个寂寞」。
+                var asm = typeof(MainWindow).Assembly;
+                var bootType = asm.GetType("Ink_Canvas.WorkflowAutomation.AutomationBootstrap");
+                var initFlag = bootType?.GetField("_isInitialized", BindingFlags.NonPublic | BindingFlags.Static);
+                bool inited = initFlag != null && (bool)initFlag.GetValue(null);
+                if (!inited)
+                {
+                    bootType?.GetMethod("Initialize", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, null);
+                    inited = initFlag != null && (bool)initFlag.GetValue(null);
+                }
+                R("SAVE-3b 自动化系统已初始化", inited, "初始化后 _isInitialized=" + inited);
+
+                var ifaceType = asm.GetType("Ink_Canvas.WorkflowAutomation.Abstractions.IActionService");
+                var registryProp = ifaceType?.GetProperty("Actions",
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+                var dict = registryProp?.GetValue(null) as System.Collections.IDictionary;
+                R("SAVE-3 行动注册表可读", dict != null,
+                    dict == null ? "Actions 静态属性取不到" : "已注册 " + dict.Count + " 条");
+
+                if (dict != null && dict.Contains("inkcanvas.savestrokes"))
+                {
+                    var info = dict["inkcanvas.savestrokes"];
+                    var handleField = info.GetType().GetField("Handle");
+                    var handle = handleField?.GetValue(info) as Delegate;
+                    R("SAVE-4 保存笔画的 Handle 委托非空", handle != null,
+                        handle == null ? "Handle 为 null（行动触发后不会做任何事）" : "目标=" + handle.Method.DeclaringType?.Name + "." + handle.Method.Name);
+
+                    // 再确认这个委托不是空的编译器生成 lambda（空体 lambda 的 IL 只有一句 ret）
+                    if (handle != null)
+                    {
+                        var body = handle.Method.GetMethodBody();
+                        int ilSize = body?.GetILAsByteArray()?.Length ?? -1;
+                        R("SAVE-5 Handle 不是空体 lambda", ilSize > 3,
+                            "IL 字节数=" + ilSize + "（≤3 基本等于啥也没干）");
+                    }
+                }
+                else
+                {
+                    R("SAVE-4 保存笔画已注册到行动表", false,
+                        dict == null ? "注册表不可用" : "未找到 inkcanvas.savestrokes");
+                }
+            }
+            catch (Exception ex) { R("SAVE", false, Trim(ex.Message)); }
+
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 

@@ -25,30 +25,6 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     {
         public const string ActionId = "inkcanvas.shownotification";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "显示通知", "Message")
-            {
-                SettingsType = typeof(ShowNotificationActionSettings)
-            };
-
-            info.Handle = (settings, guid) =>
-            {
-                var s = settings as ShowNotificationActionSettings;
-                if (s == null || string.IsNullOrEmpty(s.Message)) return;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    ShowAutomationNotification(s);
-                });
-            };
-
-            // 显示通知不支持恢复
-            info.RevertHandle = null;
-
-            return info;
-        }
-
         /// <summary>
         /// LTSC N-01: 改为调用主窗口的极简提示（原 ShowNewMessage 路径），
         /// 不再经过已移除的 NotificationCenterService。

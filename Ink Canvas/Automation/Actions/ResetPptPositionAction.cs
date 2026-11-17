@@ -18,14 +18,6 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
     {
         public const string ActionId = "inkcanvas.resetpptposition";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "重置PPT模式位置", "Presentation")
-            {
-                SettingsType = typeof(ResetPPTPositionActionSettings)
-            };
-            return info;
-        }
     }
 
     /// <summary>

@@ -21,36 +21,5 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     {
         public const string ActionId = "inkcanvas.killprocess";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "结束进程", "CloseCircleOutline")
-            {
-                SettingsType = typeof(KillProcessActionSettings)
-            };
-
-            info.Handle = (settings, guid) =>
-            {
-                var s = settings as KillProcessActionSettings;
-                if (s == null || string.IsNullOrEmpty(s.ProcessName)) return;
-
-                try
-                {
-                    foreach (var process in Process.GetProcessesByName(s.ProcessName))
-                    {
-                        try
-                        {
-                            process.Kill();
-                        }
-                        catch { }
-                    }
-                }
-                catch { }
-            };
-
-            // 杀进程不支持恢复
-            info.RevertHandle = null;
-
-            return info;
-        }
     }
 }

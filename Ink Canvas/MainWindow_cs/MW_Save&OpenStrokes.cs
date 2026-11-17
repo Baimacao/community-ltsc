@@ -198,6 +198,22 @@ namespace Ink_Canvas
         }
 
         /// <summary>
+        /// 供自动化行动调用的保存入口。
+        ///
+        /// LTSC（2026-11-17）：原先 `inkcanvas.savestrokes` 这个自动化行动的处理函数是空的，
+        /// 里面只有一句 `// TODO: 调用 MainWindow 的保存逻辑`。用户在自动化工作流里
+        /// 选了「保存笔画」，触发时什么都不会发生，也没有任何提示——这是静默失败。
+        /// 这里补一个 internal 转发，不动 private 的保存实现。
+        /// </summary>
+        /// <returns>保存是否成功发起；墨迹为空时返回 false，调用方可据此提示用户。</returns>
+        internal bool InvokeSaveForAutomation()
+        {
+            if (inkCanvas == null || inkCanvas.Strokes.Count == 0) return false;
+            SaveInkCanvasStrokes(true, true);
+            return true;
+        }
+
+        /// <summary>
         /// 保存墨迹画布的墨迹
         /// </summary>
         /// <param name="newNotice">是否显示新的通知</param>

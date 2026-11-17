@@ -25,23 +25,5 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     {
         public const string ActionId = "inkcanvas.savestrokes";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "保存笔画", "ContentSaveOutline")
-            {
-                SettingsType = typeof(SaveStrokesActionSettings)
-            };
-
-            info.Handle = (settings, guid) =>
-            {
-                // 保存笔画功能暂未实现完整集成
-                // TODO: 调用 MainWindow 的保存逻辑
-            };
-
-            // 保存笔画不支持恢复
-            info.RevertHandle = null;
-
-            return info;
-        }
     }
 }

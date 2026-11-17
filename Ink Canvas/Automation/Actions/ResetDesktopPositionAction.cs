@@ -18,14 +18,6 @@ namespace Ink_Canvas.WorkflowAutomation.ActionHandlers
     {
         public const string ActionId = "inkcanvas.resetdesktopposition";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "重置桌面模式位置", "DockBottom")
-            {
-                SettingsType = typeof(ResetDesktopPositionActionSettings)
-            };
-            return info;
-        }
     }
 
     /// <summary>

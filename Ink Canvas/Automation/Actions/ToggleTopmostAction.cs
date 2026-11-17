@@ -22,40 +22,5 @@ namespace Ink_Canvas.WorkflowAutomation.Actions
     {
         public const string ActionId = "inkcanvas.toggletopmost";
 
-        public static ActionRegistryInfo Register()
-        {
-            var info = new ActionRegistryInfo(ActionId, "切换窗口置顶", "Pin")
-            {
-                SettingsType = typeof(ToggleTopmostActionSettings)
-            };
-
-            info.Handle = (settings, guid) =>
-            {
-                var s = settings as ToggleTopmostActionSettings;
-                if (s == null) return;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    var mw = Application.Current.MainWindow as MainWindow;
-                    if (mw == null) return;
-                    WindowTopmostManager.ApplyMainWindowTopmost(mw, s.Topmost);
-                });
-            };
-
-            info.RevertHandle = (settings, guid) =>
-            {
-                var s = settings as ToggleTopmostActionSettings;
-                if (s == null) return;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    var mw = Application.Current.MainWindow as MainWindow;
-                    if (mw == null) return;
-                    WindowTopmostManager.ApplyMainWindowTopmost(mw, !s.Topmost);
-                });
-            };
-
-            return info;
-        }
     }
 }
