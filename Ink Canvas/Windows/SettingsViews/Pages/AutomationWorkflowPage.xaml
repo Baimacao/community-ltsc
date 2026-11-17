@@ -8,7 +8,7 @@
          xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
          xmlns:controls="clr-namespace:Ink_Canvas.Controls;assembly=InkCanvas.Controls"
       xmlns:helpers="clr-namespace:Ink_Canvas.Windows.SettingsViews.Helpers"
-         xmlns:c="clr-namespace:Ink_Canvas.Converter"
+         xmlns:c="clr-namespace:Ink_Canvas.Helpers"
          xmlns:props="clr-namespace:Ink_Canvas.Properties"
          xmlns:sys="clr-namespace:System;assembly=mscorlib"
          xmlns:dd="urn:gong-wpf-dragdrop"

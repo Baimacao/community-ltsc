@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Ink_Canvas.Converter
+namespace Ink_Canvas.Helpers
 {
     public class BooleanToVisibilityConverter : IValueConverter
     {
