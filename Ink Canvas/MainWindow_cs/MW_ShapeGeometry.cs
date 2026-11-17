@@ -17,7 +17,9 @@ namespace Ink_Canvas
 {
     public partial class MainWindow : Ink_Canvas.Helpers.PerformanceTransparentWin
     {
-        // LTSC（2026-11-17）：从 MW_SimulatePressure&InkToShape.cs 拆出。
+        // LTSC（2026-11-17）：从 MW_SimulatePressureInkToShape.cs 拆出。
+        // （该文件原名带 & 号，2026-11-17 一起改掉了——& 在 shell 和 git 里都要转义，
+        //   脚本处理时反复踩坑。）
         //
         // 这个文件原来把两件事混在一起：
         //   1. 墨迹转形状 / 直线拉直 / 形状判断的主流程（留在原文件）
