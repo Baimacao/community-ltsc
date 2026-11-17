@@ -59,7 +59,16 @@ namespace Ink_Canvas.Helpers
                     UpdateAllToggleSwitches(onText, offText);
                 }), System.Windows.Threading.DispatcherPriority.Loaded);
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：SyncCommonResources 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         /// <summary>
@@ -101,7 +110,16 @@ namespace Ink_Canvas.Helpers
                     _originalModernStringsRM ?? current, toggleKeys);
                 resourceManField.SetValue(null, patched);
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：PatchModernStrings 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         /// <summary>
@@ -153,7 +171,16 @@ namespace Ink_Canvas.Helpers
                     UpdateToggleSwitchesInLogicalTree(window, onText, offText);
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：UpdateAllToggleSwitches 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         private static void UpdateToggleSwitchesInLogicalTree(DependencyObject parent, string onText, string offText)
@@ -174,7 +201,16 @@ namespace Ink_Canvas.Helpers
                     }
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：UpdateToggleSwitchesInLogicalTree 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         private static void UpdateSingleToggleSwitch(ToggleSwitch ts, string onText, string offText)
@@ -197,7 +233,16 @@ namespace Ink_Canvas.Helpers
                     ts.SetCurrentValue(ToggleSwitch.OffContentProperty, offText);
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：UpdateSingleToggleSwitch 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         /// <summary>
@@ -211,7 +256,16 @@ namespace Ink_Canvas.Helpers
                 UpdateToggleSwitchesInLogicalTree(window,
                     CommonStrings.Common_On, CommonStrings.Common_Off);
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：BindToggleSwitchesInWindow 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
         }
 
         /// <summary>
@@ -307,7 +361,16 @@ namespace Ink_Canvas.Helpers
             {
                 return new CultureInfo(name);
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：CreateCustomCulture 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
 
             try
             {
@@ -327,7 +390,16 @@ namespace Ink_Canvas.Helpers
                 directNameField?.SetValue(clone, name);
                 return clone;
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：CreateCustomCulture 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
 
             return CultureInfo.GetCultureInfo("zh-CN");
         }
@@ -432,7 +504,16 @@ namespace Ink_Canvas.Helpers
                     }
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：LoadEmbeddedResource 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
 
             if (result.Count > 0)
             {
@@ -449,7 +530,16 @@ namespace Ink_Canvas.Helpers
                     ParseResx(stream, result);
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：LoadEmbeddedResource 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
 
             if (result.Count > 0)
             {
@@ -469,7 +559,16 @@ namespace Ink_Canvas.Helpers
                     ParseResx(fs, result);
                 }
             }
-            catch { }
+            catch (Exception l10nEx)
+            {
+                // LTSC（2026-11-17）：原来这里是 catch { }。
+                // 这里包的是反射改 iNKORE 内部 ResourceManager 的操作，
+                // 跨版本升级时 iNKORE 改了字段名就会失败。
+                // 失败无声的后果：切了语言，ToggleSwitch 的开关文案没变，用户不知道为什么。
+                LogHelper.WriteLogToFile(
+                    "本地化：LoadEmbeddedResource 里的反射操作失败（界面文案可能没切换）：" + l10nEx.Message,
+                    LogHelper.LogType.Warning);
+            }
 
             _embeddedCache[cacheKey] = result;
             return result;
