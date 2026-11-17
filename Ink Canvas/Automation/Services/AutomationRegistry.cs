@@ -40,22 +40,10 @@ namespace Ink_Canvas.WorkflowAutomation.Services
             RegisteredTriggers.Add(info);
         }
 
-        /// <summary>
-        /// 注册行动（已迁移到 IActionService.Actions，保留此方法作为兼容入口）
-        /// </summary>
-        public static void RegisterAction(ActionRegistryInfo info)
-        {
-            IActionService.Actions[info.Id] = info;
-        }
-
-        /// <summary>
-        /// 注册规则（已迁移到 IRulesetService.Rules，保留此方法作为兼容入口）
-        /// </summary>
-        public static void RegisterRule(RuleRegistryInfo info)
-        {
-            IRulesetService.Rules[info.Id] = info;
-        }
-
+        // LTSC（2026-11-17）：这里原来还有 RegisterAction / RegisterRule 两个方法，
+        // 注释写着「已迁移到 IActionService.Actions，保留此方法作为兼容入口」。
+        // 但全项目零调用，也没有第三方插件在用（插件系统在本仓外，没有对这两个方法的约定）。
+        // 「兼容入口」是自我安慰的说法——没人用的兼容入口就是死代码，删了。
         /// <summary>
         /// 通过 DI 容器解析触发器实例。
         /// 对齐 ClassIsland 的 GetKeyedService&lt;TriggerBase&gt;(id)。

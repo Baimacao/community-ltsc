@@ -983,23 +983,9 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         }
     }
 
-    public class ConditionIdToNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is string id)
-            {
-                var cond = ToolbarRegistry.AvailableConditions.FirstOrDefault(c => c.Key == id);
-                return cond.Value ?? id;
-            }
-            return value ?? "";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    // LTSC（2026-11-17）：删掉 ConditionIdToNameConverter。
+    // ToolbarPage.xaml:27 曾经注册了这个 key，但全文件没有一处 Converter= 引用它，
+    // 类本体是死的。删的时候连注册点一起删，否则 XAML 解析会找不到类型。
 
     public class StateToBrushConverter : IValueConverter
     {

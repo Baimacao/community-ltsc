@@ -24,7 +24,6 @@
         <local:IdToIconGeometryConverter x:Key="IdToIconGeometryConverter"/>
         <local:IdToIconKeyConverter x:Key="IdToIconKeyConverter"/>
         <local:IdToIconVisibilityConverter x:Key="IdToIconVisibilityConverter"/>
-        <local:ConditionIdToNameConverter x:Key="ConditionIdToNameConverter"/>
         <local:StateToBrushConverter x:Key="StateToBrushConverter"/>
         <local:LogicalModeToIntConverter x:Key="LogicalModeToIntConverter"/>
         <helpers:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>

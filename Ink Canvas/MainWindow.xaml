@@ -43,7 +43,6 @@
                 <ResourceDictionary Source="MainWindow_cs/MW_Eraser.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <c:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter" />
             <c:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <c:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
             <c:VisibilityConverter x:Key="VisibilityConverter" />

@@ -88,18 +88,10 @@ namespace Ink_Canvas.WorkflowAutomation.Extensions
             return services;
         }
 
-        /// <summary>
-        /// 注册无设置行动
-        /// </summary>
-        public static IServiceCollection AddAction(this IServiceCollection services,
-            string id, string name = "", string iconKind = "BacteriaOutline",
-            ActionRegistryInfo.HandleDelegate onHandle = null)
-        {
-            var info = new ActionRegistryInfo(id, name, iconKind);
-            info.Handle += onHandle;
-            IActionService.Actions[id] = info;
-            return services;
-        }
+        // LTSC（2026-11-17）：删掉「注册无设置行动」这个重载。
+        // 全项目零调用——AutomationBootstrap 里 9 处全是 AddAction<TSettings>()。
+        // 删掉的还有 AddAction<TSettings,TSettingsControl>、AddRule(非泛型)、
+        // AddRule<TSettings,TSettingsControl> 三个，同样零调用。
 
         /// <summary>
         /// 注册带设置的行动
@@ -112,36 +104,6 @@ namespace Ink_Canvas.WorkflowAutomation.Extensions
             info.SettingsType = typeof(TSettings);
             info.Handle += onHandle;
             IActionService.Actions[id] = info;
-            return services;
-        }
-
-        /// <summary>
-        /// 注册带设置和设置控件的行动
-        /// </summary>
-        public static IServiceCollection AddAction<TSettings, TSettingsControl>(this IServiceCollection services,
-            string id, string name = "", string iconKind = "BacteriaOutline",
-            ActionRegistryInfo.HandleDelegate onHandle = null)
-            where TSettingsControl : ActionSettingsControlBase
-        {
-            var info = new ActionRegistryInfo(id, name, iconKind);
-            info.SettingsType = typeof(TSettings);
-            info.SettingsControlType = typeof(TSettingsControl);
-            info.Handle += onHandle;
-            IActionService.Actions[id] = info;
-            services.AddTransient(typeof(ActionSettingsControlBase), typeof(TSettingsControl));
-            return services;
-        }
-
-        /// <summary>
-        /// 注册无设置规则
-        /// </summary>
-        public static IServiceCollection AddRule(this IServiceCollection services,
-            string id, string name = "", string iconKind = "CogOutline",
-            RuleRegistryInfo.HandleDelegate onHandle = null)
-        {
-            var info = new RuleRegistryInfo(id, name, iconKind);
-            info.Handle += onHandle;
-            IRulesetService.Rules[id] = info;
             return services;
         }
 
@@ -159,21 +121,5 @@ namespace Ink_Canvas.WorkflowAutomation.Extensions
             return services;
         }
 
-        /// <summary>
-        /// 注册带设置和设置控件的规则
-        /// </summary>
-        public static IServiceCollection AddRule<TSettings, TSettingsControl>(this IServiceCollection services,
-            string id, string name = "", string iconKind = "CogOutline",
-            RuleRegistryInfo.HandleDelegate onHandle = null)
-            where TSettingsControl : RuleSettingsControlBase
-        {
-            var info = new RuleRegistryInfo(id, name, iconKind);
-            info.SettingsType = typeof(TSettings);
-            info.SettingsControlType = typeof(TSettingsControl);
-            info.Handle += onHandle;
-            IRulesetService.Rules[id] = info;
-            services.AddTransient(typeof(RuleSettingsControlBase), typeof(TSettingsControl));
-            return services;
-        }
     }
 }
