@@ -372,6 +372,19 @@ namespace Ink_Canvas
             var handwritingRawPointsForRecognizer =
                 CloneStylusPointCollectionForHandwritingInput(e.Stroke?.StylusPoints);
 
+            // ══ 本方法分五段，按顺序执行 ═══════════════════════════
+            //   1. 墨迹渐隐（第 375 行起）
+            //   2. 曲线拟合开关（第 427 行起）
+            //   3. 压感与实时笔锋（第 540 行起）
+            //   4. 形状识别 / 直线拉直（第 557 行起）
+            //   5. 收尾：探针打点 + tail 处理（第 989 行起）
+            //
+            // 全文 660 多行，共享 e / strokeDrawingAttributes / newStrokes 等局部变量，
+            // 硬拆成子方法会变成传一长串参数或把变量提成字段，两种都更难读。
+            // 所以保持一个方法，用分节注释导航。
+            //
+            //   1. 墨迹渐隐 ────────────────────────────────────────
+
             if (Settings.Canvas.EnableInkFade)
             {
                 // 获取墨迹的起点和终点
@@ -423,6 +436,9 @@ namespace Ink_Canvas
             bool wasStraightened = false;
             StylusPointCollection preBrushHandwritingPoints = null;
             Stroke strokeForHandwritingBeautify = null;
+
+            // ── 曲线拟合开关 ──────────────────────────────────────
+            // 关掉 FitToCurve 之后，下面的处理才按点集真实形状走。
 
             if (Settings.Canvas.FitToCurve) drawingAttributes.FitToCurve = false;
 
@@ -537,6 +553,9 @@ namespace Ink_Canvas
                     }
                 }
 
+                // ── 压感与实时笔锋 ────────────────────────────────
+                // 下面处理 PressureFactor 的重写、速度笔锋混入比例。
+
                 // 实时笔锋：勿依赖 DrawingAttributes.IgnorePressure。无压感触摸/鼠标等设备上，运行时仍可能为 true，
                 // 会导致不进入逻辑或进入后渲染仍忽略 PressureFactor；具体在 ApplyVelocityBrushTipFromSpeed 内关闭。
                 // 「屏蔽压感」时必须跳过：否则会重写 PressureFactor 并强制 IgnorePressure=false，与归一压感冲突。
@@ -553,6 +572,10 @@ namespace Ink_Canvas
                 {
                     ApplyVelocityBrushTipFromSpeed(e.Stroke);
                 }
+
+                // ── 形状识别 / 直线拉直 / 端点吸附 ────────────────────
+                // 下面这一大段决定：这一笔要不要拉直、要不要识别成形状、
+                // 端点要不要吸附到别的线上。是方法里最长的一段。
 
                 // Apply line straightening and endpoint snapping if ink-to-shape is enabled
 
@@ -985,6 +1008,10 @@ namespace Ink_Canvas
             catch (Exception ex) { Ink_Canvas.Helpers.LogHelper.WriteLogToFile("未处理的异常：" + ex.Message, Ink_Canvas.Helpers.LogHelper.LogType.Warning); }
 
             var strokeAfterTailSync = RunStrokeCollectedPostShapeRecognitionTail(e, wasStraightened);
+
+            // ── 收尾：探针打点 + 形状识别后的 tail 处理 ──────────────
+            // 这一行往下是「处理耗时统计」和 RunStrokeCollectedPostShapeRecognitionTail。
+            // 要看软件真实处理一笔要多久，看这里打的点。
 
             // LTSC（2026-11-13）：处理耗时收尾。只看这一段——从进入到全部收集逻辑跑完。
             try
