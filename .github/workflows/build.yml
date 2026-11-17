@@ -1,0 +1,60 @@
+name: Build
+
+# 编译校验：确认 ltsc 分支在任何 push / PR 上都能过编译。
+#
+# 这个工作流只做一件事 —— 编译，不打包、不发版、不碰任何外部仓库。
+# 打包和发布是本地手工做的（见 docs/BUILD.md），因为要控制哪些文件进包。
+#
+# 注意：本项目 TFM 是 net11.0-windows，需要 .NET 11 SDK。
+# 如果 GitHub 的 windows-latest 还没预装 11，这里会先在 setup-dotnet 里拉。
+
+on:
+  push:
+    branches: [ltsc]
+  pull_request:
+    branches: [ltsc]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # NBGV 需要完整历史才能算出提交号版本
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Show SDK
+        run: dotnet --info
+
+      - name: Restore
+        run: dotnet restore "Ink Canvas/InkCanvasForClass.csproj"
+
+      - name: Build
+        run: dotnet build "Ink Canvas/InkCanvasForClass.csproj" -c Release -p:Platform=x64 --no-restore
+
+      - name: Verify output
+        shell: pwsh
+        run: |
+          $exe = "Ink Canvas/bin/Release/x64/net11.0-windows10.0.19041.0/ICCCELite.exe"
+          if (-not (Test-Path $exe)) {
+            Write-Error "构建产物缺失: $exe"
+            exit 1
+          }
+          $v = (Get-Item $exe).VersionInfo.ProductVersion
+          Write-Host "产物: $exe"
+          Write-Host "版本: $v"
