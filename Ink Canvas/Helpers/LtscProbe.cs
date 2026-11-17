@@ -70,12 +70,15 @@ namespace Ink_Canvas.Helpers
                         if (errs.Count < 10) errs.Add("r" + r + " " + kv.Key + " | " + inner.GetType().Name + " | " + Trim(inner.Message));
                     }
                 }
-                if ((r + 1) % 3 == 0)
+                // 每轮都记，才能看出增长是线性的还是趋平的。
+                // 只看每 3 轮的数据分辨不出「真泄漏」和「填缓存」。
                 {
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     GC.Collect();
-                    Log("  第 " + (r + 1) + " 轮: 内存=" + (GC.GetTotalMemory(true) / 1048576) + "MB 句柄=" + GetHandles());
+                    Log("  第 " + (r + 1) + " 轮: 内存=" + (GC.GetTotalMemory(true) / 1048576)
+                        + "MB 句柄=" + GetHandles()
+                        + " 已耗时=" + sw.ElapsedMilliseconds + "ms");
                 }
             }
 
