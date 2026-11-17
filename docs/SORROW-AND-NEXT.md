@@ -55,23 +55,51 @@ C#   111,364 行 / 343 个文件
 XAML  14,651 行 /  68 个文件
 ```
 
+| 文件 | 行数（拆前 → 拆后） |
+|---|---|
+| `MainWindow_cs/MW_SimulatePressure&InkToShape.cs` | 3121（未拆） |
+| `MainWindow_cs/MW_ElementsControls.cs` | 3094（未拆） |
+| `MainWindow_cs/MW_ShapeDrawing.cs` | 3009（未拆） |
+| `MainWindow_cs/MW_FloatingBarIcons.cs` | **6281 → 2599**（2026-11-17 拆成 6 个 partial） |
+| `MainWindow.xaml.cs` | **3312 → 3050**（拆出 WireUp 段） |
+| `MainWindow_cs/MW_PPT.cs` | **3203 → 2313**（拆出事件处理段） |
+| `MainWindow_cs/MW_TouchEvents.cs` | 2409（未拆） |
+| `App.xaml.cs` | 2131（未拆） |
+
+拆出来的新文件：
+
 | 文件 | 行数 |
 |---|---|
-| `MainWindow_cs/MW_FloatingBarIcons.cs` | 6281 |
-| `MainWindow.xaml.cs` | 3312 |
-| `MainWindow_cs/MW_PPT.cs` | 3203 |
-| `MainWindow_cs/MW_SimulatePressure&InkToShape.cs` | 3121 |
-| `MainWindow_cs/MW_ElementsControls.cs` | 3094 |
-| `MainWindow_cs/MW_ShapeDrawing.cs` | 3009 |
-| `MainWindow_cs/MW_TouchEvents.cs` | 2409 |
-| `App.xaml.cs` | 2131 |
+| `MW_FloatingBarIcons.ToolClicks.cs` | 999 |
+| `MW_FloatingBarIcons.Highlight.cs` | 953 |
+| `MW_PPT.EventHandlers.cs` | 923 |
+| `MW_FloatingBarIcons.Panels.cs` | 898 |
+| `MW_FloatingBarIcons.RightPanel.cs` | 611 |
+| `MW_FloatingBarIcons.Drag.cs` | 415 |
+| `MW_FloatingBarWireUp.cs` | 307 |
 
 具体代价：
 
 - 改 PPT 页码逻辑要先翻完 3203 行找入口，链路横跨 3 个文件
-- `IsInPPTPresentationMode` 在 6 个文件里有 20+ 个读取点
-- 窗口置顶逻辑分散在 `MainWindow.xaml`、`SettingsWindow`、`WindowTopmostManager` 三处
-- 触摸相关三套并行：`SliderTouchHelper`、`TouchAwareDragDropHelper`、`MainWindowSettingsHelper`
+- `IsInPPTPresentationMode` 散在 23 个文件、82 处（实测；原写「6 个文件 20+ 处」，是早期未拆时的数）
+- 窗口置顶：10 处裸写 `this.Topmost` 绕过 `WindowTopmostManager`（实测；原写「三处分散」）
+
+> **2026-11-17 更正（原文保留在下面）**
+>
+> 原来这里写着「触摸相关三套并行：`SliderTouchHelper`、`TouchAwareDragDropHelper`、
+> `MainWindowSettingsHelper`」。**这条是错的。** 逐个查过：
+>
+> | 实体 | 行数 | 实际管什么 | 消费者 |
+> |---|---|---|---|
+> | `SliderTouchHelper` | 264 | 只有 Slider 的 Touch/Stylus 事件 | 11 个文件 |
+> | `TouchAwareDragDropHelper` | 489 | 附加属性，让 ListBox 条目在触摸下能拖拽 | 5 个 XAML |
+> | `VisualCanvas`/`StrokeVisual`（在 `VisualCanvas.cs`，原文件名 `MultiTouchInput.cs`） | 252 | 笔迹渲染类型 | `MW_TouchEvents.cs` |
+> | `MainWindowSettingsHelper.EnableTouchSupportForControls` | — | **死代码**，外部引用 0 | 无 |
+>
+> **四者作用在不同层（控件级触摸 / 拖放手势 / 笔迹渲染 / 已死），没有重叠。**
+> 除了删掉那个死方法，没有可收口的东西。
+> 当时的错在于：看到三个带 Touch 字样的文件名就当成三套并行实现，
+> 没查它们各自管什么。
 
 ## iNKORE（放大器，不是根源）
 
@@ -130,10 +158,10 @@ iNKORE.UI.WPF         1.2.8      编译于 2024-10-24
 
 | 目标 | 做法 |
 |---|---|
-| `MW_FloatingBarIcons.cs` 6281 行 | 按职责拆：光标 / 穿透 / 动画 / 菜单 / 图标 |
-| 触摸逻辑三套并行 | 收口到一个 `TouchInputService` |
-| 窗口置顶三处分散 | 统一到 `WindowTopmostManager` |
-| `MainWindow` 两万多行 | 抽服务：PPT、墨迹、工具栏、自动化各成独立服务 |
+| `MW_FloatingBarIcons.cs` 6281 行 | 按职责拆成 6 个 partial 文件（**2026-11-17 已完成，拆到 2599 行**） |
+| ~~触摸逻辑三套并行~~ | ~~收口到一个 `TouchInputService`~~ —— **前提不成立，见上面更正**。实际只有 1 个死方法要删，已删 |
+| 窗口置顶 10 处裸写 | 统一到 `WindowTopmostManager` |
+| `MainWindow` 部分类 43,558 行 / 35 个 partial 文件（不是 37，那目录里还有 3 个非 partial） | 抽服务：PPT、墨迹、工具栏、自动化各成独立服务 |
 
 判据：改一个功能时，能说出「只需读哪几个文件」。
 
