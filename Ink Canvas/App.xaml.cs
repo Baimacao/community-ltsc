@@ -825,6 +825,24 @@ namespace Ink_Canvas
                 });
             }
 
+            // 暴力测试：--stress-toolbar <轮数>，每轮 40 次连点 + 3 次折叠展开 + 10 次混合乱点
+            if (e.Args.Any(a => a.StartsWith("--stress-toolbar")))
+            {
+                int rounds = 5;
+                var ti = Array.FindIndex(e.Args, a => a.StartsWith("--stress-toolbar"));
+                if (ti >= 0 && ti + 1 < e.Args.Length) int.TryParse(e.Args[ti + 1], out rounds);
+                if (rounds <= 0) rounds = 5;
+                var tr = rounds;
+                _ = Task.Delay(6000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.StressToolbar(tr); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 工具栏暴力测试失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
             if (e.Args.Any(x => x.StartsWith("--ppt-e2e")))
             {
                 try
