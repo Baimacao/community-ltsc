@@ -209,6 +209,18 @@
   <data name="Flip_MainBarIdleFadeDesc" xml:space="preserve">
     <value>PPT 聯動講課時，停筆一段時間后底部工具欄變淡；一落筆就恢復。白板模式不受影響</value>
   </data>
+  <data name="Flip_DesktopFade" xml:space="preserve">
+    <value>桌面模式淡出</value>
+  </data>
+  <data name="Flip_DesktopFadeDesc" xml:space="preserve">
+    <value>一般桌面模式下，停手一段時間後底部工具列變淡；一動就恢復。這是獨立於 PPT 的一套參數</value>
+  </data>
+  <data name="Flip_DesktopFadeDelay" xml:space="preserve">
+    <value>桌面模式淡出等待時間</value>
+  </data>
+  <data name="Flip_DesktopFadeOpacity" xml:space="preserve">
+    <value>桌面模式淡到多淡</value>
+  </data>
   <data name="Flip_MainBarFadeDelay" xml:space="preserve">
     <value>主工具欄淡出等待時間</value>
   </data>

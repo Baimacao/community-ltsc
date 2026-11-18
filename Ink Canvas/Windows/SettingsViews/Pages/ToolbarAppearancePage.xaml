@@ -208,6 +208,47 @@
                         </ui:SettingsExpander.Items>
                     </ui:SettingsExpander>
 
+                    <!-- LTSC（2026-11-18）：普通桌面模式的空闲淡出。
+                         原来这个功能只读 PowerPointSettings 下那组参数，
+                         普通桌面也生效——等于用一个 PPT 分组的设置管两种场景。
+                         现在拆成独立的一套，放在这里跟其它浮动栏外观设置放一起。 -->
+                    <ui:SettingsExpander
+                        Header="{x:Static props:SettingsStrings.Flip_DesktopFade}"
+                        Description="{x:Static props:SettingsStrings.Flip_DesktopFadeDesc}"
+                        IsExpanded="False">
+                        <ui:SettingsExpander.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Hide}" />
+                        </ui:SettingsExpander.HeaderIcon>
+                        <ui:SettingsExpander.Items>
+                            <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_DesktopFade}">
+                                <ui:ToggleSwitch x:Name="ToggleDesktopFade"
+                                                 OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                 OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                 Toggled="ToggleDesktopFade_Toggled" />
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_DesktopFadeDelay}">
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="TextBlockDesktopFadeDelayValue"
+                                               VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right"/>
+                                    <Slider x:Name="SliderDesktopFadeDelay" Minimum="2" Maximum="20"
+                                            Width="200" IsSnapToTickEnabled="True" Value="4"
+                                            TickFrequency="1" TickPlacement="None" AutoToolTipPlacement="None"
+                                            ValueChanged="SliderDesktopFadeDelay_ValueChanged" />
+                                </ikw:SimpleStackPanel>
+                            </ui:SettingsCard>
+                            <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_DesktopFadeOpacity}">
+                                <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="TextBlockDesktopFadeOpacityValue"
+                                               VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right"/>
+                                    <Slider x:Name="SliderDesktopFadeOpacity" Minimum="0.2" Maximum="1.0"
+                                            Width="200" IsSnapToTickEnabled="True" Value="0.45"
+                                            TickFrequency="0.05" TickPlacement="None" AutoToolTipPlacement="None"
+                                            ValueChanged="SliderDesktopFadeOpacity_ValueChanged" />
+                                </ikw:SimpleStackPanel>
+                            </ui:SettingsCard>
+                        </ui:SettingsExpander.Items>
+                    </ui:SettingsExpander>
+
                     <Rectangle Height="48" />
                 </ikw:SimpleStackPanel>
             </Grid>

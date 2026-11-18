@@ -343,6 +343,25 @@ namespace Ink_Canvas
         public double FloatingBarMenuOpacity { get; set; } = 1.0;
         [JsonProperty("floatingBarMenuOpacityInPPT")]
         public double FloatingBarMenuOpacityInPPT { get; set; } = 1.0;
+
+        // LTSC（2026-11-18）：浮动栏空闲淡出（普通桌面用）。
+        //
+        // 这个功能原来只有 PowerPointSettings 下的一组参数，但判定条件是
+        // currentMode == 0——普通桌面也生效。等于用一个 PPT 分组的设置
+        // 管着两种场景，而且界面上没有入口。
+        //
+        // 现在拆开：这里管普通桌面，PowerPointSettings 里那组加 InPPT 后缀管放映。
+        /// <summary>普通桌面下，浮动栏停手几秒后是否淡出。</summary>
+        [JsonProperty("floatingBarIdleFadeDesktop")]
+        public bool FloatingBarIdleFadeDesktop { get; set; } = true;
+
+        /// <summary>普通桌面下的淡出延迟（秒）。</summary>
+        [JsonProperty("floatingBarIdleFadeDelayDesktop")]
+        public double FloatingBarIdleFadeDelayDesktop { get; set; } = 4.0;
+
+        /// <summary>普通桌面下的淡出比例。</summary>
+        [JsonProperty("floatingBarIdleFadeOpacityDesktop")]
+        public double FloatingBarIdleFadeOpacityDesktop { get; set; } = 0.45;
         [JsonProperty("boardMenuOpacity")]
         public double BoardMenuOpacity { get; set; } = 1.0;
         [JsonProperty("viewboxBlackBoardScaleTransformValue")]
@@ -586,12 +605,33 @@ namespace Ink_Canvas
         ///     这是触摸屏，老师写字时笔不会碰工具栏，按那个算会一节课都淡着
         ///   - 淡出比例更保守，工具栏要一直看得见轮廓
         /// </summary>
+        // LTSC（2026-11-18）：这组设置留给「PPT 放映时」用。
+        //
+        // 原来只有这一组，而功能实际覆盖普通桌面和 PPT 两种场景（判定是 currentMode == 0），
+        // 等于两种场景共用一套参数，而且界面上根本找不到入口。
+        //
+        // 现在拆成两套：
+        //   Appearance.FloatingBarIdleFade*        普通桌面
+        //   PowerPointSettings.FloatingBarIdleFade*InPPT   PPT 放映
+        //
+        // 老字段保留不动——用户的配置文件里已经有这几个键，
+        // 删了会让已保存的值变成「非法属性」被清理掉（CleanupObsoleteSettings 的老毛病）。
+
+        // 注：这三个字段是「PPT 放映时」用的。
+        // 普通桌面那套在 Appearance 类里（FloatingBarIdleFadeDesktop 等）。
+        //
+        // LTSC（2026-11-18）：这组字段原来同时被普通桌面和 PPT 用，
+        // 现在拆开了——PPT 翻页设置页里那三个控件绑定的还是这里。
+
+        /// <summary>PPT 放映时，浮动栏停手几秒后是否淡出。</summary>
         [JsonProperty("floatingBarIdleFade")]
         public bool FloatingBarIdleFade { get; set; } = true;
 
+        /// <summary>PPT 放映时的淡出延迟（秒）。</summary>
         [JsonProperty("floatingBarIdleFadeDelaySeconds")]
         public double FloatingBarIdleFadeDelaySeconds { get; set; } = 4.0;
 
+        /// <summary>PPT 放映时的淡出比例。</summary>
         [JsonProperty("floatingBarIdleFadeOpacity")]
         public double FloatingBarIdleFadeOpacity { get; set; } = 0.45;
 

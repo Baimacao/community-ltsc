@@ -176,6 +176,18 @@
   <data name="Flip_MainBarIdleFadeDesc" xml:space="preserve">
     <value>While presenting with PowerPoint linked, the bottom toolbar dims after you stop writing and returns the moment you start again. Whiteboard mode is unaffected.</value>
   </data>
+  <data name="Flip_DesktopFade" xml:space="preserve">
+    <value>Fade in desktop mode</value>
+  </data>
+  <data name="Flip_DesktopFadeDesc" xml:space="preserve">
+    <value>In desktop mode, the bottom toolbar fades after a period of inactivity and restores on any input. Independent from the PPT settings.</value>
+  </data>
+  <data name="Flip_DesktopFadeDelay" xml:space="preserve">
+    <value>Desktop fade delay</value>
+  </data>
+  <data name="Flip_DesktopFadeOpacity" xml:space="preserve">
+    <value>Desktop fade opacity</value>
+  </data>
   <data name="Flip_MainBarFadeDelay" xml:space="preserve">
     <value>Main toolbar fades after</value>
   </data>

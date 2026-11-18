@@ -283,19 +283,48 @@ namespace Ink_Canvas
             {
                 if (_floatingBarIdleFade == null) return;
 
-                var ppt = SettingsManager.Settings?.PowerPointSettings;
-                if (ppt == null) return;
+                var settings = SettingsManager.Settings;
+                if (settings == null) return;
 
-                bool enabled = ppt.FloatingBarIdleFade;
-                double delay = Math.Max(1.0, Math.Min(60.0, ppt.FloatingBarIdleFadeDelaySeconds));
-                double opacity = Math.Max(0.05, Math.Min(1.0, ppt.FloatingBarIdleFadeOpacity));
+                // LTSC（2026-11-18）：按当前场景选参数。
+                //
+                // 原来只有 PowerPointSettings 一组参数，普通桌面也读它——
+                // 一个挂在 PPT 分组下的设置管着两种场景，界面上还找不到入口。
+                // 现在分成两套，各管各的。
+                bool inPpt = IsInPPTPresentationMode
+                             || (PPTManager?.IsInSlideShow == true);
+                var appearance = settings.Appearance;
+                var ppt = settings.PowerPointSettings;
+
+                bool enabled;
+                double delay;
+                double opacity;
+                if (inPpt && ppt != null)
+                {
+                    enabled = ppt.FloatingBarIdleFade;
+                    delay = ppt.FloatingBarIdleFadeDelaySeconds;
+                    opacity = ppt.FloatingBarIdleFadeOpacity;
+                }
+                else if (appearance != null)
+                {
+                    enabled = appearance.FloatingBarIdleFadeDesktop;
+                    delay = appearance.FloatingBarIdleFadeDelayDesktop;
+                    opacity = appearance.FloatingBarIdleFadeOpacityDesktop;
+                }
+                else
+                {
+                    return;
+                }
+
+                delay = Math.Max(1.0, Math.Min(60.0, delay));
+                opacity = Math.Max(0.05, Math.Min(1.0, opacity));
 
                 _floatingBarIdleFade.Configure(enabled, delay, opacity);
 
                 LogHelper.WriteLogToFile(
                     enabled
-                        ? $"[D-13] 主悬浮窗空闲减淡已启用（仅 PPT 联动 + 非白板，停笔 {delay:0}s 淡到 {opacity:0.00}）"
-                        : "[D-13] 主悬浮窗空闲减淡已关闭",
+                        ? $"[D-13] 主悬浮窗空闲减淡已启用（{(inPpt ? "PPT 放映" : "普通桌面")}，停笔 {delay:0}s 淡到 {opacity:0.00}）"
+                        : $"[D-13] 主悬浮窗空闲减淡已关闭（{(inPpt ? "PPT 放映" : "普通桌面")}）",
                     LogHelper.LogType.Event);
             }
             catch (Exception ex)
@@ -1398,6 +1427,17 @@ namespace Ink_Canvas
             }
             // 加载设置
             LoadSettings(true);
+
+            // LTSC（2026-11-18）：设置加载完之后再刷一次空闲淡出参数。
+            //
+            // 为什么需要：StartFloatingBarIdleFade() 在构造函数里就调了
+            // ApplyFloatingBarIdleFadeSettings()，那时 SettingsManager.Settings
+            // 还是默认值——配置文件要到 LoadSettings 才读进来。
+            //
+            // 后果：用户改了淡出延迟/比例，重启后看到的还是默认的 4s / 0.45。
+            // 实测确认过：把配置改成 9.0 / 0.7 重启，日志里仍然是 4s / 0.45。
+            ApplyFloatingBarIdleFadeSettings();
+
             // 启动性能监测（如果已启用）。快速启动模式下延迟到首帧之后。
             if (!App.IsFastStartupEnabled)
             {

@@ -51,6 +51,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             FloatingBarMenuOpacitySlider.Value = settings.Appearance.FloatingBarMenuOpacity;
             FloatingBarMenuOpacityInPPTSlider.Value = settings.Appearance.FloatingBarMenuOpacityInPPT;
 
+            // LTSC（2026-11-18）：普通桌面模式的空闲淡出参数
+            ToggleDesktopFade.IsOn = settings.Appearance.FloatingBarIdleFadeDesktop;
+            SliderDesktopFadeDelay.Value = Math.Max(2, Math.Min(20, settings.Appearance.FloatingBarIdleFadeDelayDesktop));
+            TextBlockDesktopFadeDelayValue.Text = $"{settings.Appearance.FloatingBarIdleFadeDelayDesktop:0}s";
+            SliderDesktopFadeOpacity.Value = Math.Max(0.2, Math.Min(1.0, settings.Appearance.FloatingBarIdleFadeOpacityDesktop));
+            TextBlockDesktopFadeOpacityValue.Text = $"{settings.Appearance.FloatingBarIdleFadeOpacityDesktop:0.00}";
+
             // 加载工具栏位置
             string positionTag = settings.Appearance.ToolbarPosition.ToString();
             foreach (ComboBoxItem item in ToolbarPositionComboBox.Items)
@@ -267,6 +274,58 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsManager.Settings.Appearance.FloatingBarMenuOpacity = val;
             SettingsManager.SaveSettingsToFile();
             SettingsActionHub.OnFloatingBarMenuOpacityChanged(val);
+        }
+
+        private void ToggleDesktopFade_Toggled(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!_isLoaded) return;
+
+                SettingsManager.Settings.Appearance.FloatingBarIdleFadeDesktop = ToggleDesktopFade.IsOn;
+                SettingsManager.SaveSettingsToFile();
+                (Application.Current?.MainWindow as MainWindow)?.ApplyFloatingBarIdleFadeSettings();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"保存桌面淡出开关失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        // LTSC（2026-11-18）：普通桌面模式空闲淡出的两个滑块。
+        // 改完要立刻让主窗口重新读参数，否则要重启才生效。
+        private void SliderDesktopFadeDelay_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlockDesktopFadeDelayValue.Text = $"{SliderDesktopFadeDelay.Value:0}s";
+                if (!_isLoaded) return;
+
+                SettingsManager.Settings.Appearance.FloatingBarIdleFadeDelayDesktop = SliderDesktopFadeDelay.Value;
+                SettingsManager.SaveSettingsToFile();
+                (Application.Current?.MainWindow as MainWindow)?.ApplyFloatingBarIdleFadeSettings();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"保存桌面淡出延迟失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
+        }
+
+        private void SliderDesktopFadeOpacity_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlockDesktopFadeOpacityValue.Text = $"{SliderDesktopFadeOpacity.Value:0.00}";
+                if (!_isLoaded) return;
+
+                SettingsManager.Settings.Appearance.FloatingBarIdleFadeOpacityDesktop = SliderDesktopFadeOpacity.Value;
+                SettingsManager.SaveSettingsToFile();
+                (Application.Current?.MainWindow as MainWindow)?.ApplyFloatingBarIdleFadeSettings();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"保存桌面淡出比例失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
 
         private void FloatingBarMenuOpacityInPPTSlider_ValueChanged(object sender, RoutedEventArgs e)
