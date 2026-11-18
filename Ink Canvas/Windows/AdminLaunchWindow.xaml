@@ -68,26 +68,56 @@
                            LineHeight="22"
                            Margin="0,12,0,0"
                            Text="建议以普通权限重新启动。这只是权限问题，不会影响你的数据。"/>
+
+                <!-- 一键修复：直接清掉快捷方式上的管理员标记。
+                     老师不知道「右键属性 → 兼容性」这回事，让他自己翻必翻不出来。 -->
+                <StackPanel x:Name="PanelFixShortcut" Margin="0,14,0,0">
+                    <TextBlock TextWrapping="Wrap"
+                               LineHeight="20"
+                               Opacity="0.85"
+                               Text="检测到你平时用的快捷方式勾了「以管理员身份运行」。可以直接点这里去掉："/>
+                    <TextBlock x:Name="TextBlockShortcutPath"
+                               TextWrapping="Wrap"
+                               FontFamily="Consolas"
+                               FontSize="11"
+                               Margin="0,6,0,8"
+                               Opacity="0.7"
+                               Visibility="Collapsed"/>
+                    <Button x:Name="BtnFixShortcut"
+                            Content="清掉快捷方式的管理员标记"
+                            MinWidth="180"
+                            Height="32"
+                            HorizontalAlignment="Left"
+                            Visibility="Collapsed"
+                            Click="BtnFixShortcut_Click"/>
+                </StackPanel>
             </StackPanel>
         </Border>
 
-        <!-- 按钮 -->
-        <StackPanel Grid.Row="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,22,0,0">
-            <Button x:Name="BtnIgnore"
-                    Content="忽略并继续使用"
-                    MinWidth="132"
-                    Height="34"
-                    Margin="0,0,10,0"
-                    Click="BtnIgnore_Click"/>
-            <Button x:Name="BtnRestart"
-                    Content="以普通权限重启"
-                    MinWidth="132"
-                    Height="34"
-                    Style="{DynamicResource AccentButtonStyle}"
-                    Click="BtnRestart_Click"/>
+        <!-- 「以后都这样做」+ 按钮 -->
+        <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <!-- 班测现场：老师点了「忽略」之后就没下文了，下次启动照样弹、照样失效。
+                 勾上这个就等于把这次的选择写进设置，以后不再问。 -->
+            <CheckBox x:Name="CheckRemember"
+                      Margin="0,0,0,16"
+                      HorizontalAlignment="Left"
+                      Content="记住我的选择，以后不再询问（之后可以在 设置 → 高级 里改回来）"/>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button x:Name="BtnIgnore"
+                        Content="忽略并继续使用"
+                        MinWidth="132"
+                        Height="34"
+                        Margin="0,0,10,0"
+                        Click="BtnIgnore_Click"/>
+                <Button x:Name="BtnRestart"
+                        Content="以普通权限重启"
+                        MinWidth="132"
+                        Height="34"
+                        Style="{DynamicResource AccentButtonStyle}"
+                        Click="BtnRestart_Click"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

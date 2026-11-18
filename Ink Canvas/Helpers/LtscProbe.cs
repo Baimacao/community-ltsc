@@ -758,6 +758,69 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PWD", false, Trim(ex.Message)); }
 
+            // --- 12. 管理员快捷方式检测（2026-11-18）---
+            //
+            // 为什么不需要提权却仍然以管理员运行：app.manifest 写的是 asInvoker，
+            // 所以「管理员」只可能来自快捷方式上的兼容性勾选、或 AppCompatFlags 注册表项。
+            // 这两个都不是程序能自动避免的，但程序可以查出来并帮用户清掉。
+            //
+            // 这组断言验的是「查和清这套工具本身能跑通」，不是「能查到某个具体快捷方式」
+            // —— 开发机上本来就没有勾了管理员的快捷方式，硬断言会有依赖环境的问题。
+            try
+            {
+                var t = typeof(Ink_Canvas.Helpers.ShortcutAdminFlag);
+
+                var findM = t.GetMethod("FindRunAsAdminShortcutForSelf",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+                var clearM = t.GetMethod("ClearRunAsAdmin",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+                var isM = t.GetMethod("IsRunAsAdmin",
+                    BindingFlags.NonPublic | BindingFlags.Static);
+
+                R("SHORTCUT-1 三个入口都在（查/读/清）",
+                    findM != null && clearM != null && isM != null,
+                    "查=" + (findM != null) + " 读=" + (isM != null) + " 清=" + (clearM != null));
+
+                // 对不存在的文件必须安全返回 false，不能抛异常——
+                // 这个函数会在启动流程里被调到，抛了就是启动崩溃。
+                bool safeOnMissing = true;
+                try
+                {
+                    var ret = isM?.Invoke(null, new object[] { "C:\\definitely-not-exists-" + Guid.NewGuid().ToString("N") + ".lnk" });
+                    safeOnMissing = ret is bool b && !b;
+                }
+                catch
+                {
+                    safeOnMissing = false;
+                }
+                R("SHORTCUT-2 传入不存在的路径安全返回 false（不抛）", safeOnMissing,
+                    safeOnMissing ? "行为正确" : "!! 会抛异常，启动流程会被打断");
+
+                // 对 null / 空串也必须安全。
+                bool safeOnNull = true;
+                try { isM?.Invoke(null, new object[] { null }); }
+                catch { safeOnNull = false; }
+                R("SHORTCUT-3 传入 null 安全返回", safeOnNull,
+                    safeOnNull ? "行为正确" : "!! null 会抛");
+
+                // 真跑一次全盘查找：不要求找到，但要求不抛、不卡死。
+                // 如果开始菜单里有几百个 lnk 把启动拖慢，这里能看出来。
+                var swShortcut = System.Diagnostics.Stopwatch.StartNew();
+                object found = null;
+                bool threw = false;
+                try { found = findM?.Invoke(null, null); }
+                catch { threw = true; }
+                swShortcut.Stop();
+
+                R("SHORTCUT-4 全量查找不抛异常", !threw,
+                    threw ? "!! 抛出异常" : "耗时 " + swShortcut.ElapsedMilliseconds + "ms");
+
+                // 2 秒是硬上限：这段跑在启动路径上，慢一点老师就会觉得「打开很卡」。
+                R("SHORTCUT-5 全量查找在 2 秒内完成", swShortcut.ElapsedMilliseconds < 2000,
+                    "实际 " + swShortcut.ElapsedMilliseconds + "ms");
+            }
+            catch (Exception ex) { R("SHORTCUT", false, Trim(ex.Message)); }
+
             // --- 11. PPT 权限阻断的检测链路（2026-11-18）---
             //
             // 班测：「部分班级进入 PPT 放映后 ICC 无反应」。
