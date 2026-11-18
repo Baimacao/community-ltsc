@@ -83,7 +83,9 @@
             </Border>
         </Grid>
 
-        <!-- ===== 右侧：设置区域 ===== -->
+        <!-- ===== 右侧：设置区域 =====
+             四个位置平铺成四个可折叠分组，不再有 Tab，「使用全局设置」也不再暴露。
+             位序见 code-behind 的 DisplayOptionBit 常量：0=左下 1=右下 2=左侧 3=右侧。 -->
         <ScrollViewer Grid.Row="1" Grid.Column="1" PanningMode="VerticalFirst">
             <Grid Margin="12,0,59,0" x:Name="SettingsContentGrid">
                 <FrameworkElement.Resources>
@@ -101,86 +103,11 @@
                         HorizontalAlignment="Stretch"
                         Spacing="{StaticResource SettingsCardSpacing}">
 
-                        <!-- Title -->
                         <TextBlock Text="{x:Static props:SettingsStrings.Flip_Title}" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                        <!-- TabControl (Pivot) to Select Position -->
-                        <TabControl x:Name="TabControlPositionSelect"
-                                    Style="{StaticResource TabControlPivotStyle}"
-                                    SelectionChanged="TabControlPositionSelect_SelectionChanged">
-                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeGlobal}" />
-                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeLeft}" />
-                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeRight}" />
-                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeBottomLeft}" />
-                            <TabItem Header="{x:Static props:SettingsStrings.Flip_ScopeBottomRight}" />
-                        </TabControl>
-
-                        <!-- Position-specific settings -->
-                        <ikw:SimpleStackPanel Spacing="{StaticResource SettingsCardSpacing}" Margin="0,12,0,0">
-                            <!-- Use Global Settings ToggleSwitch (only visible on position tabs) -->
-                            <ui:SettingsCard x:Name="CardUseGlobalSettings" Header="{x:Static props:SettingsStrings.Flip_UseGlobal}"
-                                             Description="{x:Static props:SettingsStrings.Flip_UseGlobalDesc}">
-                                <ui:ToggleSwitch x:Name="ToggleSwitchUseGlobalSettings" Toggled="ToggleSwitchUseGlobalSettings_Toggled"/>
-                            </ui:SettingsCard>
-
-                            <!-- Position settings panel (IsEnabled bound to UseGlobalSettings state) -->
-                            <ikw:SimpleStackPanel x:Name="PositionSettingsPanel" Spacing="{StaticResource SettingsCardSpacing}">
-                                <!-- Enable ToggleSwitch (title right side) -->
-                                <ui:SettingsCard x:Name="CardPositionEnabled" Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
-                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
-                                    <ui:ToggleSwitch x:Name="ToggleSwitchPositionEnabled" Toggled="ToggleSwitchPositionEnabled_Toggled"/>
-                                </ui:SettingsCard>
-
-                                <!-- Show Page Number ToggleSwitch -->
-                                <ui:SettingsCard x:Name="CardShowPageNumber" Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
-                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
-                                    <ui:ToggleSwitch x:Name="ToggleSwitchShowPageNumber" Toggled="ToggleSwitchShowPageNumber_Toggled"/>
-                                </ui:SettingsCard>
-
-                                <!-- Offset Slider with Reset Button (Side: 左侧/右侧) -->
-                                <ui:SettingsCard x:Name="CardOffset" Header="{x:Static props:SettingsStrings.Flip_Offset}">
-                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock x:Name="TextBlockOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
-                                        <Slider x:Name="SliderOffset" Minimum="-500" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
-                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
-                                    </ikw:SimpleStackPanel>
-                                </ui:SettingsCard>
-
-                                <!-- Offset Slider with Reset Button (Bottom: 左下/右下) -->
-                                <ui:SettingsCard x:Name="CardOffsetBottom" Header="{x:Static props:SettingsStrings.Flip_Offset}">
-                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock x:Name="TextBlockOffsetBottomValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
-                                        <Slider x:Name="SliderOffsetBottom" Minimum="-100" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffsetBottom_ValueChanged"/>
-                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffsetBottom_Click"/>
-                                    </ikw:SimpleStackPanel>
-                                </ui:SettingsCard>
-
-                                <!-- Opacity Slider with Reset Button -->
-                                <ui:SettingsCard x:Name="CardOpacity" Header="{x:Static props:SettingsStrings.Flip_Opacity}">
-                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock x:Name="TextBlockOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
-                                        <Slider x:Name="SliderOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
-                                        <Button Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
-                                    </ikw:SimpleStackPanel>
-                                </ui:SettingsCard>
-
-                                <!-- Scale Slider -->
-                                <ui:SettingsCard x:Name="CardScale" Header="{x:Static props:SettingsStrings.Flip_Scale}"
-                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
-                                    <ui:SettingsCard.HeaderIcon>
-                                        <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Zoom}"/>
-                                    </ui:SettingsCard.HeaderIcon>
-                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
-                                        <TextBlock x:Name="TextBlockScaleValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
-                                        <Slider x:Name="SliderScale" Minimum="0.5" Maximum="1.5" Width="200" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="SliderScale_ValueChanged"/>
-                                    </ikw:SimpleStackPanel>
-                                </ui:SettingsCard>
-                            </ikw:SimpleStackPanel>
-                        </ikw:SimpleStackPanel>
-
-                        <!-- LTSC P1c：全局外观（不分位置，四项共用） -->
-                        <TextBlock Text="{x:Static props:SettingsStrings.Flip_GlobalLook}" Margin="1,24,0,6"
-                                   Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                        <!-- ================= 全局外观（不分位置，四条导航栏共用） ================= -->
+                        <TextBlock Text="{x:Static props:SettingsStrings.Flip_GlobalLook}"
+                                   Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Margin="1,12,0,6"/>
 
                         <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_PageNumberFontSize}"
                                          Description="{x:Static props:SettingsStrings.Flip_PageNumberFontSizeDesc}">
@@ -268,6 +195,190 @@
                             <ui:ToggleSwitch x:Name="TogglePressFeedback" OnContent="{x:Static props:SettingsStrings.Common_On}" OffContent="{x:Static props:SettingsStrings.Common_Off}"
                                           Toggled="TogglePressFeedback_Toggled"/>
                         </ui:SettingsCard>
+
+                        <!-- ================= 四个位置：一行一个 =================
+                             顺序与 PPTButtonsDisplayOption 的位序无关，只是为了符合视觉习惯：
+                             [0]=左下 [1]=右下 [2]=左侧 [3]=右侧，写在代码里的 DisplayOptionBit。 -->
+
+                        <!-- 左下 -->
+                        <ui:SettingsExpander x:Name="ExpanderLeftBottom"
+                                             Header="{x:Static props:SettingsStrings.Flip_ScopeBottomLeft}">
+                            <ui:SettingsExpander.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.ZoomOut}"/>
+                            </ui:SettingsExpander.HeaderIcon>
+                            <ui:SettingsExpander.Items>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchLBEnabled"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchPositionEnabled_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchLBShowPageNumber"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchShowPageNumber_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Offset}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLBOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLBOffset" Minimum="-100" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
+                                        <Button x:Name="ButtonResetLBOffset" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Opacity}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLBOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLBOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
+                                        <Button x:Name="ButtonResetLBOpacity" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Scale}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLBScaleValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLBScale" Minimum="0.5" Maximum="1.5" Width="200" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="SliderScale_ValueChanged"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                            </ui:SettingsExpander.Items>
+                        </ui:SettingsExpander>
+
+                        <!-- 右下 -->
+                        <ui:SettingsExpander x:Name="ExpanderRightBottom"
+                                             Header="{x:Static props:SettingsStrings.Flip_ScopeBottomRight}">
+                            <ui:SettingsExpander.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.ZoomOut}"/>
+                            </ui:SettingsExpander.HeaderIcon>
+                            <ui:SettingsExpander.Items>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchRBEnabled"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchPositionEnabled_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchRBShowPageNumber"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchShowPageNumber_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Offset}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRBOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRBOffset" Minimum="-100" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
+                                        <Button x:Name="ButtonResetRBOffset" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Opacity}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRBOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRBOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
+                                        <Button x:Name="ButtonResetRBOpacity" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Scale}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRBScaleValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRBScale" Minimum="0.5" Maximum="1.5" Width="200" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="SliderScale_ValueChanged"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                            </ui:SettingsExpander.Items>
+                        </ui:SettingsExpander>
+
+                        <!-- 左侧 -->
+                        <ui:SettingsExpander x:Name="ExpanderLeftSide"
+                                             Header="{x:Static props:SettingsStrings.Flip_ScopeLeft}">
+                            <ui:SettingsExpander.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.ZoomOut}"/>
+                            </ui:SettingsExpander.HeaderIcon>
+                            <ui:SettingsExpander.Items>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchLSEnabled"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchPositionEnabled_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchLSShowPageNumber"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchShowPageNumber_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Offset}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLSOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLSOffset" Minimum="-500" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
+                                        <Button x:Name="ButtonResetLSOffset" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Opacity}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLSOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLSOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
+                                        <Button x:Name="ButtonResetLSOpacity" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Scale}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockLSScaleValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderLSScale" Minimum="0.5" Maximum="1.5" Width="200" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="SliderScale_ValueChanged"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                            </ui:SettingsExpander.Items>
+                        </ui:SettingsExpander>
+
+                        <!-- 右侧 -->
+                        <ui:SettingsExpander x:Name="ExpanderRightSide"
+                                             Header="{x:Static props:SettingsStrings.Flip_ScopeRight}">
+                            <ui:SettingsExpander.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.ZoomOut}"/>
+                            </ui:SettingsExpander.HeaderIcon>
+                            <ui:SettingsExpander.Items>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_EnableHere}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_EnableHereDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchRSEnabled"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchPositionEnabled_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_ShowPageNumber}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ShowPageNumberDesc}">
+                                    <ui:ToggleSwitch x:Name="ToggleSwitchRSShowPageNumber"
+                                                     OnContent="{x:Static props:SettingsStrings.Common_On}"
+                                                     OffContent="{x:Static props:SettingsStrings.Common_Off}"
+                                                     Toggled="ToggleSwitchShowPageNumber_Toggled"/>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Offset}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRSOffsetValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRSOffset" Minimum="-500" Maximum="500" Width="200" IsSnapToTickEnabled="True" TickFrequency="5" ValueChanged="SliderOffset_ValueChanged"/>
+                                        <Button x:Name="ButtonResetRSOffset" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOffset_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Opacity}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRSOpacityValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRSOpacity" Minimum="0.1" Maximum="1.0" Width="200" ValueChanged="SliderOpacity_ValueChanged"/>
+                                        <Button x:Name="ButtonResetRSOpacity" Content="{x:Static props:SettingsStrings.Common_Reset}" Click="ButtonResetOpacity_Click"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                                <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_Scale}"
+                                                 Description="{x:Static props:SettingsStrings.Flip_ScaleDesc}">
+                                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock x:Name="TextBlockRSScaleValue" VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                        <Slider x:Name="SliderRSScale" Minimum="0.5" Maximum="1.5" Width="200" IsSnapToTickEnabled="True" TickFrequency="0.05" ValueChanged="SliderScale_ValueChanged"/>
+                                    </ikw:SimpleStackPanel>
+                                </ui:SettingsCard>
+                            </ui:SettingsExpander.Items>
+                        </ui:SettingsExpander>
 
                     </ikw:SimpleStackPanel>
                 </Grid>

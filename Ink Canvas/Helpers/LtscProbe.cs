@@ -138,6 +138,121 @@ namespace Ink_Canvas.Helpers
         /// 冒烟自测：在进程内直接调用被测代码，用真实对象验证修复是否生效。
         /// 不依赖鼠标、不依赖窗口层级——那些今晚已经证明不可靠。
         /// </summary>
+
+        /// <summary>
+        /// 暴力测试：模拟老师上课时的乱操作。
+        ///
+        /// 覆盖快速连点工具、快速折叠展开、以及两者混合。
+        /// 每轮都记内存和句柄，看增长是线性还是趋平——只看最后一轮分不清
+        /// 「真泄漏」和「填缓存」。
+        /// </summary>
+        public static void StressToolbar(int rounds)
+        {
+            Log("=== 工具栏暴力测试开始 rounds=" + rounds + " ===");
+
+            var mw = Application.Current?.MainWindow as MainWindow;
+            if (mw == null) { Log("主窗口为空，中止"); return; }
+
+            var mwType = typeof(MainWindow);
+            const BindingFlags F = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public;
+            var cursorClick = mwType.GetMethod("CursorIcon_Click", F);
+            var penClick = mwType.GetMethod("PenIcon_Click", F);
+            var eraserClick = mwType.GetMethod("EraserIcon_Click", F);
+            var selectClick = mwType.GetMethod("SelectIcon_MouseUp", F);
+
+            var tools = new List<(string, System.Reflection.MethodInfo)>();
+            foreach (var t in new[] { ("cursor", cursorClick), ("pen", penClick),
+                                      ("eraser", eraserClick), ("select", selectClick) })
+            {
+                if (t.Item2 == null) Log("  !! 找不到方法: " + t.Item1);
+                else tools.Add(t);
+            }
+            Log("  可用工具数: " + tools.Count);
+            if (tools.Count == 0) { Log("一个都找不到，中止"); return; }
+
+            var foldMethod = mwType.GetMethod("FoldFloatingBar", F);
+            var unfoldMethod = mwType.GetMethod("UnFoldFloatingBar", F);
+
+            void Run(Action a, string tag, ref int errs, List<string> msgs)
+            {
+                try { a(); }
+                catch (Exception ex)
+                {
+                    errs++;
+                    var inner = ex is TargetInvocationException tie ? (tie.InnerException ?? ex) : ex;
+                    if (msgs.Count < 12) msgs.Add(tag + " | " + inner.GetType().Name + " | " + Trim(inner.Message));
+                }
+            }
+
+            var gc0 = GC.GetTotalMemory(true);
+            int h0 = GetHandles();
+            Log("  基线: 内存=" + (gc0 / 1048576) + "MB 句柄=" + h0);
+
+            int errors = 0;
+            var errs = new List<string>();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var rnd = new Random(20261117);
+
+            for (int r = 0; r < rounds; r++)
+            {
+                // 阶段 1：纯连点，每轮 40 次随机工具切换
+                for (int i = 0; i < 40; i++)
+                {
+                    var (name, mi) = tools[rnd.Next(tools.Count)];
+                    Run(() => mi.Invoke(mw, mi.GetParameters().Length == 0 ? null : new object[] { null, null }),
+                        "点" + name, ref errors, errs);
+                }
+
+                // 阶段 2：折叠展开来回 3 次
+                for (int i = 0; i < 3; i++)
+                {
+                    if (foldMethod != null)
+                        Run(() => foldMethod.Invoke(mw, foldMethod.GetParameters().Length == 0
+                            ? null : new object[] { new object(), true }), "折叠", ref errors, errs);
+                    if (unfoldMethod != null)
+                        Run(() => unfoldMethod.Invoke(mw, unfoldMethod.GetParameters().Length == 0
+                            ? null : new object[] { null }), "展开", ref errors, errs);
+                }
+
+                // 阶段 3：混合——切工具和折叠交替，模拟手抖乱点
+                for (int i = 0; i < 10; i++)
+                {
+                    var (name, mi) = tools[rnd.Next(tools.Count)];
+                    Run(() => mi.Invoke(mw, mi.GetParameters().Length == 0 ? null : new object[] { null, null }),
+                        "混点" + name, ref errors, errs);
+                    if (foldMethod != null && i % 3 == 0)
+                        Run(() => foldMethod.Invoke(mw, foldMethod.GetParameters().Length == 0
+                            ? null : new object[] { new object(), true }), "混折叠", ref errors, errs);
+                }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                Log("  第 " + (r + 1) + " 轮: 内存=" + (GC.GetTotalMemory(true) / 1048576)
+                    + "MB 句柄=" + GetHandles()
+                    + " 已耗时=" + sw.ElapsedMilliseconds + "ms"
+                    + " 异常=" + errors);
+            }
+
+            sw.Stop();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            var gc1 = GC.GetTotalMemory(true);
+            int h1 = GetHandles();
+
+            Log("=== 暴力测试结束 ===");
+            Log("  总异常次数: " + errors);
+            foreach (var m in errs) Log("    异常: " + m);
+            Log("  内存: " + (gc0 / 1048576) + "MB -> " + (gc1 / 1048576) + "MB (+" + ((gc1 - gc0) / 1048576) + "MB)");
+            Log("  句柄: " + h0 + " -> " + h1 + " (+" + (h1 - h0) + ")");
+            Log("  总耗时: " + sw.ElapsedMilliseconds + "ms");
+
+            // 判据：40+ 次/轮 × N 轮的乱点下，异常应该是 0
+            if (errors == 0) Log("  [PASS] 暴力操作下无异常");
+            else Log("  [FAIL] 出现 " + errors + " 次异常");
+        }
+
         public static void SmokeTest()
         {
             Log("=== 冒烟自测开始 ===");
@@ -469,6 +584,84 @@ namespace Ink_Canvas.Helpers
                 else R("CACHE 主窗口可用", false, "MainWindow 为 null");
             }
             catch (Exception ex) { R("CACHE", false, Trim(ex.Message)); }
+
+
+            // --- 12. 翻页设置四行位序与独立性（2026-11-18）---
+            // 判据：改一个位置的开关，只该动它自己那一位。
+            // 位序 [0]=左下 [1]=右下 [2]=左侧 [3]=右侧。
+            // 写反了这里第 1 条就会失败。
+            try
+            {
+                var ppt = Ink_Canvas.Windows.SettingsViews.Helpers.SettingsManager.Settings?.PowerPointSettings;
+                if (ppt == null)
+                {
+                    R("FLIP 设置可用", false, "PowerPointSettings 为 null");
+                }
+                else
+                {
+                    int original = ppt.PPTButtonsDisplayOption;
+                    bool oLS = ppt.PPTLSUseGlobalSettings, oRS = ppt.PPTRSUseGlobalSettings;
+                    bool oLB = ppt.PPTLBUseGlobalSettings, oRB = ppt.PPTRBUseGlobalSettings;
+                    try
+                    {
+                        // 先全部转独立，消除继承对位的干扰
+                        ppt.PPTLBUseGlobalSettings = false;
+                        ppt.PPTRBUseGlobalSettings = false;
+                        ppt.PPTLSUseGlobalSettings = false;
+                        ppt.PPTRSUseGlobalSettings = false;
+
+                        string Bit(int bit)
+                        {
+                            string s = ppt.PPTButtonsDisplayOption.ToString("D4");
+                            return s.Length == 4 ? s[bit].ToString() : "?";
+                        }
+
+                        // 1) 关左下 → 只该动 bit[0]
+                        ppt.PPTButtonsDisplayOption = 2222;
+                        int v = 2222; char[] c = v.ToString("D4").ToCharArray();
+                        c[0] = '1';
+                        ppt.PPTButtonsDisplayOption = int.Parse(new string(c));
+                        R("FLIP-1 关左下只动 bit[0]", Bit(0) == "1" && Bit(1) == "2" && Bit(2) == "2" && Bit(3) == "2",
+                            "结果=" + ppt.PPTButtonsDisplayOption.ToString("D4") + " 期望=1222");
+
+                        // 2) 关右侧 → 只该动 bit[3]
+                        ppt.PPTButtonsDisplayOption = int.Parse("1222");
+                        c = "1222".ToCharArray();
+                        c[3] = '1';
+                        ppt.PPTButtonsDisplayOption = int.Parse(new string(c));
+                        R("FLIP-2 关右侧只动 bit[3]", Bit(3) == "1" && Bit(0) == "1" && Bit(1) == "2",
+                            "结果=" + ppt.PPTButtonsDisplayOption.ToString("D4") + " 期望=1221");
+
+                        // 3) 四个全关 → 1111
+                        ppt.PPTButtonsDisplayOption = int.Parse("1111");
+                        R("FLIP-3 四位全关得 1111", ppt.PPTButtonsDisplayOption == 1111,
+                            "实际=" + ppt.PPTButtonsDisplayOption);
+
+                        // 4) 左上/右下 的透明度字段互不影响
+                        double oLBOp = ppt.PPTLBButtonOpacity;
+                        double oRBOp = ppt.PPTRBButtonOpacity;
+                        ppt.PPTLBButtonOpacity = 0.3;
+                        R("FLIP-4 左下透明度不影响右下",
+                            Math.Abs(ppt.PPTRBButtonOpacity - oRBOp) < 1e-9,
+                            "LB=" + ppt.PPTLBButtonOpacity + " RB=" + ppt.PPTRBButtonOpacity);
+                        ppt.PPTLBButtonOpacity = oLBOp;
+
+                        R("FLIP-5 字段回滚正常", ppt.PPTRBButtonOpacity == oRBOp);
+                    }
+                    finally
+                    {
+                        ppt.PPTButtonsDisplayOption = original;
+                        ppt.PPTLSUseGlobalSettings = oLS;
+                        ppt.PPTRSUseGlobalSettings = oRS;
+                        ppt.PPTLBUseGlobalSettings = oLB;
+                        ppt.PPTRBUseGlobalSettings = oRB;
+                    }
+
+                    R("FLIP-6 配置已还原", ppt.PPTButtonsDisplayOption == original,
+                        "还原为=" + ppt.PPTButtonsDisplayOption);
+                }
+            }
+            catch (Exception ex) { R("FLIP", false, Trim(ex.Message)); }
 
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
