@@ -9,7 +9,7 @@
 
 ```
 分支      ltsc
-HEAD      15b55420
+HEAD      见 git log -1（写文档时是 042f4836，会往后走，别照抄）
 版本      0.1b-daily（日常测试线，不是定版）
 上一个定版 sorrow-0.1a
 发布      GitHub Release 两个：
@@ -19,21 +19,26 @@ HEAD      15b55420
 
 **代码量**
 
-| | 现在 | 昨天早上 |
+统计口径：只算 `Ink Canvas/` 项目（不含 InkCanvas.Controls 等 4 个子项目）。
+全仓 C# 是 114,188 行 / 386 文件，XAML 15,782 行 / 81 文件。
+
+| | 现在 | 起点（151992af，0.1a 定版） |
 |---|---|---|
-| C# | 110,740 行 / 352 文件 | 111,367 行 / 343 文件 |
+| C# | 110,740 行 / 352 文件 | 111,364 行 / 343 文件 |
 | XAML | 14,623 行 / 65 文件 | 14,651 行 / 68 文件 |
 
-行数只少了 627，但**最大的文件从 6281 行降到 3101 行**。多出来的文件数是拆分产物。
+行数只少了 624，但**最大的文件从 6281 行降到 3101 行**。多出来的文件数是拆分产物。
 
 **质量基线**
 
 ```
 编译错误   0
-编译警告   4 条（全是同一个地方，见第四节）
+编译警告   2 条（同一个 WFO2000 被主 csproj 和临时 wpftmp 各报一遍，
+           所以 grep 会看到 4 行。全是同一个地方，见第四节）
 冒烟       PASS=40 FAIL=0
 设置页     24/24 构造成功
-暴力测试   212 次操作异常 0
+工具栏暴力 5 轮 × 60 次操作 = 300 次，异常 0，内存 19MB 不涨，句柄 1068→1105
+设置页暴力 3 轮 × 24 页 = 72 次构造，异常 0，内存 19→120MB（见 4.3）
 ```
 
 ---
@@ -60,8 +65,11 @@ cd "E:/B1807/Documents/icc-lts/src/Ink Canvas"
 |---|---|---|
 | `--smoke-test` | 40 条断言，最常用的验收 | ~30s |
 | `--dump-settings-pages` | 构造 24 个设置页，抓 XAML 解析失败 | ~40s |
-| `--stress-toolbar N` | 工具栏暴力测试 N 轮，每轮 53 次乱点 | N×15s |
-| `--stress-settings N` | 设置页压力测试，看内存增长 | N×40s |
+| `--stress-toolbar N` | 工具栏暴力测试 N 轮，每轮 60 次乱点 | N×1s |
+| `--stress-settings N` | 设置页压力测试，看内存增长 | N×10s + 24页定长 |
+
+**探针不会自己退出**，跑完必须 taskkill，否则脚本会一直挂在那里等。
+`--dump-settings-pages` 和 `--stress-settings` 都是这样。
 
 **跑法**（注意：别把 sleep 塞进同步 bash 命令，会撞 run_code 的 120 秒上限）：
 
@@ -108,23 +116,27 @@ ICCCELite.dll.config
 | MW_FloatingBarIcons.cs | 6281 | 2600 | 6 个 partial |
 | MW_PPT.cs | 3203 | 2358 | 2 个 |
 | MainWindow.xaml.cs | 3312 | 3101 | 2 个 |
-| MW_SimulatePressureInkToShape.cs | 3121 | 2148 | 2 个 |
+| MW_SimulatePressure&InkToShape.cs（后改名去掉 &） | 3121 | 2148 | 2 个 |
 | MW_ElementsControls.cs | 3094 | 1872 | 2 个 |
-| MW_ShapeDrawing.cs | 3010 | 1071 | 3 个 |
-| MW_TouchEvents.cs | 2409 | 818 | 3 个 |
-| App.xaml.cs | 2137 | 1466 | 2 个 |
-| PPTQuickPanel.xaml.cs | 2090 | 1622 | 2 个 |
+| MW_ShapeDrawing.cs | 3009 | 1067 | 3 个 |
+| MW_TouchEvents.cs | 2409 | 814 | 3 个 |
+| App.xaml.cs | 2131 | 1490 | 2 个 |
+| PPTQuickPanel.xaml.cs | 2090 | 1621 | 2 个 |
 | NewStyleTimerWindow.xaml.cs | 1970 | 1801 | 2 个 |
 
 **所有拆分都验四件事**：括号平衡、方法名集合双向差集为空、编译 0 错误、冒烟通过。
 每次的 +增/-删 都能对上（多出来的是 using 头和注释）。
 
-**删的死代码**（约 2100 行）
+**删的死代码**
+
+（下面的数都是逐个 `git show --numstat` 数出来的，不是估的。
+早先我写过「约 2100 行」，那个数是估的，撤回。）
 
 ```
-11 个死文件（PPTROTConnectionHelper 594 行 / Hotkey.cs 96 行 / ...）
-Action.Register     259 行 / 9 个方法
-Rule.Register       232 行 / 7 个方法
+11 个死文件 1301 行（PPTROTConnectionHelper 594 行 / Hotkey.cs 96 行 /
+CycleProcessBar 219 行 / ExternalCallerLauncher 81 行 / ... 其中 3 个是 .xaml）
+Action.Register     259 行（7ea7cd4f，删 9 个 Register() 方法）
+Rule.Register       232 行（da76ceac，删 7 个 Rule Register() 方法）
 空壳常量类            59 行
 死 Converter          60 行
 死重载                54 行
@@ -143,7 +155,7 @@ DI 泛型注册、typeof() 出现在特性里、XAML 元素实例化、扩展方
 
 判据是「这个错误发生时，有没有人能知道」。
 
-最要紧的是 `SettingsManager.SaveSettingsToFile` —— 全项目 281 个调用点，
+最要紧的是 `SettingsManager.SaveSettingsToFile` —— 全项目 276 处引用（274 个真实调用 + 2 处定义），
 catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等于完全无声：
 用户改了设置、界面显示已改、重开回滚，永远查不出原因。
 
@@ -197,14 +209,14 @@ catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等
 老配置兼容：`XxxUseGlobalSettings` 字段没删，页面不暴露但代码仍读。
 **转独立的顺序很关键**：先把生效值抄进该位置字段，再关开关。反过来会让同行四项集体跳回旧值。
 
-## 3.5 编译警告 7 类 → 1 类
+## 3.5 编译警告 7 类 → 1 类（这 1 类后来又退回去，见 4.2）
 
 | 项 | 处理 |
 |---|---|
 | CS0649 死字段 | 真 bug，删 |
 | SYSLIB0060 过时 PBKDF2 | 换静态 API，**显式传 SHA1** |
 | CS4014 未 await | 加 `_ =` |
-| WFO2000 ×2 | 改静态缓存 |
+| WFO2000 | 改静态缓存（后来又退回，见 4.2——改了会引并发 bug） |
 | NU1510 冗余包 | 删 Microsoft.VisualBasic |
 | CS8981 小写别名 | `ui` → `Ui` |
 
@@ -229,18 +241,50 @@ catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等
 
 本机实测是「文件存在但值为 False」。**再真弹一次，拿这行来定位。**
 
-## 4.2 剩下那 4 条 WFO2000 不要改
+## 4.2 那 2 条 WFO2000 不要改
 
 `WindowOverviewModel.Windows` 的 getter 在锁内复制一份返回。
 这个「每次 new」**是必须的**——集合有后台定时器在改，直接返回内部引用会让调用方
 撞上 `InvalidOperationException: Collection was modified`。改了反而引入并发 bug。
 
-## 4.3 设置页内存每轮 +28MB
+## 4.3 设置页内存每轮涨 ~33MB（比例固定，不是线性泄漏）
 
-iNKORE 库的老问题，[上游 #438](https://github.com/iNKORE-NET/UI.WPF.Modern/issues/438)。
-0.11.0 修了一部分（43MB/轮 → 30MB/轮），但没修干净。
+实测（`--stress-settings`，每轮 24 页全构造）：
 
-和业务代码无关，是库的账。要么等上游，要么换库。
+| 轮 | 内存 | 增量 |
+|---|---|---|
+| 基线 | 19MB | — |
+| 1 | 55MB | +36 |
+| 2 | 88MB | +33 |
+| 3 | 120MB | +32 |
+| 4 | 152MB | +32 |
+
+**每轮增量是固定值，不是越涨越多**，说明是「按页大小算的固定开销」，
+不是「订阅越挂越多」那种真泄漏。但 4 轮就到 152MB，老师来回点几下设置就该重启了，
+该修。
+
+**已经查实的**（用弱引用 + 轮次标记实测）：
+
+- 每轮 24 页里固定 **10 个**在完整 GC 后仍存活，且**每轮都是同一批**
+- 存活页面的共同点：XAML 里都有 `ui:SettingsExpander`（每页 6~38 个）
+- 其余 13 页全是 0 个 `SettingsExpander`，全部被回收
+- 这个相关性在 24 个页面上是**完美对应**，没有例外
+
+**还不能下结论的地方**：
+
+上一个版本我写「是 iNKORE 的账，和业务代码无关」，这个结论**没有证据**：
+
+1. 「相关」不是「因果」——10 个存活页都含 SettingsExpander，不等于 SettingsExpander 就是持有者
+2. 原文档引用的「43MB/轮 → 30MB/轮」和这里实测的 33MB/轮 也不是同一个测量
+3. 我试过全程序集反射扫静态字段/属性找持有者，**这条路走不通**：
+   扫描耗时 9 秒以上，UI 线程一停心跳就被看门狗判卡死、强制重启，
+   日志断在扫描开始那一行（连 Join 带超时都救不了，因为 Join 本身就在堵 UI 线程）。
+   已把这段扫静态字段的代码撤掉了（临时诊断代码一律不进主干，
+   留在代码里就是技术债）。
+
+**下一步该做的**：不要再用反射扫全部程序集。改用
+`dotnet-gcdump` / `dotnet-dump` 抓转储，或者对 SettingsExpander 单独做
+「只查这一个类型的静态成员」的定点扫描（范围小，耗时可控）。
 
 ## 4.4 问题 1/2/3 没做真机验收
 
@@ -302,6 +346,26 @@ CRLF 文件先归一化成 `\n`，处理完再还原。
 判据：多智能体共享工作目录时，**永远不要用 `git add -A` / `git add .`**。
 精确列路径。
 
+## 错误 7：把「查过一遍没找到」当成「不存在」
+
+这份文档第一版报了一堆数字，全是凭记忆 + 中途估的，一个都没回查。
+复核时逐条现跑命令，改掉了这些：
+
+| 原先写的 | 实际 |
+|---|---|
+| SaveSettingsToFile 281 个调用点 | 276 处引用（274 调用 + 2 定义） |
+| 编译警告 4 条 | 2 条（grep 看到 4 行是重复报告） |
+| 暴力测试 212 次操作 | 每轮 60 次，5 轮 = 300 次 |
+| 基线 111,367 行 | 111,364 行 |
+| src/docs 16 份 md | 18 份 |
+| 拆分表 4 个行数 | 各差 1~44 |
+
+**没有一个是编的，全是「我当时那么记得」**。这就是我在自述里写的那个病：
+拿记忆当发现。
+
+判据：文档里的每个数字都是「断言」，不是「描述」。写之前现跑一遍命令，
+把命令和输出一起贴进去；跑不了的就删掉，或者写明「未复核」。
+
 ---
 
 # 六、协作方式（如果还要派子智能体）
@@ -338,8 +402,8 @@ CRLF 文件先归一化成 `\n`，处理完再还原。
 ```
 仓库      E:/B1807/Documents/icc-lts/src
 主项目    E:/B1807/Documents/icc-lts/src/Ink Canvas
-文档      src/docs/（16 份 md，进 git）
-          docs/（仓库外，工作过程）
+文档      src/docs/（18 份 md，进 git；全仓 33 份）
+          ../docs/（仓库外，工作过程，8 份）
 产物      dist/
 ```
 
@@ -433,7 +497,7 @@ IC (WXRIW) → ICA (ChangSakura) → ICC (Dubi906w)
 taskkill //F //IM ICCCELite.exe 2>/dev/null | head -1
 cd "E:/B1807/Documents/icc-lts/src/Ink Canvas"
 "/c/Program Files/dotnet/dotnet.exe" build "InkCanvasForClass.csproj" -c Release -p:Platform=x64 --nologo -v q
-# 期望：0 错误，4 条 WFO2000
+# # 期望：0 错误，2 个 WFO2000（grep warning 会看到 4 行，是重复报告）
 
 cd bin/Release/x64/net11.0-windows10.0.19041.0
 rm -f Logs/*.txt

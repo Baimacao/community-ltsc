@@ -51,6 +51,11 @@ namespace Ink_Canvas.Helpers
             var errs = new List<string>();
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
+            // 只记内存数字说明不了「是库的账」还是「我们的页面没被回收」。
+            // 每页留一个弱引用，跑完看还活着几个——活着的才是继续查的入口。
+            // 不记这个，「内存涨了」只能靠猜，而猜出来的结论不可用。
+            var weakRefs = new List<(string Tag, WeakReference Ref)>();
+
             for (int r = 0; r < rounds; r++)
             {
                 foreach (var kv in pageTypes)
@@ -63,6 +68,10 @@ namespace Ink_Canvas.Helpers
                         fe.Measure(new Size(1000, 800));
                         fe.Arrange(new Rect(0, 0, 1000, 800));
                         fe.UpdateLayout();
+                        // 每轮都记，最后按轮报存活数：
+                        // 只有末轮活着 = 在等 GC，不是泄漏；
+                        // 前几轮还活着 = 真被攥住了，按轮递减说明有东西线性累积。
+                        weakRefs.Add(("r" + (r + 1) + "." + kv.Key, new WeakReference(page)));
                     }
                     catch (Exception ex)
                     {
@@ -70,6 +79,13 @@ namespace Ink_Canvas.Helpers
                         var inner = ex is TargetInvocationException ? ((TargetInvocationException)ex).InnerException ?? ex : ex;
                         if (errs.Count < 10) errs.Add("r" + r + " " + kv.Key + " | " + inner.GetType().Name + " | " + Trim(inner.Message));
                     }
+                    // 每构造一页就让出一次 UI 线程。
+                    //
+                    // 不让出的后果实测过：整轮是同步死循环，心跳 DispatcherTimer（Background 优先级）
+                    // 一次都跑不到，看门狗看到 sinceHeartbeat > 20 秒就判「主线程卡死」强制重启，
+                    // 进程在第 3 轮动手之前就没了——探针永远跑不完设定的轮数，也永远拿不到总结数据。
+                    // 上一版就栽在这里（日志里是「主线程卡死 29.4 秒，强制重启」）。
+                    YieldUi();
                 }
                 // 每轮都记，才能看出增长是线性的还是趋平的。
                 // 只看每 3 轮的数据分辨不出「真泄漏」和「填缓存」。
@@ -97,6 +113,24 @@ namespace Ink_Canvas.Helpers
             Log("异常: " + errors);
             foreach (var e in errs) Log("  [错] " + e);
 
+            // 全量 GC 之后，每轮构造的页面还活着几个。
+            // 按轮分开看很关键：只有末轮活着 = 在等 GC，不是泄漏；
+            // 前面几轮也活着 = 真被攥住了，且每轮都同一批说明是固定持有者，
+            // 不是「订阅越挂越多」那种线性累积。
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                var alive = weakRefs.Where(x => x.Ref.IsAlive).Select(x => x.Tag).ToList();
+                var byRound = alive
+                    .GroupBy(t => t.Substring(0, t.IndexOf('.')))
+                    .OrderBy(g => g.Key, StringComparer.Ordinal)
+                    .Select(g => g.Key + "=" + g.Count());
+                Log("页面存活: " + alive.Count + "/" + weakRefs.Count
+                    + "  按轮: " + string.Join(" ", byRound));
+                if (alive.Count > 0) Log("  存活明细: " + string.Join(", ", alive));
+            }
+
             var w = win as Window;
             if (w != null) { try { w.Close(); } catch { } }
             Log("=== 暴力测试结束 ===");
@@ -109,10 +143,21 @@ namespace Ink_Canvas.Helpers
         private static extern int GetProcessHandleCount(IntPtr hProcess, out int count);
 
         /// <summary>
-        /// 泵消息式等待：把控制权交回 Dispatcher，让界面保持响应。
-        /// 直接用 Thread.Sleep 堵 UI 线程会触发看门狗「主线程无响应 20 秒强制重启」，
-        /// 长测试会断在半路。
+        /// 让出一次 UI 线程，让 Background 优先级的 DispatcherTimer（心跳）有机会跑一轮。
+        ///
+        /// 和 PumpWait 的区别：PumpWait 要等满 ms 毫秒，会拖长整个测试；
+        /// 这里只压一帧 Background 回调，目的是刷心跳，不是等待。
+        /// 代价可忽略（一帧 Background 约 1ms 内），但能决定长测试能不能跑完。
         /// </summary>
+        private static void YieldUi()
+        {
+            var frame = new System.Windows.Threading.DispatcherFrame();
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Background,
+                new Action(() => frame.Continue = false));
+            System.Windows.Threading.Dispatcher.PushFrame(frame);
+        }
+
         private static void PumpWait(int ms)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -223,7 +268,12 @@ namespace Ink_Canvas.Helpers
                     if (foldMethod != null && i % 3 == 0)
                         Run(() => foldMethod.Invoke(mw, foldMethod.GetParameters().Length == 0
                             ? null : new object[] { new object(), true }), "混折叠", ref errors, errs);
+                    YieldUi();
                 }
+
+                // 折叠/展开内部会 await 动画在下一帧完成的序列，不让线程的话
+                // 每一轮的折叠都只把状态机推进一步就没下文，测出来的「无异常」是空的。
+                YieldUi();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
