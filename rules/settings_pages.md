@@ -6,49 +6,63 @@
 
 ```
 应用设置
-├── 首页
+├── 首页                                    (HomePage)
 ├── ── ICC CE 设置 ──（分隔符）
 ├── 通用
-│   ├── 基本 (StartupPage)
-│   ├── 时钟 (ClockPage)
-│   ├── 隐私 (PrivacyPage)
-│   ├── 安全 (SecurityPage)
-│   ├── 高级 (AdvancedPage)
-│   └── 性能 (PerformancePage)
+│   ├── 基本                                (StartupPage)
+│   ├── 安全                                (SecurityPage)
+│   └── 高级                                (AdvancedPage)
 ├── 主界面
-│   ├── 窗口 (WindowPage)
-│   ├── 个性化 (AppearancePage)
-│   └── 快捷键 (HotkeyPage)
-├── 画板设置
-│   ├── 画布 (CanvasPage)
-│   └── 墨迹识别 (InkRecognitionPage)
-├── PPT联动 (PowerPointPage)
-├── 更新 (UpdatePage)
-├── 通知
-│   ├── 通知设置 (NotificationPage)
-│   └── 公告中心 (AnnouncementCenterPage)
-├── 实验性 (ExperimentalPage)
-├── 存储
-│   ├── 存储管理 (StoragePage)
-│   ├── 备份与还原 (BackupPage)
-│   └── 云存储 (CloudStoragePage)
+│   ├── 窗口                                (WindowPage)
+│   ├── 侧边栏                              (SidebarPage)
+│   └── 快捷键                              (HotkeyPage)
+├── 画布                                    (CanvasPage)
+├── 授课
+│   ├── PowerPoint                          (PowerPointPage)
+│   ├── 翻页笔                              (PresenterKeyPage)
+│   └── 计时器                              (TimerPage)
+├── 自动化                                  (AutomationWorkflowPage)
+├── 存储                                    (StoragePage)
 ├── 工具栏
-│   ├── 组件 (ToolbarPage)
-│   ├── 外观 (ToolbarAppearancePage)
-│   └── 菜单 (ToolbarMenuPage)
+│   ├── 组件                                (ToolbarPage)
+│   ├── 外观                                (ToolbarAppearancePage)
+│   └── 菜单                                (ToolbarMenuPage)
 ├── 白板
-│   ├── 组件 (BoardToolbarPage)
-│   ├── 外观 (BoardAppearancePage)
-│   └── 菜单 (BoardMenuPage)
-├── 自动化 (AutomationWorkflowPage)
-├── 点名与计时器 (RandomDrawPage)
-├── Debug (DebugPage)
-├── ── 插件设置 ──（分隔符）
-├── 插件 (PluginPage)
+│   ├── 组件                                (BoardToolbarPage)
+│   ├── 外观                                (BoardAppearancePage)
+│   ├── 菜单                                (BoardMenuPage)
+│   └── 使用提示                            (WhiteboardTipsPage)
 ├── ── 底部 ──（分隔符）
-├── 友情链接 (FriendlyLinksPage)
-└── 关于 Ink Canvas (AboutPage)
+├── 友情链接                                (FriendlyLinksPage)
+└── 关于                                    (AboutPage)
 ```
+
+> **2026-11-18 重画。** 原来这棵树整个是旧的，跟着它做开发会掉坑里：
+>
+> **已经不存在、但旧树里还写着的（13 个）：**
+> ClockPage、PrivacyPage、PerformancePage、AppearancePage、InkRecognitionPage、
+> UpdatePage、NotificationPage、AnnouncementCenterPage、ExperimentalPage、
+> BackupPage、CloudStoragePage、RandomDrawPage、DebugPage
+>
+> 还有整个「插件设置」分组（PluginPage）——插件系统在 `7a30c93f` 时已整体删除。
+>
+> **存在、但旧树里没写的（7 个）：**
+> SidebarPage、PresenterKeyPage、TimerPage、WhiteboardTipsPage、SettingsPage、
+> PPTPageFlipPreviewPage、HomePage 之外的其余入口。
+>
+> 树上面那版是照着 `SettingsWindow.xaml` 里实际的 `Tag` 属性抄的，共 22 个导航入口。
+>
+> **判断标准：`Tag` 值能不能在 `Windows/SettingsViews/Pages/` 里找到同名 `.xaml`。**
+> 找不到就是树过期了，别照着改代码。
+>
+> **有两个页面不在导航栏里，但确实存在**，别当成漏写：
+>
+> | 页面 | 怎么进来的 |
+> |---|---|
+> | `SettingsPage` | 容器页。`SettingsWindow.xaml.cs:541` 里明确 `if (tag == "Settings") continue`，导航扫链接时会跳过它 |
+> | `PPTPageFlipPreviewPage` | 从 PPT 设置里跳进去的预览页，不是顶级入口 |
+>
+> 所以 `Pages/` 目录里有 24 个 `.xaml`，导航栏只有 22 个入口。
 
 ## 导航栏文字
 
@@ -130,45 +144,26 @@ _pageTypes = new Dictionary<string, Type>
 
 ### 完整映射
 
-```csharp
-private static readonly Dictionary<string, Type> _pageDict = new()
-{
-    { "HomePage", typeof(HomePage) },
-    { "StartupPage", typeof(StartupPage) },
-    { "ClockPage", typeof(ClockPage) },
-    { "PrivacyPage", typeof(PrivacyPage) },
-    { "SecurityPage", typeof(SecurityPage) },
-    { "AdvancedPage", typeof(AdvancedPage) },
-    { "PerformancePage", typeof(PerformancePage) },
-    { "WindowPage", typeof(WindowPage) },
-    { "AppearancePage", typeof(AppearancePage) },
-    { "HotkeyPage", typeof(HotkeyPage) },
-    { "CanvasPage", typeof(CanvasPage) },
-    { "InkRecognitionPage", typeof(InkRecognitionPage) },
-    { "PowerPointPage", typeof(PowerPointPage) },
-    { "UpdatePage", typeof(UpdatePage) },
-    { "NotificationPage", typeof(NotificationPage) },
-    { "AnnouncementCenterPage", typeof(AnnouncementCenterPage) },
-    { "ExperimentalPage", typeof(ExperimentalPage) },
-    { "StoragePage", typeof(StoragePage) },
-    { "BackupPage", typeof(BackupPage) },
-    { "CloudStoragePage", typeof(CloudStoragePage) },
-    { "ToolbarPage", typeof(ToolbarPage) },
-    { "ToolbarAppearancePage", typeof(ToolbarAppearancePage) },
-    { "ToolbarMenuPage", typeof(ToolbarMenuPage) },
-    { "BoardToolbarPage", typeof(BoardToolbarPage) },
-    { "BoardAppearancePage", typeof(BoardAppearancePage) },
-    { "BoardMenuPage", typeof(BoardMenuPage) },
-    { "AutomationWorkflowPage", typeof(AutomationWorkflowPage) },
-    { "RandomDrawPage", typeof(RandomDrawPage) },
-    { "DebugPage", typeof(DebugPage) },
-    { "PluginPage", typeof(PluginPage) },
-    { "PluginSettingsPage", typeof(PluginSettingsPage) },
-    { "FriendlyLinksPage", typeof(FriendlyLinksPage) },
-    { "AboutPage", typeof(AboutPage) },
-    { "Settings", typeof(SettingsPage) },
-};
-```
+上面第一个例子里的 `_pageTypes` 那份就是完整映射，**它是唯一来源，不要在这里再抄一份。**
+
+> **这段别照抄，去看源码。**
+>
+> 原来这里贴了一份完整的 36 条注册表，但那是旧版——里面有 15 个页面已经不存在。
+> 贴在这里还有个更麻烦的后果：**文档和源码各存一份，改一处另一处不变。**
+>
+> 源码 `SettingsWindow.xaml.cs` 里就有一段注释记着这事：
+> 那个类里原本有两份完全相同的字典，各自演化，导致审计时「搜到哪份就信哪份」，
+> 是 C-03 误判「页面不可达」的直接原因。现在源码里只保留字段初始化器一份。
+>
+> **文档不要再抄第三份。** 要查有哪些页面，直接看这两个地方：
+>
+> ```bash
+> # 注册表（唯一来源）
+> sed -n '19,50p' "Ink Canvas/Windows/SettingsViews/SettingsWindow.xaml.cs"
+>
+> # 实际存在的页面文件
+> ls "Ink Canvas/Windows/SettingsViews/Pages/"*.xaml
+> ```
 
 ## 设置添加与删除
 
