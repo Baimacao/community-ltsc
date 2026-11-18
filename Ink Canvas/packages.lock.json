@@ -96,12 +96,6 @@
         "resolved": "15.0.4420.1018",
         "contentHash": "3XkJAqbYq93MqqSOPusNE+6Tve5yBkbE92n9W8f+k8Z9AzXeoTMqMYqhZMrzVOp4saHhMMbOD78JkCjvk+qIzw=="
       },
-      "Microsoft.VisualBasic": {
-        "type": "Direct",
-        "requested": "[10.3.0, )",
-        "resolved": "10.3.0",
-        "contentHash": "AvMDjmJHjz9bdlvxiSdEHHcWP+sZtp7zwule5ab6DaUbgoBnwCsd7nymj69vSz18ypXuEv3SI7ZUNwbIKrvtMA=="
-      },
       "MicrosoftOfficeCore": {
         "type": "Direct",
         "requested": "[15.0.0, )",

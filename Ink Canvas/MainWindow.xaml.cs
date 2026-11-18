@@ -64,8 +64,16 @@ namespace Ink_Canvas
 
         // 设置面板相关状态
         // _isApplyingLanguageFromSettings migrated to AppearancePage
-        // Window_Closing 里据此跳过关闭确认（语言切换走重启路线时不再关主窗口）。
-        internal bool _isReloadingForLanguageChange;
+        //
+        // LTSC（2026-11-18）：删掉 _isReloadingForLanguageChange。
+        //
+        // 这个字段原来只有两处：doc 注释说「语言切换走重启路线时跳过关闭确认」，
+        // Window_Closing 里有个 if 读它。但全项目从来没有给它赋过值，
+        // 所以那个 if 永远不成立——跳过关闭确认这事从来没发生过。
+        //
+        // 核实过：语言切换重启走的是 AppRestartHelper.RestartWithCurrentPrivileges()，
+        // 那条路径直接 Process.Start 起新实例 + Application.Current.Shutdown()，
+        // 根本不经过 Window_Closing。所以这个「跳过」本来就不需要。
 
         /// <summary>
         /// OOBE 因为换语言被打断（用户选了立即重启）。
@@ -1707,9 +1715,6 @@ namespace Ink_Canvas
         {
             try
             {
-                if (_isReloadingForLanguageChange)
-                    return;
-
                 LogHelper.WriteLogToFile("Ink Canvas closing", LogHelper.LogType.Event);
 
                 if (_allowCloseAfterExitVerification)

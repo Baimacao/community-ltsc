@@ -1,12 +1,12 @@
 using System.Windows;
 using System.Windows.Controls;
-using ui = iNKORE.UI.WPF.Modern.Controls;
+using Ui = iNKORE.UI.WPF.Modern.Controls;
 
 namespace Ink_Canvas.Controls
 {
     public partial class LabeledToggleSwitch : UserControl
     {
-        public ui.ToggleSwitch ToggleSwitchControl => ToggleSwitch;
+        public Ui.ToggleSwitch ToggleSwitchControl => ToggleSwitch;
 
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
             nameof(Label), typeof(string), typeof(LabeledToggleSwitch), new PropertyMetadata(string.Empty));

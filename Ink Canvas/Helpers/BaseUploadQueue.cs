@@ -77,7 +77,17 @@ namespace Ink_Canvas.Helpers
         /// <summary>
         /// 允许的文件扩展名
         /// </summary>
-        protected virtual HashSet<string> AllowedExtensions => new HashSet<string> { ".png", ".icstk", ".xml", ".zip" };
+        // LTSC（2026-11-18）：从「每次访问都 new 一个 HashSet」改成缓存实例。
+        //
+        // WFO2000 提示这个 getter 每次返回新对象。核实过：唯一的用法是
+        // BaseUploadQueue.cs:527 的 AllowedExtensions.Contains(...)，
+        // 没有任何调用方修改返回值。所以复用同一个实例是安全的。
+        //
+        // 保留 virtual —— 子类仍然可以覆盖成自己的集合。当前没有子类覆盖。
+        private static readonly HashSet<string> _defaultAllowedExtensions
+            = new HashSet<string> { ".png", ".icstk", ".xml", ".zip" };
+
+        protected virtual HashSet<string> AllowedExtensions => _defaultAllowedExtensions;
 
         /// <summary>
         /// 获取队列文件路径

@@ -663,6 +663,49 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("FLIP", false, Trim(ex.Message)); }
 
+
+            // --- 13. 密码算法换 API 后仍向后兼容（2026-11-18）---
+            // 背景：DeriveKey 从过时的 Rfc2898DeriveBytes 构造函数换成静态 Pbkdf2。
+            // 旧构造函数默认 SHA1，新写法必须显式传 SHA1，否则老密码全部失效。
+            // 这条测试用「旧算法算哈希 + 新代码验证」来证明兼容。
+            try
+            {
+                var secType = typeof(Ink_Canvas.Helpers.SecurityManager);
+                var settings = new Settings();
+                string testPwd = "LtscProbe-2026";
+
+                // PWD-1：新代码往返
+                secType.GetMethod("SetPassword")?.Invoke(null, new object[] { settings, testPwd });
+                var verify = secType.GetMethod("VerifyPassword");
+                bool ok1 = (bool)verify.Invoke(null, new object[] { settings, testPwd });
+                bool ok2 = (bool)verify.Invoke(null, new object[] { settings, "wrong-password" });
+                R("PWD-1 新代码设置+验证通过", ok1, "正确密码应通过");
+                R("PWD-2 错误密码被拒", !ok2, "错误密码不该通过");
+
+                // PWD-3【关键】旧算法存的哈希，新代码要能验证
+                // 用 .NET 的旧构造函数算一份（这里会报 SYSLIB0060 警告，是故意的：
+                // 我们要模拟「用户在老版本里存过密码」这个状态）
+                var salt = new byte[16];
+                using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(salt);
+                }
+#pragma warning disable SYSLIB0060
+                byte[] legacyHash;
+                using (var kdf = new System.Security.Cryptography.Rfc2898DeriveBytes(testPwd, salt, 120000))
+                {
+                    legacyHash = kdf.GetBytes(32);
+                }
+#pragma warning restore SYSLIB0060
+                settings.Security.PasswordSalt = Convert.ToBase64String(salt);
+                settings.Security.PasswordHash = Convert.ToBase64String(legacyHash);
+
+                bool ok3 = (bool)verify.Invoke(null, new object[] { settings, testPwd });
+                R("PWD-3 旧算法存的哈希新代码能验证", ok3,
+                    ok3 ? "向后兼容 OK" : "!! 老密码会失效，算法换错了");
+            }
+            catch (Exception ex) { R("PWD", false, Trim(ex.Message)); }
+
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
 

@@ -120,7 +120,10 @@
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <!-- LTSC（2026-11-18）：删掉 Microsoft.VisualBasic 的显式引用。
+         NU1510 提示这个包随框架自带，不需要显式引用。
+         删之前核实过：代码里没有任何 Microsoft.VisualBasic.* 用法，
+         那 477 处 "Strings.xxx" 全是 Ink_Canvas.Properties 下我们自己的资源类。 -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="NHotkey.Wpf" Version="4.0.0" />
     <PackageReference Include="OSVersionExt" Version="4.1.0" />

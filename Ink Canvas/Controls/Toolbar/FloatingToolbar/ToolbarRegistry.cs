@@ -68,12 +68,24 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
         public static bool GetUseRedStyle(FrameworkElement element)
             => (bool)element.GetValue(UseRedStyleProperty);
 
-        public static List<KeyValuePair<string, string>> AvailableConditions => new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("isAnnotating", Strings.GetString("ToolbarCondition_Annotating") ?? "Annotation mode"),
-            new KeyValuePair<string, string>("isPPTMode", Strings.GetString("ToolbarCondition_PPTMode") ?? "PPT mode"),
-            new KeyValuePair<string, string>("isContentCollapsedByUser", Strings.GetString("ToolbarCondition_Collapsed") ?? "Toolbar collapsed")
-        };
+        // LTSC（2026-11-18）：从「每次访问都 new 一个 List」改成静态缓存。
+        //
+        // WFO2000 提示这个 getter 每次返回新对象。这里确实没必要——
+        // 唯一的消费者是 XAML 绑定（ToolbarPage.xaml:530），读一次就完事，
+        // 不存在「需要每次拿到独立副本」的场景。
+        //
+        // 注意：缓存的是**列表对象**，不是里面的字符串。字符串要跟着语言走，
+        // 所以首次访问时才构造（那时语言已经定下来了）。换语言要重启，
+        // 重启后这个静态字段自然重建。
+        private static List<KeyValuePair<string, string>> _availableConditions;
+
+        public static List<KeyValuePair<string, string>> AvailableConditions
+            => _availableConditions ??= new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("isAnnotating", Strings.GetString("ToolbarCondition_Annotating") ?? "Annotation mode"),
+                new KeyValuePair<string, string>("isPPTMode", Strings.GetString("ToolbarCondition_PPTMode") ?? "PPT mode"),
+                new KeyValuePair<string, string>("isContentCollapsedByUser", Strings.GetString("ToolbarCondition_Collapsed") ?? "Toolbar collapsed")
+            };
 
         private static bool _isContentCollapsedByUser = false;
 

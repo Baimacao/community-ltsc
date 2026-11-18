@@ -752,7 +752,14 @@ namespace Ink_Canvas
             // 只在真正启动时播一次；RebuildToolbar 之类的重建路径不会触发它。
             if (willPlayIntro)
             {
-                Dispatcher.BeginInvoke(new Action(() =>
+                // LTSC（2026-11-18）：加 _ = 消 CS4014。
+                //
+                // 这里的「不 await」是故意的：BeginInvoke 的语义就是排到 UI 队列后立刻返回，
+                // 调用方本来就该继续往下走。编译器分不清这是「设计如此」还是「忘了 await」，
+                // 所以它警告。
+                //
+                // 内部有完整 try/catch 并写日志，动画抛异常不会丢。
+                _ = Dispatcher.BeginInvoke(new Action(() =>
                 {
                     try
                     {

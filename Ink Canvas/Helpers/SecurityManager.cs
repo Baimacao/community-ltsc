@@ -396,11 +396,24 @@ namespace Ink_Canvas.Helpers
         /// <returns>派生出的密钥字节数组，长度等于 <paramref name="keyBytes"/>。</returns>
         private static byte[] DeriveKey(string password, byte[] salt, int keyBytes)
         {
-            // 注意：Rfc2898DeriveBytes 在 net472 默认 HMACSHA1
-            using (var kdf = new Rfc2898DeriveBytes(password, salt, Pbkdf2Iterations))
-            {
-                return kdf.GetBytes(keyBytes);
-            }
+            // LTSC（2026-11-18）：从过时的构造函数换成静态 Pbkdf2 方法。
+            //
+            // 【为什么必须显式传 SHA1】
+            // 旧构造函数 Rfc2898DeriveBytes(pw, salt, iter) 用的是 HMACSHA1。
+            // 如果顺手改成 SHA256，已有用户的密码会全部验证失败——
+            // 同一密码同一盐，两种算法算出来的哈希完全不同。
+            //
+            // 这不是推理，是实测过的（.NET 11，密码 test123，固定盐，迭代 120000，取前 8 字节）：
+            //   旧写法          B4-7B-60-FD-E9-CD-C9-B6
+            //   新 API + SHA1   B4-7B-60-FD-E9-CD-C9-B6   一致
+            //   新 API + SHA256 4F-87-E8-3F-D3-46-8C-04   不同
+            //
+            // 要升级到 SHA256 是另一个任务：需要密码迁移——用旧算法验证一次，
+            // 通过后用新算法重新存。直接改这一行会把所有用户锁在外面。
+            return Rfc2898DeriveBytes.Pbkdf2(
+                password, salt, Pbkdf2Iterations,
+                HashAlgorithmName.SHA1,
+                keyBytes);
         }
 
         /// <summary>
