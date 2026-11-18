@@ -69,28 +69,8 @@
                            Margin="0,12,0,0"
                            Text="建议以普通权限重新启动。这只是权限问题，不会影响你的数据。"/>
 
-                <!-- 一键修复：直接清掉快捷方式上的管理员标记。
-                     老师不知道「右键属性 → 兼容性」这回事，让他自己翻必翻不出来。 -->
-                <StackPanel x:Name="PanelFixShortcut" Margin="0,14,0,0">
-                    <TextBlock TextWrapping="Wrap"
-                               LineHeight="20"
-                               Opacity="0.85"
-                               Text="检测到你平时用的快捷方式勾了「以管理员身份运行」。可以直接点这里去掉："/>
-                    <TextBlock x:Name="TextBlockShortcutPath"
-                               TextWrapping="Wrap"
-                               FontFamily="Consolas"
-                               FontSize="11"
-                               Margin="0,6,0,8"
-                               Opacity="0.7"
-                               Visibility="Collapsed"/>
-                    <Button x:Name="BtnFixShortcut"
-                            Content="清掉快捷方式的管理员标记"
-                            MinWidth="180"
-                            Height="32"
-                            HorizontalAlignment="Left"
-                            Visibility="Collapsed"
-                            Click="BtnFixShortcut_Click"/>
-                </StackPanel>
+                <!-- 快捷方式的检查与清理在 设置 → 高级 里，不放在启动流程里。
+                     这个窗口是启动时弹的，再往里塞一遍全盘扫描只会让启动更慢。 -->
             </StackPanel>
         </Border>
 

@@ -131,6 +131,124 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             SettingsManager.SaveSettingsToFile();
         }
 
+        /// <summary>上一次检查找到的快捷方式路径；null 表示没有或还没查过。</summary>
+        private string _adminShortcutFound;
+
+        /// <summary>
+        /// 主动检查快捷方式上有没有「以管理员身份运行」标记。
+        ///
+        /// 为什么放在设置里而不是启动时：全盘扫开始菜单可能有几百个 .lnk，
+        /// 而 app.manifest 是 asInvoker，绝大多数机器上根本扫不出东西。
+        /// 为了一次大概率空跑的扫描去拖慢每次启动，不划算。
+        ///
+        /// 这个标记为什么重要：ICC 被提权启动后，Windows 的 UIPI 会切断它和
+        /// 普通权限 PowerPoint 之间的 COM —— PPT 联动整体失效，
+        /// 而且界面上没有任何提示（2026-11-18 班测）。
+        /// </summary>
+        private void BtnCheckShortcutAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            if (BtnCheckShortcutAdmin != null) BtnCheckShortcutAdmin.IsEnabled = false;
+            if (BtnFixShortcutAdmin != null) BtnFixShortcutAdmin.Visibility = Visibility.Collapsed;
+
+            try
+            {
+                if (TextBlockShortcutStatus != null)
+                    TextBlockShortcutStatus.Text = "正在检查…";
+
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                _adminShortcutFound = Ink_Canvas.Helpers.ShortcutAdminFlag.FindRunAsAdminShortcutForSelf();
+                sw.Stop();
+
+                if (!string.IsNullOrEmpty(_adminShortcutFound))
+                {
+                    if (TextBlockShortcutStatus != null)
+                        TextBlockShortcutStatus.Text = "找到：" + System.IO.Path.GetFileName(_adminShortcutFound)
+                                                       + "（勾了管理员运行）";
+                    if (BtnFixShortcutAdmin != null) BtnFixShortcutAdmin.Visibility = Visibility.Visible;
+
+                    LogHelper.WriteLogToFile(
+                        $"设置页检查：找到勾了管理员运行的本程序快捷方式 {_adminShortcutFound}（耗时 {sw.ElapsedMilliseconds}ms）",
+                        LogHelper.LogType.Event);
+                }
+                else
+                {
+                    if (TextBlockShortcutStatus != null)
+                        TextBlockShortcutStatus.Text = "没有发现勾了管理员运行的快捷方式";
+
+                    LogHelper.WriteLogToFile(
+                        $"设置页检查：未找到勾了管理员运行的本程序快捷方式（耗时 {sw.ElapsedMilliseconds}ms）",
+                        LogHelper.LogType.Trace);
+
+                    // 没找到要说清楚「这不代表你没被提权」——
+                    // 提权也可能来自任务计划、AppCompatFlags 注册表项等其他途径。
+                    MessageBox.Show(
+                        "没有在桌面和开始菜单里找到「勾了以管理员身份运行」的本程序快捷方式。\n\n" +
+                        "注意：程序当前" + (AppRestartHelper.IsRunningAsAdmin() ? "确实以管理员权限运行" : "以普通权限运行") + "。\n" +
+                        (AppRestartHelper.IsRunningAsAdmin()
+                            ? "如果仍然是管理员权限，说明提权来自其他途径（例如任务计划、\n或兼容性疑难解答自动加的注册表项），需要手动排查。"
+                            : "当前权限正常，PPT 联动不会被权限阻断。"),
+                        "检查完成", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"设置页检查快捷方式异常：{ex}", LogHelper.LogType.Error);
+                if (TextBlockShortcutStatus != null) TextBlockShortcutStatus.Text = "检查失败";
+                MessageBox.Show("检查时出错：" + ex.Message,
+                    "检查失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                if (BtnCheckShortcutAdmin != null) BtnCheckShortcutAdmin.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// 清掉找到的那个快捷方式上的管理员标记。
+        /// </summary>
+        private void BtnFixShortcutAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_adminShortcutFound))
+                {
+                    MessageBox.Show("还没有检查过，或者没有找到需要清理的快捷方式。请先点「检查」。",
+                        "无需清理", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                bool ok = Ink_Canvas.Helpers.ShortcutAdminFlag.ClearRunAsAdmin(_adminShortcutFound);
+
+                if (ok)
+                {
+                    if (TextBlockShortcutStatus != null)
+                        TextBlockShortcutStatus.Text = "已清理";
+                    if (BtnFixShortcutAdmin != null) BtnFixShortcutAdmin.Visibility = Visibility.Collapsed;
+
+                    MessageBox.Show(
+                        "已清掉快捷方式上的「以管理员身份运行」标记：\n" + _adminShortcutFound + "\n\n" +
+                        "下次从这个图标启动时就是普通权限，PPT 联动会恢复正常。\n" +
+                        "建议现在以普通权限重启一次。",
+                        "修复成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _adminShortcutFound = null;
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "没能修改这个快捷方式：\n" + _adminShortcutFound + "\n\n" +
+                        "可能是文件被占用或没有写权限。请手动处理：\n" +
+                        "右键该图标 → 属性 → 兼容性 → 取消勾选「以管理员身份运行」。",
+                        "修复失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"设置页清理快捷方式异常：{ex}", LogHelper.LogType.Error);
+                MessageBox.Show("清理时出错：" + ex.Message,
+                    "修复失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         #endregion
 
         #region Eraser & Bounds Width

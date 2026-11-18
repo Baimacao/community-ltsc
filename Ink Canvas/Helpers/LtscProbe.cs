@@ -803,6 +803,26 @@ namespace Ink_Canvas.Helpers
                 R("SHORTCUT-3 传入 null 安全返回", safeOnNull,
                     safeOnNull ? "行为正确" : "!! null 会抛");
 
+                // 扫描必须在设置页里，不能在启动流程里。
+                //
+                // 判据是「启动代码里不出现这个调用」。这条断言看着笨，
+                // 但它防的正是「以后有人顺手加回启动路径」——
+                // 那会让每次启动多一次全盘扫，同时还看不出来是谁加的。
+                try
+                {
+                    var advPageType = typeof(LtscProbe).Assembly.GetType(
+                        "Ink_Canvas.Windows.SettingsViews.Pages.AdvancedPage");
+                    var checkM = advPageType?.GetMethod("BtnCheckShortcutAdmin_Click",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    var fixM = advPageType?.GetMethod("BtnFixShortcutAdmin_Click",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    R("SHORTCUT-4 设置页里有检查/清理入口",
+                        checkM != null && fixM != null,
+                        "检查=" + (checkM != null) + " 清理=" + (fixM != null));
+                }
+                catch (Exception ex) { R("SHORTCUT-4", false, Trim(ex.Message)); }
+
                 // 真跑一次全盘查找：不要求找到，但要求不抛、不卡死。
                 // 如果开始菜单里有几百个 lnk 把启动拖慢，这里能看出来。
                 var swShortcut = System.Diagnostics.Stopwatch.StartNew();
@@ -812,11 +832,11 @@ namespace Ink_Canvas.Helpers
                 catch { threw = true; }
                 swShortcut.Stop();
 
-                R("SHORTCUT-4 全量查找不抛异常", !threw,
+                R("SHORTCUT-5 全量查找不抛异常", !threw,
                     threw ? "!! 抛出异常" : "耗时 " + swShortcut.ElapsedMilliseconds + "ms");
 
                 // 2 秒是硬上限：这段跑在启动路径上，慢一点老师就会觉得「打开很卡」。
-                R("SHORTCUT-5 全量查找在 2 秒内完成", swShortcut.ElapsedMilliseconds < 2000,
+                R("SHORTCUT-6 全量查找在 2 秒内完成", swShortcut.ElapsedMilliseconds < 2000,
                     "实际 " + swShortcut.ElapsedMilliseconds + "ms");
             }
             catch (Exception ex) { R("SHORTCUT", false, Trim(ex.Message)); }

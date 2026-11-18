@@ -55,6 +55,36 @@
                         </ComboBox>
                     </ui:SettingsCard>
 
+                    <!-- 快捷方式管理员标记的检查与清理。
+                         放在设置里、由用户主动点，不放启动流程 ——
+                         全盘扫开始菜单几百个 lnk 会拖慢启动，
+                         而且绝大多数机器上根本扫不出东西。 -->
+                    <ui:SettingsCard x:Name="CardShortcutAdmin"
+                                     Header="快捷方式的管理员标记"
+                                     Description="检查你桌面和开始菜单里指向本程序的快捷方式，是否勾了「以管理员身份运行」。勾了会导致 PPT 联动失效。">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Search}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock x:Name="TextBlockShortcutStatus"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="260"
+                                       TextWrapping="Wrap"
+                                       Opacity="0.8"/>
+                            <Button x:Name="BtnCheckShortcutAdmin"
+                                    Content="检查"
+                                    MinWidth="72"
+                                    Height="32"
+                                    Click="BtnCheckShortcutAdmin_Click"/>
+                            <Button x:Name="BtnFixShortcutAdmin"
+                                    Content="清理标记"
+                                    MinWidth="88"
+                                    Height="32"
+                                    Visibility="Collapsed"
+                                    Click="BtnFixShortcutAdmin_Click"/>
+                        </ikw:SimpleStackPanel>
+                    </ui:SettingsCard>
+
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchDisableHardwareAcceleration"
                         Header="{x:Static props:CanvasStrings.Canvas_DisableHardwareAcceleration}"
                         Description="{x:Static props:CanvasStrings.Canvas_DisableHardwareAccelerationHint}"
