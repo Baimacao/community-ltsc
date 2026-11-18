@@ -112,6 +112,9 @@ Ink Canvas 画板是一款轻量级画板软件，其针对希沃白板设备进
 
 ## 图片版说明<span id='pictu'></span>
 
-此为带图标的简易说明  
-![image](image1.png)  
-图片预览https://yuwenhui2020.github.io/ink/BHH~7AJ6N7OMLT095LO(LQJ.png
+此为带图标的简易说明
+
+> 2026-11-18：原来这里引用了 `image1.png`，但仓库里没有这个文件——死链。
+> 现在改成直接链接到原作者的图床。
+>
+> ![图片版使用说明](https://yuwenhui2020.github.io/ink/BHH~7AJ6N7OMLT095LO(LQJ.png)

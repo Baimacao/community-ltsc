@@ -4,13 +4,18 @@
 
 ## 项目结构
 
-| 项目 | 说明 |
-|------|------|
-| `Ink Canvas/` | 主应用（WPF，net6.0-windows10.0.19041.0） |
-| `InkCanvas.Controls/` | 自定义控件库（LabeledSettingsCard 等） |
-| `InkCanvas.PluginSdk/` | 插件 SDK |
-| `InkCanvas.IACoreHelper/` | IACore 辅助（不引用输出） |
-| `InkCanvas.SettingsTreeView/` | 设置目录树查看器（独立 WPF 应用） |
+> 2026-11-18 核对了实际 csproj，改了三处：
+> 删掉 `InkCanvas.PluginSdk`（插件系统在 7a30c93f 时整个删了，目录只剩构建残留），
+> 目标框架从 net6 更新到实际值，补上漏掉的 Contracts 和 PowerPointAddIn。
+
+| 项目 | 目标框架 | 说明 |
+|------|---------|------|
+| `Ink Canvas/` | net11.0-windows10.0.19041.0 | 主应用（WPF） |
+| `InkCanvas.Controls/` | net8.0-windows10.0.19041.0 | 自定义控件库（LabeledSettingsCard 等） |
+| `InkCanvas.IACoreHelper/` | .NET Framework 4.7.2（x86） | IACore 辅助进程，不引用输出 |
+| `InkCanvas.PPTAgent.Contracts/` | netstandard2.0 | PPT 通信协议定义 |
+| `InkCanvas.SettingsTreeView/` | net8.0-windows10.0.19041.0 | 设置目录树查看器（独立 WPF 应用） |
+| `InkCanvas.PowerPointAddIn/` | .NET Framework 4.7.2 | PowerPoint 加载项，独立 sln，不参与主解决方案 |
 
 ## 规则目录
 
