@@ -19,6 +19,12 @@ namespace Ink_Canvas.Helpers
         event Action<bool> PPTConnectionChanged;
         event Action<bool> SlideShowStateChanged;
 
+        /// <summary>
+        /// 检测到「PPT 已在放映、但连不上、且原因是权限级别不同」时触发一次。
+        /// 实现方必须保证同一失败状态只触发一次，避免刷屏。
+        /// </summary>
+        event Action<string> PermissionBlocked;
+
         bool IsConnected { get; }
         bool IsInSlideShow { get; }
         bool IsSupportWPS { get; set; }

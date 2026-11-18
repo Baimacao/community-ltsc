@@ -58,6 +58,19 @@ namespace Ink_Canvas.Helpers
         public event Action<bool> PPTConnectionChanged;
         public event Action<bool> SlideShowStateChanged;
 
+        /// <summary>
+        /// 检测到「PPT 已经在放映，但 ICC 因为权限级别连不上」时触发一次。
+        ///
+        /// 为什么要单独开一个事件：这个故障对用户是完全静默的 ——
+        /// 老师点了放映，屏幕上是 PPT，ICC 却什么都不显示（翻页组件不出、
+        /// 页码不动、批注层不贴）。日志里只有一行 Warning，用户看不到。
+        ///
+        /// 和普通连接失败的区别：普通失败会自己好，权限失败不会。
+        /// 所以这条只在「确实在放映 + 确实连不上 + 原因就是权限」时发，
+        /// 而且同一个失败状态只发一次，不刷屏。
+        /// </summary>
+        public event Action<string> PermissionBlocked;
+
         // ---------- 属性 ----------
         public bool IsConnected => _comApplication != null;
         public bool IsInSlideShow => _inSlideShow;
@@ -76,6 +89,22 @@ namespace Ink_Canvas.Helpers
 
         /// <summary>上一次连接失败的原因，用于把"为什么连不上"写进日志而不是留个空。</summary>
         public string LastFailureReason { get; private set; }
+
+        /// <summary>
+        /// 最近一次连接失败是不是「权限级别不同」造成的（GetActiveObject → MK_E_UNAVAILABLE）。
+        ///
+        /// 单独暴露这一个判断，是因为它和普通失败的处理方式完全不同：
+        ///   · 普通失败（PPT 没开、还没加载完）→ 等一会儿就自己好了，不该打扰用户
+        ///   · 权限失败 → 等到天荒地老也不会自己好，必须告诉用户怎么办
+        ///
+        /// 2026-11-18 班测：「部分班级报告进入 PPT 放映后 ICC 无反应」。
+        /// 现场就是这样：ICC 以管理员启动，PowerPoint 是普通权限，
+        /// UIPI 直接切断跨完整性级别的 COM —— 界面上什么提示都没有，
+        /// 老师只能看到翻页组件不出现。
+        /// </summary>
+        public bool IsPermissionFailure =>
+            !string.IsNullOrEmpty(LastFailureReason) &&
+            LastFailureReason.IndexOf("MK_E_UNAVAILABLE", StringComparison.Ordinal) >= 0;
 
         /// <summary>上次已写进日志的连接失败原因，用于限流，避免每 2 秒刷一遍。</summary>
         string _lastLoggedFailureReason;
@@ -331,6 +360,15 @@ namespace Ink_Canvas.Helpers
 
                 // 放映状态：每次轮询都更新，因为它决定白板要不要贴上去
                 RefreshSlideShowState();
+
+                // 「在放映但连不上、而且原因是权限」—— 这是唯一一种用户必须被惊动的失败。
+                //
+                // 判据三条同时成立：
+                //   1. 没有 COM 连接（IsConnected == false）
+                //   2. Win32 那边确实看到了放映窗口（IsInSlideShow == true）
+                //      —— 只看 1 会误报：PPT 刚打开还没放映时也连不上，那种等一下就好
+                //   3. 失败原因就是权限级别不同
+                CheckPermissionBlocked();
             }
             catch (Exception ex)
             {
@@ -357,6 +395,48 @@ namespace Ink_Canvas.Helpers
         }
 
         #endregion
+
+        // ── 权限阻塞通知 ───────────────────────────────────────────
+        /// <summary>上一次已经上报过的失败原因。相同原因不重复上报。</summary>
+        private string _lastReportedPermissionBlock;
+
+        /// <summary>
+        /// 在放映中、但连不上、且原因是权限级别时，通知上层一次。
+        ///
+        /// 三条同时成立才报，缺一条都会误报：
+        ///   · 没连上   —— 连上了就没有问题
+        ///   · 在放映   —— 只是开着 PPT 没放映时连不上很常见，等一下就好
+        ///   · 是权限   —— 别的失败原因有别的处理方式
+        /// </summary>
+        void CheckPermissionBlocked()
+        {
+            // 连接恢复就清掉「已上报」标记，下次再断还能再报。
+            if (IsConnected || !IsInSlideShow)
+            {
+                _lastReportedPermissionBlock = null;
+                return;
+            }
+
+            if (!IsPermissionFailure) return;
+            if (LastFailureReason == _lastReportedPermissionBlock) return;
+
+            _lastReportedPermissionBlock = LastFailureReason;
+
+            LogHelper.WriteLogToFile(
+                "PPT 在放映但因权限级别连不上，已提示用户：" + LastFailureReason,
+                LogHelper.LogType.Warning);
+
+            try
+            {
+                PermissionBlocked?.Invoke(LastFailureReason);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile(
+                    "PPT 事件 PermissionBlocked 的订阅方抛异常：" + ex,
+                    LogHelper.LogType.Error);
+            }
+        }
 
         #region 连接
 

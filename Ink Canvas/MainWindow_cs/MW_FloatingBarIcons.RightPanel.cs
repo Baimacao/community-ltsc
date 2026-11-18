@@ -212,7 +212,11 @@ namespace Ink_Canvas
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    // 退出批注模式，恢复到工作区域大小
+                    // 退出批注模式，恢复到工作区域大小。
+                    //
+                    // 必须用 WorkingArea（扣掉任务栏）：离开画板模式后重新启用全屏限制，
+                    // 任务栏要回来。进入用 Bounds、退出用 WorkingArea，
+                    // 这是「铺满」和「不压任务栏」两个需求的差异，不是判据不一致。
                     var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
                     MainWindow.MoveWindow(new WindowInteropHelper(this).Handle,
                         workingArea.Left, workingArea.Top,
@@ -385,9 +389,12 @@ namespace Ink_Canvas
                             AvoidFullScreenHelper.SetBoardMode(true);
                             Dispatcher.BeginInvoke(new Action(() =>
                             {
-                                MainWindow.MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
-                                    System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
-                                    System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
+                                // 白板要铺满整块屏（含任务栏那条），
+                                // 所以这里用 Bounds 而不是 WorkingArea —— 和其它模式的
+                                // 工作区口径不同是有意的，不是漏改。
+                                var bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                                MainWindow.MoveWindow(new WindowInteropHelper(this).Handle,
+                                    bounds.Left, bounds.Top, bounds.Width, bounds.Height, true);
                             }), DispatcherPriority.ApplicationIdle);
 
                             isFullScreenApplied = true; // 标记已应用全屏处理
@@ -487,9 +494,10 @@ namespace Ink_Canvas
                     AvoidFullScreenHelper.SetBoardMode(true);
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        MainWindow.MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
-                            System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
-                            System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
+                        // 同上：批注模式也是铺满整块屏。
+                        var bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                        MainWindow.MoveWindow(new WindowInteropHelper(this).Handle,
+                            bounds.Left, bounds.Top, bounds.Width, bounds.Height, true);
                     }), DispatcherPriority.ApplicationIdle);
 
                     isFullScreenApplied = true; // 标记已应用全屏处理

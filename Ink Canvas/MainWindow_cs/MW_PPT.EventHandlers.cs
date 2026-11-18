@@ -77,6 +77,49 @@ namespace Ink_Canvas
         }
 
         /// <summary>
+        /// PowerPoint 在放映、但 ICC 因权限级别连不上时，给用户一条看得见的提示。
+        ///
+        /// 为什么必须提示：这个故障在界面上完全静默 —— 老师点了放映，
+        /// 屏幕上是 PPT，ICC 却什么都不出现（翻页组件不出、页码不动、批注层不贴）。
+        /// 2026-11-18 班测反馈「部分班级进入 PPT 放映后 ICC 无反应」，
+        /// 现场就是这么来的：ICC 以管理员启动，PowerPoint 是普通权限。
+        ///
+        /// 提示里必须给出「怎么办」，否则用户知道出事了也没辙。
+        /// </summary>
+        private void OnPPTPermissionBlocked(string reason)
+        {
+            try
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    try
+                    {
+                        MessageBox.Show(
+                            "检测到 PowerPoint 正在放映，但本程序连不上它。\n\n" +
+                            "原因是两者的权限级别不同：Windows 会阻断\n" +
+                            "「管理员程序的 ICC」和「普通权限的 PowerPoint」之间的通信。\n\n" +
+                            "解决办法（任选其一，做完重启 ICC）：\n" +
+                            "  · 用普通权限重新打开 ICC（不要右键「以管理员身份运行」）\n" +
+                            "  · 或者用管理员权限打开 PowerPoint\n\n" +
+                            "（设置 → 启动 里可以设为「检测到管理员时自动降权重启」，\n" +
+                            "  这样以后就不用每次手动处理了）",
+                            "PPT 联动被系统权限阻断",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLogToFile($"显示 PPT 权限提示失败: {ex.Message}", LogHelper.LogType.Warning);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"处理 PPT 权限阻塞事件失败: {ex}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
         /// 处理 PowerPoint 演示文稿打开事件：清理画布墨迹、初始化墨迹管理器、处理导航逻辑、检查隐藏幻灯片和自动播放设置，并更新连接状态。
         /// </summary>
         /// <param name="pres">已打开的 PowerPoint 演示文稿（Presentation）实例。</param>

@@ -260,9 +260,9 @@ namespace Ink_Canvas
                     AvoidFullScreenHelper.SetBoardMode(true);
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        MainWindow.MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
-                            System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
-                            System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
+                        var bounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+                        MainWindow.MoveWindow(new WindowInteropHelper(this).Handle,
+                            bounds.Left, bounds.Top, bounds.Width, bounds.Height, true);
                     }), DispatcherPriority.ApplicationIdle);
 
                     isFullScreenApplied = true; // 标记已应用全屏处理

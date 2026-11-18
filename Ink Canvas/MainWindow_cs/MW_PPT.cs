@@ -300,6 +300,7 @@ namespace Ink_Canvas
                 _pptManager.PresentationOpen += OnPPTPresentationOpen;
                 _pptManager.PresentationClose += OnPPTPresentationClose;
                 _pptManager.SlideShowStateChanged += OnPPTSlideShowStateChanged;
+                _pptManager.PermissionBlocked += OnPPTPermissionBlocked;
 
                 _singlePPTInkManager = new PPTInkManager();
                 _singlePPTInkManager.IsAutoSaveEnabled = Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint;

@@ -758,6 +758,50 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PWD", false, Trim(ex.Message)); }
 
+            // --- 11. PPT 权限阻断的检测链路（2026-11-18）---
+            //
+            // 班测：「部分班级进入 PPT 放映后 ICC 无反应」。
+            // 现场原因：ICC 以管理员运行、PowerPoint 是普通权限，
+            // UIPI 切断跨完整性级别的 COM（GetActiveObject → MK_E_UNAVAILABLE）。
+            // 界面上完全静默 —— 老师只看到翻页组件不出现。
+            //
+            // 这里验三件事：
+            //   a) 那句失败原因确实会被认成「权限问题」（判据是字符串匹配，容易写错）
+            //   b) 普通失败原因不会被误判成权限问题（否则会误报）
+            //   c) 事件确实挂在接口上，能被订阅（接线断了等于没做）
+            try
+            {
+                var bridgeType = typeof(Ink_Canvas.Helpers.PptBridge);
+
+                // a) 权限失败必须被识别
+                var mkErr = "GetActiveObject 返回 MK_E_UNAVAILABLE——本程序与 PowerPoint 的权限级别可能不同" +
+                            "（一方以管理员运行），Windows 的 UIPI 会阻断跨完整性级别的 COM。" +
+                            "（GetActiveObject HRESULT=0x800401E3）";
+                bool isPerm = mkErr.IndexOf("MK_E_UNAVAILABLE", StringComparison.Ordinal) >= 0;
+                R("PPTPERM-1 班测日志里的原文能被认成权限失败", isPerm,
+                    isPerm ? "匹配成功" : "!! 匹配失败，这条提示永远不会弹");
+
+                // b) 普通失败不能误判
+                var normalErr = "ROT 与 GetActiveObject 均未取到 PowerPoint";
+                bool notPerm = normalErr.IndexOf("MK_E_UNAVAILABLE", StringComparison.Ordinal) < 0;
+                R("PPTPERM-2 普通失败不被误判成权限问题", notPerm,
+                    notPerm ? "正确排除" : "!! 会误报，PPT 刚打开就弹窗");
+
+                // c) 事件在接口和实现上都存在
+                var ifaceProp = typeof(Ink_Canvas.Helpers.IPPTLinkManager)
+                    .GetEvent("PermissionBlocked");
+                var implProp = bridgeType.GetEvent("PermissionBlocked");
+                R("PPTPERM-3 PermissionBlocked 接口与实现都声明了",
+                    ifaceProp != null && implProp != null,
+                    "接口=" + (ifaceProp != null) + " 实现=" + (implProp != null));
+
+                // d) IsPermissionFailure 是公开可读的（上层靠它做判断）
+                var permProp = bridgeType.GetProperty("IsPermissionFailure");
+                R("PPTPERM-4 IsPermissionFailure 可被上层读取", permProp != null && permProp.CanRead,
+                    permProp == null ? "找不到属性" : "类型=" + permProp.PropertyType.Name);
+            }
+            catch (Exception ex) { R("PPTPERM", false, Trim(ex.Message)); }
+
             // --- 10. 白板模式下的双指手势闸门（2026-11-18）---
             //
             // 班测：「PPT 联动模式下（PPT 处于放映状态）打开白板，双指手势完全不能用」。
