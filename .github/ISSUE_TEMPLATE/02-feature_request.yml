@@ -5,40 +5,45 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢你的建议！请详细描述你的需求。
-        Thank you for your suggestion! Please describe your needs in detail.
+        **先说清一件事**：这个分支的定位是「只修不加」，重心在稳定性和课堂可用性上。
+        新功能不是不能提，但如果你的想法是「上游加了这个，这里也该同步」，
+        直接说一声会省很多讨论。
+
+        This branch is **fixes-first** — stability and classroom usability take priority.
+        New features are not forbidden, but if your idea is "upstream added this, please sync",
+        saying so up front saves a lot of back-and-forth.
   - type: textarea
     id: description
     attributes:
       label: 功能描述 | Description
-      description: 请描述你希望添加的功能 | Describe the feature you want
+      description: 你希望它是什么样？尽量描述「用起来怎样」，而不是「代码怎么写」 | What should it feel like in use? Describe the experience rather than the implementation
     validations:
       required: true
   - type: textarea
     id: motivation
     attributes:
       label: 需求动机 | Motivation
-      description: 为什么需要这个功能？| Why do you need this feature?
+      description: 现在这件事你是怎么处理的？为什么现有方式不够用？ | How do you handle this today, and why isn't that enough?
     validations:
       required: true
   - type: textarea
     id: design
     attributes:
       label: 期望设计 | Expected Design
-      description: （可选）描述或画出你期望的界面或交互 | (Optional) Describe or sketch the expected UI/UX
+      description: 可选。画个草图或者描述交互都行 | Optional. A sketch or a description of the interaction
     validations:
       required: false
   - type: textarea
     id: extra
     attributes:
       label: 其他补充信息 | Additional Info
-      description: 其他补充说明或建议 | Any other context or suggestions
+      description: 比如上游是否已有类似实现、相关讨论链接 | e.g. similar upstream work, related discussions
     validations:
       required: false
   - type: upload
     id: files
     attributes:
       label: 上传有关文件 | Upload relevant files
-      description: "你可以在此处上传相关文件 | You can upload relevant files here."
+      description: "截图、录屏、参考链接都行 | Screenshots, recordings, links"
     validations:
       required: false

@@ -5,23 +5,27 @@ title: "[Feature Request] "
 type: Feature
 ---
 
-<!---请注意，你正在使用Markdown格式的Issue模板，如果你删除该模板的框架、更改问题的tag/类型/受理人或者不按照规范填写，你的Issue可能被直接关闭，如果你对Markdown不熟悉，请使用位于该选项下方的反馈入口继续反馈，感谢配合！-->
+**先说清定位**：这个分支是「只修不加」，重心在稳定性和课堂可用性上。
 
-<!---感谢你的建议！请详细描述你的需求。-->
-<!---Thank you for your suggestion! Please describe your needs in detail.-->
+新功能不是不能提。但如果你的想法是「上游加了这个，这里也该同步」，
+直接说一声，能省很多来回。
 
-### 功能描述 | Description (必填 | Required)
+> 这份是 Markdown 模板，可以随便改结构。不想手写的话下面有个表单版。
 
-<!---请描述你希望添加的功能 | Describe the feature you want-->
+---
 
-### 需求动机 | Motivation (必填 | Required)
+### 功能描述 | Description（必填）
 
-<!---为什么需要这个功能？| Why do you need this feature?-->
+<!--- 你希望它用起来是什么样？描述体验比描述代码有用 -->
 
-### 期望设计 | Expected Design (可选 | Optional)
+### 需求动机 | Motivation（必填）
 
-<!---描述或画出你期望的界面或交互 | Describe or sketch the expected UI/UX-->
+<!--- 现在这件事你是怎么处理的？为什么现有方式不够用？-->
 
-### 其他补充信息 | Additional Info (可选 | Optional)
+### 期望设计 | Expected Design（可选）
 
-<!---其他补充说明或建议 | Any other context or suggestions-->
+<!--- 画个草图，或者描述一下交互 -->
+
+### 其他补充信息 | Additional Info（可选）
+
+<!--- 上游是否已有类似实现、相关讨论链接等 -->

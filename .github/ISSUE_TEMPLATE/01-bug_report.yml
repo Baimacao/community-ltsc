@@ -5,17 +5,21 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢你的反馈！请详细填写以下内容，便于我们定位问题。
-        Thank you for your feedback! Please fill out the following information to help us locate the issue.
+        感谢反馈。填得越具体，定位越快。
 
-        在报告问题之前，请确保你的软件已经更新到最新Beta版本，否则我们可能会无条件直接关闭该Issue，感谢配合！
-        Before reporting the issue, please make sure your software has been updated to the latest Beta version. Otherwise, we may unconditionally close this Issue without any further notice. Thank you for your cooperation!
+        提之前请先做两件事：
+        1. 确认用的是最新构建（版本号在 设置 → 关于 里能看到，形如 `0.1b-daily`）
+        2. **把日志带上**。程序目录下 `Logs/` 里最新的那个文件，比截图有用得多
+
+        Two things before you file:
+        1. Make sure you are on the latest build (version shows in Settings → About, like `0.1b-daily`)
+        2. **Attach the log.** The newest file under `Logs/` next to the executable helps far more than screenshots
   - type: input
     id: version
     attributes:
       label: 软件版本 | App Version
-      description: 可在设置中的“关于”界面查看 | You can find it on the "About" interface in the settings
-      placeholder: 例如 v1.2.3 | e.g. v1.2.3
+      description: 设置 → 关于 里那一行，形如 0.1b-daily | The line in Settings → About, e.g. 0.1b-daily
+      placeholder: 0.1b-daily
     validations:
       required: true
   - type: input
@@ -25,42 +29,52 @@ body:
       placeholder: 例如 Windows 10 22H2 64位 | e.g. Windows 10 22H2 64bit
     validations:
       required: true
+  - type: input
+    id: device
+    attributes:
+      label: 白板设备型号 | Whiteboard Model
+      description: 如果是触控相关问题，这一项很关键——不同设备的触摸报点行为不一样 | Critical for touch-related issues; touch reporting differs between devices
+      placeholder: 例如 希沃 F86EC | e.g. Seewo F86EC
+    validations:
+      required: false
   - type: textarea
     id: description
     attributes:
       label: 问题描述 | Description
-      description: 简要描述遇到的问题 | Briefly describe the problem
+      description: 说清「什么情况下、出现了什么」，不要只写「卡」或「坏了」 | Describe what happened under what circumstances; "it's laggy" alone is not enough
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
       label: 复现步骤 | Steps to Reproduce
-      description: 如何复现该问题？如有必要可附截图/录屏/触发该问题的文件 | How to reproduce this bug? Screenshots/recordings/specific files if needed
+      description: 能否稳定复现？试了几次里几次出问题？ | Is it reproducible? How many times out of how many attempts?
       placeholder: |
-        1. 
-        2. 
+        1.
+        2.
         3.
+
+        复现率：__ / __ 次
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
       label: 期望结果 | Expected Behavior
-      description: 你期望的正确行为或结果 | What did you expect to happen?
+      description: 你认为应该是什么样 | What did you expect to happen?
     validations:
       required: true
   - type: textarea
     id: extra
     attributes:
       label: 其他补充信息 | Additional Info
-      description: 其他相关信息（如日志文件、崩溃日志文件、配置文件、特殊环境等）| Any other context, logs, crash logs, configs, special environment, etc.
+      description: 崩溃日志（Crashes/ 目录）、配置文件、特殊环境等 | Crash logs (Crashes/), config files, unusual environment, etc.
     validations:
       required: false
   - type: upload
     id: files
     attributes:
-      label: 上传有关文件 | Upload relevant files
-      description: "你可以在此处上传相关文件 | You can upload relevant files here."
+      label: 上传日志和文件 | Upload logs and files
+      description: "强烈建议把 Logs/ 下最新的日志传上来 | Strongly recommended: attach the newest log from Logs/"
     validations:
       required: false

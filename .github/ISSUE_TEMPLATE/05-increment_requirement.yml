@@ -8,9 +8,12 @@ body:
       value: |
         ## 使用说明
         本模板用于 **ICC CE Lite** 的增量需求管理。
-        每条需求对应需求文档里的一个 R-XX 编号。
 
-        需求文档：[docs/REQUIREMENTS-INCREMENT-2026-11-14.md](../blob/master/docs/REQUIREMENTS-INCREMENT-2026-11-14.md)
+        每条需求用一个 `R-XX` 编号追踪。编号自己定，不重复就行。
+
+        > 2026-11-18：原来这里链接了 `docs/REQUIREMENTS-INCREMENT-2026-11-14.md`，
+        > 但那个文件不存在，点进去是 404。已去掉死链——需求直接写在 Issue 里就好，
+        > 不需要另开一份文档同步维护。
 
         **填写前请确认：需求已经过确认，不是推测。** 未确认项请保持「待确认」状态，不要自行取默认值。
 
