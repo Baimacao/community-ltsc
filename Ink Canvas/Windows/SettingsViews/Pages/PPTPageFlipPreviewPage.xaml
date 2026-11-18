@@ -147,6 +147,23 @@
                             </ikw:SimpleStackPanel>
                         </ui:SettingsCard>
 
+                        <!-- LTSC（2026-11-18）：班测反馈「翻页组件的淡出功能没有透明度设置」。
+                             PPTNavBarAutoHideOpacity 在 Settings 里一直有、也一直在用，
+                             但这个值从来没暴露到界面上 —— 用户只能接受写死的 0.08。 -->
+                        <ui:SettingsCard Header="{x:Static props:SettingsStrings.Flip_AutoFadeOpacity}"
+                                         Description="{x:Static props:SettingsStrings.Flip_AutoFadeOpacityDesc}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.View}"/>
+                            </ui:SettingsCard.HeaderIcon>
+                            <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="TextBlockAutoHideOpacityValue" VerticalAlignment="Center"
+                                           FontFamily="Consolas" TextAlignment="Right" Width="40"/>
+                                <Slider x:Name="SliderAutoHideOpacity" Minimum="0.0" Maximum="1.0"
+                                        Width="200" IsSnapToTickEnabled="True" TickFrequency="0.02"
+                                        ValueChanged="SliderAutoHideOpacity_ValueChanged"/>
+                            </ikw:SimpleStackPanel>
+                        </ui:SettingsCard>
+
                         <!-- LTSC D-13：主悬浮窗空闲减淡。
                              触摸屏没有鼠标悬停，所以按「画布停笔」计时，
                              落笔就恢复；只在非白板 + PPT 联动放映时生效。 -->

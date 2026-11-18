@@ -816,6 +816,11 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 SliderAutoHideDelay.Value = Math.Max(1, Math.Min(15, ppt.PPTNavBarAutoHideDelaySeconds));
                 TextBlockAutoHideDelayValue.Text = $"{ppt.PPTNavBarAutoHideDelaySeconds:0}s";
 
+                // LTSC（2026-11-18）：淡出透明度。这个值一直存在也一直在用，
+                // 只是从来没暴露到界面上。
+                SliderAutoHideOpacity.Value = Math.Max(0.0, Math.Min(1.0, ppt.PPTNavBarAutoHideOpacity));
+                TextBlockAutoHideOpacityValue.Text = $"{ppt.PPTNavBarAutoHideOpacity:0.00}";
+
                 // LTSC D-13：主悬浮窗空闲减淡
                 ToggleFloatingBarIdleFade.IsOn = ppt.FloatingBarIdleFade;
                 SliderFloatingBarFadeDelay.Value = Math.Max(2, Math.Min(20, ppt.FloatingBarIdleFadeDelaySeconds));
@@ -879,6 +884,21 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             if (_suppressEvents) return;
             SettingsManager.Settings.PowerPointSettings.PPTNavBarAutoHideDelaySeconds =
                 Math.Round(SliderAutoHideDelay.Value, 0);
+            _sliderDelayAction.DebounceAction(400, null, () =>
+            {
+                SettingsManager.SaveSettingsToFile();
+                global::Ink_Canvas.Helpers.PPTUIManager.NotifyAppearanceChanged();
+            });
+        }
+
+        private void SliderAutoHideOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (TextBlockAutoHideOpacityValue != null)
+                TextBlockAutoHideOpacityValue.Text = $"{e.NewValue:0.00}";
+
+            if (_suppressEvents) return;
+            SettingsManager.Settings.PowerPointSettings.PPTNavBarAutoHideOpacity =
+                Math.Round(SliderAutoHideOpacity.Value, 2);
             _sliderDelayAction.DebounceAction(400, null, () =>
             {
                 SettingsManager.SaveSettingsToFile();

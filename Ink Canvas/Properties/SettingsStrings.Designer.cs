@@ -93,6 +93,9 @@ namespace Ink_Canvas.Properties {
         public static string Flip_DesktopFadeDesc => ResourceManager.GetString(nameof(Flip_DesktopFadeDesc), resourceCulture);
         public static string Flip_DesktopFadeDelay => ResourceManager.GetString(nameof(Flip_DesktopFadeDelay), resourceCulture);
         public static string Flip_DesktopFadeOpacity => ResourceManager.GetString(nameof(Flip_DesktopFadeOpacity), resourceCulture);
+        // LTSC（2026-11-18）：翻页组件淡出透明度
+        public static string Flip_AutoFadeOpacity => ResourceManager.GetString(nameof(Flip_AutoFadeOpacity), resourceCulture);
+        public static string Flip_AutoFadeOpacityDesc => ResourceManager.GetString(nameof(Flip_AutoFadeOpacityDesc), resourceCulture);
 
         public static string Flip_MainBarFadeDelay => ResourceManager.GetString(nameof(Flip_MainBarFadeDelay), resourceCulture);
         public static string Flip_MainBarFadeDelayDesc => ResourceManager.GetString(nameof(Flip_MainBarFadeDelayDesc), resourceCulture);

@@ -320,4 +320,10 @@
   <data name="Auto_ConflictEmptyRule" xml:space="preserve">
     <value>规则组里有空白规则（新建后没有选择类型）。空白规则不参与判断，等于没条件。</value>
   </data>
+  <data name="Flip_AutoFadeOpacity" xml:space="preserve">
+    <value>淡出透明度</value>
+  </data>
+  <data name="Flip_AutoFadeOpacityDesc" xml:space="preserve">
+    <value>淡出后剩余的不透明度，越小越淡</value>
+  </data>
 </root>

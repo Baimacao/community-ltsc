@@ -27,6 +27,20 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
 
                 var path = App.RootPath + SettingsFileName;
                 ProcessProtectionManager.WithWriteAccess(path, () => File.WriteAllText(path, text));
+
+                // 写盘成功就必须同步更新启动缓存。
+                //
+                // 不更新的后果（2026-11-18 班测实证，OOBE 反复重弹）：
+                // LoadSettings 读的是 App.CachedSettingsJson ?? 磁盘，
+                // 而这份缓存是 App_Startup 里 ReadSettingsJsonOnce() 抓的一次快照。
+                // 只要本次运行写过设置，缓存就和磁盘不一致了，之后任何一次
+                // LoadSettings 都会把【新写的值】覆盖回【旧快照的值】。
+                //
+                // 实际链路：OnOobeCompleted 先把 HasShownOobe 写成 true 并保存，
+                // 紧接着 LoadSettings(false) —— 读到的是启动时的旧快照（false），
+                // 内存被打回 false，下次启动又弹 OOBE。日志里两次启动都是
+                // HasShownOobe=False，而磁盘上明明是 true。
+                App.UpdateCachedSettingsJson(text);
             }
             catch (Exception ex)
             {

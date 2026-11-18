@@ -715,9 +715,25 @@ namespace Ink_Canvas
             //   · 平时开着 PPT 没放映 → 双指正常
             //   · 放映中 → 遵守 IsEnableTwoFingerGestureInPresentationMode 开关
             bool inSlideShow = IsInPPTPresentationMode;
+            bool isBoardMode = currentMode == 1;
+
+            // 白板模式是一块独立画布，不该套用「放映中要不要禁手势」这条规则。
+            //
+            // 2026-11-18 班测：「PPT 联动模式下（PPT 处于放映状态）打开白板，
+            // 双指手势完全不能用」。根因就是这里 —— 用户进了白板，但
+            // IsInPPTPresentationMode 仍然是 true（他确实还在放映，只是叠了一层白板），
+            // 于是 inSlideShow 恒为真，双指手势只能靠
+            // IsEnableTwoFingerGestureInPresentationMode 那个开关放行，而这个开关
+            // 默认是 false。白板自己的那三组手势开关（IsEnableTwoFinger*Board）
+            // 根本没被读到。
+            //
+            // 判据用 currentMode == 1：白板/黑板模式下，手势归白板管。
+            bool gestureAllowedByMode = isBoardMode
+                ? true
+                : (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode || !inSlideShow);
+
             bool shouldUseTwoFingerGesture = (dec.Count >= 2 && hasMultipleManipulators &&
-                                             (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||
-                                              !inSlideShow)) ||
+                                             gestureAllowedByMode) ||
                                             isSingleFingerDragMode;
 
             if (shouldUseTwoFingerGesture)
@@ -727,7 +743,7 @@ namespace Ink_Canvas
 
                 var m = new Matrix();
 
-                bool isBoardMode = currentMode == 1;
+                // isBoardMode 在外层已经算过（手势闸门要用），这里复用，别重复声明。
                 bool enableTranslate = isBoardMode ? Settings.Gesture.IsEnableTwoFingerTranslateBoard : Settings.Gesture.IsEnableTwoFingerTranslate;
                 bool enableRotate = isBoardMode ? Settings.Gesture.IsEnableTwoFingerRotationBoard : Settings.Gesture.IsEnableTwoFingerRotation;
                 bool enableZoom = isBoardMode ? Settings.Gesture.IsEnableTwoFingerZoomBoard : Settings.Gesture.IsEnableTwoFingerZoom;

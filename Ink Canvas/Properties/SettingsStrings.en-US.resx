@@ -320,4 +320,10 @@
   <data name="Auto_ConflictEmptyRule" xml:space="preserve">
     <value>This ruleset contains an empty rule (created but no type selected). Empty rules are ignored, so they do not act as a condition.</value>
   </data>
+  <data name="Flip_AutoFadeOpacity" xml:space="preserve">
+    <value>Fade opacity</value>
+  </data>
+  <data name="Flip_AutoFadeOpacityDesc" xml:space="preserve">
+    <value>Opacity left after fading; lower is fainter</value>
+  </data>
 </root>

@@ -309,6 +309,17 @@ namespace Ink_Canvas.Controls
         /// </summary>
         private bool _longPressConsumed;
 
+        /// <summary>
+        /// 「这个按钮上按下过、还没抬起」。
+        ///
+        /// 原来的判据是 _lastDown 引用相等，但 MouseLeave 会把它清成 null，
+        /// 而触摸时 MouseLeave 会先于 MouseUp 派发 —— 于是第一下点击被吞。
+        /// 这三个标记只在 MouseDown 置位、MouseUp 消费，不受 MouseLeave 影响。
+        /// </summary>
+        private bool _previousPressed;
+        private bool _nextPressed;
+        private bool _pagePressed;
+
         // ── LTSC P1c 外观增强 ──────────────────────────────────────────
         private DispatcherTimer _autoHideTimer;
         private double _autoHideOpacity = 0.08;
@@ -318,6 +329,7 @@ namespace Ink_Canvas.Controls
 
         private void PreviousButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            _previousPressed = true;
             _lastDown = sender;
             _longPressConsumed = false;
             SetFeedback(PreviousButtonFeedbackBorder, 0.15);
@@ -328,7 +340,19 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(PreviousButtonFeedbackBorder, 0);
             PressEnded?.Invoke(this, EventArgs.Empty);
-            if (_lastDown != sender) return;
+
+            // 2026-11-18 班测：「翻页组件淡出时触发不灵敏，经常需要点一下取消淡出才能用」。
+            //
+            // 原因不是淡出挡住命中测试（WPF 的 Opacity 不影响 HitTest）。
+            // 是判据太脆：MouseLeave 会把 _lastDown 清成 null，而手指按住时
+            // 稍微滑一点就会触发 MouseLeave，紧接着的 MouseUp 就判 _lastDown != sender
+            // 成立，把这一下当「按着滑出去了」丢掉。触摸屏的落点精度不如鼠标，
+            // 这个丢法在触摸上出现频率高得多。
+            //
+            // 判据改成「这次抬起之前有没有在这个按钮上按下过」——
+            // 用一个按下标记，不靠 _lastDown 的引用相等去猜。
+            if (!_previousPressed) return;
+            _previousPressed = false;
             _lastDown = null;
             // 长按期间已经翻过页，松手不再补这一下，否则长按永远多翻一页。
             if (_longPressConsumed) { _longPressConsumed = false; return; }
@@ -339,12 +363,15 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(PreviousButtonFeedbackBorder, 0);
             _lastDown = null;
+            // 按下标记不清。触摸时它是先于 MouseUp 派发的，
+            // 清掉就等于把这一下点击判死（班测里的「第一下不翻页」就是这么来的）。
             _longPressConsumed = false;
             PressEnded?.Invoke(this, EventArgs.Empty);
         }
 
         private void NextButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            _nextPressed = true;
             _lastDown = sender;
             _longPressConsumed = false;
             SetFeedback(NextButtonFeedbackBorder, 0.15);
@@ -355,7 +382,10 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(NextButtonFeedbackBorder, 0);
             PressEnded?.Invoke(this, EventArgs.Empty);
-            if (_lastDown != sender) return;
+            // 同 PreviousButton_MouseUp：别再靠 _lastDown 引用相等判断，
+            // 触摸时 MouseLeave 会先把它清空。
+            if (!_nextPressed) return;
+            _nextPressed = false;
             _lastDown = null;
             // 同上：长按已经翻过页，松手不再补。
             if (_longPressConsumed) { _longPressConsumed = false; return; }
@@ -366,12 +396,14 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(NextButtonFeedbackBorder, 0);
             _lastDown = null;
+            // 同 PreviousButton_MouseLeave：按下标记留到 MouseUp 再清。
             _longPressConsumed = false;
             PressEnded?.Invoke(this, EventArgs.Empty);
         }
 
         private void PageButton_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            _pagePressed = true;
             _lastDown = sender;
             SetFeedback(PageButtonFeedbackBorder, 0.15);
         }
@@ -379,7 +411,8 @@ namespace Ink_Canvas.Controls
         private void PageButton_MouseUp(object sender, MouseButtonEventArgs e)
         {
             SetFeedback(PageButtonFeedbackBorder, 0);
-            if (_lastDown != sender) return;
+            if (!_pagePressed) return;
+            _pagePressed = false;
             _lastDown = null;
             PageClick?.Invoke(this, EventArgs.Empty);
         }
@@ -388,6 +421,7 @@ namespace Ink_Canvas.Controls
         {
             SetFeedback(PageButtonFeedbackBorder, 0);
             _lastDown = null;
+            // 同前：别在这里清 _pagePressed。
         }
 
         private void PreviewList_MouseUp(object sender, MouseButtonEventArgs e)
@@ -492,6 +526,17 @@ namespace Ink_Canvas.Controls
                 _autoHideTarget.MouseEnter += (s, e) => WakeAutoHide();
                 _autoHideTarget.MouseMove  += (s, e) => WakeAutoHide();
                 _autoHideTarget.MouseLeave += (s, e) => ArmAutoHideTimer();
+
+                // 触摸屏没有鼠标悬停，上面三个鼠标事件在纯触摸操作下不可靠。
+                //
+                // 2026-11-18 班测：「翻页组件淡出时触发不灵敏，经常需要点一下取消淡出
+                // 才能使用」。翻页栏全仓唯一只有鼠标事件、没有触摸事件的关键控件
+                // （对照：MiniWhiteboardWindow / NewStyleTimerWindow / PPTQuickPanel
+                //   都显式写了 TouchDown）—— 靠触摸到鼠标的提升去驱动不可靠。
+                //
+                // 触摸按下时直接唤醒，让淡出状态在手指落下的那一刻就恢复。
+                _autoHideTarget.PreviewTouchDown += (s, e) => WakeAutoHide();
+                _autoHideTarget.PreviewStylusDown += (s, e) => WakeAutoHide();
             }
 
             ArmAutoHideTimer();

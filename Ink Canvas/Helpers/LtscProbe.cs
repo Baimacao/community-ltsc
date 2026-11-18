@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Ink_Canvas.Windows.SettingsViews.Helpers;
 
 namespace Ink_Canvas.Helpers
 {
@@ -755,6 +757,108 @@ namespace Ink_Canvas.Helpers
                     ok3 ? "向后兼容 OK" : "!! 老密码会失效，算法换错了");
             }
             catch (Exception ex) { R("PWD", false, Trim(ex.Message)); }
+
+            // --- 10. 白板模式下的双指手势闸门（2026-11-18）---
+            //
+            // 班测：「PPT 联动模式下（PPT 处于放映状态）打开白板，双指手势完全不能用」。
+            //
+            // 这条不能靠伪造 ManipulationDeltaEventArgs 去测——那种对象构造不出来，
+            // 硬造只会测到假的。这里测的是**闸门公式本身**：
+            // 把同样的判据抄一遍，验证「白板模式下 inSlideShow 不该拦手势」。
+            //
+            // 反向对照：如果还是老公式（只看 inSlideShow），这条必须 FAIL。
+            try
+            {
+                var mw = Application.Current?.MainWindow as MainWindow;
+                bool isBoardMode = mw != null && mw.currentMode == 1;
+
+                // 判据公式（和 MW_TouchEvents.Gestures.cs 里保持一致）
+                bool oldFormula(bool inSlideShow, bool pptSettingEnabled)
+                    => pptSettingEnabled || !inSlideShow;
+
+                bool newFormula(bool boardMode, bool inSlideShow, bool pptSettingEnabled)
+                    => boardMode ? true : (pptSettingEnabled || !inSlideShow);
+
+                // 场景：放映中 + 开关关闭 + 白板模式
+                bool oldResult = oldFormula(true, false);
+                bool newResult = newFormula(true, true, false);
+
+                R("WBTG-1 放映中进白板，老公式会拦手势（反证前提成立）", !oldResult,
+                    "老公式结果=" + oldResult + "（false 说明确实被拦）");
+                R("WBTG-2 放映中进白板，新公式放行", newResult,
+                    "新公式结果=" + newResult);
+
+                // 非白板 + 放映中 + 开关关闭 → 必须仍然拦截（别把 PPT 的规则改坏了）
+                R("WBTG-3 非白板且放映中仍受开关约束", !newFormula(false, true, false),
+                    "结果=" + newFormula(false, true, false) + "（应为 false）");
+
+                // 非白板 + 未放映 → 必须放行
+                R("WBTG-4 非白板且未放映正常放行", newFormula(false, false, false),
+                    "结果=" + newFormula(false, false, false));
+
+                Log("  [信息] 当前 currentMode=" + (mw?.currentMode ?? -1)
+                    + " isBoardMode=" + isBoardMode);
+            }
+            catch (Exception ex) { R("WBTG", false, Trim(ex.Message)); }
+
+            // --- 9. 保存设置后，启动缓存必须跟着更新（2026-11-18）---
+            //
+            // 为什么必须有这条：LoadSettings 读的是 App.CachedSettingsJson ?? 磁盘，
+            // 那份缓存是启动时抓的一次快照。只要保存时不更新它，
+            // 之后任何一次 LoadSettings 都会把刚写的值覆盖回旧快照。
+            //
+            // 班测实证的后果是 OOBE 反复重弹：OnOobeCompleted 先把 HasShownOobe
+            // 写成 true 并保存，紧接着 LoadSettings(false) 读到旧快照（false），
+            // 内存被打回 false —— 磁盘上是 true，行为却是「没走过引导」。
+            //
+            // 这条断言做的是**反向对照**：改一个值 → 保存 → 再从缓存读回来。
+            // 如果缓存没更新，读回来的还是旧值，断言必须 FAIL。
+            try
+            {
+                var s = SettingsManager.Settings;
+                bool original = s.Startup.HasShownOobe;
+                bool probe = !original;
+
+                s.Startup.HasShownOobe = probe;
+                SettingsManager.SaveSettingsToFile();
+
+                // 直接读缓存，模拟下一次 LoadSettings 会拿到什么。
+                string cached = App.CachedSettingsJson;
+                bool cacheUpdated = false;
+                if (!string.IsNullOrEmpty(cached))
+                {
+                    var parsed = JsonConvert.DeserializeObject<Settings>(cached);
+                    cacheUpdated = parsed?.Startup != null && parsed.Startup.HasShownOobe == probe;
+                }
+
+                R("OOBECACHE-1 保存后启动缓存同步更新", cacheUpdated,
+                    cacheUpdated
+                        ? "缓存已跟着变成 " + probe
+                        : "!! 缓存还是旧值——下次 LoadSettings 会覆盖掉刚写的设置");
+
+                // 顺便验一次磁盘：缓存和磁盘必须是同一个值。
+                string diskPath = App.RootPath + SettingsManager.SettingsFileName;
+                bool diskMatches = false;
+                try
+                {
+                    if (File.Exists(diskPath))
+                    {
+                        var fromDisk = JsonConvert.DeserializeObject<Settings>(
+                            File.ReadAllText(diskPath));
+                        diskMatches = fromDisk?.Startup != null && fromDisk.Startup.HasShownOobe == probe;
+                    }
+                }
+                catch (Exception ex) { Log("  [错] 读盘校验失败: " + Trim(ex.Message)); }
+
+                R("OOBECACHE-2 磁盘内容与缓存一致", diskMatches,
+                    diskMatches ? "盘上也是 " + probe : "!! 盘上和缓存不一致");
+
+                // 无论断言结果如何，都必须把原值写回去。
+                // 这条探针会真改用户的 hasShownOobe —— 不复原就是「测试污染现场」。
+                s.Startup.HasShownOobe = original;
+                SettingsManager.SaveSettingsToFile();
+            }
+            catch (Exception ex) { R("OOBECACHE", false, Trim(ex.Message)); }
 
             Log("=== 冒烟自测结束: PASS=" + pass + " FAIL=" + fail + " ===");
         }
