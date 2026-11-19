@@ -8,7 +8,7 @@ branch serves that one purpose — not adding features, but pinning down the pla
 
 | | |
 |---|---|
-| Version | `0.1d-daily` (suffixed with the commit id, e.g. `0.1d-daily+4d4f6e3`) |
+| Version | `0.1c-daily` (suffixed with the commit id, e.g. `0.1c-daily+4d4f6e3`) |
 | Executable | `ICCCELite.exe` (installs side by side with the original) |
 | Upstream baseline | `083f694e` (InkCanvasForClass/community, 2026-07-15) |
 | Target framework | .NET 11 (`net11.0-windows10.0.19041.0`) |
