@@ -3,7 +3,8 @@
 给压缩上下文之后的自己，或者下一个接手的人。
 **先读这份，再动手。**
 
-上一版是 2026-11-18 写的。这一版删掉了已完成的、补上了新查实的。
+上一版是 2026-11-19 上午写的。这一版推翻了一个错误根因（见四、五两节），
+其余照旧。**读第四节之前先看结论：设置页没有内存泄漏。**
 
 ---
 
@@ -212,63 +213,116 @@ ICC 以管理员启动、PowerPoint 是普通权限，Windows 的 UIPI 切断跨
 
 # 四、还没解决的（照实说，别当成已修）
 
-## 4.1 设置页内存：已追到根因，修法待实施 ⚠️
+## 4.1 设置页内存：结论推翻了，原本就没有泄漏 ✅
 
-**这是当前最重要的一条。**
+**这一条已经从「待修」变成「已查清、无需修」。**
+2026-11-19 12:30 前后查实：之前所有「泄漏」数字都是**探针自己造出来的**。
 
-### 结论
+### 真正的结论
 
-`iNKORE.UI.WPF.Modern 0.11.0` 的 `ItemsRepeater`（从 Windows UI Library 移植）
-**自身泄漏**。它被钉住，连带钉住整个控件树。
+设置页**不泄漏**。用真实开窗路径实测（\`--probe-settings-cycle 5\`）：
 
-`SettingsExpander` 的模板里有一个 `ItemsRepeater`，所以用 Expander 的页面全漏。
-`SettingsCard` 模板里没有，所以不漏——这个差异正好对上。
+\`\`\`
+基线 18MB → 第 1 次 25MB → 第 2~5 次全部 25MB
+5 次开关：Δ7MB（全部在第一次），平均每次 0MB
+窗口对象存活 1/5（最后一次，GC 晚一拍）
+\`\`\`
 
-### 证据（最小复现，每组造 30 个实例，Measure 后强制全量 GC 三次）
+第一次涨的 7MB 是引擎预热和缓存，之后**一点不涨**。
 
-```
-普通 Border            存活  1/30
-SettingsCard           存活  1/30   ← SettingsExpander 的父类，不漏
-ToggleSwitch           存活  1/30
-SimpleStackPanel       存活  1/30
-SettingsExpander       存活 30/30
-ItemsRepeater 单独      存活 30/30   ← 根因（100 个样本时 100/100）
+### 错在哪
 
-SettingsExpander 只构造不 Measure    存活  0/30
-SettingsExpander 只 ApplyTemplate    存活 30/30   ← 分界点就是这一步
-```
+\`YieldUi()\` 的恢复回调挂在 \`DispatcherPriority.Background\`：
 
-模板展开后有 53 个元素、19 种类型，其中 `ItemsRepeater × 1`。
+\`\`\`csharp
+Dispatcher.CurrentDispatcher.BeginInvoke(
+    DispatcherPriority.Background, new Action(() => frame.Continue = false));
+\`\`\`
 
-### 影响面
+\`PushFrame\` 会一直跑到那个 Background 回调执行才返回，所以
+**Background 及以上**的排队操作都被处理了，**ContextIdle / ApplicationIdle / SystemIdle
+永远轮不到**。
 
-每打开一次设置窗口：24 个页面里 10 个泄漏，约 33MB。**关窗不恢复**
-（`_pages.Clear()` 只是丢掉引用，对象本身被 ItemsRepeater 钉住）。
-老师反复开关设置十次就是 330MB。
+而 \`ItemsRepeater\` 的 \`ViewportManagerDownLevel.RegisterCacheBuildWork()\`
+正是用 ContextIdle 投的，源码里那句注释写得明明白白：
 
-### 试过但无效的修法（别再试）
+\`\`\`csharp
+// We capture 'owner' (a strong refernce on ItemsRepeater) to make sure ItemsRepeater is still around
+// when the async action completes.
+var strongOwner = m_owner;
+m_cacheBuildAction = m_owner.Dispatcher.BeginInvoke(() =>
+{
+    OnCacheBuildActionCompleted();
+}, DispatcherPriority.ContextIdle);
+\`\`\`
 
-| 修法 | 结果 |
-|---|---|
-| 给 `SettingsExpander.Items` 显式赋空集合 | 30/30 仍存活 |
-| 在 SettingsWindow 三个创建点遍历页面补 Items | 无效（且探针绕过那三个点，压根没执行） |
-| 把 `SpringAnimator` 静态缓存改成弱引用 | 本身是真实泄漏，但和这个无关 |
-| 关掉全部动画 | 泄漏量一点没变 |
+只要队列不抽干，那个 Action 就一直挂着，owner 就一直被钉住。
+「造对象 → Measure → GC → 数弱引用」这个测量方法，在这种前提下必然得到「全都活着」。
 
-### 已经排掉的假设（用转储 + 强 GC 判据验过）
+### 决定性对照（同一个对象，只差抽干深度）
 
-- 不是 GC 延迟：强制全量回收 3 次，回收 0MB，代计数 122/58/29
-- 不是静态字段持有：扫 ICC 全部程序集静态字段，无
-- 不是全局资源字典：92 个合并字典 / 3293 条，不增长
-- 不是布局队列：306 个 Request 的 Target 全是 null（已处理完的空壳）
-- 不是连着长命对象：反向走三层实例字段，没连到
-- 不是动画时钟累积：转储里 1.8 万个动画对象只是症状
+\`--probe-idle-drain\` 实测：
 
-### 工具这一路为什么走不通
+\`\`\`
+G. ItemsRepeater + Measure，只抽到 Background   存活 30/30
+H. ItemsRepeater + Measure，抽到 SystemIdle    存活  1/30   ← 只差这一个动作
 
-`dotnet-dump` 的 `gcroot` 在这个环境下**对任何对象都返回 `Found 0 unique roots`**
-——包括明明活着、强制 GC 都收不掉的对象。和事实矛盾，工具本身不可信。
-（试过 SettingsWindow、CanvasPage、SettingsExpander、DoubleAnimationUsingKeyFrames、Style，全部 0。）
+I. 原生 ItemsControl，只抽到 Background         存活  1/30   ← 反证：原生控件不受影响
+J. 原生 ItemsControl，抽到 SystemIdle          存活  1/30
+\`\`\`
+
+原生 \`ItemsControl\` 两格都是 1/30，说明「不是抽干深度对所有控件都起作用」，
+而是 **ItemsRepeater 特有那个 ContextIdle 队列项**。这也解释了为什么只有它「漏」。
+
+### 设置页压力测试的对照（同一份代码，只差一个参数）
+
+\`--stress-settings 3\` 抽到 Background（旧行为）：
+
+\`\`\`
+内存 20MB → 56MB → 88MB → 121MB    存活 31/72
+存活明细正好是那 10 个用 SettingsExpander 的页面 × 3 轮
+\`\`\`
+
+\`--stress-settings 3 idle\` 抽到 SystemIdle：
+
+\`\`\`
+内存 20MB → 23MB → 23MB → 23MB     存活 1/72
+\`\`\`
+
+同样 5 轮、120 次构造、抽干后的结果：
+
+\`\`\`
+内存 20MB → 23MB (Δ3MB)  强制回收=0MB  存活 1/120  异常 0
+\`\`\`
+
+### 顺带澄清两个之前的误判
+
+**「强制 GC 回收 0MB」不是证据。** 5 轮跑完时也报「回收=0MB」，但整体 Δ 只有 3MB。
+原因是 \`GC.GetTotalMemory(true)\` 本身已经先做了一次 full GC，前后两次量的是同一个低谷。
+判「有没有泄漏」要看**每轮之间的增长斜率**，不是看那一次回收量。
+
+**「活动对象都是 30/30」不是功能问题。** 旧探针在 \`--stress-settings\` 里
+也报「存活 31/72」，但同一批页面换成抽干后只有 1/72。
+没抽干时数出来的存活数，反映的是队列里挂着多少个 Action，不是对象有多少个持有者。
+
+### 已经改掉的东西
+
+- \`LtscProbe.YieldUi()\` 改成调 \`DrainToIdle()\`（\`DispatcherPriority.SystemIdle\`），
+  从根上修掉，不是每处各打补丁
+- 保留 \`YieldBackgroundOnly()\`，注释写明「故意保留的错误抽法」，
+  只给对照实验当反证用
+- \`StressSettingsPages\` 加 \`drainIdle\` 参数，命令行 \`idle\` 开关
+- 新增三个探针：\`--probe-idle-drain\`、\`--probe-repeater\`、\`--probe-settings-cycle N\`
+
+### 这条错误值得记住的形状
+
+现象（内存涨、弱引用活着）和原因（队列没抽干）**同时存在**，
+但中间没有因果关系——是我自己的测量工具造出了这个现象。
+和之前几次「拿最像的东西当判据」是同一个病，只是这次代价最大：
+一路上报到「根因确认」，还据此设计了一整套给第三方库打补丁的方案。
+
+**判据**：任何基于「弱引用存活数」的泄漏结论，必须先证明测量工具不会伪造存活。
+具体做法就是这组对照——同一对象、两种抽干深度，看存活数会不会差一个数量级。
 
 ## 4.2 那 2 条 WFO2000 不要改
 
@@ -288,66 +342,69 @@ SettingsExpander 只 ApplyTemplate    存活 30/30   ← 分界点就是这一�
 
 ---
 
-# 五、ta 的最新指示：给 iNKORE 打本地补丁
+# 五、给 iNKORE 打本地补丁 —— 已取消，前提不成立
 
-这是 2026-11-19 11:57 定的方向。**下一个自己从这里接着做。**
+## 前情
 
-## 为什么选这条路
+2026-11-19 11:57 ta 定过这个方向：与其改 107 处 XAML，不如给 iNKORE 打本地补丁。
+当时的前提是「ItemsRepeater 自身泄漏」，已查实这个前提是错的（见 4.1）。
 
-三个选项：
-1. `SettingsExpander` → `SettingsCard` + 自己写展开收起（涉及 10 页 107 处 XAML）
-2. **打本地补丁**（ta 选的）
-3. 等上游修（0.11.0 已是本地最新）
+**所以这条指示现在不需要执行了。** 不用 fork 模板、不用改 IL、不用反射替换。
+iNKORE 0.11.0 没问题，我们这边也没问题。
 
-## 具体做法（我没开始，以下是我的计划，未验证）
+## 如果以后真的遇到 iNKORE 的问题（方法留档）
 
-### 路线 A：fork 模板，覆盖 `SettingsExpander` 的默认样式
+这次摸清的事实，下次能用上：
 
-iNKORE 的 `SettingsExpander` 模板里那个 `ItemsRepeater` 是用来显示展开后子项的。
-我们的用法里，`Items` 装的是 `SettingsCard`（静态内容，不需要虚拟化）。
+**源码可以直接读，不用反编译。**
+仓库 \`https://github.com/iNKORE-NET/UI.WPF.Modern\`，tag \`v0.11.0\`，
+和 nuget 包 0.11.0 对得上。`raw.githubusercontent.com/iNKORE-NET/UI.WPF.Modern/v0.11.0/<路径>`
+直接取，省掉 ILSpy 那一步。
 
-思路：在项目里定义一个新的 `SettingsExpander` 样式，`BasedOn` iNKORE 默认样式，
-但把模板里的 `ItemsRepeater` 换成一个普通 `ItemsControl` 或 `StackPanel`。
+**关键文件位置：**
 
-**难点**：不知道 iNKORE 默认样式的 `x:Key`。需要先找出来。
-可以试 `typeof(SettingsExpander)` 作为隐式样式的 key（WPF 默认行为），
-或者用 `{x:Type ui:SettingsExpander}`。
+\`\`\`
+source/iNKORE.UI.WPF.Modern.Controls/Controls/Community/SettingsControls/
+    SettingsExpander/SettingsExpander.xaml            模板全文（339 行）
+    SettingsExpander/SettingsExpander.cs              OnApplyTemplate / PART_ItemsRepeater
+    SettingsExpander/SettingsExpander.ItemsControl.cs Items / ItemsSource / ItemTemplate
+    SettingsExpander/SettingsExpanderItemStyleSelector.cs
+    SettingsCard/SettingsCard.xaml                   父类模板（没有 ItemsRepeater）
+source/iNKORE.UI.WPF.Modern.Controls/Controls/Windows/Repeater/
+    ItemsRepeater/ItemsRepeater.cs
+    ItemsRepeater/ViewportManagerDownLevel.cs         ← 那个 ContextIdle 队列项在这里
+    ItemsRepeater/ViewManager.cs
+source/iNKORE.UI.WPF.Modern.Controls/Themes/Generic.xaml   合并清单（44/45 行是 SettingsCard/Expander）
+\`\`\`
 
-**验证方法**：改完后跑 `--stress-settings 3`，看前三轮内存是不是 22MB 不变。
+**默认样式的 key：**
 
-### 路线 B：直接替换 `ItemsRepeater` 的 DLL
+\`\`\`
+x:Key="DefaultSettingsExpanderStyle"   ← 带名字的那个
+最后一个 <Style BasedOn="{StaticResource DefaultSettingsExpanderStyle}"
+    TargetType="local:SettingsExpander" />   ← 隐式样式（无 x:Key）
+\`\`\`
 
-用 `ILSpy`/`dnSpy` 反编译 `iNKORE.UI.WPF.Modern.Controls.dll`，
-找到 `ItemsRepeater` 的泄漏点，改 IL，重新签一个同版本号的 DLL 放项目里覆盖。
+模板里的关键结构（339 行那份的第 289~333 行）：
+\`Expander\` 包 \`SettingsCard\` 做 Header，展开内容是 \`Grid\` 三行——
+\`ItemsHeader\` / \`ItemsRepeater\`(PART_ItemsRepeater) / \`ItemsFooter\`。
 
-**风险**：反编译改 IL 很容易出错，而且升级 iNKORE 时会丢失。
-除非路线 A 走不通，不建议。
+**我们的用量**（改之前先认清面）：
+107 个 \`ui:SettingsExpander\`，10 个页面；
+70 个有 \`<ui:SettingsExpander.Items>\` 块；
+\`ItemsSource\` 零处，\`ItemTemplate\` 只有 \`WindowPage.xaml:134\` 一处。
 
-### 路线 C：反射替换模板里的元素
+## 这一轮学到的方法（比结论本身有用）
 
-运行时找到 `SettingsExpander` 的模板，把 `ItemsRepeater` 那个节点替换掉。
-太 hack，不推荐。
+**先读源码，再猜机制。**
+这次真正定位问题的关键，是读到 \`RegisterCacheBuildWork()\` 里那句
+「We capture 'owner' (a strong reference on ItemsRepeater)」。
+在此之前我扫过静态字段、查过动画时钟、反查过三层实例字段，全是瞎找。
+**一个明确的、带注释的源码片段，胜过十次黑盒实验。**
 
-## 建议的下一步（第一个动作）
-
-**先找出 iNKORE 默认样式的 key，确认路线 A 可行。**
-
-```csharp
-// 在探针里加一小段，把这个打出来
-var key = typeof(iNKORE.UI.WPF.Modern.Controls.SettingsExpander);
-var style = Application.Current.TryFindResource(key);
-Log("隐式样式: " + (style == null ? "null" : style.GetType().Name));
-```
-
-如果 `TryFindResource(typeof(SettingsExpander))` 能拿到样式，路线 A 就成立。
-
-## 判据（做完必须验这三条）
-
-1. `--probe-expander` 里 `SettingsExpander` 的存活从 30/30 降到个位数
-2. `--stress-settings 3` 内存从 56→121MB 变成 22MB 不变（和 nolayout 对照组一样）
-3. `--smoke-test` 仍然 PASS=57 FAIL=0，`--dump-settings-pages` 仍然 24/24
-
-**三条缺一条都算没修好。**
+**判据要先证明测量工具本身有效。**
+这次的教训是：所有泄漏数字都出自同一个可能有 bug 的探针，
+而我从头到尾没有先问一句「这个探针会不会自己造出泄漏」。
 
 ---
 
@@ -423,6 +480,32 @@ CRLF 文件先归一化成 `\n`，处理完再还原。
 如果修复点只在 A、测试走 B，那测试结果对修复无效。
 要么把修复下沉到两条路径都会经过的地方，要么在测试里复用 A 的同一段代码，
 **并且用日志确认它真的执行了**（打执行次数，不是打「应该执行」）。
+
+## 错误 10（2026-11-19 新增，这一轮最重的一条）：测量工具自己造出了被测现象
+
+追了整整两轮的「设置页内存泄漏」，最后查实**根本不存在**。
+内存涨、弱引用全都活着，这些现象都是真的——但它们是探针造的，
+不是我改了代码之后自然发生的。
+
+具体：探针的 \`YieldUi()\` 用 \`DispatcherPriority.Background\` 挂恢复回调，
+\`PushFrame\` 跑到那个回调就返回，于是 ContextIdle 及以下的操作永远不执行。
+而 \`ItemsRepeater\` 恰好有一个 ContextIdle 队列项捕获了 owner 强引用。
+对象被队列钉住 → 弱引用永远活着 → 「泄漏」。
+
+把抽干深度从 Background 换成 SystemIdle，同一个控件：
+**30/30 → 1/30**。设置页 5 轮 120 次构造：**185MB / 存活 31 → 23MB / 存活 1**。
+
+我这轮一路走到「根因确认」，还据此设计了给 iNKORE 打本地补丁的整套方案，
+ta 也按这个前提给了指示。**代价是整条线作废。**
+
+**判据**：任何「有没有泄漏」的结论，先证明**测量工具本身不会伪造存活**。
+具体做法：同一个对象做两轮对照，一轮只抽到能返回的最低优先级、一轮抽到彻底空闲，
+看存活数会不会差一个数量级。差得出数量级 → 第一轮的数字是队列残留，不是泄漏。
+没做这组对照，不许说「泄漏」。
+
+上面错误 8 写的是「异常被空 catch 吞掉，把没跑到当成修好了」，
+这一条是同一个病的另一面：**把探测器的假象当成被测对象的属性**。
+共同点都是——**结论指向的不是被测对象，而是我自己的工具。**
 
 ---
 
@@ -544,16 +627,22 @@ IC (WXRIW) → ICA (ChangSakura) → ICC (Dubi906w)
 
 按优先级：
 
-**A. 给 iNKORE 打本地补丁** ← **ta 定的方向，从这里开始**
+**A. 等班测反馈** ← 现在最该等的就是它
 
-第一个动作：验证 `Application.Current.TryFindResource(typeof(SettingsExpander))`
-能不能拿到默认样式。拿得到就走路线 A（fork 模板换掉 ItemsRepeater）。
+问题 1/2/3 都跟 PPT 放映有关，开发机上跑不了完整流程。
+「编译过 + 逻辑对」不等于「功能验收通过」。班测才算数。
 
-判据见第五节。
+**B. 真机验收** —— 翻页笔实物按键（N-03），只能 ta 试
 
-**B. 等班测反馈** —— 问题 1/2/3 只有真机能验
+**C. 设置页内存这条已经结案**，不用再查
+见 4.1。如果以后又看到内存涨，先跑 \`--probe-settings-cycle 5\` 走真实路径量一遍，
+别看 \`--stress-settings\` 的内存数字——那个数字里含大量"还没回收"，不是泄漏。
 
-**C. 真机验收** —— 翻页笔实物按键（N-03），只能 ta 试
+**D. 还可以做的技术债清理**（ta 说过「只要有技术债一定要改」）
+
+- 两个大文件没拆：\`MW_TouchEvents.cs\` 相关的触摸逻辑、\`App.xaml.cs\` 的启动流程
+- 触摸屏：ta 反复强调的「去确保页面都可以使用触摸屏进行页面滚动」
+- 那 2 条 WFO2000 不要改（见 4.2），那是必须的
 
 ---
 

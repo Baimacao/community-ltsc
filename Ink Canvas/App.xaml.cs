@@ -828,12 +828,58 @@ namespace Ink_Canvas
                 if (e.Args.Any(a => string.Equals(a, "nolayout", StringComparison.OrdinalIgnoreCase))) layoutMode = 0;
                 else if (e.Args.Any(a => string.Equals(a, "measure", StringComparison.OrdinalIgnoreCase))) layoutMode = 1;
                 else if (e.Args.Any(a => string.Equals(a, "arrange", StringComparison.OrdinalIgnoreCase))) layoutMode = 2;
+                // 抽干到 SystemIdle：区分「真泄漏」和「ContextIdle 队列残留」
+                bool drainIdle = e.Args.Any(a => string.Equals(a, "idle", StringComparison.OrdinalIgnoreCase));
                 _ = Task.Delay(4000).ContinueWith(_ =>
                 {
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        try { Ink_Canvas.Helpers.LtscProbe.StressSettingsPages(rr, layoutMode); }
+                        try { Ink_Canvas.Helpers.LtscProbe.StressSettingsPages(rr, layoutMode, drainIdle); }
                         catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 压力测试失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
+            // 真机路径：反复开关设置窗口，看内存到底涨不涨
+            if (e.Args.Any(a => a == "--probe-settings-cycle"))
+            {
+                int cyc = 5;
+                var ci = Array.FindIndex(e.Args, a => a == "--probe-settings-cycle");
+                if (ci >= 0 && ci + 1 < e.Args.Length) int.TryParse(e.Args[ci + 1], out cyc);
+                if (cyc <= 0) cyc = 5;
+                var cc = cyc;
+                _ = Task.Delay(5000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.ProbeSettingsWindowCycle(cc); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 开关窗失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
+            // 决定性对照：ContextIdle 队列没抽干会不会伪造出泄漏
+            if (e.Args.Any(a => a == "--probe-idle-drain"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.ProbeIdleDrain(); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 抽干对照失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
+            // 对照实验：ItemsRepeater vs 原生 ItemsControl，分清是控件漏还是 Measure 漏
+            if (e.Args.Any(a => a == "--probe-repeater"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.ProbeRepeaterVsItemsControl(); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 对照实验失败: " + ex, LogHelper.LogType.Error); }
                     }));
                 });
             }

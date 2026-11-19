@@ -38,9 +38,18 @@ namespace Ink_Canvas.Helpers
         ///   2 = Measure + Arrange
         ///   3 = Measure + Arrange + UpdateLayout（默认，最接近真实使用）
         /// </param>
-        public static void StressSettingsPages(int rounds, int layoutMode = 3)
+        public static void StressSettingsPages(int rounds, int layoutMode = 3, bool drainIdle = false)
         {
-            Log("=== 暴力测试开始 rounds=" + rounds + " ===");
+            // drainIdle：每步之后把 Dispatcher 队列抽到 SystemIdle，而不是只到 Background。
+            //
+            // 为什么需要这个开关：ItemsRepeater 的 ViewportManagerDownLevel 在构造和
+            // 布局时用 DispatcherPriority.ContextIdle 投 Action，那个 Action 捕获了
+            // owner 的强引用。YieldUi 的恢复回调挂在 Background，ContextIdle 比
+            // Background 低，所以只抽到 Background 时这些 Action 永远轮不到执行，
+            // 对象被队列钉住——足以伪造出「每一页都泄漏」。
+            // 这个开关打开后能区分「真泄漏」和「队列残留」。
+            Log("=== 暴力测试开始 rounds=" + rounds + " layout=" + layoutMode
+                + " 抽干=" + (drainIdle ? "SystemIdle" : "Background") + " ===");
 
             var asm = typeof(LtscProbe).Assembly;
             var winType = asm.GetType("Ink_Canvas.Windows.SettingsViews.SettingsWindow");
@@ -70,6 +79,10 @@ namespace Ink_Canvas.Helpers
             // 每页留一个弱引用，跑完看还活着几个——活着的才是继续查的入口。
             // 不记这个，「内存涨了」只能靠猜，而猜出来的结论不可用。
             var weakRefs = new List<(string Tag, WeakReference Ref)>();
+
+            // 每轮结算后的真实驻留量。判「是不是泄漏」看这条曲线的形状，
+            // 不看最终那一次强制回收的差值（那个数会被回收抹平，见下面 GC 判据处）。
+            var roundSnapshots = new List<long>();
 
             for (int r = 0; r < rounds; r++)
             {
@@ -101,14 +114,19 @@ namespace Ink_Canvas.Helpers
                     // 一次都跑不到，看门狗看到 sinceHeartbeat > 20 秒就判「主线程卡死」强制重启，
                     // 进程在第 3 轮动手之前就没了——探针永远跑不完设定的轮数，也永远拿不到总结数据。
                     // 上一版就栽在这里（日志里是「主线程卡死 29.4 秒，强制重启」）。
-                    YieldUi();
+                    if (drainIdle) DrainToIdle(); else YieldBackgroundOnly();
                 }
                 // 每轮都记，才能看出增长是线性的还是趋平的。
                 // 只看每 3 轮的数据分辨不出「真泄漏」和「填缓存」。
                 {
+                    // GC 前后都抽一次：之前是执行掉已入队的操作（解开强引用），
+                    // 之后是清掉执行过程中新投递的。
+                    if (drainIdle) { DrainToIdle(); DrainToIdle(); }
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
+                    if (drainIdle) DrainToIdle();
                     GC.Collect();
+                    roundSnapshots.Add(GC.GetTotalMemory(true));
                     Log("  第 " + (r + 1) + " 轮: 内存=" + (GC.GetTotalMemory(true) / 1048576)
                         + "MB 句柄=" + GetHandles()
                         + " 已耗时=" + sw.ElapsedMilliseconds + "ms");
@@ -229,20 +247,64 @@ namespace Ink_Canvas.Helpers
             // 做法：连做 3 次 GC.Collect + WaitForPendingFinalizers，
             // 中间让出 UI 线程（Finalizer 可能要在 Dispatcher 上跑），
             // 然后量一次。如果内存几乎没变，就是真泄漏。
+            // 原来的这里报「强制回收前/后、回收 X MB」，但那个数字永远是 0，说明不了任何事：
+            // after 用的是 GC.GetTotalMemory(true)，它自己就会先做一次 full GC；
+            // before 又是在每轮末尾已经回收过的数字。两边量的是同一个低谷，差值为 0 是必然的。
+            // 2026-11-19 改成量真正有意义的东西：每轮结算后的低谷斜率。
             try
             {
-                long before = GC.GetTotalMemory(false);
                 for (int i = 0; i < 3; i++)
                 {
                     GC.Collect(2, GCCollectionMode.Forced, true, true);
                     GC.WaitForPendingFinalizers();
                     YieldUi();
                 }
-                GC.Collect(2, GCCollectionMode.Forced, true, true);
-                long after = GC.GetTotalMemory(true);
-                Log("  [GC 判据] 强制回收前=" + (before / 1048576) + "MB 后=" + (after / 1048576) + "MB"
-                    + " 回收=" + ((before - after) / 1048576) + "MB"
+                long settled = GC.GetTotalMemory(true);
+                Log("  [GC 判据] 彻底回收后驻留=" + (settled / 1048576) + "MB"
+                    + " 基线=" + (gc0 / 1048576) + "MB"
+                    + " Δ=" + ((settled - gc0) / 1048576) + "MB"
+                    + " 每轮斜率=" + (((settled - gc0) / 1048576.0) / Math.Max(1, rounds)).ToString("F2") + "MB/轮"
                     + " 代计数=" + GC.CollectionCount(0) + "/" + GC.CollectionCount(1) + "/" + GC.CollectionCount(2));
+
+                // 判据：
+                //
+                // 只看「彻底回收后的斜率」会漏报——实测过：Background 那组每轮内存
+                // 20→56→88→121→153→185 明显线性涨，但彻底回收后只有 25MB、斜率 1.09MB/轮，
+                // 参数看着完全正常。因为回收把队列残留全清掉了，量不到。
+                //
+                // 所以真正该看的是「每轮结算那一刻的数值曲线」：
+                // 它在回收之后立刻读，是那一轮实际留下的驻留量。真泄漏是线性累积，
+                // 预热/缓存只在前几轮涨然后走平。两个都要报，判断留给读者，
+                // 但把曲线形状直接判出来，别只丢一个斜率让人自己猜。
+                if (roundSnapshots.Count >= 2)
+                {
+                    long first = roundSnapshots[0];
+                    long last = roundSnapshots[roundSnapshots.Count - 1];
+                    double perRound = (last - first) / 1048576.0 / (roundSnapshots.Count - 1);
+
+                    // 线性检验：后半段斜率 / 前半段斜率。线性累积时两段差不多；
+                    // 预热型是前陡后平，比值会明显小于 1。
+                    bool linear = false;
+                    if (roundSnapshots.Count >= 4)
+                    {
+                        int mid = roundSnapshots.Count / 2;
+                        double slopeA = (roundSnapshots[mid] - roundSnapshots[0]) / 1048576.0 / Math.Max(1, mid);
+                        double slopeB = (last - roundSnapshots[mid]) / 1048576.0
+                                        / Math.Max(1, roundSnapshots.Count - 1 - mid);
+                        linear = slopeA > 0.5 && slopeB > slopeA * 0.6;
+                        Log("  [判据] 前半斜率=" + slopeA.ToString("F2") + "MB/轮 后半斜率="
+                            + slopeB.ToString("F2") + "MB/轮 比值="
+                            + (slopeA > 0 ? (slopeB / slopeA).ToString("F2") : "n/a"));
+                    }
+
+                    Log("  [判据] 逐轮驻留曲线 " + string.Join("→", roundSnapshots.Select(x => (x / 1048576) + "MB"))
+                        + "  平均=" + perRound.ToString("F2") + "MB/轮");
+
+                    if (linear && perRound > 3.0)
+                        Log("  [判据] 线性累积且幅度大 —— 符合泄漏特征");
+                    else
+                        Log("  [判据] 不构成泄漏特征（预热/缓存走平）");
+                }
             }
             catch (Exception ex) { Log("  [GC 判据] 失败: " + Trim(ex.Message)); }
 
@@ -286,13 +348,32 @@ namespace Ink_Canvas.Helpers
         private static extern int GetProcessHandleCount(IntPtr hProcess, out int count);
 
         /// <summary>
-        /// 让出一次 UI 线程，让 Background 优先级的 DispatcherTimer（心跳）有机会跑一轮。
+        /// 让出一次 UI 线程：刷心跳 + 把 Dispatcher 队列抽到 SystemIdle。
         ///
         /// 和 PumpWait 的区别：PumpWait 要等满 ms 毫秒，会拖长整个测试；
-        /// 这里只压一帧 Background 回调，目的是刷心跳，不是等待。
-        /// 代价可忽略（一帧 Background 约 1ms 内），但能决定长测试能不能跑完。
+        /// 这里的目的是让等待中的回调有机会跑一轮，不是等待。
+        ///
+        /// 为什么必须抽到 SystemIdle 而不只是 Background（2026-11-19 查实）：
+        /// 恢复回调挂在 SystemIdle 上，Background 及其以上的操作都会被处理掉，
+        /// 所以 Background 回调跑完之后我们才恢复执行。如果恢复回调留在 Background，
+        /// 比 Background 低的 ContextIdle / ApplicationIdle / SystemIdle 操作就永远轮不到。
+        /// ItemsRepeater 的 ViewportManagerDownLevel.RegisterCacheBuildWork() 正是用
+        /// ContextIdle 投递、且那个 Action 捕获了 owner 的强引用。只抽到 Background 时
+        /// 对象被队列钉住，任何「造对象→GC→数存活」都会得到「全都活着」的假泄漏。
         /// </summary>
         private static void YieldUi()
+        {
+            DrainToIdle();
+        }
+
+        /// <summary>
+        /// 只把队列推进到 Background —— 故意保留的错误抽法。
+        ///
+        /// 存在的唯一理由：给「抽干程度会不会伪造泄漏」这个对照实验留一条反证路径。
+        /// 除了对比实验，任何地方都不该用它：ContextIdle 及以下的操作跑不到，
+        /// 捕获了对象的队列项会把对象一直钉住，数出来的存活数是假的。
+        /// </summary>
+        private static void YieldBackgroundOnly()
         {
             var frame = new System.Windows.Threading.DispatcherFrame();
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
@@ -2268,6 +2349,363 @@ namespace Ink_Canvas.Helpers
                 catch { continue; }
                 Walk(child, visit);
             }
+        }
+
+        /// <summary>
+        /// 对照实验：ItemsRepeater 的泄漏来自「它自己」，还是「Measure 这个动作」。
+        ///
+        /// 上一轮漏了最关键的一格：ItemsRepeater 只构造不 Measure 从没单独测过。
+        /// 「Border 20 个只死 1 个」说明 Measure 本身不至于漏，
+        /// 但没排除「Panel 子类 + Measure」这个组合。
+        ///
+        /// 每组都统计构造和 Measure 的成功次数。上一版栽在空 catch 上：
+        /// 异常被吞、对象没跑到那一步，却把「0 存活」当成修复生效。
+        /// 成功次数对不上就整组作废，不许拿来支撑任何结论。
+        /// </summary>
+        public static void ProbeRepeaterVsItemsControl()
+        {
+            Log("=== 对照：ItemsRepeater vs 原生 ItemsControl ===");
+            var repType = ResolveType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater");
+            if (repType == null) { Log("  [FAIL] 找不到 ItemsRepeater 类型"); return; }
+            Log("  来源程序集=" + repType.Assembly.GetName().Name);
+
+            // A/B 是分界：同一批构造条件，唯一差别是 Measure 那一句。
+            RunLeakGroup("A. ItemsRepeater 只构造不 Measure", 30,
+                () => Activator.CreateInstance(repType), false);
+
+            RunLeakGroup("B. ItemsRepeater 构造 + Measure", 30,
+                () => Activator.CreateInstance(repType), true);
+
+            // C/D 用 WPF 原生 ItemsControl 做同样两格。
+            // 它要是也漏，那漏的不是 ItemsRepeater，是「Panel 被单独 Measure」这件事，
+            // 换控件白换，路线 A 直接作废。
+            RunLeakGroup("C. 原生 ItemsControl 只构造", 30,
+                () => new System.Windows.Controls.ItemsControl(), false);
+
+            RunLeakGroup("D. 原生 ItemsControl 构造 + Measure", 30,
+                () => new System.Windows.Controls.ItemsControl(), true);
+
+            RunLeakGroup("E. 原生 ItemsControl 带 3 项 + Measure", 30,
+                () =>
+                {
+                    var ic = new System.Windows.Controls.ItemsControl();
+                    ic.Items.Add(new Border());
+                    ic.Items.Add(new Border());
+                    ic.Items.Add(new Border());
+                    return ic;
+                }, true);
+
+            // F 对照宿主：真模板里 ItemsRepeater 装在 Expander.Content 里。
+            // 单独一个 Expander 不漏的话，说明问题不在「宿主」这一层。
+            RunLeakGroup("F. 原生 Expander 构造 + Measure", 30,
+                () => new System.Windows.Controls.Expander(), true);
+        }
+
+        /// <summary>
+        /// 一组泄漏测量的标准流程：造 N 个 → 可选 Measure → 强制全量 GC 三次 → 数存活。
+        /// 成功/失败次数必须打出来，失败数不为 0 时这组数据作废。
+        /// </summary>
+        private static void RunLeakGroup(string name, int n, Func<object> factory, bool doMeasure)
+        {
+            var refs = new List<WeakReference>();
+            int madeOk = 0, madeFail = 0, measureOk = 0, measureFail = 0;
+            string firstErr = null;
+
+            for (int k = 0; k < n; k++)
+            {
+                object o = null;
+                try { o = factory(); madeOk++; }
+                catch (Exception ex)
+                {
+                    madeFail++;
+                    if (firstErr == null) firstErr = "构造 " + ex.GetType().Name + ": " + ex.Message;
+                }
+
+                if (o != null && doMeasure)
+                {
+                    try
+                    {
+                        var fe = o as FrameworkElement;
+                        if (fe == null) throw new InvalidOperationException("不是 FrameworkElement");
+                        fe.Measure(new Size(1000, 800));
+                        measureOk++;
+                    }
+                    catch (Exception ex)
+                    {
+                        measureFail++;
+                        if (firstErr == null) firstErr = "Measure " + ex.GetType().Name + ": " + ex.Message;
+                    }
+                }
+
+                refs.Add(new WeakReference(o));
+                o = null;
+                YieldUi();
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                YieldUi();
+            }
+
+            int alive = refs.Count(r => r.IsAlive);
+            var sb = new System.Text.StringBuilder();
+            sb.Append("  [").Append(name).Append("] 造成功=").Append(madeOk).Append("/").Append(n);
+            if (madeFail > 0) sb.Append(" 构造失败=").Append(madeFail);
+            if (doMeasure) sb.Append(" Measure成功=").Append(measureOk).Append(" 失败=").Append(measureFail);
+            sb.Append(" → 存活=").Append(alive).Append("/").Append(n);
+            Log(sb.ToString());
+
+            if (firstErr != null) Log("      首个异常: " + Trim(firstErr));
+
+            // 判据：这组数据能不能用。
+            bool voidGroup = madeFail > 0 || (doMeasure && measureOk != madeOk);
+            if (voidGroup) Log("      [作废] 有对象没跑到预期步骤，本组数据不能支撑结论");
+        }
+
+        /// <summary>
+        /// 真机路径验证：反复开关设置窗口，看内存到底涨不涨。
+        ///
+        /// 为什么需要这一条：前面所有结论都是在探针里直接 Measure 页面对象得出的，
+        /// 而真实的开窗路径是 BtnSettings_Click → new SettingsWindow() → Show() →
+        /// Loaded 里预加载 24 个页面 → 关闭时 Closed 里 _pages.Clear()。
+        /// 走的是完全不同的路径，探针的结论不能直接搬过来。
+        ///
+        /// 关窗用 Close() 而不是只丢引用——Close 会触发 Closed，_pages.Clear() 才跑得到。
+        /// 每次都把队列抽到 SystemIdle，否则测量本身就不可信（见 ProbeIdleDrain）。
+        /// </summary>
+        public static void ProbeSettingsWindowCycle(int cycles)
+        {
+            Log("=== 真机路径：开关设置窗口 " + cycles + " 次 ===");
+            var mw = Application.Current?.MainWindow;
+            if (mw == null) { Log("  [FAIL] 主窗口为空"); return; }
+
+            var mwType = mw.GetType();
+            var settingsField = mwType.GetField("_settingsWindow",
+                BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance);
+            if (settingsField == null) Log("  [提示] 找不到 _settingsWindow 字段，靠窗口列表兜底");
+
+            DrainToIdle(); DrainToIdle();
+            var gc0 = GC.GetTotalMemory(true);
+            int h0 = GetHandles();
+            Log("  基线: 内存=" + (gc0 / 1048576) + "MB 句柄=" + h0);
+
+            var refs = new List<(int Cycle, WeakReference Ref)>();
+            int opened = 0, failed = 0;
+
+            for (int c = 1; c <= cycles; c++)
+            {
+                object win = null;
+                try
+                {
+                    var winType = ResolveType("Ink_Canvas.Windows.SettingsViews.SettingsWindow");
+                    if (winType == null) { Log("  [FAIL] 找不到 SettingsWindow 类型"); return; }
+                    win = Activator.CreateInstance(winType);
+                    var w = win as Window;
+                    if (w == null) throw new InvalidOperationException("不是 Window");
+                    w.Show();
+
+                    // 让它真的走完 Loaded + 预加载。
+                    // PreloadAllPagesAsync 是异步的，抽几轮队列再等一下。
+                    for (int t = 0; t < 6; t++) { DrainToIdle(); PumpWaitNoDeadline(180); }
+                    DrainToIdle();
+                    opened++;
+                }
+                catch (Exception ex)
+                {
+                    failed++;
+                    Log("  第 " + c + " 次开窗失败: " + ex.GetType().Name + ": " + Trim(ex.Message));
+                }
+
+                if (win != null)
+                {
+                    refs.Add((c, new WeakReference(win)));
+                    try { ((Window)win).Close(); } catch { }
+                    win = null;
+                }
+
+                // Close 之后队列里会堆一批收尾操作，必须抽干再看。
+                for (int t = 0; t < 4; t++) { DrainToIdle(); PumpWaitNoDeadline(120); }
+                DrainToIdle();
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                DrainToIdle();
+
+                Log("  第 " + c + " 次: 内存=" + (GC.GetTotalMemory(true) / 1048576)
+                    + "MB 句柄=" + GetHandles());
+            }
+
+            DrainToIdle();
+            for (int i = 0; i < 3; i++)
+            {
+                DrainToIdle();
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                DrainToIdle();
+            }
+
+            var gc1 = GC.GetTotalMemory(true);
+            int h1 = GetHandles();
+            Log("  结果: 开成功=" + opened + " 失败=" + failed);
+            Log("  内存: " + (gc0 / 1048576) + "MB → " + (gc1 / 1048576)
+                + "MB  (Δ" + ((gc1 - gc0) / 1048576) + "MB，平均每次 "
+                + ((gc1 - gc0) / 1048576.0 / Math.Max(1, opened)).ToString("F2") + "MB)");
+            Log("  句柄: " + h0 + " → " + h1 + "  (Δ" + (h1 - h0) + ")");
+            Log("  窗口对象存活: " + refs.Count(x => x.Ref.IsAlive) + "/" + refs.Count);
+            var alive = refs.Where(x => x.Ref.IsAlive).Select(x => x.Cycle).ToList();
+            if (alive.Count > 0) Log("  存活的是第几次: " + string.Join(",", alive));
+        }
+
+        /// <summary>
+        /// 只等 ms 毫秒并抽干队列，不设看门狗超时。
+        /// 和 PumpWait 的区别是泵的是 SystemIdle 不是 Background。
+        /// </summary>
+        private static void PumpWaitNoDeadline(int ms)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.ElapsedMilliseconds < ms)
+            {
+                DrainToIdle();
+                System.Threading.Thread.Sleep(5);
+            }
+        }
+
+        /// <summary>
+        /// 把 Dispatcher 队列抽干到 SystemIdle —— 比 Background 更低的优先级。
+        ///
+        /// 为什么必须单独有这么一个方法：
+        /// YieldUi 的恢复回调挂在 Background，所以只跑到 Background 就返回了。
+        /// 而 ItemsRepeater 的 ViewportManagerDownLevel.RegisterCacheBuildWork()
+        /// 是用 DispatcherPriority.ContextIdle 投的，ContextIdle 比 Background 低，
+        /// 于是那个 Action 永远轮不到执行，而它捕获了 owner（源码里写着
+        /// "We capture 'owner' (a strong reference on ItemsRepeater)"）。
+        /// 只要队列不抽干，对象就一直被钉着 —— 这足以伪造出「泄漏」。
+        /// </summary>
+        private static void DrainToIdle()
+        {
+            var frame = new System.Windows.Threading.DispatcherFrame();
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.SystemIdle,
+                new Action(() => frame.Continue = false));
+            System.Windows.Threading.Dispatcher.PushFrame(frame);
+        }
+
+        /// <summary>
+        /// 决定性对照：ItemsRepeater 的「泄漏」是不是探针没抽干 ContextIdle 队列造成的假象。
+        ///
+        /// 判据：
+        ///   只 Background 抽 → 存活多（复现上一轮结果）
+        ///   抽到 SystemIdle  → 存活掉到个位数
+        /// 如果后者成立，那之前「ItemsRepeater 自身泄漏」的结论作废，
+        /// 设置页内存问题要重新定性，打补丁的方案也得推翻重来。
+        /// </summary>
+        public static void ProbeIdleDrain()
+        {
+            Log("=== 决定性对照：ContextIdle 队列没抽干会不会伪造泄漏 ===");
+            var repType = ResolveType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater");
+            if (repType == null) { Log("  [FAIL] 找不到 ItemsRepeater"); return; }
+
+            // 先把队列抽干净，避免上一组残留影响这一组。
+            DrainToIdle();
+            DrainToIdle();
+
+            RunLeakGroupEx("G. ItemsRepeater + Measure，只抽到 Background", 30,
+                () => Activator.CreateInstance(repType), true, false);
+
+            RunLeakGroupEx("H. ItemsRepeater + Measure，抽到 SystemIdle", 30,
+                () => Activator.CreateInstance(repType), true, true);
+
+            // 反向对照：同一件事在原生 ItemsControl 上应该没差别。
+            // 如果它也随抽干程度变化，那说明测量方法整体有问题。
+            RunLeakGroupEx("I. 原生 ItemsControl，只抽到 Background", 30,
+                () => new System.Windows.Controls.ItemsControl(), true, false);
+
+            RunLeakGroupEx("J. 原生 ItemsControl，抽到 SystemIdle", 30,
+                () => new System.Windows.Controls.ItemsControl(), true, true);
+        }
+
+        /// <summary>
+        /// RunLeakGroup 的加长版：多一个 drainIdle 开关，决定 GC 前后要不要抽到 SystemIdle。
+        /// 其它判据（成功次数、作废条件）一致。
+        /// </summary>
+        private static void RunLeakGroupEx(string name, int n, Func<object> factory, bool doMeasure, bool drainIdle)
+        {
+            var refs = new List<WeakReference>();
+            int madeOk = 0, madeFail = 0, measureOk = 0;
+            string firstErr = null;
+
+            for (int k = 0; k < n; k++)
+            {
+                object o = null;
+                try { o = factory(); madeOk++; }
+                catch (Exception ex)
+                {
+                    madeFail++;
+                    if (firstErr == null) firstErr = "构造 " + ex.GetType().Name + ": " + ex.Message;
+                }
+
+                if (o != null && doMeasure)
+                {
+                    try
+                    {
+                        var fe = o as FrameworkElement;
+                        if (fe == null) throw new InvalidOperationException("不是 FrameworkElement");
+                        fe.Measure(new Size(1000, 800));
+                        measureOk++;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (firstErr == null) firstErr = "Measure " + ex.GetType().Name + ": " + ex.Message;
+                    }
+                }
+
+                refs.Add(new WeakReference(o));
+                o = null;
+                if (drainIdle) DrainToIdle(); else YieldBackgroundOnly();
+            }
+
+            // 抽干要在 GC 之前和之后各做一次：
+            // 之前是把已入队的操作执行掉（解开强引用），
+            // 之后是清掉执行过程中新投递的。
+            if (drainIdle) { DrainToIdle(); DrainToIdle(); }
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (drainIdle) DrainToIdle();
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                if (drainIdle) DrainToIdle(); else YieldBackgroundOnly();
+            }
+
+            if (drainIdle) { DrainToIdle(); DrainToIdle(); }
+
+            int alive = refs.Count(r => r.IsAlive);
+            var sb = new System.Text.StringBuilder();
+            sb.Append("  [").Append(name).Append("] 造成功=").Append(madeOk).Append("/").Append(n);
+            if (madeFail > 0) sb.Append(" 构造失败=").Append(madeFail);
+            if (doMeasure) sb.Append(" Measure成功=").Append(measureOk);
+            sb.Append(" → 存活=").Append(alive).Append("/").Append(n);
+            Log(sb.ToString());
+            if (firstErr != null) Log("      首个异常: " + Trim(firstErr));
+            if (madeFail > 0 || (doMeasure && measureOk != madeOk))
+                Log("      [作废] 有对象没跑到预期步骤，本组数据不能支撑结论");
+        }
+
+        /// <summary>
+        /// 按全名找类型：先本程序集，再扫已加载程序集。
+        /// 只扫已加载的，不触发新加载——探针不该改变被测环境。
+        /// </summary>
+        private static Type ResolveType(string fullName)
+        {
+            var t = typeof(LtscProbe).Assembly.GetType(fullName);
+            if (t != null) return t;
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try { t = a.GetType(fullName); } catch { }
+                if (t != null) return t;
+            }
+            return null;
         }
 
         private static string Trim(string s)
