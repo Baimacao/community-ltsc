@@ -74,7 +74,13 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"加载关于页面设置时出错: {ex.Message}");
+                // LTSC（2026-11-19 班测）：这里原来是 Debug.WriteLine，
+                // Release 构建下 Debug 输出被裁掉，异常发生时一个字都不留。
+                // 班测看到版本号是 1.x.x.x，日志里查不到任何线索，就是这么来的。
+                // 版本号显示不出来不是致命错误，但必须可见。
+                LogHelper.WriteLogToFile(
+                    $"关于页读取版本号失败: {ex}", LogHelper.LogType.Warning);
+                AppVersionTextBlock.Text = "读取失败";
             }
         }
 

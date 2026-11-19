@@ -9,7 +9,8 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d"
 
-      Title="{x:Static props:AboutStrings.Title}">
+      Title="{x:Static props:AboutStrings.Title}"
+      Loaded="AboutPage_Loaded">
 
     <ScrollViewer PanningMode="VerticalFirst">
         <Grid Margin="59,0,59,0">
@@ -60,7 +61,12 @@
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Info}" />
                         </ui:SettingsCard.HeaderIcon>
-                        <TextBlock x:Name="AppVersionTextBlock" Text="1.X.X.X" FontWeight="Bold" VerticalAlignment="Center" />
+                        <!-- LTSC（2026-11-19 班测）：这里原来写死 Text="1.X.X.X" 当设计期占位。
+                             班测看到「版本号显示 1.x.x.x」就是它——因为 AboutPage_Loaded
+                             从来没被挂上（XAML 根元素缺 Loaded=），版本号永远是占位符。
+                             现在占位改成空串：万一哪天又没加载，宁可什么都不显示，
+                             也不要显示一个假的版本号骗人。 -->
+                        <TextBlock x:Name="AppVersionTextBlock" Text="" FontWeight="Bold" VerticalAlignment="Center" />
                     </ui:SettingsCard>
 
 

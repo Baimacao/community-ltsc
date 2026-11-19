@@ -127,16 +127,60 @@ namespace Ink_Canvas
             _foldSw = System.Diagnostics.Stopwatch.StartNew();
             LogHelper.WriteLogToFile("[折叠] 开始", LogHelper.LogType.Event);
 
-            // FloatingBarIcons_MouseUp_New(sender);
-            if (sender == null)
-                foldFloatingBarByUser = false;
-            else
-                foldFloatingBarByUser = true;
-            unfoldFloatingBarByUser = false;
+            // LTSC（2026-11-19 班测崩溃）：整个方法必须跑在 UI 线程上。
+            //
+            // 崩溃日志：
+            //   [T28] [自动收纳] 全屏=True 需收纳=True ...
+            //   [T28] [折叠] 开始
+            //   [T28] [Warning] 检测到DynamicRenderer线程访问异常:
+            //          调用线程无法访问此对象，因为另一个线程拥有该对象。
+            //
+            // 调用链：timerCheckAutoFold 是 System.Timers.Timer 的 Elapsed，
+            // 跑在【线程池线程】上（日志里的 T28/T16 就是），它直接调
+            // FoldFloatingBar_MouseUp → FoldFloatingBar。
+            //
+            // 而本方法原来的第一段（下面这几行）在第一个 await 之前，
+            // 也就是【还在调用方的线程上】就执行了：
+            //   · 读 isFloatingBarFolded / isFloatingBarChangingHideMode（UI 状态）
+            //   · 读 IsInPPTPresentationMode（走 SetPowerPointMode 的 getter）
+            //   · 读 ViewboxFloatingBar.Margin（UI 元素）
+            //   · 调 isFloatingBarFolded 相关的一系列标志
+            // 其中 ViewboxFloatingBar.Margin 是对 DependencyObject 的跨线程访问，
+            // 直接抛 InvalidOperationException。
+            //
+            // async 方法在第一个 await 之前是同步跑的 —— 这是关键：
+            // 加 async 不等于自动切线程。所以必须显式把整段搬进 Dispatcher。
+            await Dispatcher.InvokeAsync(() =>
+            {
+                // FloatingBarIcons_MouseUp_New(sender);
+                if (sender == null)
+                    foldFloatingBarByUser = false;
+                else
+                    foldFloatingBarByUser = true;
+                unfoldFloatingBarByUser = false;
 
-            if (isFloatingBarFolded) return;
+                // IsInPPTPresentationMode 的 getter 会进 SetPowerPointMode 侧，
+                // 而 ViewboxFloatingBar.Margin 是 DependencyObject —— 两者都必须在 UI 线程读。
+                // 原来这两句在第一个 await 之前，等于跑在调用方线程（Timer 线程池线程）上，
+                // 就是班测崩溃的那一行。
+                if (!IsInPPTPresentationMode)
+                {
+                    pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
+                }
+            });
 
-            if (isFloatingBarChangingHideMode)
+            // 只读判断放在调度之后重新取一次，别用在别的线程上读到的旧值。
+            bool alreadyFolded = false;
+            bool changingHideMode = false;
+            await Dispatcher.InvokeAsync(() =>
+            {
+                alreadyFolded = isFloatingBarFolded;
+                changingHideMode = isFloatingBarChangingHideMode;
+            });
+
+            if (alreadyFolded) return;
+
+            if (changingHideMode)
             {
                 return;
             }
@@ -162,10 +206,16 @@ namespace Ink_Canvas
             // pointDesktop 与目标位置差 >50，就把 pos 覆盖成那个隐藏位置，
             // 结果浮窗出现在"默认位置上面"——就是它折叠时的那个高度。
             // 现在在移动之前先把真实位置存好，覆盖掉脏数据。
-            if (!IsInPPTPresentationMode)
+            // 同上：这段原来在两个 await 之间，跑在调用方线程（可能是 Timer 线程）上，
+            // 读 ViewboxFloatingBar.Margin 是跨线程访问 DependencyObject，
+            // 读 IsInPPTPresentationMode 也会进 SetPowerPointMode 的 getter。
+            await Dispatcher.InvokeAsync(() =>
             {
-                pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
-            }
+                if (!IsInPPTPresentationMode)
+                {
+                    pointDesktop = new Point(ViewboxFloatingBar.Margin.Left, ViewboxFloatingBar.Margin.Top);
+                }
+            });
 
             await Dispatcher.InvokeAsync(() =>
             {

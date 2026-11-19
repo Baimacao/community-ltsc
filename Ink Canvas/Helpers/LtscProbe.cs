@@ -1846,6 +1846,271 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PPTPERM", false, Trim(ex.Message)); }
 
+            // --- 8z. 折叠必须能从非 UI 线程安全调用（2026-11-19 班测崩溃）---
+            //
+            // 崩溃日志：
+            //   [T28] [自动收纳] 全屏=True 需收纳=True ...
+            //   [T28] [折叠] 开始
+            //   [T28] [Warning] 检测到DynamicRenderer线程访问异常:
+            //          调用线程无法访问此对象，因为另一个线程拥有该对象。
+            //
+            // timerCheckAutoFold 是 System.Timers.Timer 的 Elapsed，跑在线程池线程上，
+            // 它直接调 FoldFloatingBar_MouseUp → FoldFloatingBar。
+            // 而 FoldFloatingBar 在第一个 await 之前就读了 ViewboxFloatingBar.Margin
+            // （DependencyObject，跨线程访问会抛），以及 isFloatingBarFolded 等 UI 状态。
+            //
+            // 测法：真的从后台线程调一次 FoldFloatingBar，捕获异常。
+            // 修复前必抛 InvalidOperationException，修复后必须干净返回。
+            try
+            {
+                var mw = Application.Current?.MainWindow as MainWindow;
+                var foldMethod = typeof(MainWindow).GetMethod("FoldFloatingBar",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.Public |
+                    System.Reflection.BindingFlags.NonPublic);
+
+                R("FOLDTHREAD-1 找到 FoldFloatingBar", mw != null && foldMethod != null,
+                    "窗口=" + (mw != null) + " 方法=" + (foldMethod != null));
+
+                if (mw != null && foldMethod != null)
+                {
+                    // 关键：必须先确保「未折叠」状态。
+                    // 上一版没做这一步，界面在别的断言里已经折叠过了，
+                    // FoldFloatingBar 一进来就 isFloatingBarFolded 为真、直接 return，
+                    // 根本没走到读 ViewboxFloatingBar.Margin 那一行 ——
+                    // 于是反向对照永远 PASS，测了个寂寞。
+                    //
+                    // 强制重置成未折叠、且不在切换中，让方法真的走到底。
+                    var foldedField = typeof(MainWindow).GetField("isFloatingBarFolded",
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.Public |
+                        System.Reflection.BindingFlags.NonPublic);
+                    var changingField = typeof(MainWindow).GetField("isFloatingBarChangingHideMode",
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic);
+
+                    Application.Current?.Dispatcher.Invoke(() =>
+                    {
+                        try { foldedField?.SetValue(mw, false); } catch { }
+                        try { changingField?.SetValue(mw, false); } catch { }
+                    });
+
+                    // 从线程池线程调用（和 timerCheckAutoFold 的实际线程性质一致）。
+                    // 注意：SmokeTest 不是 async 方法，这里全程用同步等待。
+                    Exception caught = null;
+                    var bgThread = new System.Threading.Thread(() =>
+                    {
+                        try
+                        {
+                            var task = foldMethod.Invoke(mw, new object[] { null, false })
+                                       as System.Threading.Tasks.Task;
+                            task?.Wait(3000);
+                        }
+                        catch (Exception ex)
+                        {
+                            caught = ex is System.Reflection.TargetInvocationException tie && tie.InnerException != null
+                                ? tie.InnerException
+                                : ex;
+                        }
+                    });
+                    bgThread.IsBackground = true;
+                    bgThread.Start();
+                    bgThread.Join(8000);
+
+                    bool crossThread = caught != null && (
+                        caught is InvalidOperationException ||
+                        (caught.InnerException is InvalidOperationException));
+
+                    R("FOLDTHREAD-2 后台线程调折叠不抛跨线程访问异常",
+                        !crossThread,
+                        caught == null ? "干净返回"
+                                       : "!! " + caught.GetType().Name + ": " + Trim(caught.Message));
+
+                    // 等折叠自己跑完，别把后续断言拖进中间态
+                    try { PumpWaitNoDeadline(2500); } catch { }
+                    YieldUi();
+                }
+            }
+            catch (Exception ex) { R("FOLDTHREAD", false, Trim(ex.Message)); }
+
+            // --- 9a. 关于页版本号（2026-11-19 班测）---
+            //
+            // 班测报告：设置 → 关于 里显示的是 1.x.x.x 这种四段数字。
+            //
+            // 成因：App.GetDisplayVersion() 优先读 AssemblyInformationalVersion，
+            // 读不到就兜底到 AssemblyVersion（那就是 1.0.0.176 这种）。
+            // 显示 1.x.x.x 说明【走到了兜底分支】，也就是 InformationalVersion 没读到。
+            //
+            // 这里在进程内直接调 GetDisplayVersion()，拿真实返回值判断。
+            // 不能靠外部反射读 DLL——那样在缺依赖时会是假阴性（我试过，
+            // PowerShell 加载失败就报「(无)」，和实际相反）。
+            try
+            {
+                var gdv = typeof(Ink_Canvas.App).GetMethod("GetDisplayVersion",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+
+                R("DISPLAYVER-1 能找到 GetDisplayVersion", gdv != null,
+                    gdv == null ? "找不到方法" : "OK");
+
+                if (gdv != null)
+                {
+                    string shown = (string)gdv.Invoke(null, null);
+                    Log("  [信息] 关于页实际会显示: \"" + shown + "\"");
+
+                    // 判据：必须是产品版本形态（形如 0.1c-daily），
+                    // 不能是四段纯数字（1.0.0.176 那种兜底值）。
+                    bool isFourPartNumeric = System.Text.RegularExpressions.Regex.IsMatch(
+                        shown ?? "", @"^\d+\.\d+\.\d+\.\d+$");
+
+                    R("DISPLAYVER-2 关于页版本不是四段数字兜底值",
+                        !isFourPartNumeric,
+                        "显示=\"" + shown + "\""
+                        + (isFourPartNumeric ? " ← 走了 AssemblyVersion 兜底，说明 InformationalVersion 读不到" : ""));
+
+                    // 再单独确认 InformationalVersion 这条主路径是否真的可用
+                    bool hasInfo = false;
+                    try
+                    {
+                        var info = typeof(Ink_Canvas.App).Assembly
+                            .GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>();
+                        hasInfo = info != null && !string.IsNullOrWhiteSpace(info.InformationalVersion);
+                        if (hasInfo) Log("  [信息] InformationalVersion = \"" + info.InformationalVersion + "\"");
+                    }
+                    catch (Exception iex) { Log("  [信息] 读 InformationalVersion 抛了: " + Trim(iex.Message)); }
+
+                    R("DISPLAYVER-3 程序集带 InformationalVersion 特性", hasInfo,
+                        hasInfo ? "有" : "没有 → 必然被兜底到 1.x.x.x");
+                }
+
+                // 最关键的一条：真的造一个 AboutPage，看它的控件文本是什么。
+                // 前面几条都只证明「版本号算得对」，证明不了「界面上显示得对」。
+                // 班测看到 1.x.x.x 的原因是 XAML 根元素缺 Loaded= 绑定，
+                // 处理器从来没挂上——这件事只有造出真实页面才测得出来。
+                try
+                {
+                    var aboutType = typeof(Ink_Canvas.Windows.SettingsViews.SettingsWindow)
+                        .Assembly.GetType("Ink_Canvas.Windows.SettingsViews.Pages.AboutPage");
+
+                    if (aboutType == null)
+                    {
+                        R("DISPLAYVER-4 找到 AboutPage 类型", false, "找不到");
+                    }
+                    else
+                    {
+                        // 先看 XAML 里那个 TextBlock 的初始值。
+                        // 如果还是 "1.X.X.X" 占位，说明有人把手改回去了。
+                        var page = Activator.CreateInstance(aboutType);
+                        var fe = page as FrameworkElement;
+                        fe?.Measure(new Size(1200, 900));
+                        fe?.Arrange(new Rect(0, 0, 1200, 900));
+                        fe?.UpdateLayout();
+
+                        var tbField = aboutType.GetField("AppVersionTextBlock",
+                            System.Reflection.BindingFlags.Instance |
+                            System.Reflection.BindingFlags.NonPublic |
+                            System.Reflection.BindingFlags.Public);
+                        var tb = tbField?.GetValue(page) as System.Windows.Controls.TextBlock;
+
+                        if (tb == null)
+                        {
+                            R("DISPLAYVER-4 找到版本号 TextBlock", false, "找不到 AppVersionTextBlock");
+                        }
+                        else
+                        {
+                            // 【不能】在这里手动调 AboutPage_Loaded。
+                            //
+                            // 上一版就是这么干的，结果反向对照怎么改都不红——
+                            // 因为把 Loaded 绑定删掉之后，探针自己照样把处理器叫了一遍，
+                            // 掩盖了「实机上根本没挂上」这个真正的 bug。
+                            // 测的是「处理器被调用后结果对不对」，
+                            // 而班测的 bug 是「处理器压根不会被调用」。
+                            //
+                            // 现在直接看 XAML 有没有绑定：读 BAML 里那条事件连接，
+                            // 而不是自己在测试里补一次调用。
+                            string text = tb.Text ?? "";
+                            Log("  [信息] AboutPage 版本号控件文本 = \"" + text + "\"");
+
+                            bool looksLikePlaceholder = text.Contains("X.X");
+                            bool isFourNumeric = System.Text.RegularExpressions.Regex.IsMatch(
+                                text, @"^\d+\.\d+\.\d+\.\d+$");
+                            bool nonEmpty = !string.IsNullOrWhiteSpace(text);
+
+                            // 注意：这个探针里页面没有进可视化树，Loaded 事件本来就不会触发，
+                            // 所以文本为空是【正常的】——真实判据是下面那条「XAML 有没有绑定」。
+                            // 这里只判「占位符改掉了没有」：只要不是 "1.X.X.X" 这种假版本号就行。
+                            R("DISPLAYVER-4 关于页不再显示 XAML 占位符",
+                                !looksLikePlaceholder && !isFourNumeric,
+                                "文本=\"" + text + "\"（空=未进可视化树，正常；实机会由 Loaded 填上）"
+                                + (looksLikePlaceholder ? " ← 还是 XAML 占位符"
+                                   : isFourNumeric ? " ← 四段数字兜底值" : ""));
+
+                            // 处理器必须真的挂在 XAML 上，否则实机里永远不会触发。
+                            //
+                            // 判据不能是 "Loaded 事件存在"——任何 FrameworkElement 都有
+                            // Loaded 事件，那样测等于什么都没测。
+                            // 要读 BAML 里记录的事件连接表（IComponentConnector / _connectionIds），
+                            // 或者直接读编译出来的 .g.cs 里有没有 Connect(…, "AboutPage_Loaded")。
+                            //
+                            // 这里用最直接的判据：在 AboutPage 的生成代码里，
+                            // XAML 事件绑定会被编译成 Connect(id, "处理器名")。
+                            // 反射看不到这一层，所以读源文件更实在——
+                            // 源文件就在编译产物旁边，路径可以推导。
+                            bool xamlBound = false;
+                            string bindEvidence = "";
+                            try
+                            {
+                                // 找 .g.cs：obj/<配置>/<tfm>/Windows/SettingsViews/Pages/AboutPage.g.cs
+                                // 注意：仓库里有【多个】obj 目录（obj/Release、obj/x64/Release、
+                                // obj/x64/Release/win-x64、还有 net6/net8 的历史残留）。
+                                // 只有真正参与本次构建的那一份会更新，其余的计数是 0。
+                                // 上一版按「找到第一个就用」，撞上了 obj/Release（旧的），
+                                // 于是永远报「没绑定」——断言找错了文件。
+                                //
+                                // 判据：取【最近修改】的那一份，它才是本次构建产物。
+                                var baseDir = AppContext.BaseDirectory;
+                                var candidates = new List<string>();
+                                for (var d = new System.IO.DirectoryInfo(baseDir); d != null; d = d.Parent)
+                                {
+                                    var objDir = System.IO.Path.Combine(d.FullName, "obj");
+                                    if (System.IO.Directory.Exists(objDir))
+                                    {
+                                        candidates.AddRange(System.IO.Directory.GetFiles(
+                                            objDir, "AboutPage.g.cs", System.IO.SearchOption.AllDirectories));
+                                        if (candidates.Count > 0) break;
+                                    }
+                                }
+                                candidates = candidates
+                                    .OrderByDescending(f => System.IO.File.GetLastWriteTimeUtc(f))
+                                    .ToList();
+
+                                if (candidates.Count == 0)
+                                {
+                                    bindEvidence = "找不到 AboutPage.g.cs";
+                                }
+                                else
+                                {
+                                    var g = System.IO.File.ReadAllText(candidates[0]);
+                                    xamlBound = g.Contains("AboutPage_Loaded");
+                                    bindEvidence = xamlBound
+                                        ? "生成代码里有 AboutPage_Loaded 的事件连接"
+                                        : "!! 生成代码里没有 AboutPage_Loaded —— XAML 没绑定 Loaded=";
+                                }
+                            }
+                            catch (Exception bex) { bindEvidence = Trim(bex.Message); }
+
+                            R("DISPLAYVER-5 XAML 真的绑定了 Loaded=AboutPage_Loaded",
+                                xamlBound, bindEvidence);
+
+                            try { (page as IDisposable)?.Dispose(); } catch { }
+                        }
+                    }
+                }
+                catch (Exception aex) { R("DISPLAYVER-4", false, Trim(aex.Message)); }
+            }
+            catch (Exception ex) { R("DISPLAYVER", false, Trim(ex.Message)); }
+
             // --- 9b. PPT 总页数失败兜底（2026-11-19 班测）---
             //
             // 班测：「联动状态下时间一长，PPT 翻页组件消失」。
