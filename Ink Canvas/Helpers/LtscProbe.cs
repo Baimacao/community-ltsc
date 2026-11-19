@@ -27,7 +27,18 @@ namespace Ink_Canvas.Helpers
         /// 每次构造都会新建一整套控件树、注册事件、绑数据。
         /// 若某页面在构造期持有静态引用或未解绑事件，反复 N 次后内存/句柄会明显上涨。
         /// </summary>
-        public static void StressSettingsPages(int rounds)
+        /// <summary>
+        /// 设置页压力测试。
+        /// </summary>
+        /// <param name="rounds">跑多少轮</param>
+        /// <param name="layoutMode">
+        /// 布局调用到哪一步。排查泄漏时用来二分定位是哪个调用引入的：
+        ///   0 = 完全不调（对照组）
+        ///   1 = 只 Measure
+        ///   2 = Measure + Arrange
+        ///   3 = Measure + Arrange + UpdateLayout（默认，最接近真实使用）
+        /// </param>
+        public static void StressSettingsPages(int rounds, int layoutMode = 3)
         {
             Log("=== 暴力测试开始 rounds=" + rounds + " ===");
 
@@ -69,9 +80,9 @@ namespace Ink_Canvas.Helpers
                         var page = Activator.CreateInstance(kv.Value);
                         var fe = page as FrameworkElement;
                         if (fe == null) continue;
-                        fe.Measure(new Size(1000, 800));
-                        fe.Arrange(new Rect(0, 0, 1000, 800));
-                        fe.UpdateLayout();
+                        if (layoutMode >= 1) fe.Measure(new Size(1000, 800));
+                        if (layoutMode >= 2) fe.Arrange(new Rect(0, 0, 1000, 800));
+                        if (layoutMode >= 3) fe.UpdateLayout();
                         // 每轮都记，最后按轮报存活数：
                         // 只有末轮活着 = 在等 GC，不是泄漏；
                         // 前几轮还活着 = 真被攥住了，按轮递减说明有东西线性累积。
@@ -116,6 +127,133 @@ namespace Ink_Canvas.Helpers
             Log("句柄: " + handles0 + " → " + handles1 + "  (Δ" + (handles1 - handles0) + ")");
             Log("异常: " + errors);
             foreach (var e in errs) Log("  [错] " + e);
+
+            // ── 反向查：存活页面自己攥着什么「不该有的东西」 ──────────
+            //
+            // 正向找持有者走不通（gcroot 在这个环境返回 0，静态扫描也没有），
+            // 那反过来看：这些页面身上挂着什么「它不该有」的引用？
+            //
+            // 一个只被 Measure 过的页面，理论上除了自己的控件树什么都不该连。
+            // 如果它连着 MainWindow / App / SettingsManager 这类长命对象，
+            // 那它自己也就跟着长命了。
+            try
+            {
+                var sample = weakRefs.Where(x => x.Ref.IsAlive)
+                                     .Select(x => x.Ref.Target)
+                                     .FirstOrDefault(o => o != null);
+                if (sample != null)
+                {
+                    var offenders = new List<string>();
+                    var t = sample.GetType();
+                    var flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
+                    // 往下走三层字段，找长命对象的引用
+                    void Walk(object obj, string path, int depth)
+                    {
+                        if (obj == null || depth > 3 || offenders.Count >= 15) return;
+                        if (path.Length > 160) return;
+
+                        var ot = obj.GetType();
+                        if (ot.IsPrimitive || obj is string || ot.IsEnum) return;
+
+                        // 命中长命对象就记下来
+                        var n = ot.FullName ?? "";
+                        if (n.Contains("MainWindow") || n == "Ink_Canvas.App" ||
+                            n.Contains("SettingsManager") || n.Contains("InkFadeManager") ||
+                            n.Contains("SpringAnimator"))
+                        {
+                            offenders.Add(path + " → " + n);
+                            return;
+                        }
+
+                        FieldInfo[] fs;
+                        try { fs = ot.GetFields(flags); } catch { return; }
+                        foreach (var f in fs)
+                        {
+                            var ft = f.FieldType;
+                            if (ft.IsPrimitive || ft == typeof(string) || ft.IsEnum) continue;
+                            if (ft.IsValueType) continue;   // 结构体不追，避免爆炸
+                            object fv;
+                            try { fv = f.GetValue(obj); } catch { continue; }
+                            if (fv == null) continue;
+                            Walk(fv, path + "." + f.Name, depth + 1);
+                        }
+                    }
+
+                    Walk(sample, t.Name, 0);
+                    if (offenders.Count == 0)
+                        Log("  [反向查] 存活页面三层内没连到长命对象");
+                    else
+                    {
+                        Log("  [反向查] 存活页面连到了这些长命对象：");
+                        foreach (var s in offenders.Take(10)) Log("    " + s);
+                    }
+                }
+            }
+            catch (Exception ex) { Log("  [反向查] 失败: " + Trim(ex.Message)); }
+
+            // ── 查全局资源：Application.Resources 里有没有被写进东西 ──
+            //
+            // Measure 会触发模板应用，应用模板要 FindResource，
+            // 也就是走 Application.Current.Resources 这条全局链。
+            // 如果每构造一个页面就往全局字典写一条（例如样式 Setter 的缓存），
+            // 那些条目会永久钉住页面里的元素。
+            try
+            {
+                var app = Application.Current;
+                int ressCount = app?.Resources?.Count ?? -1;
+                Log("  [全局资源] Application.Resources.Count=" + ressCount);
+
+                // 数一下全局字典里所有 ResourceDictionary 的总条目数
+                int totalEntries = 0;
+                var stack = new Stack<ResourceDictionary>();
+                if (app?.Resources != null) stack.Push(app.Resources);
+                var seen = new HashSet<ResourceDictionary>();
+                while (stack.Count > 0 && seen.Count < 2000)
+                {
+                    var rd = stack.Pop();
+                    if (rd == null || !seen.Add(rd)) continue;
+                    try { totalEntries += rd.Count; } catch { }
+                    try { foreach (var m in rd.MergedDictionaries) stack.Push(m); } catch { }
+                }
+                Log("  [全局资源] 合并字典总数=" + seen.Count + " 条目合计=" + totalEntries);
+            }
+            catch (Exception ex) { Log("  [全局资源] 失败: " + Trim(ex.Message)); }
+
+            // ── 决定性判据：强制全量 GC 后，对象真的少了吗 ──────────
+            //
+            // 前面测的「内存」是 GC.GetTotalMemory(true)，它只报托管堆大小。
+            // 但真正要看的是：这些对象**能不能被回收**。
+            //
+            // 做法：连做 3 次 GC.Collect + WaitForPendingFinalizers，
+            // 中间让出 UI 线程（Finalizer 可能要在 Dispatcher 上跑），
+            // 然后量一次。如果内存几乎没变，就是真泄漏。
+            try
+            {
+                long before = GC.GetTotalMemory(false);
+                for (int i = 0; i < 3; i++)
+                {
+                    GC.Collect(2, GCCollectionMode.Forced, true, true);
+                    GC.WaitForPendingFinalizers();
+                    YieldUi();
+                }
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                long after = GC.GetTotalMemory(true);
+                Log("  [GC 判据] 强制回收前=" + (before / 1048576) + "MB 后=" + (after / 1048576) + "MB"
+                    + " 回收=" + ((before - after) / 1048576) + "MB"
+                    + " 代计数=" + GC.CollectionCount(0) + "/" + GC.CollectionCount(1) + "/" + GC.CollectionCount(2));
+            }
+            catch (Exception ex) { Log("  [GC 判据] 失败: " + Trim(ex.Message)); }
+
+            // ── 精确诊断：谁还在引用这些页面 ───────────────────────
+            //
+            // gcroot 在 .NET 11 的转储上返回 0 roots，但对象确实活着（内存线性涨）。
+            // 那条路不通，改成进程内自查：只扫静态字段，不扫属性。
+            //
+            // 为什么只扫静态字段：静态字段是 GC 根里唯一可能被业务代码直接写坏的，
+            // 实例字段要从根走过来，扫它等于重新实现一遍 gcroot。
+            // 不扫属性是因为 getter 可能有副作用、也可能极慢（上次就卡死了）。
+            DoStaticRootScan(weakRefs);
 
             // 全量 GC 之后，每轮构造的页面还活着几个。
             // 按轮分开看很关键：只有末轮活着 = 在等 GC，不是泄漏；
@@ -176,6 +314,101 @@ namespace Ink_Canvas.Helpers
             }
         }
 
+        /// <summary>
+        /// 进程内自查：哪些静态字段还在引用这些页面（或页面里的控件）。
+        ///
+        /// 为什么需要它：dotnet-dump 的 gcroot 在这个 .NET 11 的转储上返回 0 roots，
+        /// 和「内存线性增长」这个事实直接矛盾——工具不可信，只能自己查。
+        ///
+        /// 为什么只扫静态字段不扫属性：属性 getter 可能有副作用或极慢，
+        /// 上一次全量扫描就卡死被看门狗杀了。静态字段只读 getvalue，安全。
+        /// </summary>
+        /// <param name="weakRefs">压力测试留下的弱引用，Tag 里带轮次</param>
+        private static void DoStaticRootScan(List<(string Tag, WeakReference Ref)> weakRefs)
+        {
+            try
+            {
+                var alive = weakRefs.Where(x => x.Ref.IsAlive)
+                                    .Select(x => (x.Tag, Obj: x.Ref.Target))
+                                    .Where(x => x.Obj != null)
+                                    .ToList();
+                if (alive.Count == 0) { Log("  [静态扫描] 没有存活页面，跳过"); return; }
+
+                // 只看我们自己这几个程序集：WPF 内部的静态字段不可能是「业务代码写坏的」，
+                // 而且量太大，扫了也读不完。
+                var targets = new List<object>(alive.Select(x => x.Obj));
+                var hits = new List<string>();
+
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    var name = asm.GetName().Name ?? "";
+                    if (!name.StartsWith("ICCCELite") && !name.StartsWith("InkCanvas")) continue;
+
+                    Type[] types;
+                    try { types = asm.GetTypes(); } catch { continue; }
+
+                    foreach (var t in types)
+                    {
+                        FieldInfo[] fields;
+                        try { fields = t.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic); }
+                        catch { continue; }
+
+                        foreach (var f in fields)
+                        {
+                            object v;
+                            try { v = f.GetValue(null); } catch { continue; }
+                            if (v == null) continue;
+
+                            // 直接是页面本身
+                            for (int i = 0; i < targets.Count; i++)
+                            {
+                                if (ReferenceEquals(v, targets[i]))
+                                {
+                                    hits.Add(t.FullName + "." + f.Name + " → 整个页面对象");
+                                    break;
+                                }
+                            }
+
+                            // 是集合，里面装着页面
+                            if (v is System.Collections.IEnumerable en && !(v is string))
+                            {
+                                int n = 0;
+                                try
+                                {
+                                    foreach (var item in en)
+                                    {
+                                        for (int i = 0; i < targets.Count; i++)
+                                        {
+                                            if (ReferenceEquals(item, targets[i]))
+                                            {
+                                                hits.Add(t.FullName + "." + f.Name + "[" + n + "] → 整个页面对象");
+                                                break;
+                                            }
+                                        }
+                                        if (++n > 20000) break;
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                }
+
+                if (hits.Count == 0)
+                {
+                    Log("  [静态扫描] 没有静态字段直接引用存活页面 —— 持有者在实例字段或 WPF 内部");
+                }
+                else
+                {
+                    Log("  [静态扫描] 找到 " + hits.Count + " 条静态持有者：");
+                    foreach (var h in hits.Take(20)) Log("    " + h);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("  [静态扫描] 失败: " + ex.GetType().Name + " | " + Trim(ex.Message));
+            }
+        }
         private static int GetHandles()
         {
             try { int c; GetProcessHandleCount(GetCurrentProcess(), out c); return c; }

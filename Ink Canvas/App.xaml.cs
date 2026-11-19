@@ -822,11 +822,17 @@ namespace Ink_Canvas
                 if (idx >= 0 && idx + 1 < e.Args.Length) int.TryParse(e.Args[idx + 1], out rounds);
                 if (rounds <= 0) rounds = 5;
                 var rr = rounds;
+                // 布局到哪一步。排查泄漏时二分定位是哪个调用引入的：
+                //   nolayout=0 / measure=1 / arrange=2 / 默认=3
+                int layoutMode = 3;
+                if (e.Args.Any(a => string.Equals(a, "nolayout", StringComparison.OrdinalIgnoreCase))) layoutMode = 0;
+                else if (e.Args.Any(a => string.Equals(a, "measure", StringComparison.OrdinalIgnoreCase))) layoutMode = 1;
+                else if (e.Args.Any(a => string.Equals(a, "arrange", StringComparison.OrdinalIgnoreCase))) layoutMode = 2;
                 _ = Task.Delay(4000).ContinueWith(_ =>
                 {
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        try { Ink_Canvas.Helpers.LtscProbe.StressSettingsPages(rr); }
+                        try { Ink_Canvas.Helpers.LtscProbe.StressSettingsPages(rr, layoutMode); }
                         catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 压力测试失败: " + ex, LogHelper.LogType.Error); }
                     }));
                 });

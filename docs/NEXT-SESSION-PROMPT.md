@@ -249,7 +249,7 @@ catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等
 这个「每次 new」**是必须的**——集合有后台定时器在改，直接返回内部引用会让调用方
 撞上 `InvalidOperationException: Collection was modified`。改了反而引入并发 bug。
 
-## 4.3 设置页内存每轮涨 ~33MB（比例固定，不是线性泄漏）
+## 4.3 设置页内存每轮涨 33MB（**已确证是真泄漏，根因未定位到行**）
 
 实测（`--stress-settings`，每轮 24 页全构造）：
 
@@ -261,9 +261,18 @@ catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等
 | 3 | 120MB | +32 |
 | 4 | 152MB | +32 |
 
-**每轮增量是固定值，不是越涨越多**，说明是「按页大小算的固定开销」，
-不是「订阅越挂越多」那种真泄漏。但 4 轮就到 152MB，老师来回点几下设置就该重启了，
-该修。
+每轮增量是固定值（+32~33MB），10 轮实测也是严格线性：56 → 185 → 348MB。
+
+**上一版文档说「不是真泄漏、是按页算的固定开销」，这个判断是错的。**
+2026-11-19 用强制 GC 判据推翻了它：
+
+```
+[GC 判据] 强制回收前=121MB 后=121MB 回收=0MB
+          代计数=122/58/29   （跑了 122 次 Gen0、29 次 Gen2）
+```
+
+连做 3 次 `GC.Collect(2, Forced, true, true)` + `WaitForPendingFinalizers` + 让出 UI 线程，
+一个字节都收不回来。**这是 100% 确凿的泄漏。**
 
 **已经查实的**（用弱引用 + 轮次标记实测）：
 
@@ -272,21 +281,60 @@ catch 里只有 `Debug.WriteLine`（Release 下被编译掉）。写盘失败等
 - 其余 13 页全是 0 个 `SettingsExpander`，全部被回收
 - 这个相关性在 24 个页面上是**完美对应**，没有例外
 
-**还不能下结论的地方**：
+**2026-11-19 这一轮已经排掉的假设**（别再重走）：
 
-上一个版本我写「是 iNKORE 的账，和业务代码无关」，这个结论**没有证据**：
+| 假设 | 怎么验 | 结果 |
+|---|---|---|
+| 是 GC 延迟，不是泄漏 | 强制全量回收 3 次 | 回收 0MB → **是真泄漏** |
+| 页面对象被静态字段持有 | 扫 ICC 全部程序集的静态字段 | 无 |
+| `SpringAnimator._scalarValues` 静态字典钉住控件 | 改成弱引用 key 后重测 | 泄漏量一点没变 |
+| 动画时钟累积（转储里 1.8 万个动画对象） | 设置里关掉全部动画后重测 | 泄漏量一点没变 |
+| 全局资源字典被写脏 | 数合并字典与条目 | 92 个字典 / 3293 条，**不增长** |
+| 布局队列残留 Request | 查 306 个 Request 的 Target | 全是 null（已处理完的空壳） |
+| 页面连到长命对象（MainWindow / App 等） | 反向走三层实例字段 | 没连到 |
 
-1. 「相关」不是「因果」——10 个存活页都含 SettingsExpander，不等于 SettingsExpander 就是持有者
-2. 原文档引用的「43MB/轮 → 30MB/轮」和这里实测的 33MB/轮 也不是同一个测量
-3. 我试过全程序集反射扫静态字段/属性找持有者，**这条路走不通**：
-   扫描耗时 9 秒以上，UI 线程一停心跳就被看门狗判卡死、强制重启，
-   日志断在扫描开始那一行（连 Join 带超时都救不了，因为 Join 本身就在堵 UI 线程）。
-   已把这段扫静态字段的代码撤掉了（临时诊断代码一律不进主干，
-   留在代码里就是技术债）。
+**唯一确证的因果**（用对照实验，不是相关性）：
 
-**下一步该做的**：不要再用反射扫全部程序集。改用
-`dotnet-gcdump` / `dotnet-dump` 抓转储，或者对 SettingsExpander 单独做
-「只查这一个类型的静态成员」的定点扫描（范围小，耗时可控）。
+```
+完全不做布局（nolayout）   5 轮 22MB → 22MB，存活 1/120   ← 不泄漏
+只调 Measure              3 轮 55→117MB，回收 0MB        ← 泄漏
+Measure + Arrange         3 轮 56→121MB，回收 0MB        ← 泄漏
+三步全做（真实路径）       3 轮 56→121MB，回收 0MB        ← 泄漏
+```
+
+**结论：泄漏由 `UIElement.Measure()` 触发，不需要 Arrange 或 UpdateLayout。**
+Measure 会应用控件模板、跑样式查找，问题出在那条路径上，
+但还没定位到具体是哪一步把页面钉住了。
+
+**工具这一路为什么走不通**：
+
+`dotnet-dump` 的 `gcroot` 在这个环境下**对任何对象都返回 `Found 0 unique roots`**
+——包括明明活着、强制 GC 都收不掉的对象。这个结果和事实矛盾，
+说明工具本身在这个 .NET 11 的转储上不可信，不能再拿它当判据。
+（试过的对象：SettingsWindow、CanvasPage、SettingsExpander、
+DoubleAnimationUsingKeyFrames、Style —— 全部 0 roots。）
+
+**下一步该做的**：
+
+1. 用 `dotnet-trace` 抓分配采样（`--providers Microsoft-Windows-DotNETRuntime:GCAllocationTick`），
+   看每个页面构造时到底分配了哪些类型、量级对不对
+2. 或者二分 iNKORE 控件：把某个页面的 XAML 里 `SettingsExpander` 逐个换成普通 `Border`，
+   看换成第几个时泄漏消失
+3. **不要再做的**：全程序集反射扫属性（会卡死）、gcroot（不可信）、
+   继续数转储里的对象数量（那只是症状）
+
+**探针已经留好的工具**（下次直接用）：
+
+```bash
+# 三种布局深度，用来二分定位
+./ICCCELite.exe --stress-settings 3 nolayout   # 完全不布局（对照组）
+./ICCCELite.exe --stress-settings 3 measure    # 只 Measure
+./ICCCELite.exe --stress-settings 3 arrange    # Measure + Arrange
+./ICCCELite.exe --stress-settings 3            # 三步全做（默认）
+```
+
+跑完会打这几行：`[GC 判据]`（强制回收后剩多少）、`[静态扫描]`、
+`[全局资源]`、`[反向查]`。
 
 ## 4.4 问题 1/2/3 没做真机验收
 

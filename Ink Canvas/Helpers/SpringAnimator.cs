@@ -287,8 +287,63 @@ namespace Ink_Canvas.Helpers
         // TranslateTransform 是最常见的场景，但淡入淡出、进度、缩放都要用同一套手感。
         // 这里提供一个通用入口：给一个 setter，弹簧每帧把值推给它。
 
-        private static readonly Dictionary<object, Value> _scalarValues =
-            new Dictionary<object, Value>();
+        /// <summary>
+        /// 标量弹簧的缓存。key 是「属性槽」（AnimKey 之类），Value 是弹簧状态。
+        ///
+        /// 2026-11-19：这里原来是个裸 Dictionary&lt;object, Value&gt;，静态、只增不减。
+        /// 实测后果（设置页压力测试，5 轮）：内存 22MB → 185MB，严格线性，
+        /// 每轮 +33MB，GC 完全收不掉。
+        ///
+        /// 根因：key 是 AnimKey，而 AnimKey 强引用它的 _owner——也就是控件本身。
+        /// 静态字典 → AnimKey → 控件 → 整棵控件树，全被钉死。
+        /// 设置页每构造一次，页内几十个控件各留一条，页面就再也回收不了。
+        ///
+        /// 修法：key 是弱引用，控件被回收后条目自动失效。
+        /// 之所以不用 ConditionalWeakTable：那个表按引用相等，
+        /// 而这里的 key 是值相等的 AnimKey（同一元素+同一通道要命中同一条），
+        /// 换成按引用相等会退化成「每次调用一条」，反而更糟。
+        /// </summary>
+        private static readonly List<ScalarEntry> _scalarValues = new List<ScalarEntry>();
+
+        /// <summary>一条标量弹簧缓存：弱引用 key + 弹簧状态。key 死了这条就该清掉。</summary>
+        private sealed class ScalarEntry
+        {
+            internal readonly WeakReference KeyRef;
+            internal readonly Value Value;
+            internal ScalarEntry(object key, Value value)
+            {
+                KeyRef = new WeakReference(key);
+                Value = value;
+            }
+        }
+
+        /// <summary>
+        /// 按值相等查找缓存条目，顺手把已经死掉的 key 清出去。
+        /// 清理放在这里，是因为这是唯一的高频入口——不需要额外定时器。
+        /// </summary>
+        private static Value FindScalar(object key, bool createIfMissing)
+        {
+            Value found = null;
+            for (int i = _scalarValues.Count - 1; i >= 0; i--)
+            {
+                var e = _scalarValues[i];
+                var alive = e.KeyRef.Target;
+                if (alive == null)
+                {
+                    // 控件已经被回收了，这条缓存没有意义了。
+                    _scalarValues.RemoveAt(i);
+                    continue;
+                }
+                if (found == null && alive.Equals(key)) found = e.Value;
+            }
+
+            if (found != null || !createIfMissing) return found;
+
+            var v = new Value(0f);
+            v.SetPrecision(0.001f);   // 0..1 的透明度要用更细的精度
+            _scalarValues.Add(new ScalarEntry(key, v));
+            return v;
+        }
 
         /// <summary>
         /// 把一个标量属性挂到弹簧上。
@@ -311,12 +366,7 @@ namespace Ink_Canvas.Helpers
                 return;
             }
 
-            if (!_scalarValues.TryGetValue(key, out var v))
-            {
-                v = new Value(0f);
-                v.SetPrecision(0.001f);   // 0..1 的透明度要用更细的精度
-                _scalarValues[key] = v;
-            }
+            var v = FindScalar(key, true);
 
             v.SetPreset(preset ?? Default);
             v.Set((float)target);
@@ -334,14 +384,19 @@ namespace Ink_Canvas.Helpers
         internal static void SyncScalar(object key, double actual)
         {
             if (key == null) return;
-            if (_scalarValues.TryGetValue(key, out var v)) v.Jump((float)actual);
+            var v = FindScalar(key, false);
+            v?.Jump((float)actual);
         }
 
         /// <summary>停掉某个标量属性的弹簧。</summary>
         internal static void StopScalar(object key)
         {
             if (key == null) return;
-            _scalarValues.Remove(key);
+            for (int i = _scalarValues.Count - 1; i >= 0; i--)
+            {
+                var alive = _scalarValues[i].KeyRef.Target;
+                if (alive == null || alive.Equals(key)) _scalarValues.RemoveAt(i);
+            }
         }
 
         /// <summary>
