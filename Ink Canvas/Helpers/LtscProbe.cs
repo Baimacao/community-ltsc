@@ -78,6 +78,7 @@ namespace Ink_Canvas.Helpers
                     try
                     {
                         var page = Activator.CreateInstance(kv.Value);
+
                         var fe = page as FrameworkElement;
                         if (fe == null) continue;
                         if (layoutMode >= 1) fe.Measure(new Size(1000, 800));
@@ -408,6 +409,575 @@ namespace Ink_Canvas.Helpers
             {
                 Log("  [静态扫描] 失败: " + ex.GetType().Name + " | " + Trim(ex.Message));
             }
+        }
+        /// <summary>
+        /// 最小复现：单独造一个 SettingsExpander，Measure 一下，看它能不能被回收。
+        ///
+        /// 为什么要做到这一步：前面的对照实验只证明了「Measure 触发泄漏」，
+        /// 但没说清是 SettingsExpander 这个控件本身，还是我们页面的写法。
+        /// 一个最小复现能把这个分清楚——
+        ///   若最小复现也漏 → 控件/库的问题，改用法或绕开
+        ///   若最小复现不漏 → 是我们页面里的某个绑定或写法
+        /// </summary>
+        public static void ProbeSettingsExpander()
+        {
+            Log("=== 最小复现：SettingsExpander ===");
+            try
+            {
+                var asm = typeof(LtscProbe).Assembly;
+                var expType = asm.GetType("iNKORE.UI.WPF.Modern.Controls.SettingsExpander")
+                              ?? Type.GetType("iNKORE.UI.WPF.Modern.Controls.SettingsExpander, iNKORE.UI.WPF.Modern.Controls");
+                if (expType == null) { Log("  [FAIL] 找不到 SettingsExpander 类型"); return; }
+                Log("  类型=" + expType.FullName);
+
+                // 先做对照组：同样造 20 个普通 Border + Measure，
+                // 如果普通控件也被「泄漏」，那说明是我的测量方法有问题，
+                // 而不是 SettingsExpander 有问题。这一步不能省。
+                {
+                    var ctrlRefs = new List<WeakReference>();
+                    for (int k = 0; k < 20; k++)
+                    {
+                        object o = new Border();
+                        var bfe = (FrameworkElement)o;
+                        bfe.Measure(new Size(1000, 800));
+                        bfe.Arrange(new Rect(0, 0, 1000, 800));
+                        bfe.UpdateLayout();
+                        ctrlRefs.Add(new WeakReference(o));
+                        o = null;
+                        YieldUi();
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GC.Collect(2, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        YieldUi();
+                    }
+                    int cAlive = ctrlRefs.Count(r => r.IsAlive);
+                    Log("  [对照] 普通 Border 造了 20 个，GC 后存活 " + cAlive + " 个");
+                    // 判据不能是「必须为 0」：循环里最后一个对象可能还被某个
+                    // 局部/寄存器残留引用着，回收得晚一拍是正常的。
+                    // 真正要区分的是「个别残留」和「几乎全存活」。
+                    if (cAlive > 5)
+                        Log("  [警告] 普通 Border 存活 " + cAlive + "/20 —— 测量方法有问题，下面的结论不可信");
+                }
+
+                // 再对照三个：SettingsCard（Expander 的近亲）、ToggleSwitch、SimpleStackPanel。
+                // 目的是缩小范围——如果只有 SettingsExpander 漏、它爹不漏，
+                // 那就是 Expander 特有的东西（展开/收起逻辑、Items 集合）；
+                // 如果爹也漏，那就是 SettingsCard 这一族共有的。
+                foreach (var probeName in new[]
+                {
+                    "iNKORE.UI.WPF.Modern.Controls.SettingsCard",
+                    "iNKORE.UI.WPF.Modern.Controls.ToggleSwitch",
+                    "iNKORE.UI.WPF.Controls.SimpleStackPanel",
+                })
+                {
+                    Type pt = null;
+                    try { pt = typeof(LtscProbe).Assembly.GetType(probeName) ?? Type.GetType(probeName); }
+                    catch { }
+                    if (pt == null)
+                    {
+                        // 类型不在本程序集里，用已加载程序集找
+                        foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                        {
+                            try { pt = a.GetType(probeName); } catch { }
+                            if (pt != null) break;
+                        }
+                    }
+                    if (pt == null) { Log("  [对照] 找不到 " + probeName); continue; }
+
+                    var pr = new List<WeakReference>();
+                    for (int k = 0; k < 20; k++)
+                    {
+                        object o = null;
+                        try
+                        {
+                            o = Activator.CreateInstance(pt);
+                            var pfe = o as FrameworkElement;
+                            if (pfe != null)
+                            {
+                                pfe.Measure(new Size(1000, 800));
+                                pfe.Arrange(new Rect(0, 0, 1000, 800));
+                                pfe.UpdateLayout();
+                            }
+                        }
+                        catch { }
+                        pr.Add(new WeakReference(o));
+                        o = null;
+                        YieldUi();
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GC.Collect(2, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        YieldUi();
+                    }
+                    Log("  [对照] " + pt.Name + " 造 20 个，GC 后存活 " + pr.Count(r => r.IsAlive) + " 个");
+                }
+
+                // ── 查 SettingsExpander 的静态成员 ────────────────
+                // 只有它漏、父类不漏，那多半是它自己挂了个静态的东西。
+                // 这里把它的静态字段和属性列出来，直接看。
+                try
+                {
+                    const BindingFlags S = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+                    var fs = expType.GetFields(S);
+                    Log("  静态字段 = " + fs.Length + " 个");
+                    foreach (var f in fs)
+                    {
+                        object v = null;
+                        try { v = f.GetValue(null); } catch { }
+                        var ft = f.FieldType.Name;
+                        bool suspicious = ft.Contains("List") || ft.Contains("Dictionary") ||
+                                          ft.Contains("Collection") || ft.Contains("ConditionalWeakTable");
+                        Log("    " + (suspicious ? "[可疑] " : "") + ft + " " + f.Name +
+                            (v == null ? " = null" : " = <非空>"));
+                    }
+
+                    var ps = expType.GetProperties(S);
+                    Log("  静态属性 = " + ps.Length + " 个");
+                    foreach (var p in ps)
+                    {
+                        var pt = p.PropertyType.Name;
+                        if (pt.Contains("List") || pt.Contains("Dictionary") || pt.Contains("Collection"))
+                            Log("    [可疑] " + pt + " " + p.Name);
+                    }
+                }
+                catch (Exception ex) { Log("  查静态成员失败: " + Trim(ex.Message)); }
+
+                var refs = new List<WeakReference>();
+
+                // 结论的强度取决于样本量：20 个不够就加到 100，
+                // 看存活率是不是还是 100%。如果只是「回收得晚」，
+                // 加到 100 个时应该有一部分会死。
+                const int N = 100;
+                for (int round = 0; round < N; round++)
+                {
+                    object el = null;
+                    try
+                    {
+                        el = Activator.CreateInstance(expType);
+                        var fe = el as FrameworkElement;
+                        if (fe != null)
+                        {
+                            fe.Measure(new Size(1000, 800));
+                            fe.Arrange(new Rect(0, 0, 1000, 800));
+                            fe.UpdateLayout();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (round == 0) Log("  构造失败: " + Trim(ex.Message));
+                    }
+                    refs.Add(new WeakReference(el));
+                    el = null;
+                    YieldUi();
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    GC.Collect(2, GCCollectionMode.Forced, true, true);
+                    GC.WaitForPendingFinalizers();
+                    YieldUi();
+                }
+
+                // ── 检查实例是否挂到了全局事件 / Dispatcher 上 ──────
+                // 静态字段是干净的（13 个全是 DependencyProperty），
+                // 那就查实例侧：它有没有订阅什么全局东西。
+                try
+                {
+                    object sample = null;
+                    for (int i = 0; i < refs.Count; i++)
+                    {
+                        if (refs[i].IsAlive) { sample = refs[i].Target; break; }
+                    }
+                    if (sample != null)
+                    {
+                        // 事件订阅在 .NET 里表现为「调用方 + 订阅者」的强引用。
+                        // 如果控件订阅了静态事件，静态事件的委托表就持有控件。
+                        // 这里列出它身上所有事件字段的值，看有没有非空
+                        const BindingFlags F = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+                        int evtCount = 0, nonNull = 0;
+                        for (var t = sample.GetType(); t != null && t != typeof(object); t = t.BaseType)
+                        {
+                            FieldInfo[] fs2;
+                            try { fs2 = t.GetFields(F); } catch { continue; }
+                            foreach (var f in fs2)
+                            {
+                                if (!typeof(Delegate).IsAssignableFrom(f.FieldType)) continue;
+                                evtCount++;
+                                object dv = null;
+                                try { dv = f.GetValue(sample); } catch { }
+                                if (dv != null)
+                                {
+                                    nonNull++;
+                                    var dl = (Delegate)dv;
+                                    Log("    [事件非空] " + t.Name + "." + f.Name +
+                                        " 订阅者=" + dl.GetInvocationList().Length);
+                                }
+                            }
+                        }
+                        Log("  实例事件字段=" + evtCount + " 其中非空=" + nonNull);
+
+                        // 看它的父级链：一个从没挂进树的元素，Parent/VisualParent 应该都是 null
+                        var fe2 = sample as FrameworkElement;
+                        if (fe2 != null)
+                        {
+                            var vp = System.Windows.Media.VisualTreeHelper.GetParent(fe2);
+                            Log("  VisualParent=" + (vp == null ? "null" : vp.GetType().Name) +
+                                " logicalParent=" + (fe2.Parent == null ? "null" : fe2.Parent.GetType().Name));
+                        }
+                    }
+                }
+                catch (Exception ex) { Log("  查实例失败: " + Trim(ex.Message)); }
+                // ── 试：不 Measure 只构造，看还漏不漏 ──────────────
+                // 如果只构造不 Measure 就不漏，那问题在模板应用那一步；
+                // 如果只构造就漏，那问题在构造函数里。
+                try
+                {
+                    var noMeasureRefs = new List<WeakReference>();
+                    for (int k = 0; k < 30; k++)
+                    {
+                        object o = null;
+                        try { o = Activator.CreateInstance(expType); } catch { }
+                        noMeasureRefs.Add(new WeakReference(o));
+                        o = null;
+                        YieldUi();
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GC.Collect(2, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        YieldUi();
+                    }
+                    Log("  [二分] 只构造不 Measure：30 个存活 " + noMeasureRefs.Count(r => r.IsAlive) + " 个");
+                }
+                catch (Exception ex) { Log("  [二分] 失败: " + Trim(ex.Message)); }
+
+                // ── 试：只 Measure 不 Arrange ──────────────────────
+                try
+                {
+                    var mOnly = new List<WeakReference>();
+                    for (int k = 0; k < 30; k++)
+                    {
+                        object o = null;
+                        try
+                        {
+                            o = Activator.CreateInstance(expType);
+                            var f2 = o as FrameworkElement;
+                            f2?.Measure(new Size(1000, 800));
+                        }
+                        catch { }
+                        mOnly.Add(new WeakReference(o));
+                        o = null;
+                        YieldUi();
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GC.Collect(2, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        YieldUi();
+                    }
+                    Log("  [二分] 只 Measure：30 个存活 " + mOnly.Count(r => r.IsAlive) + " 个");
+                }
+                catch (Exception ex) { Log("  [二分] 失败: " + Trim(ex.Message)); }
+                // ── ApplyTemplate 单独测：是不是模板应用那一步 ──────
+                try
+                {
+                    var atRefs = new List<WeakReference>();
+                    for (int k = 0; k < 30; k++)
+                    {
+                        object o = null;
+                        try
+                        {
+                            o = Activator.CreateInstance(expType);
+                            // 关键：只应用模板，不 Measure
+                            (o as Control)?.ApplyTemplate();
+                        }
+                        catch { }
+                        atRefs.Add(new WeakReference(o));
+                        o = null;
+                        YieldUi();
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        GC.Collect(2, GCCollectionMode.Forced, true, true);
+                        GC.WaitForPendingFinalizers();
+                        YieldUi();
+                    }
+                    Log("  [二分] 只 ApplyTemplate：30 个存活 " + atRefs.Count(r => r.IsAlive) + " 个");
+                }
+                catch (Exception ex) { Log("  [二分] ApplyTemplate 失败: " + Trim(ex.Message)); }
+
+                // ── 看看模板里到底有什么 ───────────────────────────
+                try
+                {
+                    object probeObj = Activator.CreateInstance(expType);
+                    var ctl = probeObj as Control;
+                    if (ctl != null)
+                    {
+                        ctl.ApplyTemplate();
+                        if (ctl.Template != null)
+                        {
+                            // 数模板里的可视树节点类型
+                            var counts = new Dictionary<string, int>();
+                            void CountVis(DependencyObject d, int depth)
+                            {
+                                if (d == null || depth > 12) return;
+                                var n = d.GetType().Name;
+                                counts[n] = (counts.TryGetValue(n, out var c) ? c : 0) + 1;
+                                int cnt = 0;
+                                try { cnt = System.Windows.Media.VisualTreeHelper.GetChildrenCount(d); } catch { }
+                                for (int i = 0; i < cnt && i < 200; i++)
+                                {
+                                    DependencyObject ch = null;
+                                    try { ch = System.Windows.Media.VisualTreeHelper.GetChild(d, i); } catch { }
+                                    CountVis(ch, depth + 1);
+                                }
+                            }
+                            CountVis(ctl, 0);
+                            var top = counts.OrderByDescending(kv => kv.Value).Take(15);
+                            Log("  [模板构成] 节点总数=" + counts.Values.Sum() + " 类型数=" + counts.Count);
+                            foreach (var kv in top) Log("    " + kv.Key + " × " + kv.Value);
+                        }
+                    }
+                }
+                catch (Exception ex) { Log("  [模板构成] 失败: " + Trim(ex.Message)); }
+                // ── 用 Template.VisualTree 直接读模板定义 ────────────
+                try
+                {
+                    object probeObj = Activator.CreateInstance(expType);
+                    var ctl2 = probeObj as Control;
+                    if (ctl2?.Template != null)
+                    {
+                        // FrameworkElementFactory 没有公开 Children，
+                        // 换成「把实例的模板内容真展开，再数可视树」——
+                        // 这个更准，因为模板在实际应用时如何展开才是问题所在。
+                        var counts2 = new Dictionary<string, int>();
+                        int total2 = 0;
+                        void CountDeep(DependencyObject d, int depth)
+                        {
+                            if (d == null || depth > 25 || total2 > 5000) return;
+                            total2++;
+                            var nm = d.GetType().Name;
+                            counts2[nm] = (counts2.TryGetValue(nm, out var c4) ? c4 : 0) + 1;
+                            int cc = 0;
+                            try { cc = System.Windows.Media.VisualTreeHelper.GetChildrenCount(d); } catch { }
+                            if (cc == 0)
+                            {
+                                // 有些容器在 LogicalTree 里
+                                try
+                                {
+                                    foreach (var lc in System.Windows.LogicalTreeHelper.GetChildren(d))
+                                        if (lc is DependencyObject lcd) CountDeep(lcd, depth + 1);
+                                }
+                                catch { }
+                                return;
+                            }
+                            for (int i = 0; i < cc && i < 200; i++)
+                            {
+                                DependencyObject ch2 = null;
+                                try { ch2 = System.Windows.Media.VisualTreeHelper.GetChild(d, i); } catch { }
+                                CountDeep(ch2, depth + 1);
+                            }
+                        }
+                        ctl2.Measure(new Size(1000, 800));
+                        CountDeep(ctl2, 0);
+                        Log("  [模板展开] 元素总数=" + total2 + " 类型数=" + counts2.Count);
+                        foreach (var kv in counts2.OrderByDescending(k => k.Value).Take(18))
+                            Log("    " + kv.Key + " × " + kv.Value);
+                        foreach (var kv in counts2)
+                        {
+                            if (kv.Key.Contains("Repeater") || kv.Key.Contains("Items"))
+                                Log("    [关注] " + kv.Key + " × " + kv.Value);
+                        }
+                    }
+                }
+                catch (Exception ex) { Log("  [模板定义] 失败: " + Trim(ex.Message)); }
+                // ── 决定性验证：单独测 ItemsRepeater 会不会漏 ────────
+                // 如果它单独就漏，那根因就是它，和 SettingsExpander 无关。
+                try
+                {
+                    var repType = Type.GetType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater, iNKORE.UI.WPF.Modern.Controls");
+                    if (repType == null)
+                    {
+                        foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                        {
+                            try { repType = a.GetType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater"); } catch { }
+                            if (repType != null) break;
+                        }
+                    }
+                    if (repType == null) Log("  [验证] 找不到 ItemsRepeater");
+                    else
+                    {
+                        var rr = new List<WeakReference>();
+                        for (int k = 0; k < 30; k++)
+                        {
+                            object o = null;
+                            try
+                            {
+                                o = Activator.CreateInstance(repType);
+                                var f5 = o as FrameworkElement;
+                                f5?.Measure(new Size(1000, 800));
+                            }
+                            catch { }
+                            rr.Add(new WeakReference(o));
+                            o = null;
+                            YieldUi();
+                        }
+                        for (int i = 0; i < 3; i++)
+                        {
+                            GC.Collect(2, GCCollectionMode.Forced, true, true);
+                            GC.WaitForPendingFinalizers();
+                            YieldUi();
+                        }
+                        int rAlive = rr.Count(r => r.IsAlive);
+                        Log("  [验证] ItemsRepeater 单独测：30 个存活 " + rAlive + " 个");
+                        if (rAlive >= 25)
+                            Log("  [结论] ItemsRepeater 自己就漏 —— 根因锁定在它身上");
+                        else
+                            Log("  [结论] ItemsRepeater 单独不漏 —— 是它和 Expander 的组合问题");
+                    }
+                }
+                catch (Exception ex) { Log("  [验证] 失败: " + Trim(ex.Message)); }
+                // ── 试：把 ItemsRepeater 从模板里摘掉能不能救 ─────────
+                // SettingsExpander 的 ItemsRepeater 是用来显示展开后的子项的。
+                // 试着在 Measure 之前把它的 Items 设成 null / 空集合，
+                // 看 ItemsRepeater 还会不会创建。
+                try
+                {
+                    var itemsProp = expType.GetProperty("Items");
+                    Log("  [尝试] Items 属性=" + (itemsProp == null ? "找不到" : itemsProp.PropertyType.Name));
+                    if (itemsProp != null)
+                    {
+                        var r2 = new List<WeakReference>();
+                        int setOk = 0, setFail = 0;
+                        for (int k = 0; k < 30; k++)
+                        {
+                            object o = null;
+                            try
+                            {
+                                o = Activator.CreateInstance(expType);
+                                // 显式给一个空集合。
+                                //
+                                // 注意：Items 的属性类型是 IList（接口），
+                                // Activator.CreateInstance(接口) 会抛异常。
+                                // 上一版就是在这里被 catch 吞掉，对象根本没设 Items 也没 Measure，
+                                // 于是「0/30 存活」是个假象——它不是修复生效，是压根没跑到那一步。
+                                // 现在显式用 List<object>，并统计成功次数。
+                                if (itemsProp.CanWrite)
+                                {
+                                    try
+                                    {
+                                        itemsProp.SetValue(o, new System.Collections.Generic.List<object>());
+                                        setOk++;
+                                    }
+                                    catch { setFail++; }
+                                }
+                                var f6 = o as FrameworkElement;
+                                f6?.Measure(new Size(1000, 800));
+                            }
+                            catch { }
+                            r2.Add(new WeakReference(o));
+                            o = null;
+                            YieldUi();
+                        }
+                        Log("  [尝试] 设 Items 成功=" + setOk + " 失败=" + setFail);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            GC.Collect(2, GCCollectionMode.Forced, true, true);
+                            GC.WaitForPendingFinalizers();
+                            YieldUi();
+                        }
+                        Log("  [尝试] 显式给空 Items 后：30 个存活 " + r2.Count(r => r.IsAlive) + " 个");
+                    }
+                }
+                catch (Exception ex) { Log("  [尝试] 失败: " + Trim(ex.Message)); }
+                // ── 分清：是「Items 为 null」漏，还是「Items 有内容」漏 ──
+                // 上一测证明了给空集合就不漏。但我们的页面里 Items 是有子项的。
+                // 必须测有子项的情况，才能知道修复方案能不能用。
+                try
+                {
+                    var itemsProp2 = expType.GetProperty("Items");
+                    if (itemsProp2 != null && itemsProp2.CanWrite)
+                    {
+                        // 情况 A：给一个装了 3 个元素的集合
+                        var withItems = new List<WeakReference>();
+                        for (int k = 0; k < 30; k++)
+                        {
+                            object o = null;
+                            try
+                            {
+                                o = Activator.CreateInstance(expType);
+                                var coll = Activator.CreateInstance(itemsProp2.PropertyType);
+                                var addM = itemsProp2.PropertyType.GetMethod("Add");
+                                if (addM != null)
+                                {
+                                    for (int j = 0; j < 3; j++)
+                                    {
+                                        try { addM.Invoke(coll, new object[] { new Border() }); } catch { }
+                                    }
+                                }
+                                itemsProp2.SetValue(o, coll);
+                                (o as FrameworkElement)?.Measure(new Size(1000, 800));
+                            }
+                            catch { }
+                            withItems.Add(new WeakReference(o));
+                            o = null;
+                            YieldUi();
+                        }
+                        for (int i = 0; i < 3; i++)
+                        {
+                            GC.Collect(2, GCCollectionMode.Forced, true, true);
+                            GC.WaitForPendingFinalizers();
+                            YieldUi();
+                        }
+                        Log("  [分清] Items 有 3 个子项：30 个存活 " + withItems.Count(r => r.IsAlive) + " 个");
+                    }
+                }
+                catch (Exception ex) { Log("  [分清] 失败: " + Trim(ex.Message)); }
+                // ── 核对：页面上真实的 SettingsExpander，Items 到底是 null 还是空集合 ──
+                try
+                {
+                    var asm2 = typeof(LtscProbe).Assembly;
+                    var winT = asm2.GetType("Ink_Canvas.Windows.SettingsViews.SettingsWindow");
+                    var pf = winT?.GetField("_pageTypes", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var sw2 = Activator.CreateInstance(winT);
+                    var pts = pf?.GetValue(sw2) as Dictionary<string, Type>;
+                    if (pts != null && pts.TryGetValue("SidebarPage", out var sidebarType))
+                    {
+                        var pageObj = Activator.CreateInstance(sidebarType);
+                        var stack2 = new Stack<DependencyObject>();
+                        stack2.Push(pageObj as DependencyObject);
+                        var seen2 = new HashSet<DependencyObject>();
+                        int found = 0;
+                        while (stack2.Count > 0 && seen2.Count < 5000)
+                        {
+                            var d = stack2.Pop();
+                            if (d == null || !seen2.Add(d)) continue;
+                            if (d.GetType().FullName == "iNKORE.UI.WPF.Modern.Controls.SettingsExpander")
+                            {
+                                found++;
+                                var ip = d.GetType().GetProperty("Items");
+                                var iv = ip?.GetValue(d);
+                                Log("    Expander#" + found + " Items=" + (iv == null ? "null" : iv.GetType().Name));
+                            }
+                            try { foreach (var c in System.Windows.LogicalTreeHelper.GetChildren(d)) if (c is DependencyObject cd) stack2.Push(cd); } catch { }
+                            try { int n2 = System.Windows.Media.VisualTreeHelper.GetChildrenCount(d); for (int i = 0; i < n2; i++) { DependencyObject c = null; try { c = System.Windows.Media.VisualTreeHelper.GetChild(d, i); } catch { } if (c != null) stack2.Push(c); } } catch { }
+                        }
+                        Log("  [核对] SidebarPage 找到 " + found + " 个 Expander");
+                    }
+                }
+                catch (Exception ex) { Log("  [核对] 失败: " + Trim(ex.Message)); }
+                int alive = refs.Count(r => r.IsAlive);
+                Log("  造了 " + refs.Count + " 个，GC 后存活 " + alive + " 个（" +
+                    (refs.Count == 0 ? 0 : alive * 100 / refs.Count) + "%）");
+                if (alive == 0)
+                    Log("  [结论] 最小复现不漏 —— 泄漏在我们页面的写法里");
+                else
+                    Log("  [结论] 最小复现就漏 —— 是 SettingsExpander/库本身的问题");
+            }
+            catch (Exception ex) { Log("  [FAIL] " + Trim(ex.Message)); }
         }
         private static int GetHandles()
         {

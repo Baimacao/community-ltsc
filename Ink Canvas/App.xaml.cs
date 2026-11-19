@@ -838,6 +838,19 @@ namespace Ink_Canvas
                 });
             }
 
+            // 最小复现：单独造 SettingsExpander，看它本身会不会漏
+            if (e.Args.Any(a => a == "--probe-expander"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.ProbeSettingsExpander(); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 复现失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
             // 暴力测试：--stress-toolbar <轮数>，每轮 40 次连点 + 3 次折叠展开 + 10 次混合乱点
             if (e.Args.Any(a => a.StartsWith("--stress-toolbar")))
             {

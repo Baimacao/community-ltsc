@@ -302,9 +302,45 @@ Measure + Arrange         3 轮 56→121MB，回收 0MB        ← 泄漏
 三步全做（真实路径）       3 轮 56→121MB，回收 0MB        ← 泄漏
 ```
 
-**结论：泄漏由 `UIElement.Measure()` 触发，不需要 Arrange 或 UpdateLayout。**
-Measure 会应用控件模板、跑样式查找，问题出在那条路径上，
-但还没定位到具体是哪一步把页面钉住了。
+**2026-11-19 第二轮：已经追到具体控件了。**
+
+从「只构造」到「只 ApplyTemplate」再到「只 Measure」逐级二分，
+再对每个控件单独做最小复现（每组造 30 个实例，Measure 后强制全量 GC 三次）：
+
+```
+普通 Border            存活  1/30
+SettingsCard           存活  1/30   ← SettingsExpander 的父类，不漏
+ToggleSwitch           存活  1/30
+SimpleStackPanel       存活  1/30
+SettingsExpander       存活 30/30   ← 漏
+ItemsRepeater 单独      存活 30/30   ← 根因
+
+SettingsExpander 只构造不 Measure    存活  0/30
+SettingsExpander 只 ApplyTemplate    存活 30/30   ← 就是这一步
+```
+
+**根因：iNKORE 0.11.0 的 `ItemsRepeater`（从 Windows UI Library 移植）自身泄漏。**
+`SettingsExpander` 的模板里有一个它，所以用 Expander 的页面全被钉住。
+`SettingsCard` 模板里没有，所以不漏——这个差异正好对上。
+
+**试过但无效的修法**（别再试）：
+
+| 修法 | 结果 |
+|---|---|
+| 给 `SettingsExpander.Items` 显式赋空集合 | 30/30 仍存活，**无效** |
+| 在 SettingsWindow 三个创建点遍历页面补 Items | 无效（且探针绕过这三个点，压根没执行） |
+| 改 `SpringAnimator` 静态缓存为弱引用 | 本身是真实泄漏，但和这个无关 |
+
+**下一步只有一条路**：绕开 `ItemsRepeater`。
+
+1. 把 `SettingsExpander` 换成 `SettingsCard` + 自己写展开/收起（`Expander` 就能做，
+   它的模板里没有 ItemsRepeater）。涉及 10 个页面 107 处 XAML，工作量大但可控
+2. 或者给 iNKORE 提 issue / 打本地补丁（替换它的 ItemsRepeater 实现）
+3. 或者升级 iNKORE，看新版是否修了（0.11.0 已是本地最新）
+
+实测影响面：每打开一次设置窗口，24 个页面里 10 个泄漏，约 33MB。
+关窗不会恢复（`_pages.Clear()` 只是丢掉引用，对象本身被 ItemsRepeater 钉住）。
+老师反复开关设置十次就是 330MB，所以这条必须修，不能留着。
 
 **工具这一路为什么走不通**：
 
@@ -314,14 +350,14 @@ Measure 会应用控件模板、跑样式查找，问题出在那条路径上，
 （试过的对象：SettingsWindow、CanvasPage、SettingsExpander、
 DoubleAnimationUsingKeyFrames、Style —— 全部 0 roots。）
 
-**下一步该做的**：
+**不要再做的**：
 
-1. 用 `dotnet-trace` 抓分配采样（`--providers Microsoft-Windows-DotNETRuntime:GCAllocationTick`），
-   看每个页面构造时到底分配了哪些类型、量级对不对
-2. 或者二分 iNKORE 控件：把某个页面的 XAML 里 `SettingsExpander` 逐个换成普通 `Border`，
-   看换成第几个时泄漏消失
-3. **不要再做的**：全程序集反射扫属性（会卡死）、gcroot（不可信）、
-   继续数转储里的对象数量（那只是症状）
+- 全程序集反射扫属性（会卡死，被看门狗杀）
+- `gcroot`（这个环境下不可信）
+- 数转储里的对象数量（那些是症状，不是原因）
+- 补 `Items` 为空集合（已证无效）
+- 关动画（已证无效）
+- 改静态缓存（已证无关）
 
 **探针已经留好的工具**（下次直接用）：
 
