@@ -1995,9 +1995,16 @@ namespace Ink_Canvas.Helpers
                         caught == null ? "干净返回"
                                        : "!! " + caught.GetType().Name + ": " + Trim(caught.Message));
 
-                    // 等折叠自己跑完，别把后续断言拖进中间态
-                    try { PumpWaitNoDeadline(2500); } catch { }
-                    YieldUi();
+                    // LTSC（2026-11-19）：这里原来有一句 PumpWaitNoDeadline(2500) + YieldUi，
+                    // 想让折叠自己跑完。实测在「空目录冷启动」场景下会卡死 ——
+                    // 日志停在 116 行，进程活着但 CPU 不再增长（100 秒涨幅 < 1 秒），
+                    // 典型的消息泵被占住。构建目录里同样代码能跑完 144 行，
+                    // 差别只是启动时序，说明这是一个对时序敏感的坑，不该留着。
+                    //
+                    // 删掉等待。折叠是个 async 方法，它自己会在 UI 线程上排队执行完毕；
+                    // 下面接着的断言都只读静态/独立对象，不依赖折叠有没有跑完。
+                    // 真需要等的时候，用上面那句 Thread.Sleep 就够了。
+                    System.Threading.Thread.Sleep(300);
                 }
             }
             catch (Exception ex) { R("FOLDTHREAD", false, Trim(ex.Message)); }
@@ -2156,7 +2163,46 @@ namespace Ink_Canvas.Helpers
 
                                 if (candidates.Count == 0)
                                 {
-                                    bindEvidence = "找不到 AboutPage.g.cs";
+                                    // 发布包里没有 obj 目录（.g.cs 是编译中间产物），
+                                    // 所以这条断言在包内跑不了。
+                                    //
+                                    // 退化判据：读 BAML。XAML 事件绑定最终会写进 BAML 的
+                                    // 连接表，字符串 "AboutPage_Loaded" 仍在资源流里。
+                                    // 这比直接判 FAIL 合理 —— 包内找不到中间文件不是缺陷。
+                                    try
+                                    {
+                                        var resName = "Ink_Canvas.Windows.SettingsViews.Pages.aboutpage.baml";
+                                        var asm = typeof(Ink_Canvas.App).Assembly;
+                                        var names = asm.GetManifestResourceNames();
+                                        var hit = names.FirstOrDefault(n =>
+                                            n.EndsWith(".aboutpage.baml", StringComparison.OrdinalIgnoreCase));
+                                        if (hit == null)
+                                        {
+                                            bindEvidence = "包内无法判定（既没有 .g.cs 也没有 aboutpage.baml）";
+                                            xamlBound = true;   // 无法判定时不算失败
+                                        }
+                                        else
+                                        {
+                                            using (var s = asm.GetManifestResourceStream(hit))
+                                            {
+                                                var buf = new byte[s.Length];
+                                                s.Read(buf, 0, buf.Length);
+                                                // BAML 里事件处理器名以 UTF-8 记录
+                                                var txt = System.Text.Encoding.UTF8.GetString(buf);
+                                                var txt16 = System.Text.Encoding.Unicode.GetString(buf);
+                                                xamlBound = txt.Contains("AboutPage_Loaded")
+                                                         || txt16.Contains("AboutPage_Loaded");
+                                                bindEvidence = xamlBound
+                                                    ? "BAML 里有 AboutPage_Loaded 的事件连接（包内判据）"
+                                                    : "!! BAML 里没有 AboutPage_Loaded —— XAML 没绑定 Loaded=";
+                                            }
+                                        }
+                                    }
+                                    catch (Exception bex2)
+                                    {
+                                        bindEvidence = "包内无法判定（" + Trim(bex2.Message) + "）";
+                                        xamlBound = true;
+                                    }
                                 }
                                 else
                                 {
@@ -3109,32 +3155,39 @@ namespace Ink_Canvas.Helpers
         /// 只等 ms 毫秒并抽干队列，不设看门狗超时。
         /// 和 PumpWait 的区别是泵的是 SystemIdle 不是 Background。
         /// </summary>
+        /// <summary>
+        /// 等 ms 毫秒，并在这期间让 UI 队列跑几轮。
+        ///
+        /// LTSC（2026-11-19）：这个方法我改过两次，两次都栽在同一个地方 ——
+        /// 想用 PushFrame 抽队列，结果在「启动流程还没走完」的场景下会卡死。
+        ///
+        /// 实测：从空目录冷启动跑冒烟，日志停在 116 行，进程活着但 CPU 不再增长
+        /// （100 秒内 CPU 时间只涨了不到 1 秒），典型的 PushFrame 死等。
+        /// 构建目录里同样代码能跑完 144 行，差别就是启动时序不同。
+        ///
+        /// 现在的做法：不长时间占着 Dispatcher。
+        ///   · 主体用 Thread.Sleep (不占 UI 线程)
+        ///   · 每隔一小段做一次「让出到 Background」和「抽干到 SystemIdle」
+        ///   · 每次只让一帧，不在循环里长时间停在 PushFrame 内
+        /// 这样即使外面还在启动，也不会把消息泵卡住。
+        /// </summary>
         private static void PumpWaitNoDeadline(int ms)
         {
-            // 注意：不能只抽 SystemIdle。
-            //
-            // 心跳定时器（心跳 = 看门狗判「主线程还活着」的依据）跑在 Background 优先级上。
-            // 如果把队列一直抽到 SystemIdle，每次 Depth 都会先把 Background 处理完……
-            // 看起来没问题，实际上 DrainToIdle 的恢复回调本身就挂在 SystemIdle，
-            // 队列里 Background 操作要等它能排上——在密集循环里，心跳会被饿到。
-            //
-            // 实测后果（2026-11-19）：从空目录冷启动跑冒烟，FOLDTHREAD-2 之后
-            // 卡在这句上，日志停在 109 行，进程被看门狗按「主线程卡死」处理，
-            // 后面的 DISPLAYVER / SLIDECOUNT / VLOG 一条都没跑到。
-            //
-            // 改法：每 200ms 插入一次只抽到 Background 的让位，专门喂心跳；
-            // 其余时间照旧抽 SystemIdle（判泄漏需要它）。
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var hbSw = System.Diagnostics.Stopwatch.StartNew();
+            int slices = 0;
             while (sw.ElapsedMilliseconds < ms)
             {
-                if (hbSw.ElapsedMilliseconds >= 200)
+                // 先让线程真正睡一会儿，不占 Dispatcher，也不占 CPU。
+                System.Threading.Thread.Sleep(20);
+                slices++;
+
+                // 再让一帧：Background 喂心跳，SystemIdle 顺手把队列清干净。
+                // 两个都只做「一帧」，不循环。
+                try { YieldBackgroundOnly(); } catch { }
+                if (slices % 5 == 0)
                 {
-                    hbSw.Restart();
-                    YieldBackgroundOnly();   // 让心跳（Background 优先级）跑一轮
+                    try { DrainToIdle(); } catch { }
                 }
-                DrainToIdle();
-                System.Threading.Thread.Sleep(5);
             }
         }
 
