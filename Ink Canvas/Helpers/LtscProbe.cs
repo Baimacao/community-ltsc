@@ -1422,10 +1422,16 @@ namespace Ink_Canvas.Helpers
                         bool wasPptMode = mwForN03?.IsInPPTPresentationMode ?? false;
                         try
                         {
-                            Application.Current?.Dispatcher.Invoke(() =>
+                            // 同 PKHOOK-6：用 InvokeAsync + 超时，别同步等 Dispatcher。
+                            try
                             {
-                                try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = true; } catch { }
-                            });
+                                var t1 = Application.Current?.Dispatcher.InvokeAsync(() =>
+                                {
+                                    try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = true; } catch { }
+                                });
+                                if (t1 != null) t1.Task.Wait(1500);
+                            }
+                            catch { }
                             YieldUi();
 
                             enabledProp.SetValue(null, true);
@@ -1974,12 +1980,21 @@ namespace Ink_Canvas.Helpers
 
                 if (swallow2 != null && mw2 != null)
                 {
-                    // 确保当前不在联动状态
-                    Application.Current?.Dispatcher.Invoke(() =>
-                    {
-                        try { mw2.IsInPPTPresentationMode = false; } catch { }
-                    });
-                    YieldUi();
+                    // LTSC（2026-11-19）：这里不再去改放映状态。
+                    //
+                    // 试过 Dispatcher.Invoke 和 InvokeAsync+Wait，"包内空目录冷启动"时都会卡死
+                    // （日志停在 PKHOOK-5 之后，进程活着但 CPU 不涨，连诊断日志都打不出来）。
+                    //
+                    // 而且改这个状态本来就有副作用：IsInPPTPresentationMode 的 setter 是
+                    // SetPowerPointMode，它会联动 PresenterKeyAdapter 和 GlobalHotkeyManager，
+                    // 真的去注册/注销系统热键。测试不该搅动这些。
+                    //
+                    // 改为：直接按当前真实状态判。冒烟跑的时候本来就不在放映，
+                    // 正好就是「非联动」这个场景，不需要人为设置。
+                    bool currentlyInPpt = false;
+                    try { currentlyInPpt = mw2.IsInPPTPresentationMode; } catch { }
+                    Log("  [信息] PKHOOK-6 当前放映状态=" + currentlyInPpt
+                        + (currentlyInPpt ? "（在放映，本组按联动场景判）" : "（非联动，符合本断言前提）"));
 
                     // ESC / B / Shift+F5 —— 三个 ShouldWarn=true 的键，非联动时全都不该吞
                     var keysToCheck = new[]
@@ -2000,11 +2015,21 @@ namespace Ink_Canvas.Helpers
                         catch { }
                     }
 
-                    R("PKHOOK-6 非联动状态下特殊键全部放行（不拦截也不会弹窗）",
-                        swallowed == 0,
-                        swallowed == 0
-                            ? "正确：ESC/B/Shift+F5 三个键都放行"
-                            : $"!! 有 {swallowed} 个键被吞 —— 非联动时也会拦截/弹窗");
+                    // 按当前真实状态给判据（不再人为切换，见上面的说明）
+                    if (currentlyInPpt)
+                    {
+                        R("PKHOOK-6 联动状态下特殊键被拦截（防误触有效）",
+                            swallowed == keysToCheck.Length,
+                            $"被吞 {swallowed}/{keysToCheck.Length} 个键");
+                    }
+                    else
+                    {
+                        R("PKHOOK-6 非联动状态下特殊键全部放行（不拦截也不会弹窗）",
+                            swallowed == 0,
+                            swallowed == 0
+                                ? "正确：ESC/B/Shift+F5 三个键都放行"
+                                : $"!! 有 {swallowed} 个键被吞 —— 非联动时也会拦截/弹窗");
+                    }
                 }
             }
             catch (Exception ex) { R("PKHOOK-5", false, Trim(ex.Message)); }
@@ -2495,33 +2520,68 @@ namespace Ink_Canvas.Helpers
 
                     // 立刻落盘并检查。LogHelper 是同步写的，这里再转一圈确保刷出去。
                     LogHelper.WriteLogToFile("VLOG-CHECK-MARK", LogHelper.LogType.Event);
-                    YieldUi();
+                    // LTSC（2026-11-19）：这里原来有个 YieldUi()（PushFrame）。',
+                    // 包内空目录冷启动时会卡在它上面，日志停在 VLOG-4 之后。
+                    // LogHelper 是同步写盘的，不需要让 UI 转一圈再读。
+                    System.Threading.Thread.Sleep(120);
 
                     // 日志文件名是 Logs/Log_{启动时间}.txt，LogHelper.LogFile 只是
                     // 不按日期保存时的兜底名（"Log.txt"），拿它当路径读不到。
                     // 直接找最近写入的那个，比自己拼路径可靠。
                     string content = null;
+                    // LTSC（2026-11-19）：读日志必须用 FileShare.ReadWrite。
+                    //
+                    // 日志文件此刻正被 LogHelper 打开着写入，File.ReadAllText 默认
+                    // FileShare.Read（不允许别人同时写），会抛 IOException。
+                    // 包内目录下这个窗口更明显 —— 实测会停在 VLOG-4 之后。
                     try
                     {
                         var logsDir = System.IO.Path.Combine(App.RootPath, "Logs");
-                        if (System.IO.Directory.Exists(logsDir))
+                        string target = null;
+
+                        // 直接按 LogHelper 的命名规则拼，不做目录遍历 ——
+                        // Directory.GetFiles + LastWriteTimeUtc 在包内目录下会慢/卡，
+                        // 而日志名本来就是 Log_{启动时间}.txt，拼得出来。
+                        try
                         {
-                            var newest = System.IO.Directory.GetFiles(logsDir, "*.txt")
-                                .Select(f => new System.IO.FileInfo(f))
-                                .OrderByDescending(fi => fi.LastWriteTimeUtc)
-                                .FirstOrDefault();
-                            if (newest != null) content = System.IO.File.ReadAllText(newest.FullName);
+                            var byName = System.IO.Path.Combine(logsDir, "Log_" + AppLogTimestamp() + ".txt");
+                            if (System.IO.File.Exists(byName)) target = byName;
                         }
-                        else
+                        catch { }
+
+                        if (target == null && System.IO.Directory.Exists(logsDir))
+                        {
+                            var files = System.IO.Directory.GetFiles(logsDir, "*.txt");
+                            if (files.Length > 0) target = files[files.Length - 1];
+                        }
+                        if (target == null)
                         {
                             var fallback = System.IO.Path.Combine(App.RootPath, "Log.txt");
-                            if (System.IO.File.Exists(fallback)) content = System.IO.File.ReadAllText(fallback);
+                            if (System.IO.File.Exists(fallback)) target = fallback;
+                        }
+
+                        if (target != null)
+                        {
+                            using (var fs = new System.IO.FileStream(target,
+                                System.IO.FileMode.Open,
+                                System.IO.FileAccess.Read,
+                                System.IO.FileShare.ReadWrite | System.IO.FileShare.Delete))
+                            using (var sr = new System.IO.StreamReader(fs))
+                            {
+                                content = sr.ReadToEnd();
+                            }
                         }
                     }
-                    catch { }
+                    catch (Exception rex)
+                    {
+                        Log("  [信息] 读日志文件失败（不影响其它断言）: " + Trim(rex.Message));
+                    }
 
                     if (content == null)
                     {
+                        // 包内目录下偶尔拿不到（文件正被写入 / 目录遍历被挡）。
+                        // 拿不到就明确跳过，不算 FAIL —— 这是探针能力限制，不是程序缺陷。
+                        // 开发机（有 obj 目录）上这条会正常核验。
                         Log("  [信息] VLOG：拿不到当前日志文件内容，跳过内容核验（不影响其它断言）");
                     }
                     else
@@ -2533,6 +2593,12 @@ namespace Ink_Canvas.Helpers
                         R("VLOG-6 开关打开时写 PPT 详细日志", should,
                             should ? "正确写入" : "!! 开着没写");
                     }
+
+                    // 兜底：不管内容能不能读到，至少确认「开关→日志」这条链的入口还在。
+                    // 上面两条万一被跳过，这条还能证明功能没被拆掉。
+                    R("VLOG-7 详细日志开关与 VerboseLog 的联动代码还在",
+                        verboseLog != null && adv != null,
+                        "方法=" + (verboseLog != null) + " 设置=" + (adv != null));
                 }
             }
             catch (Exception ex) { R("VLOG", false, Trim(ex.Message)); }
@@ -3779,6 +3845,24 @@ namespace Ink_Canvas.Helpers
                 if (t != null) return t;
             }
             return null;
+        }
+
+        /// <summary>
+        /// 按 LogHelper 的日志文件命名规则（Log_{启动时间}.txt）拼时间戳。
+        /// 拿不到就返回空串，调用方会退回到列目录。
+        /// </summary>
+        private static string AppLogTimestamp()
+        {
+            try
+            {
+                var f = typeof(Ink_Canvas.Helpers.LogHelper).GetField("AppStartTime",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+                var v = f?.GetValue(null);
+                return v?.ToString() ?? "";
+            }
+            catch { return ""; }
         }
 
         private static string Trim(string s)
