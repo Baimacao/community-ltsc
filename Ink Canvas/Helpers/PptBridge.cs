@@ -71,6 +71,17 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         public event Action<string> PermissionBlocked;
 
+        /// <summary>
+        /// 总页数从「无效（≤0）」恢复到「有效（&gt;0）」时触发，参数是新页数。
+        ///
+        /// 为什么需要这个事件：翻页栏的显示闸门里有一条 hasValidPageCount，
+        /// 一旦总页数掉到 0，整条翻页栏会被 HideAllNavigationPanels() 隐藏，
+        /// 而隐藏是单向的——重新显示只发生在「放映开始」分支里。
+        /// 所以页数恢复有效之后，必须有人重新评估一次可见性，
+        /// 否则翻页栏要等到下一次进入放映才会回来。
+        /// </summary>
+        public event Action<int> SlidesCountRecovered;
+
         // ---------- 属性 ----------
         public bool IsConnected => _comApplication != null;
         public bool IsInSlideShow => _inSlideShow;
@@ -1044,6 +1055,7 @@ namespace Ink_Canvas.Helpers
         {
             int newCount = 0;
             object pres = null;
+            bool readFailed = false;
             try
             {
                 if (_comApplication != null)
@@ -1055,8 +1067,32 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex)
             {
-                newCount = 0;
-                VerboseLog($"[PPT详细] SlidesCount 取失败: {ex.GetType().Name}: {ex.Message}");
+                // LTSC（2026-11-19，班测报告「联动久了翻页组件消失」）：
+                //
+                // 这里原来写的是 newCount = 0，然后无条件 SlidesCount = newCount。
+                // 等于把「读不到」当成「这份 PPT 有 0 页」。
+                //
+                // 后果链：
+                //   一次 COM 超时 → SlidesCount=0 → PPTUIManager 里
+                //   hasValidPageCount=false → HideAllNavigationPanels()
+                //   → 翻页栏消失。而重显示要等一次新的 SlideShowBegin，
+                //   COM 事件又已经死了（见 HookComEvents 的 RETRYLATER），
+                //   于是整节课再也回不来。
+                //
+                // 读不到不是 0 页。保留上一次的有效值，什么都不写。
+                // 而且必须用 Warning 记——这条以前只有 VerboseLog，
+                // 详细日志开关默认关，整条失败过程一个字都不留。
+                readFailed = true;
+                LogHelper.WriteLogToFile(
+                    $"PptBridge 读取总页数失败，保留上次值 {SlidesCount}：" +
+                    $"{ex.GetType().Name}: {ex.Message}",
+                    LogHelper.LogType.Warning);
+            }
+
+            if (readFailed)
+            {
+                SafeRelease(pres);
+                return;
             }
 
             int oldCount = SlidesCount;
@@ -1092,6 +1128,32 @@ namespace Ink_Canvas.Helpers
                     // 但日志里什么都没有。事件派发失败必须可见。
                     LogHelper.WriteLogToFile(
                         "PPT 事件 PresentationClose 的订阅方抛异常：" + evtEx,
+                        LogHelper.LogType.Error);
+                }
+            }
+            else if (oldCount <= 0 && newCount > 0)
+            {
+                // LTSC（2026-11-19，班测报告「联动久了翻页组件消失」）：
+                //
+                // 页数从「无效」恢复到「有效」，但翻页栏这时可能还是隐藏的。
+                //
+                // 为什么必须在这里叫一声：HideAllNavigationPanels() 是单向的，
+                // PPTUIManager.UpdateNavigationPanelsVisibility() 只在
+                // 「放映开始」分支里被重新调用。而放映开始只会触发一次
+                // （状态从 false→true），此后 SlidesCount 就算恢复成有效值，
+                // 也没有任何人去重新评估可见性 —— 翻页栏要等下一节课才回来。
+                //
+                // 这条以前不存在，是因为旧代码根本不会从 0 恢复：
+                // 读失败写 0 之后只会一直失败下去。修掉那个之后，
+                // 恢复路径必须补上，否则只是把「永远不会恢复」换了个位置。
+                try
+                {
+                    SlidesCountRecovered?.Invoke(newCount);
+                }
+                catch (Exception evtEx)
+                {
+                    LogHelper.WriteLogToFile(
+                        "PPT 事件 SlidesCountRecovered 的订阅方抛异常：" + evtEx,
                         LogHelper.LogType.Error);
                 }
             }

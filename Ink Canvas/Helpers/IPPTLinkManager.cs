@@ -25,6 +25,12 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         event Action<string> PermissionBlocked;
 
+        /// <summary>
+        /// 总页数从「无效（≤0）」恢复到「有效（&gt;0）」时触发，参数是新页数。
+        /// 翻页栏被 HideAllNavigationPanels 隐藏过之后，靠这个事件重新评估可见性。
+        /// </summary>
+        event Action<int> SlidesCountRecovered;
+
         bool IsConnected { get; }
         bool IsInSlideShow { get; }
         bool IsSupportWPS { get; set; }

@@ -120,6 +120,32 @@ namespace Ink_Canvas
         }
 
         /// <summary>
+        /// 处理「总页数从无效恢复到有效」事件：重新评估翻页栏可见性。
+        ///
+        /// 背景（2026-11-19 班测）：翻页栏的显示闸门里有 hasValidPageCount = SlidesCount &gt; 0。
+        /// 一次 COM 超时曾把 SlidesCount 写成 0，翻页栏被 HideAllNavigationPanels() 隐藏；
+        /// 而重新显示只发生在「放映开始」分支里，COM 事件那时已经死了，
+        /// 于是整节课翻页栏都回不来。
+        ///
+        /// 现在 RefreshSlidesCount 读失败不再写 0，但「从 0 恢复」这条路径仍然可能存在
+        /// （例如换了个演示文稿），所以必须有人重新叫一次可见性评估。
+        /// </summary>
+        private void OnPPTSlidesCountRecovered(int slideCount)
+        {
+            try
+            {
+                LogHelper.WriteLogToFile(
+                    $"PPT 总页数恢复有效（{slideCount} 页），重新评估翻页栏可见性",
+                    LogHelper.LogType.Event);
+                _pptUIManager?.UpdateNavigationPanelsVisibility();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"恢复翻页栏可见性失败: {ex}", LogHelper.LogType.Error);
+            }
+        }
+
+        /// <summary>
         /// 处理 PowerPoint 演示文稿打开事件：清理画布墨迹、初始化墨迹管理器、处理导航逻辑、检查隐藏幻灯片和自动播放设置，并更新连接状态。
         /// </summary>
         /// <param name="pres">已打开的 PowerPoint 演示文稿（Presentation）实例。</param>

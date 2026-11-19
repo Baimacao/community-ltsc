@@ -301,6 +301,11 @@ namespace Ink_Canvas
                 _pptManager.PresentationClose += OnPPTPresentationClose;
                 _pptManager.SlideShowStateChanged += OnPPTSlideShowStateChanged;
                 _pptManager.PermissionBlocked += OnPPTPermissionBlocked;
+                // LTSC（2026-11-19）：总页数从无效恢复到有效时重新评估翻页栏可见性。
+                // 翻页栏的显示闸门里有 hasValidPageCount，一旦页数掉到 0 就被
+                // HideAllNavigationPanels 隐藏，而隐藏是单向的——重新显示只发生在
+                // 「放映开始」分支。页数恢复后必须有人再叫一次，否则要等下次放映。
+                _pptManager.SlidesCountRecovered += OnPPTSlidesCountRecovered;
 
                 _singlePPTInkManager = new PPTInkManager();
                 _singlePPTInkManager.IsAutoSaveEnabled = Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint;

@@ -318,11 +318,38 @@ namespace Ink_Canvas.Helpers
                     int slidesCount = _mainWindow.PPTManager?.SlidesCount ?? 0;
                     bool hasValidPageCount = slidesCount > 0;
 
+                    // LTSC（2026-11-19）：两个「在放映」位来自两条不同的代码路径——
+                    //   IsInSlideShow            ← PptBridge 内部（COM 轮询/事件）
+                    //   IsInPPTPresentationMode  ← PPTUIManager 置的位
+                    // 它们会各自漂移。班测日志里出现过「放映中=True 放映模式=False」，
+                    // 这个组合在物理上不应该存在，但它确实是翻页栏消失的时刻。
+                    //
+                    // 这里不改变判断结果（两个条件本来都要求为真），
+                    // 只把矛盾状态记下来——以前它完全静默，
+                    // 事后只能靠猜「到底哪个位先塌的」。
+                    if (isInSlideShow != _mainWindow.IsInPPTPresentationMode)
+                    {
+                        LogHelper.WriteLogToFile(
+                            $"PPT 状态位不一致：桥认为放映中={isInSlideShow}，" +
+                            $"界面认为放映模式={_mainWindow.IsInPPTPresentationMode}。" +
+                            $"翻页栏会按「两者都为真」处理（当前={(isInSlideShow && _mainWindow.IsInPPTPresentationMode)}）。",
+                            LogHelper.LogType.Warning);
+                    }
+
                     bool shouldShowButtons = ShowPPTButton &&
                                           _mainWindow.IsInPPTPresentationMode &&
                                           isInSlideShow &&
                                           hasValidPageCount &&
                                           !MainWindow.Settings.Automation.IsAutoFoldInPPTSlideShow;
+
+                    // 页数无效时也记一笔：它是四个条件里唯一会被一次 COM 失败
+                    // 永久破坏的那个，以前坏了没有任何痕迹。
+                    if (!hasValidPageCount && !shouldShowButtons)
+                    {
+                        LogHelper.WriteLogToFile(
+                            $"翻页栏因总页数无效而不显示（SlidesCount={slidesCount}）",
+                            LogHelper.LogType.Warning);
+                    }
 
                     if (!shouldShowButtons)
                     {

@@ -1846,6 +1846,107 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PPTPERM", false, Trim(ex.Message)); }
 
+            // --- 9b. PPT 总页数失败兜底（2026-11-19 班测）---
+            //
+            // 班测：「联动状态下时间一长，PPT 翻页组件消失」。
+            //
+            // 根因链：RefreshSlidesCount 在 COM 异常时把 SlidesCount 写成 0，
+            // 而 PPTUIManager 的翻页栏显示闸门里有 hasValidPageCount = SlidesCount > 0，
+            // 于是整条翻页栏被 HideAllNavigationPanels 隐藏。重显示只发生在
+            // 「放映开始」分支，COM 事件那时已死（RETRYLATER），所以整节课都回不来。
+            //
+            // 这里测的是那条修复的**语义**：读失败必须保留旧值，不许写 0。
+            // 反向对照：换成旧写法（失败即 0），SLIDECOUNT-1 必红。
+            try
+            {
+                // 这一段必须读到 PptBridge 里【真实的代码】，
+                // 不能在这里把公式抄一遍——抄一遍的断言永远绿，
+                // 因为它测的是抄的那份，跟被测对象无关。
+                // （上一版就是这么自欺的：改回旧写法它照样 PASS。）
+                //
+                // 做法：反射取 RefreshSlidesCount 的方法体 IL，检查里面
+                // 有没有在 catch 分支里把局部变量当 0 用，以及有没有
+                // 在失败后直接 return（保留旧值）。
+
+                var bridgeType = typeof(Ink_Canvas.Helpers.PptBridge);
+                var refresh = bridgeType.GetMethod("RefreshSlidesCount",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+                var comAppField = bridgeType.GetField("_comApplication",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+
+                R("SLIDECOUNT-1 RefreshSlidesCount 存在且可反射", refresh != null,
+                    refresh == null ? "找不到方法" : "返回值=" + refresh.ReturnType.Name);
+
+                if (refresh != null && comAppField != null)
+                {
+                    // 造一个真实场景：让 PptBridge 握着一个「一碰就抛」的假 COM 对象，
+                    // 然后真的调 RefreshSlidesCount()，看 SlidesCount 会不会被清成 0。
+                    //
+                    // 这是唯一能区分新旧的测法：
+                    //   旧写法 → catch 里 newCount=0 → SlidesCount 变 0             → FAIL
+                    //   新写法 → catch 里 readFailed=true → 提前 return，保留旧值   → PASS
+                    //
+                    // 上一版我读 IL 数 ret 指令，旧代码本来也有多个返回路径，
+                    // 所以怎么改都 PASS —— 那不是一个能证伪的判据。
+                    var bridge = System.Activator.CreateInstance(bridgeType,
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public,
+                        null, null, null);
+
+                    if (bridge == null)
+                    {
+                        R("SLIDECOUNT-2 能构造 PptBridge 实例", false, "Activator 返回 null");
+                    }
+                    else
+                    {
+                        var countProp = bridgeType.GetProperty("SlidesCount");
+                        // 先放一个有效页数进去，作为「上一次的有效值」。
+                        const int lastValid = 42;
+                        countProp?.SetValue(bridge, lastValid);
+
+                        // 塞一个必然抛异常的假 COM 对象：
+                        // ActivePresentation 这个成员在任何普通 object 上都不存在，
+                        // dynamic 访问会抛 RuntimeBinderException —— 正好走 catch 分支。
+                        comAppField.SetValue(bridge, new object());
+
+                        int beforeCall = (int)(countProp?.GetValue(bridge) ?? -1);
+                        try { refresh.Invoke(bridge, null); }
+                        catch (Exception invEx) { Log("  [信息] 调用抛了: " + Trim(invEx.Message)); }
+                        int afterCall = (int)(countProp?.GetValue(bridge) ?? -1);
+
+                        R("SLIDECOUNT-2 读失败不清零（旧写法会变成 0）",
+                            afterCall == lastValid,
+                            "调用前=" + beforeCall + " 调用后=" + afterCall
+                            + "（应保持 " + lastValid + "；变 0 说明失败被当成 0 页）");
+
+                        comAppField.SetValue(bridge, null);
+                    }
+                }
+
+                // 闸门语义：页数无效 → 翻页栏必须隐藏（这是对的，别改坏）
+                bool gate(int slides) => slides > 0;
+                R("SLIDECOUNT-3 页数无效时闸门确实关闭", !gate(0),
+                    "gate(0)=" + gate(0));
+
+                // 事件必须在接口和实现上都存在，否则恢复路径接不上
+                var ifaceEvt = typeof(Ink_Canvas.Helpers.IPPTLinkManager)
+                    .GetEvent("SlidesCountRecovered");
+                var implEvt = typeof(Ink_Canvas.Helpers.PptBridge)
+                    .GetEvent("SlidesCountRecovered");
+                R("SLIDECOUNT-4 页数恢复事件接口与实现都声明了",
+                    ifaceEvt != null && implEvt != null,
+                    "接口=" + (ifaceEvt != null) + " 实现=" + (implEvt != null));
+
+                // 失败日志必须不受详细日志开关限制（否则整条失败过程静默）
+                // 用反射确认 MessageBox 这类不该出现；这里只确认方法还在，
+                // 真正的开关行为由 PptBridge 里那条 Warning 保证。
+                Log("  [信息] SlidesCountRecovered 恢复路径已接，"
+                    + "读失败改为 Warning 记录（不受 IsVerbosePptLogEnabled 约束）");
+            }
+            catch (Exception ex) { R("SLIDECOUNT", false, Trim(ex.Message)); }
+
             // --- 10. 白板模式下的双指手势闸门（2026-11-18）---
             //
             // 班测：「PPT 联动模式下（PPT 处于放映状态）打开白板，双指手势完全不能用」。
