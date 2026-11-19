@@ -619,9 +619,9 @@
       <!-- 如果有GitCommitIdShort，就取前7位 -->
       <_ShortSha Condition="'$(GitCommitIdShort)' != ''">$(GitCommitIdShort)</_ShortSha>
       <_ShortSha7 Condition="'$(GitCommitIdShort)' != ''">$(_ShortSha.Substring(0, 7))</_ShortSha7>
-      <!-- 2026-11-19：0.1b-daily → 0.1c-daily（班测通过，无遗留问题）。
+      <!-- 2026-11-19：0.1c-daily → 0.1d-daily（修激光笔渐隐动画）。
            daily 表示这是跟着每天改动走的构建，不是定版。 -->
-      <AssemblyInformationalVersion>0.1c-daily+$(_ShortSha7)</AssemblyInformationalVersion>
+      <AssemblyInformationalVersion>0.1d-daily+$(_ShortSha7)</AssemblyInformationalVersion>
       <!-- NBGV 用的是 AssemblyFileVersion（不是 FileVersion），
            且它把 GenerateAssemblyFileVersionAttribute 关了，
            所以顶层写 <FileVersion> 无效，必须在这里改 AssemblyFileVersion。

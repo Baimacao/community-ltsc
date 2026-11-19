@@ -10,9 +10,10 @@
 ```
 分支      ltsc
 HEAD      见 git log -1（写文档时是 042f4836，会往后走，别照抄）
-版本      0.1c-daily（日常测试线，不是定版）
+版本      0.1d-daily（日常测试线，不是定版）
 上一个定版 sorrow-0.1a
-发布      GitHub Release 三个：
+发布      GitHub Release 四个：
+          https://github.com/Baimacao/community-ltsc/releases/tag/0.1d-daily-20261119
           https://github.com/Baimacao/community-ltsc/releases/tag/0.1c-daily-20261119
           https://github.com/Baimacao/community-ltsc/releases/tag/0.1b-daily-20261118
           https://github.com/Baimacao/community-ltsc/releases/tag/sorrow-0.1a
@@ -431,7 +432,7 @@ token 在 `E:/DSH/home/.github-token`，**不要写进 .git/config**。
 改 `InkCanvasForClass.csproj` 里 `SetAssemblyInformationalVersion` 那个 Target：
 
 ```xml
-<AssemblyInformationalVersion>0.1c-daily+$(_ShortSha7)</AssemblyInformationalVersion>
+<AssemblyInformationalVersion>0.1d-daily+$(_ShortSha7)</AssemblyInformationalVersion>
 <AssemblyFileVersion>0.1.0.0</AssemblyFileVersion>
 ```
 

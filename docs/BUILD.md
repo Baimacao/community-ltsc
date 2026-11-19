@@ -77,7 +77,7 @@ ICC-CE-Lite-<版本>.7z
 
 ```bash
 mkdir /tmp/pkgtest && cd /tmp/pkgtest
-7z x ICC-CE-Lite-0.1c-daily.7z
+7z x ICC-CE-Lite-0.1d-daily.7z
 ./ICCCELite.exe
 ```
 
@@ -113,12 +113,12 @@ C-5 那条曾经长期 FAIL，读数两边都是 0，实际是测试无效（`Pr
 
 由 Nerdbank.GitVersioning（NBGV）根据 `version.json` 和 git 提交号生成，**不要手改 csproj 里的 FileVersion**，会被覆盖。
 
-人看的版本形如 `0.1c-daily+4d4f6e3`：
+人看的版本形如 `0.1d-daily+4d4f6e3`：
 
-- `0.1c-daily` 是 `AssemblyInformationalVersion` 前缀，定义在 csproj
+- `0.1d-daily` 是 `AssemblyInformationalVersion` 前缀，定义在 csproj
 - `4d4f6e3` 是构建时的提交短 SHA
 
-程序里「设置 → 关于」显示的是去掉 `+hash` 的那一半，也就是 `0.1c-daily`。
+程序里「设置 → 关于」显示的是去掉 `+hash` 的那一半，也就是 `0.1d-daily`。
 点进去看代码是 `App.GetDisplayVersion()`，它是按 `+` 切开的。
 
 查当前版本：

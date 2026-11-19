@@ -8,7 +8,7 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `0.1c-daily`（后缀带提交号，形如 `0.1c-daily+4d4f6e3`） |
+| 当前版本 | `0.1d-daily`（后缀带提交号，形如 `0.1d-daily+4d4f6e3`） |
 | 程序名 | `ICCCELite.exe`（和原版可以装在同一台机器上） |
 | 上游基线 | `083f694e`（InkCanvasForClass/community，2026-07-15） |
 | 目标框架 | .NET 11（`net11.0-windows10.0.19041.0`） |

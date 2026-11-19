@@ -8,18 +8,18 @@ body:
         感谢反馈。填得越具体，定位越快。
 
         提之前请先做两件事：
-        1. 确认用的是最新构建（版本号在 设置 → 关于 里能看到，形如 `0.1c-daily`）
+        1. 确认用的是最新构建（版本号在 设置 → 关于 里能看到，形如 `0.1d-daily`）
         2. **把日志带上**。程序目录下 `Logs/` 里最新的那个文件，比截图有用得多
 
         Two things before you file:
-        1. Make sure you are on the latest build (version shows in Settings → About, like `0.1c-daily`)
+        1. Make sure you are on the latest build (version shows in Settings → About, like `0.1d-daily`)
         2. **Attach the log.** The newest file under `Logs/` next to the executable helps far more than screenshots
   - type: input
     id: version
     attributes:
       label: 软件版本 | App Version
-      description: 设置 → 关于 里那一行，形如 0.1c-daily | The line in Settings → About, e.g. 0.1c-daily
-      placeholder: 0.1c-daily
+      description: 设置 → 关于 里那一行，形如 0.1d-daily | The line in Settings → About, e.g. 0.1d-daily
+      placeholder: 0.1d-daily
     validations:
       required: true
   - type: input
