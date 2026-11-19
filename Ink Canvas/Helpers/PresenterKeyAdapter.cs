@@ -212,34 +212,22 @@ namespace Ink_Canvas.Helpers
         internal static bool IsHooked => _hook != null && _hook.IsHooked;
 
         /// <summary>
-        /// 根据「是否在 PPT 放映」和「适配是否启用」，挂上或卸下钩子。
-        /// 由主窗口在 PPT 状态变化时调用。
-        /// 
-        /// LTSC（2026-11-19 班测）：这里原来只看 isInPresentation，进放映就无条件挂钩子。
-        /// 后果 —— 老师根本没开过「翻页笔适配」，但一进放映：
-        ///   · ESC / B / Shift+F5 全被 ICC 吃掉，按键完全没反应
-        ///   · 第一次按还会弹一个「继续拦截 / 启用适配」的对话框
-        /// 用户反馈的原话是「它一直显示按下了 esc 触发拦截」。
-        /// 
-        /// 日志实证（Log_2026-11-19-16-13-24）：
-        ///   16:13:27  翻页笔适配状态已载入：关闭
-        ///   16:13:46  键盘钩子已挂载                    ← 关着也挂了
-        ///   16:13:46  退出放映热键注册失败（Escape）     ← 被自己的钩子占掉了
-        ///   16:31:48  翻页笔适配：用户选择继续拦截       ← 弹窗真的出现过
-        /// 
-        /// 适配关着的时候，这些键本来就该原样交给系统/PPT —— 什么都不做才是对的。
-        /// 「只拦截不响应」这个出厂行为本身就不成立：把老师本来能用的键拿走，
-        /// 换一个「你要不要启用适配」的弹窗，这不叫保护，叫添乱。
+        /// 进入 PPT 联动时挂上拦截钩子，退出时卸下。由主窗口在 PPT 状态变化时调用。
+        ///
+        /// 拦截的本意是保护：翻页笔的特殊键会触发 B 黑屏 / ESC 退放映 /
+        /// Shift+F5 重播，老师不知道自己按到了什么，课堂上直接黑屏或退出放映。
+        /// 所以联动期间接管这些键是对的。
+        ///
+        /// 范围只限联动 —— 不在放映时这些键走原逻辑，一个都不碰。
+        /// （班测反馈的「一直弹提示」就是范围跑出了联动，见 ShouldWarn 的调用处。）
         /// </summary>
         internal static void SyncWithPowerPointMode(bool isInPresentation)
         {
-            bool shouldHook = isInPresentation && IsEnabled;
-
-            if (shouldHook && !IsHooked)
+            if (isInPresentation && !IsHooked)
             {
                 InstallHook();
             }
-            else if (!shouldHook && IsHooked)
+            else if (!isInPresentation && IsHooked)
             {
                 UninstallHook();
             }
@@ -292,6 +280,21 @@ namespace Ink_Canvas.Helpers
             var binding = FindBinding(key, modifiers);
             if (binding == null) return false;
 
+            // LTSC（2026-11-19 班测）：拦截和弹窗都只能在 PPT 联动期间发生。
+            //
+            // 钩子由 SyncWithPowerPointMode 按联动状态挂/卸，正常情况下不该跑到这里。
+            // 但班测反馈「提示在不在联动时也弹」—— 说明存在钩子没及时卸下的窗口：
+            //   · SetPowerPointMode 第一句是 if (当前值 == 新值) return;
+            //     状态位一旦不同步，这个方法就永远不再同步钩子
+            //   · 折叠/展开、窗口重建等路径也可能让钩子状态和放映状态脱节
+            //
+            // 所以判据下沉到钩子回调本身：只要不在联动，一律放行，不吃键也不弹窗。
+            // 这样即使钩子还挂着，行为也和无钩子一致，不会打扰老师。
+            if (!IsInPptPresentationMode())
+            {
+                return false;
+            }
+
             if (IsEnabled)
             {
                 // 已开启适配：按映射正常工作 —— **吃掉这个键，同时执行映射**。
@@ -323,6 +326,22 @@ namespace Ink_Canvas.Helpers
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 当前是否处于 PPT 联动（放映）状态。
+        ///
+        /// 钩子回调跑在钩子线程上，只能读这个布尔值，不能碰 UI。
+        /// 拿不到主窗口时按「不在联动」处理 —— 宁可放行，也不要误拦。
+        /// </summary>
+        private static bool IsInPptPresentationMode()
+        {
+            try
+            {
+                var mw = System.Windows.Application.Current?.MainWindow as Ink_Canvas.MainWindow;
+                return mw != null && mw.IsInPPTPresentationMode;
+            }
+            catch { return false; }
         }
 
         private static Binding FindBinding(Key key, ModifierKeys modifiers)

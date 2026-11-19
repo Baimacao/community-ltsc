@@ -1411,17 +1411,48 @@ namespace Ink_Canvas.Helpers
                     if (escBinding != null)
                     {
                         bool wasEnabled = (bool)enabledProp.GetValue(null);
+
+                        // LTSC（2026-11-19）：必须先进入 PPT 联动状态再测。
+                        //
+                        // OnShouldSwallow 现在第一道闸就是「在不在联动」——不在联动一律放行。
+                        // 这两条断言原来的写法没建这个前提，于是永远拿到 false。
+                        // 它们测的是「联动期间的吞键语义」，所以前提必须补上，
+                        // 否则测的根本不是被测对象。
+                        var mwForN03 = Application.Current?.MainWindow as MainWindow;
+                        bool wasPptMode = mwForN03?.IsInPPTPresentationMode ?? false;
                         try
                         {
+                            Application.Current?.Dispatcher.Invoke(() =>
+                            {
+                                try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = true; } catch { }
+                            });
+                            YieldUi();
+
                             enabledProp.SetValue(null, true);
                             var r1 = (bool)swallowMethod.Invoke(null, new object[] { System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None });
-                            R("N-03 适配开启时 ESC 被吞", r1, "return=" + r1);
+                            R("N-03 适配开启时 ESC 被吞（联动中）", r1, "return=" + r1);
 
                             enabledProp.SetValue(null, false);
                             var r2 = (bool)swallowMethod.Invoke(null, new object[] { System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None });
-                            R("N-03 适配关闭时 ESC 仍被拦截", r2, "return=" + r2);
+                            R("N-03 适配关闭时 ESC 仍被拦截（联动中）", r2, "return=" + r2);
+
+                            // 反方向：退出联动后必须放行（这是班测报的那个 bug）
+                            Application.Current?.Dispatcher.Invoke(() =>
+                            {
+                                try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = false; } catch { }
+                            });
+                            YieldUi();
+                            var r3 = (bool)swallowMethod.Invoke(null, new object[] { System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None });
+                            R("N-03 退出联动后 ESC 放行（不再拦截/弹窗）", !r3, "return=" + r3);
                         }
-                        finally { enabledProp.SetValue(null, wasEnabled); }
+                        finally
+                        {
+                            enabledProp.SetValue(null, wasEnabled);
+                            Application.Current?.Dispatcher.Invoke(() =>
+                            {
+                                try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = wasPptMode; } catch { }
+                            });
+                        }
                     }
                 }
             }
@@ -1881,17 +1912,25 @@ namespace Ink_Canvas.Helpers
                     try
                     {
                         // 场景：适配关闭 + 正在放映 —— 这是班测遇到的那个组合
+                        // 判据（2026-11-19 第二次修正）：拦截只看「在不在联动」，
+                        // 和「适配开关」无关。
+                        //
+                        // 我上一版写成「适配关闭就不挂钩子」，把误触拦截整个关掉了 ——
+                        // 班测直接报「误触拦截功能失效」。拦截是保护：翻页笔特殊键会触发
+                        // B 黑屏 / ESC 退放映 / Shift+F5 重播，必须在联动期间挡住。
+
+                        // 适配关闭 + 放映 → 必须挂钩子（拦截生效）
                         enabledProp.SetValue(null, false);
                         sync.Invoke(null, new object[] { true });
                         bool hookedWhenDisabled = (bool)hookedProp.GetValue(null);
 
-                        R("PKHOOK-2 适配关闭时进放映不挂钩子（ESC 交还给系统）",
-                            !hookedWhenDisabled,
+                        R("PKHOOK-2 适配关闭时进放映仍然挂钩子（误触拦截有效）",
+                            hookedWhenDisabled,
                             hookedWhenDisabled
-                                ? "!! 还是挂了 —— 会吃掉 ESC 并弹拦截提示"
-                                : "正确：没有挂钩子");
+                                ? "正确：已挂钩子，误触会被拦下"
+                                : "!! 没挂钩子 —— 误触拦截失效");
 
-                        // 反方向：适配开启 + 放映 → 必须挂钩子（别把功能改没了）
+                        // 适配开启 + 放映 → 也要挂钩子（走映射，不弹提示）
                         enabledProp.SetValue(null, true);
                         sync.Invoke(null, new object[] { true });
                         bool hookedWhenEnabled = (bool)hookedProp.GetValue(null);
@@ -1914,6 +1953,61 @@ namespace Ink_Canvas.Helpers
                 }
             }
             catch (Exception ex) { R("PKHOOK", false, Trim(ex.Message)); }
+
+            // --- 8y2. 非联动状态下按特殊键：不拦截、不弹窗（2026-11-19 班测）---
+            //
+            // 用户原话：「弹窗问题是因为不在 ppt 联动下也弹」。
+            //
+            // 钩子本该只在联动期间挂着，但状态位同步有窗口（SetPowerPointMode
+            // 第一句就是 if (当前==新值) return，状态一旦不同步就再也不调同步）。
+            // 所以判据要下沉到钩子回调本身：不在联动就一律放行。
+            try
+            {
+                var adapterType2 = typeof(Ink_Canvas.Helpers.PresenterKeyAdapter);
+                var swallow2 = adapterType2.GetMethod("OnShouldSwallow",
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+                var mw2 = Application.Current?.MainWindow as MainWindow;
+
+                R("PKHOOK-5 能找到 OnShouldSwallow 与主窗口",
+                    swallow2 != null && mw2 != null,
+                    "方法=" + (swallow2 != null) + " 窗口=" + (mw2 != null));
+
+                if (swallow2 != null && mw2 != null)
+                {
+                    // 确保当前不在联动状态
+                    Application.Current?.Dispatcher.Invoke(() =>
+                    {
+                        try { mw2.IsInPPTPresentationMode = false; } catch { }
+                    });
+                    YieldUi();
+
+                    // ESC / B / Shift+F5 —— 三个 ShouldWarn=true 的键，非联动时全都不该吞
+                    var keysToCheck = new[]
+                    {
+                        Tuple.Create(System.Windows.Input.Key.Escape, System.Windows.Input.ModifierKeys.None),
+                        Tuple.Create(System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.None),
+                        Tuple.Create(System.Windows.Input.Key.F5, System.Windows.Input.ModifierKeys.Shift),
+                    };
+
+                    int swallowed = 0;
+                    foreach (var k in keysToCheck)
+                    {
+                        try
+                        {
+                            bool s = (bool)swallow2.Invoke(null, new object[] { k.Item1, k.Item2 });
+                            if (s) swallowed++;
+                        }
+                        catch { }
+                    }
+
+                    R("PKHOOK-6 非联动状态下特殊键全部放行（不拦截也不会弹窗）",
+                        swallowed == 0,
+                        swallowed == 0
+                            ? "正确：ESC/B/Shift+F5 三个键都放行"
+                            : $"!! 有 {swallowed} 个键被吞 —— 非联动时也会拦截/弹窗");
+                }
+            }
+            catch (Exception ex) { R("PKHOOK-5", false, Trim(ex.Message)); }
 
             // --- 8z. 折叠必须能从非 UI 线程安全调用（2026-11-19 班测崩溃）---
             //
@@ -2171,7 +2265,6 @@ namespace Ink_Canvas.Helpers
                                     // 这比直接判 FAIL 合理 —— 包内找不到中间文件不是缺陷。
                                     try
                                     {
-                                        var resName = "Ink_Canvas.Windows.SettingsViews.Pages.aboutpage.baml";
                                         var asm = typeof(Ink_Canvas.App).Assembly;
                                         var names = asm.GetManifestResourceNames();
                                         var hit = names.FirstOrDefault(n =>
@@ -2184,10 +2277,14 @@ namespace Ink_Canvas.Helpers
                                         else
                                         {
                                             using (var s = asm.GetManifestResourceStream(hit))
+                                            using (var ms = new System.IO.MemoryStream())
                                             {
-                                                var buf = new byte[s.Length];
-                                                s.Read(buf, 0, buf.Length);
-                                                // BAML 里事件处理器名以 UTF-8 记录
+                                                // 用 CopyTo 而不是 Read(buf,0,len)：
+                                                // Stream.Read 不保证一次读完（CA2022）。
+                                                s.CopyTo(ms);
+                                                var buf = ms.ToArray();
+                                                // BAML 里事件处理器名可能以 UTF-8 或 UTF-16 记录，
+                                                // 两种都查一遍，避免漏判。
                                                 var txt = System.Text.Encoding.UTF8.GetString(buf);
                                                 var txt16 = System.Text.Encoding.Unicode.GetString(buf);
                                                 xamlBound = txt.Contains("AboutPage_Loaded")
