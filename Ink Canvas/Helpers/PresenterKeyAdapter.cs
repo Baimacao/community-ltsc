@@ -212,16 +212,34 @@ namespace Ink_Canvas.Helpers
         internal static bool IsHooked => _hook != null && _hook.IsHooked;
 
         /// <summary>
-        /// 根据当前是否在 PPT 联动模式，挂上或卸下钩子。
+        /// 根据「是否在 PPT 放映」和「适配是否启用」，挂上或卸下钩子。
         /// 由主窗口在 PPT 状态变化时调用。
+        /// 
+        /// LTSC（2026-11-19 班测）：这里原来只看 isInPresentation，进放映就无条件挂钩子。
+        /// 后果 —— 老师根本没开过「翻页笔适配」，但一进放映：
+        ///   · ESC / B / Shift+F5 全被 ICC 吃掉，按键完全没反应
+        ///   · 第一次按还会弹一个「继续拦截 / 启用适配」的对话框
+        /// 用户反馈的原话是「它一直显示按下了 esc 触发拦截」。
+        /// 
+        /// 日志实证（Log_2026-11-19-16-13-24）：
+        ///   16:13:27  翻页笔适配状态已载入：关闭
+        ///   16:13:46  键盘钩子已挂载                    ← 关着也挂了
+        ///   16:13:46  退出放映热键注册失败（Escape）     ← 被自己的钩子占掉了
+        ///   16:31:48  翻页笔适配：用户选择继续拦截       ← 弹窗真的出现过
+        /// 
+        /// 适配关着的时候，这些键本来就该原样交给系统/PPT —— 什么都不做才是对的。
+        /// 「只拦截不响应」这个出厂行为本身就不成立：把老师本来能用的键拿走，
+        /// 换一个「你要不要启用适配」的弹窗，这不叫保护，叫添乱。
         /// </summary>
         internal static void SyncWithPowerPointMode(bool isInPresentation)
         {
-            if (isInPresentation && !IsHooked)
+            bool shouldHook = isInPresentation && IsEnabled;
+
+            if (shouldHook && !IsHooked)
             {
                 InstallHook();
             }
-            else if (!isInPresentation && IsHooked)
+            else if (!shouldHook && IsHooked)
             {
                 UninstallHook();
             }
@@ -349,13 +367,33 @@ namespace Ink_Canvas.Helpers
         {
             IsEnabled = true;
             LogHelper.WriteLogToFile("翻页笔适配已开启", LogHelper.LogType.Event);
+            // 开关变了要立刻同步钩子状态，否则要等下一次 PPT 状态变化才生效。
+            SyncHookToCurrentPptState();
         }
 
-        /// <summary>关闭适配（回到「只拦截、不响应」）。</summary>
+        /// <summary>关闭适配（钩子会被卸掉，按键原样交给系统）。</summary>
         internal static void DisableAdapter()
         {
             IsEnabled = false;
             LogHelper.WriteLogToFile("翻页笔适配已关闭", LogHelper.LogType.Event);
+            SyncHookToCurrentPptState();
+        }
+
+        /// <summary>
+        /// 按当前 PPT 放映状态和适配开关，重新决定钩子该不该挂。
+        /// 设置页里拨开关、或提示框里选了某个选项之后都要叫一次。
+        /// </summary>
+        internal static void SyncHookToCurrentPptState()
+        {
+            try
+            {
+                var mw = System.Windows.Application.Current?.MainWindow as Ink_Canvas.MainWindow;
+                SyncWithPowerPointMode(mw != null && mw.IsInPPTPresentationMode);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"同步翻页笔钩子状态失败: {ex.Message}", LogHelper.LogType.Warning);
+            }
         }
         /// <summary>用户在提示框里选了「继续拦截」——保持关闭，但不影响已经提示过的事实。</summary>
         internal static void KeepBlocking()

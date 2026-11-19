@@ -1846,6 +1846,75 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PPTPERM", false, Trim(ex.Message)); }
 
+            // --- 8y. 翻页笔钩子只在适配启用时才挂（2026-11-19 班测）---
+            //
+            // 用户反馈：「它一直显示按下了 esc 触发拦截」。
+            // 原因是 SyncWithPowerPointMode 只看是否在放映，进放映就无条件挂钩子，
+            // 于是没开适配的老师，ESC / B / Shift+F5 全被吃掉，还弹一次对话框。
+            //
+            // 这条断言直接调 SyncWithPowerPointMode 的判定逻辑，
+            // 检查「适配关闭时不会挂上钩子」。
+            try
+            {
+                var adapterType = typeof(Ink_Canvas.Helpers.PresenterKeyAdapter);
+                var sync = adapterType.GetMethod("SyncWithPowerPointMode",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+                var enabledProp = adapterType.GetProperty("IsEnabled",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+                var hookedProp = adapterType.GetProperty("IsHooked",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+
+                R("PKHOOK-1 能找到 SyncWithPowerPointMode / IsEnabled / IsHooked",
+                    sync != null && enabledProp != null && hookedProp != null,
+                    "sync=" + (sync != null) + " enabled=" + (enabledProp != null)
+                    + " hooked=" + (hookedProp != null));
+
+                if (sync != null && enabledProp != null && hookedProp != null)
+                {
+                    bool origEnabled = (bool)enabledProp.GetValue(null);
+                    try
+                    {
+                        // 场景：适配关闭 + 正在放映 —— 这是班测遇到的那个组合
+                        enabledProp.SetValue(null, false);
+                        sync.Invoke(null, new object[] { true });
+                        bool hookedWhenDisabled = (bool)hookedProp.GetValue(null);
+
+                        R("PKHOOK-2 适配关闭时进放映不挂钩子（ESC 交还给系统）",
+                            !hookedWhenDisabled,
+                            hookedWhenDisabled
+                                ? "!! 还是挂了 —— 会吃掉 ESC 并弹拦截提示"
+                                : "正确：没有挂钩子");
+
+                        // 反方向：适配开启 + 放映 → 必须挂钩子（别把功能改没了）
+                        enabledProp.SetValue(null, true);
+                        sync.Invoke(null, new object[] { true });
+                        bool hookedWhenEnabled = (bool)hookedProp.GetValue(null);
+
+                        R("PKHOOK-3 适配开启时进放映会挂钩子",
+                            hookedWhenEnabled,
+                            hookedWhenEnabled ? "正确：已挂钩子" : "!! 没挂上，适配功能会失效");
+
+                        // 退出放映必须卸钩子
+                        sync.Invoke(null, new object[] { false });
+                        bool hookedAfterExit = (bool)hookedProp.GetValue(null);
+                        R("PKHOOK-4 退出放映后卸掉钩子", !hookedAfterExit,
+                            hookedAfterExit ? "!! 还挂着" : "正确：已卸下");
+                    }
+                    finally
+                    {
+                        enabledProp.SetValue(null, origEnabled);
+                        try { sync.Invoke(null, new object[] { false }); } catch { }
+                    }
+                }
+            }
+            catch (Exception ex) { R("PKHOOK", false, Trim(ex.Message)); }
+
             // --- 8z. 折叠必须能从非 UI 线程安全调用（2026-11-19 班测崩溃）---
             //
             // 崩溃日志：
@@ -3042,9 +3111,28 @@ namespace Ink_Canvas.Helpers
         /// </summary>
         private static void PumpWaitNoDeadline(int ms)
         {
+            // 注意：不能只抽 SystemIdle。
+            //
+            // 心跳定时器（心跳 = 看门狗判「主线程还活着」的依据）跑在 Background 优先级上。
+            // 如果把队列一直抽到 SystemIdle，每次 Depth 都会先把 Background 处理完……
+            // 看起来没问题，实际上 DrainToIdle 的恢复回调本身就挂在 SystemIdle，
+            // 队列里 Background 操作要等它能排上——在密集循环里，心跳会被饿到。
+            //
+            // 实测后果（2026-11-19）：从空目录冷启动跑冒烟，FOLDTHREAD-2 之后
+            // 卡在这句上，日志停在 109 行，进程被看门狗按「主线程卡死」处理，
+            // 后面的 DISPLAYVER / SLIDECOUNT / VLOG 一条都没跑到。
+            //
+            // 改法：每 200ms 插入一次只抽到 Background 的让位，专门喂心跳；
+            // 其余时间照旧抽 SystemIdle（判泄漏需要它）。
             var sw = System.Diagnostics.Stopwatch.StartNew();
+            var hbSw = System.Diagnostics.Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < ms)
             {
+                if (hbSw.ElapsedMilliseconds >= 200)
+                {
+                    hbSw.Restart();
+                    YieldBackgroundOnly();   // 让心跳（Background 优先级）跑一轮
+                }
                 DrainToIdle();
                 System.Threading.Thread.Sleep(5);
             }
