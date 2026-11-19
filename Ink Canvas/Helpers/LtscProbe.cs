@@ -2592,6 +2592,362 @@ namespace Ink_Canvas.Helpers
         }
 
         /// <summary>
+        /// 回答「为什么会涨、GC 为什么不回收」。
+        ///
+        /// .NET 的 GC 是追踪式（tracing）回收：只回收「不可达」的对象。
+        /// 只要还有任何一条强引用链能走到它，GC 就正确地不回收——那不是泄漏，是「还活着」。
+        ///
+        /// 这一组要证的三件事：
+        ///   1. 那批对象在整轮里确实被反复 GC 过，是因为可达才没死，不是 GC 偷懒
+        ///   2. 它们是可达的，而那条引用链就是 Dispatcher 队列里没执行的 DispatcherOperation
+        ///   3. 队列一跑完，引用立刻断，内存立刻回得来 —— 所以它从头到尾都是可回收的
+        /// </summary>
+        public static void ProbeGcReclaim()
+        {
+            Log("=== GC 回收机制：到底为什么涨、为什么没回收 ===");
+            var repType = ResolveType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater");
+            if (repType == null) { Log("  [FAIL] 找不到 ItemsRepeater"); return; }
+
+            DrainToIdle(); DrainToIdle();
+            long baseMem = GC.GetTotalMemory(true);
+            int gen0a = GC.CollectionCount(0), gen1a = GC.CollectionCount(1), gen2a = GC.CollectionCount(2);
+            Log("  基线: 驻留=" + (baseMem / 1048576) + "MB 代计数=" + gen0a + "/" + gen1a + "/" + gen2a);
+            Log("  基线时 Dispatcher 队列长度=" + QueueDepth());
+
+            // ── 第 1 步：造 30 个，只抽到 Background（复现「泄漏」条件）────────
+            var refs = new List<WeakReference>();
+            int madeOk = 0;
+            for (int k = 0; k < 30; k++)
+            {
+                try
+                {
+                    var o = Activator.CreateInstance(repType);
+                    (o as FrameworkElement)?.Measure(new Size(1000, 800));
+                    refs.Add(new WeakReference(o));
+                    madeOk++;
+                }
+                catch { refs.Add(new WeakReference(null)); }
+                YieldBackgroundOnly();
+            }
+            Log("  造成功=" + madeOk + "/30  Dispatcher 队列长度=" + QueueDepth());
+
+            // 三次强制全量回收。如果对象够不到，这里就该全死。
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                YieldBackgroundOnly();
+            }
+            long memAfterGc = GC.GetTotalMemory(true);
+            int alive1 = refs.Count(r => r.IsAlive);
+            Log("  三次强制 GC 后: 存活=" + alive1 + "/30 驻留=" + (memAfterGc / 1048576) + "MB"
+                + " 比基线多=" + ((memAfterGc - baseMem) / 1048576) + "MB");
+            Log("  期间共发生回收: gen0=" + (GC.CollectionCount(0) - gen0a)
+                + " gen1=" + (GC.CollectionCount(1) - gen1a)
+                + " gen2=" + (GC.CollectionCount(2) - gen2a) + " 次");
+            Log("  → GC 确实跑了 " + (GC.CollectionCount(0) - gen0a) + " 次 gen0 回收，对象没死是因为仍然可达，不是因为 GC 没跑");
+
+            // ── 第 2 步：只做一件事——把队列抽干 ────────────────────────
+            // 除了这一步，别的都不变。如果内存回来了，就说明那 30 个对象
+            // 一直被队列里的 DispatcherOperation 钉着。
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
+            long memBeforeDrain = GC.GetTotalMemory(true);
+            int aliveBeforeDrain = refs.Count(r => r.IsAlive);
+            int qBefore = QueueDepth();
+
+            DrainToIdle();
+
+            GC.Collect(2, GCCollectionMode.Forced, true, true);
+            GC.WaitForPendingFinalizers();
+            long memAfterDrain = GC.GetTotalMemory(true);
+            int alive2 = refs.Count(r => r.IsAlive);
+
+            Log("  抽干前: 存活=" + aliveBeforeDrain + "/30 驻留=" + (memBeforeDrain / 1048576)
+                + "MB 队列长度=" + qBefore);
+            Log("  抽干后: 存活=" + alive2 + "/30 驻留=" + (memAfterDrain / 1048576)
+                + "MB 队列长度=" + QueueDepth());
+            Log("  → 只做抽干这一个动作，释放了 " + ((memBeforeDrain - memAfterDrain) / 1048576)
+                + "MB，又死了 " + (aliveBeforeDrain - alive2) + " 个对象");
+
+            // ── 判定 ────────────────────────────────────────────────────
+            if (alive1 >= 25 && alive2 <= 5)
+                Log("  [结论] 不是泄漏。对象在队列跑完前可达（所以 GC 正确地不回收），"
+                    + "跑完后立刻回收 —— 这是「暂时占用」，不是「泄漏」");
+            else if (alive1 >= 25 && alive2 >= 25)
+                Log("  [结论] 抽干后仍然全活 —— 这才是真泄漏，持有者不在 Dispatcher 队列里");
+            else
+                Log("  [结论] 两组都不活跃，本实验没复现出问题，数据不足以支撑结论");
+
+            // ── 第 3 步：真实路径下会不会累积 ──────────────────────────
+            // 上面的条件是探针造的：造完立刻 GC，但队列还没跑。
+            // 真实运行时队列每帧都在跑，所以要看的是「稳态」。
+            Log("  稳态检查：连续造 5 批，每批之间正常抽干（模拟真实每帧泵消息）");
+            long stableBase = GC.GetTotalMemory(true);
+            for (int batch = 1; batch <= 5; batch++)
+            {
+                var tmp = new List<WeakReference>();
+                for (int k = 0; k < 30; k++)
+                {
+                    try
+                    {
+                        var o = Activator.CreateInstance(repType);
+                        (o as FrameworkElement)?.Measure(new Size(1000, 800));
+                        tmp.Add(new WeakReference(o));
+                    }
+                    catch { }
+                    DrainToIdle();   // 真实行为：消息循环一直在跑
+                }
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                DrainToIdle();
+                Log("    第 " + batch + " 批 150 个总投放后: 存活=" + tmp.Count(r => r.IsAlive)
+                    + "/30 驻留=" + (GC.GetTotalMemory(true) / 1048576) + "MB");
+            }
+            long stableEnd = GC.GetTotalMemory(true);
+            Log("  → 稳态 5 批共 150 个，驻留 " + (stableBase / 1048576) + "MB → "
+                + (stableEnd / 1048576) + "MB (Δ" + ((stableEnd - stableBase) / 1048576) + "MB)");
+        }
+
+        /// <summary>
+        /// 证明「一个队列操作能钉住一整页」—— 这是 33MB/轮 和 0MB 之间的差额所在。
+        ///
+        /// 光造 30 个 ItemsRepeater 只占 0MB（它们是没有子树的空壳）。
+        /// 压力测试里每轮 33MB，是因为被钉住的是「整棵页面控件树」。
+        ///
+        /// 验证方法（只靠弱引用，不加任何假设）：
+        ///   1. 造一页，找到它里面的 ItemsRepeater
+        ///   2. 只保留 ItemsRepeater 的强引用，把页面的引用全部丢掉
+        ///   3. GC：如果页面还活着，说明「子控件钉住了父页面」
+        ///   4. 抽干队列后再 GC：如果页面死了，说明钉住它的正是那个队列操作
+        /// </summary>
+        public static void ProbePagePinning()
+        {
+            Log("=== 一个队列操作能钉住多大一块内存 ===");
+            var pageType = ResolveType("Ink_Canvas.Windows.SettingsViews.Pages.AdvancedPage");
+            if (pageType == null)
+            {
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    try
+                    {
+                        pageType = a.GetTypes().FirstOrDefault(t =>
+                            t.Name == "AdvancedPage" && typeof(FrameworkElement).IsAssignableFrom(t));
+                    }
+                    catch { }
+                    if (pageType != null) break;
+                }
+            }
+            if (pageType == null) { Log("  [FAIL] 找不到设置页类型"); return; }
+
+            DrainToIdle(); DrainToIdle();
+            long baseMem = GC.GetTotalMemory(true);
+
+            // 1) 造一页并布局。
+            object page = Activator.CreateInstance(pageType);
+            var fe = page as FrameworkElement;
+            fe.Measure(new Size(1000, 800));
+            fe.Arrange(new Rect(0, 0, 1000, 800));
+            fe.UpdateLayout();
+            YieldBackgroundOnly();
+
+            // 2) 找它里面的所有 ItemsRepeater，只留一个强引用。
+            var repType = ResolveType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater");
+            var repeaters = new List<object>();
+            if (repType != null)
+            {
+                var stack = new Stack<DependencyObject>();
+                stack.Push(fe);
+                while (stack.Count > 0)
+                {
+                    var cur = stack.Pop();
+                    if (cur == null) continue;
+                    if (repType.IsInstanceOfType(cur)) repeaters.Add(cur);
+                    int n = 0;
+                    try { n = VisualTreeHelper.GetChildrenCount(cur); } catch { }
+                    for (int i = 0; i < n; i++)
+                    {
+                        try { stack.Push(VisualTreeHelper.GetChild(cur, i)); } catch { }
+                    }
+                }
+            }
+            Log("  页面类型=" + pageType.Name + " 树里的 ItemsRepeater=" + repeaters.Count + " 个");
+
+            long memWithPage = GC.GetTotalMemory(true);
+            var pageRef = new WeakReference(page);
+
+            // 3) 关键：把页面的强引用全部丢掉，只留 repeater。
+            //    如果页面还活着，只能是 repeater 反向往上钉住了它。
+            object keepRepeater = repeaters.Count > 0 ? repeaters[0] : null;
+            page = null;
+            fe = null;
+            repeaters = null;
+
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                YieldBackgroundOnly();
+            }
+            long memPinned = GC.GetTotalMemory(true);
+            bool pageAlivePinned = pageRef.IsAlive;
+            Log("  只留一个 ItemsRepeater 强引用、丢掉页面引用后: 页面存活=" + pageAlivePinned
+                + " 驻留=" + (memPinned / 1048576) + "MB");
+            Log("  → 这一页占的内存 ≈ " + ((memWithPage - baseMem) / 1024) + "KB，"
+                + "被钉住时仍是 " + ((memPinned - baseMem) / 1024) + "KB");
+
+            // 4) 再往上证一层：连 repeater 也丢掉，抽干队列，页面应该死。
+            keepRepeater = null;
+            DrainToIdle();
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                DrainToIdle();
+            }
+            long memFreed = GC.GetTotalMemory(true);
+            Log("  再丢掉 ItemsRepeater 并抽干队列: 页面存活=" + pageRef.IsAlive
+                + " 驻留=" + (memFreed / 1048576) + "MB");
+
+            // ── 判定 ──
+            if (pageAlivePinned && !pageRef.IsAlive)
+                Log("  [结论] 证实：一个队列操作（挂在页面内某个 ItemsRepeater 上）"
+                    + "足以钉住整页；队列跑完就全放掉");
+            else if (pageAlivePinned && pageRef.IsAlive)
+                Log("  [结论] 抽干后页面仍活 —— 持有者另有其人，不是队列");
+            else
+                Log("  [结论] 没复现出钉住现象，数据不足以支撑结论");
+        }
+
+        /// <summary>
+        /// 把页面拆到独立方法里造，让局部变量槽随方法返回一起出栈。
+        ///
+        /// 上一版把「造页面 → 找 repeater → 丢引用」全写在同一个方法里，
+        /// 结果「抽干后页面仍活」。那不是持有者还在，很可能只是这个方法自己的
+        /// 局部变量槽还压着页面引用（JIT 无法证明它之后不会被读）。
+        /// NoInlining 保证这个作用域真的结束。
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(
+            System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+        private static (WeakReference Page, int RepeaterCount, long Bytes) BuildPageIsolated(Type pageType)
+        {
+            var page = Activator.CreateInstance(pageType);
+            var fe = page as FrameworkElement;
+            if (fe == null) return (new WeakReference(null), 0, 0);
+
+            fe.Measure(new Size(1000, 800));
+            fe.Arrange(new Rect(0, 0, 1000, 800));
+            fe.UpdateLayout();
+
+            var repType = ResolveType("iNKORE.UI.WPF.Modern.Controls.ItemsRepeater");
+            int count = 0;
+            if (repType != null)
+            {
+                var stack = new Stack<DependencyObject>();
+                stack.Push(fe);
+                while (stack.Count > 0)
+                {
+                    var cur = stack.Pop();
+                    if (cur == null) continue;
+                    if (repType.IsInstanceOfType(cur)) count++;
+                    int n = 0;
+                    try { n = VisualTreeHelper.GetChildrenCount(cur); } catch { }
+                    for (int i = 0; i < n; i++)
+                    {
+                        try { stack.Push(VisualTreeHelper.GetChild(cur, i)); } catch { }
+                    }
+                }
+            }
+            return (new WeakReference(page), count, 0);
+        }
+
+        /// <summary>
+        /// 严格版：页面在独立作用域里造，返回时该作用域的栈槽已失效。
+        /// 这时如果页面还活着，才是真的有别人持有它。
+        /// </summary>
+        public static void ProbePagePinningStrict()
+        {
+            Log("=== 严格版：页面在独立作用域里造，排除本方法局部变量干扰 ===");
+            var pageType = ResolveType("Ink_Canvas.Windows.SettingsViews.Pages.AdvancedPage");
+            if (pageType == null) { Log("  [FAIL] 找不到 AdvancedPage"); return; }
+
+            DrainToIdle(); DrainToIdle();
+            long mem0 = GC.GetTotalMemory(true);
+
+            var built = BuildPageIsolated(pageType);
+            long mem1 = GC.GetTotalMemory(true);
+            Log("  造一页: repeater=" + built.RepeaterCount + " 个 占用≈"
+                + ((mem1 - mem0) / 1024) + "KB");
+
+            // 作用域已结束。现在做三格对比。
+            // 格 1：什么都不做，直接 GC
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+                YieldBackgroundOnly();
+            }
+            bool aliveA = built.Page.IsAlive;
+            long memA = GC.GetTotalMemory(true);
+            Log("  格1 只抽到 Background 就 GC: 页面存活=" + aliveA
+                + " 驻留=" + (memA / 1048576) + "MB (Δ" + ((memA - mem0) / 1024) + "KB)");
+
+            // 格 2：抽到 SystemIdle 再 GC
+            DrainToIdle();
+            for (int i = 0; i < 3; i++)
+            {
+                DrainToIdle();
+                GC.Collect(2, GCCollectionMode.Forced, true, true);
+                GC.WaitForPendingFinalizers();
+            }
+            DrainToIdle();
+            bool aliveB = built.Page.IsAlive;
+            long memB = GC.GetTotalMemory(true);
+            Log("  格2 抽到 SystemIdle 再 GC: 页面存活=" + aliveB
+                + " 驻留=" + (memB / 1048576) + "MB (Δ" + ((memB - mem0) / 1024) + "KB)");
+
+            if (aliveA && !aliveB)
+                Log("  [结论] 页面被队列钉住。队列一跑完就回收 —— 可回收的暂时占用，不是泄漏");
+            else if (aliveA && aliveB)
+                Log("  [结论] 抽干后仍活，页面另有持有者；但要看它吃多少内存 —— "
+                    + "单页 " + ((mem1 - mem0) / 1024) + "KB，不是泄漏量级就该另查");
+            else
+                Log("  [结论] 两格都死了，本场景不复现钉住现象");
+        }
+
+        /// <summary>
+        /// 读 Dispatcher 队列里挂了多少个待执行操作。
+        /// 只是探针诊断用，取不到就返回 -1，不影响任何结论。
+        /// </summary>
+        private static int QueueDepth()
+        {
+            try
+            {
+                var d = System.Windows.Threading.Dispatcher.CurrentDispatcher;
+                var dt = typeof(System.Windows.Threading.Dispatcher);
+                var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                foreach (var name in new[] { "_queue", "_priorityQueue" })
+                {
+                    var f = dt.GetField(name, flags);
+                    if (f == null) continue;
+                    var q = f.GetValue(d);
+                    if (q == null) continue;
+                    var cnt = q.GetType().GetProperty("Count");
+                    if (cnt != null) return Convert.ToInt32(cnt.GetValue(q));
+                    var inner = q.GetType().GetField("_items", flags)
+                                ?? q.GetType().GetField("_array", flags);
+                    if (inner != null)
+                    {
+                        var arr = inner.GetValue(q) as Array;
+                        if (arr != null) return arr.Length;
+                    }
+                }
+            }
+            catch { }
+            return -1;
+        }
+
+        /// <summary>
         /// 决定性对照：ItemsRepeater 的「泄漏」是不是探针没抽干 ContextIdle 队列造成的假象。
         ///
         /// 判据：

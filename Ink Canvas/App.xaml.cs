@@ -840,6 +840,36 @@ namespace Ink_Canvas
                 });
             }
 
+            // 一个队列操作能钉住多大一块内存
+            if (e.Args.Any(a => a == "--probe-pinning"))
+            {
+                _ = Task.Delay(4500).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try
+                        {
+                            Ink_Canvas.Helpers.LtscProbe.ProbePagePinning();
+                            Ink_Canvas.Helpers.LtscProbe.ProbePagePinningStrict();
+                        }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] 钉住测试失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
+            // GC 回收机制：为什么涨、为什么没回收
+            if (e.Args.Any(a => a == "--probe-gc"))
+            {
+                _ = Task.Delay(4000).ContinueWith(_ =>
+                {
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        try { Ink_Canvas.Helpers.LtscProbe.ProbeGcReclaim(); }
+                        catch (Exception ex) { LogHelper.WriteLogToFile("[探针] GC 机制测试失败: " + ex, LogHelper.LogType.Error); }
+                    }));
+                });
+            }
+
             // 真机路径：反复开关设置窗口，看内存到底涨不涨
             if (e.Args.Any(a => a == "--probe-settings-cycle"))
             {

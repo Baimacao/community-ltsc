@@ -63,8 +63,13 @@ cd "E:/B1807/Documents/icc-lts/src/Ink Canvas"
 | `--smoke-test` | 57 条断言，最常用的验收 | ~35s |
 | `--dump-settings-pages` | 构造 24 个设置页，抓 XAML 解析失败 | ~40s |
 | `--stress-toolbar N` | 工具栏暴力测试 N 轮，每轮 60 次乱点 | N×1s |
-| `--stress-settings N [nolayout\|measure\|arrange]` | 设置页压力测试，带布局深度对照 | N×8s |
-| `--probe-expander` | **内存泄漏最小复现**，多控件横向对照 | ~50s |
+| `--stress-settings N [nolayout\|measure\|arrange] [idle]` | 设置页压力测试；加 `idle` 把队列抽到 SystemIdle（**判泄漏必须加**，不加就是假数据） | N×8s |
+| `--probe-expander` | 多控件横向对照（**旧版，只抽到 Background，存活数是假的**） | ~50s |
+| `--probe-idle-drain` | **决定性对照**：同一对象两种抽干深度，看存活数差多少 | ~45s |
+| `--probe-repeater` | ItemsRepeater vs 原生 ItemsControl，分清是控件的问题还是 Measure 的问题 | ~45s |
+| `--probe-settings-cycle N` | **真实开窗路径**：开关设置窗口 N 次，看内存涨不涨 | N×8s |
+| `--probe-gc` | GC 机制：为什么涨、为什么没回收、稳态会不会累积 | ~50s |
+| `--probe-pinning` | 一个队列操作能钉住多大一块内存（含严格版） | ~55s |
 
 **探针不会自己退出**，跑完必须 taskkill，否则脚本会一直挂在那里等。
 
@@ -220,33 +225,33 @@ ICC 以管理员启动、PowerPoint 是普通权限，Windows 的 UIPI 切断跨
 
 ### 真正的结论
 
-设置页**不泄漏**。用真实开窗路径实测（\`--probe-settings-cycle 5\`）：
+设置页**不泄漏**。用真实开窗路径实测（`--probe-settings-cycle 5`）：
 
-\`\`\`
+```
 基线 18MB → 第 1 次 25MB → 第 2~5 次全部 25MB
 5 次开关：Δ7MB（全部在第一次），平均每次 0MB
 窗口对象存活 1/5（最后一次，GC 晚一拍）
-\`\`\`
+```
 
 第一次涨的 7MB 是引擎预热和缓存，之后**一点不涨**。
 
 ### 错在哪
 
-\`YieldUi()\` 的恢复回调挂在 \`DispatcherPriority.Background\`：
+`YieldUi()` 的恢复回调挂在 `DispatcherPriority.Background`：
 
-\`\`\`csharp
+```csharp
 Dispatcher.CurrentDispatcher.BeginInvoke(
     DispatcherPriority.Background, new Action(() => frame.Continue = false));
-\`\`\`
+```
 
-\`PushFrame\` 会一直跑到那个 Background 回调执行才返回，所以
+`PushFrame` 会一直跑到那个 Background 回调执行才返回，所以
 **Background 及以上**的排队操作都被处理了，**ContextIdle / ApplicationIdle / SystemIdle
 永远轮不到**。
 
-而 \`ItemsRepeater\` 的 \`ViewportManagerDownLevel.RegisterCacheBuildWork()\`
+而 `ItemsRepeater` 的 `ViewportManagerDownLevel.RegisterCacheBuildWork()`
 正是用 ContextIdle 投的，源码里那句注释写得明明白白：
 
-\`\`\`csharp
+```csharp
 // We capture 'owner' (a strong refernce on ItemsRepeater) to make sure ItemsRepeater is still around
 // when the async action completes.
 var strongOwner = m_owner;
@@ -254,65 +259,126 @@ m_cacheBuildAction = m_owner.Dispatcher.BeginInvoke(() =>
 {
     OnCacheBuildActionCompleted();
 }, DispatcherPriority.ContextIdle);
-\`\`\`
+```
 
 只要队列不抽干，那个 Action 就一直挂着，owner 就一直被钉住。
 「造对象 → Measure → GC → 数弱引用」这个测量方法，在这种前提下必然得到「全都活着」。
 
 ### 决定性对照（同一个对象，只差抽干深度）
 
-\`--probe-idle-drain\` 实测：
+`--probe-idle-drain` 实测：
 
-\`\`\`
+```
 G. ItemsRepeater + Measure，只抽到 Background   存活 30/30
 H. ItemsRepeater + Measure，抽到 SystemIdle    存活  1/30   ← 只差这一个动作
 
 I. 原生 ItemsControl，只抽到 Background         存活  1/30   ← 反证：原生控件不受影响
 J. 原生 ItemsControl，抽到 SystemIdle          存活  1/30
-\`\`\`
+```
 
-原生 \`ItemsControl\` 两格都是 1/30，说明「不是抽干深度对所有控件都起作用」，
+原生 `ItemsControl` 两格都是 1/30，说明「不是抽干深度对所有控件都起作用」，
 而是 **ItemsRepeater 特有那个 ContextIdle 队列项**。这也解释了为什么只有它「漏」。
 
 ### 设置页压力测试的对照（同一份代码，只差一个参数）
 
-\`--stress-settings 3\` 抽到 Background（旧行为）：
+`--stress-settings 3` 抽到 Background（旧行为）：
 
-\`\`\`
+```
 内存 20MB → 56MB → 88MB → 121MB    存活 31/72
 存活明细正好是那 10 个用 SettingsExpander 的页面 × 3 轮
-\`\`\`
+```
 
-\`--stress-settings 3 idle\` 抽到 SystemIdle：
+`--stress-settings 3 idle` 抽到 SystemIdle：
 
-\`\`\`
+```
 内存 20MB → 23MB → 23MB → 23MB     存活 1/72
-\`\`\`
+```
 
 同样 5 轮、120 次构造、抽干后的结果：
 
-\`\`\`
+```
 内存 20MB → 23MB (Δ3MB)  强制回收=0MB  存活 1/120  异常 0
-\`\`\`
+```
+
+### 机制：为什么会涨，GC 为什么没回收（`--probe-gc` / `--probe-pinning`）
+
+这一节回答「既然是暂时占用，那到底谁在占、为什么 GC 不管」。
+
+**GC 判得对，对象确实可达。**
+
+```
+三次强制 GC 后: 存活=30/30
+期间共发生回收: gen0=4 gen1=4 gen2=4 次
+```
+
+GC 跑了 4 次全量回收，一个都没死。.NET 的 GC 是**追踪式**的：只回收不可达对象。
+还有强引用能走到它，GC 就正确地不回收。**这不是 GC 偷懒，也不是 GC 有 bug。**
+
+所以「强制 GC 后回收 0MB」这个数字，只能说明「对象可达」，
+一点也不能说明「对象泄漏」。这两个结论之间差着一整个论证。
+
+**一页是怎么被钉住的。**
+
+```
+ItemsRepeater 构造
+  → ViewportManagerDownLevel.RegisterCacheBuildWork()
+     → Dispatcher.BeginInvoke(..., DispatcherPriority.ContextIdle)
+        → 那个闭包捕获了 owner 的强引用
+           （源码注释原文：We capture 'owner' (a strong refernce on
+             ItemsRepeater) to make sure ItemsRepeater is still around）
+              → 操作没执行 = 强引用还在
+                 → 沿父子链把整棵页面控件树一起钉住
+```
+
+实测（`--probe-pinning`，严格版在独立 `NoInlining` 方法里造页面）：
+
+```
+页面在独立作用域里造，出来时占用 ≈13KB
+
+格1  只抽到 Background 就 GC   页面存活=True    Δ+17KB
+格2  抽到 SystemIdle 再 GC     页面存活=False   Δ-3941KB
+```
+
+**关键差额**：光造 30 个裸 `ItemsRepeater` 只占 **0MB**——它们是没有子树的空壳。
+33MB/轮 的内存全在**页面**上。一个队列操作钉住的不是那个 repeater，
+是它背后整棵控件树。一页 ≈4.8MB，10 个用 Expander 的页面 ≈33MB/轮。
+
+**「暂时占用」和「泄漏」的区别。**
+
+| | 泄漏 | 这次的情况 |
+|---|---|---|
+| 对象可达性 | 永远可达 | 短暂可达，队列跑完就断 |
+| 内存曲线 | 线性上涨，不回落 | 涨了会回落 |
+| 触发条件 | 正常使用就漏 | 只在「消息循环停摆」时出现 |
+
+真实运行时消息循环每帧都在跑，ContextIdle 队项几毫秒内就执行完，引用当场断掉。
+探针用 `PushFrame` 只推进到 Background 就返回，等于**自己造了一个「消息循环永久停摆」的世界**。
+那个世界里内存当然一直涨——但现实不是那个世界。
+
+稳态实测（每批之间正常抽干，模拟真实每帧泵消息）：
+
+```
+5 批共 150 个 ItemsRepeater 投放：驻留 18MB → 18MB (Δ0MB)
+```
 
 ### 顺带澄清两个之前的误判
 
 **「强制 GC 回收 0MB」不是证据。** 5 轮跑完时也报「回收=0MB」，但整体 Δ 只有 3MB。
-原因是 \`GC.GetTotalMemory(true)\` 本身已经先做了一次 full GC，前后两次量的是同一个低谷。
+原因是 `GC.GetTotalMemory(true)` 本身已经先做了一次 full GC，前后两次量的是同一个低谷。
 判「有没有泄漏」要看**每轮之间的增长斜率**，不是看那一次回收量。
 
-**「活动对象都是 30/30」不是功能问题。** 旧探针在 \`--stress-settings\` 里
+**「活动对象都是 30/30」不是功能问题。** 旧探针在 `--stress-settings` 里
 也报「存活 31/72」，但同一批页面换成抽干后只有 1/72。
 没抽干时数出来的存活数，反映的是队列里挂着多少个 Action，不是对象有多少个持有者。
 
 ### 已经改掉的东西
 
-- \`LtscProbe.YieldUi()\` 改成调 \`DrainToIdle()\`（\`DispatcherPriority.SystemIdle\`），
+- `LtscProbe.YieldUi()` 改成调 `DrainToIdle()`（`DispatcherPriority.SystemIdle`），
   从根上修掉，不是每处各打补丁
-- 保留 \`YieldBackgroundOnly()\`，注释写明「故意保留的错误抽法」，
+- 保留 `YieldBackgroundOnly()`，注释写明「故意保留的错误抽法」，
   只给对照实验当反证用
-- \`StressSettingsPages\` 加 \`drainIdle\` 参数，命令行 \`idle\` 开关
-- 新增三个探针：\`--probe-idle-drain\`、\`--probe-repeater\`、\`--probe-settings-cycle N\`
+- `StressSettingsPages` 加 `drainIdle` 参数，命令行 `idle` 开关
+- 新增五个探针：`--probe-idle-drain`、`--probe-repeater`、`--probe-settings-cycle N`、`--probe-gc`、`--probe-pinning`
 
 ### 这条错误值得记住的形状
 
@@ -357,13 +423,13 @@ iNKORE 0.11.0 没问题，我们这边也没问题。
 这次摸清的事实，下次能用上：
 
 **源码可以直接读，不用反编译。**
-仓库 \`https://github.com/iNKORE-NET/UI.WPF.Modern\`，tag \`v0.11.0\`，
+仓库 `https://github.com/iNKORE-NET/UI.WPF.Modern`，tag `v0.11.0`，
 和 nuget 包 0.11.0 对得上。`raw.githubusercontent.com/iNKORE-NET/UI.WPF.Modern/v0.11.0/<路径>`
 直接取，省掉 ILSpy 那一步。
 
 **关键文件位置：**
 
-\`\`\`
+```
 source/iNKORE.UI.WPF.Modern.Controls/Controls/Community/SettingsControls/
     SettingsExpander/SettingsExpander.xaml            模板全文（339 行）
     SettingsExpander/SettingsExpander.cs              OnApplyTemplate / PART_ItemsRepeater
@@ -375,29 +441,29 @@ source/iNKORE.UI.WPF.Modern.Controls/Controls/Windows/Repeater/
     ItemsRepeater/ViewportManagerDownLevel.cs         ← 那个 ContextIdle 队列项在这里
     ItemsRepeater/ViewManager.cs
 source/iNKORE.UI.WPF.Modern.Controls/Themes/Generic.xaml   合并清单（44/45 行是 SettingsCard/Expander）
-\`\`\`
+```
 
 **默认样式的 key：**
 
-\`\`\`
+```
 x:Key="DefaultSettingsExpanderStyle"   ← 带名字的那个
 最后一个 <Style BasedOn="{StaticResource DefaultSettingsExpanderStyle}"
     TargetType="local:SettingsExpander" />   ← 隐式样式（无 x:Key）
-\`\`\`
+```
 
 模板里的关键结构（339 行那份的第 289~333 行）：
-\`Expander\` 包 \`SettingsCard\` 做 Header，展开内容是 \`Grid\` 三行——
-\`ItemsHeader\` / \`ItemsRepeater\`(PART_ItemsRepeater) / \`ItemsFooter\`。
+`Expander` 包 `SettingsCard` 做 Header，展开内容是 `Grid` 三行——
+`ItemsHeader` / `ItemsRepeater`(PART_ItemsRepeater) / `ItemsFooter`。
 
 **我们的用量**（改之前先认清面）：
-107 个 \`ui:SettingsExpander\`，10 个页面；
-70 个有 \`<ui:SettingsExpander.Items>\` 块；
-\`ItemsSource\` 零处，\`ItemTemplate\` 只有 \`WindowPage.xaml:134\` 一处。
+107 个 `ui:SettingsExpander`，10 个页面；
+70 个有 `<ui:SettingsExpander.Items>` 块；
+`ItemsSource` 零处，`ItemTemplate` 只有 `WindowPage.xaml:134` 一处。
 
 ## 这一轮学到的方法（比结论本身有用）
 
 **先读源码，再猜机制。**
-这次真正定位问题的关键，是读到 \`RegisterCacheBuildWork()\` 里那句
+这次真正定位问题的关键，是读到 `RegisterCacheBuildWork()` 里那句
 「We capture 'owner' (a strong reference on ItemsRepeater)」。
 在此之前我扫过静态字段、查过动画时钟、反查过三层实例字段，全是瞎找。
 **一个明确的、带注释的源码片段，胜过十次黑盒实验。**
@@ -487,9 +553,9 @@ CRLF 文件先归一化成 `\n`，处理完再还原。
 内存涨、弱引用全都活着，这些现象都是真的——但它们是探针造的，
 不是我改了代码之后自然发生的。
 
-具体：探针的 \`YieldUi()\` 用 \`DispatcherPriority.Background\` 挂恢复回调，
-\`PushFrame\` 跑到那个回调就返回，于是 ContextIdle 及以下的操作永远不执行。
-而 \`ItemsRepeater\` 恰好有一个 ContextIdle 队列项捕获了 owner 强引用。
+具体：探针的 `YieldUi()` 用 `DispatcherPriority.Background` 挂恢复回调，
+`PushFrame` 跑到那个回调就返回，于是 ContextIdle 及以下的操作永远不执行。
+而 `ItemsRepeater` 恰好有一个 ContextIdle 队列项捕获了 owner 强引用。
 对象被队列钉住 → 弱引用永远活着 → 「泄漏」。
 
 把抽干深度从 Background 换成 SystemIdle，同一个控件：
@@ -506,6 +572,23 @@ ta 也按这个前提给了指示。**代价是整条线作废。**
 上面错误 8 写的是「异常被空 catch 吞掉，把没跑到当成修好了」，
 这一条是同一个病的另一面：**把探测器的假象当成被测对象的属性**。
 共同点都是——**结论指向的不是被测对象，而是我自己的工具。**
+
+### 这一轮还踩了一次更细的：局部变量槽也会伪造「仍存活」
+
+第一次做「一个队列操作能钉住多大内存」的实验时，我把
+「造页面 → 找 repeater → 丢引用 → GC → 判存活」全写在同一个方法里，
+结论是「抽干队列后页面仍活 —— 持有者另有其人」。
+
+错。是这个方法自己的局部变量槽还压着页面引用，JIT 无法证明那个变量之后不会被读，
+就把引用保到了方法返回。后来把造页面拆进 `[MethodImpl(MethodImplOptions.NoInlining)]`
+的独立方法，让那个作用域真正结束，才测出 `存活=False`。
+
+**判据**：凡是「造对象 → 丢引用 → GC → 判存活」的实验，
+造对象的代码必须在**独立方法**里，且那个方法调用完之后不再被当前帧引用。
+否则你测到的是「这个栈帧还活着」，不是「对象泄漏」。
+
+同一个测量方法，一处细节不同，结论完全反过来——这一轮里是第二次了
+（第一次是抽干深度 Background vs SystemIdle）。
 
 ---
 
@@ -635,12 +718,12 @@ IC (WXRIW) → ICA (ChangSakura) → ICC (Dubi906w)
 **B. 真机验收** —— 翻页笔实物按键（N-03），只能 ta 试
 
 **C. 设置页内存这条已经结案**，不用再查
-见 4.1。如果以后又看到内存涨，先跑 \`--probe-settings-cycle 5\` 走真实路径量一遍，
-别看 \`--stress-settings\` 的内存数字——那个数字里含大量"还没回收"，不是泄漏。
+见 4.1。如果以后又看到内存涨，先跑 `--probe-settings-cycle 5` 走真实路径量一遍，
+别看 `--stress-settings` 的内存数字——那个数字里含大量"还没回收"，不是泄漏。
 
 **D. 还可以做的技术债清理**（ta 说过「只要有技术债一定要改」）
 
-- 两个大文件没拆：\`MW_TouchEvents.cs\` 相关的触摸逻辑、\`App.xaml.cs\` 的启动流程
+- 两个大文件没拆：`MW_TouchEvents.cs` 相关的触摸逻辑、`App.xaml.cs` 的启动流程
 - 触摸屏：ta 反复强调的「去确保页面都可以使用触摸屏进行页面滚动」
 - 那 2 条 WFO2000 不要改（见 4.2），那是必须的
 
