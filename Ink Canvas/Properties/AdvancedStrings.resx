@@ -96,6 +96,12 @@
   <data name="LogRotateHint" xml:space="preserve">
     <value>日志文件超过 512 KB 时会自动删除。开启日期保存后，日志将保存在 Logs 文件夹中，当文件夹大小超过 5MB 时自动清空。</value>
   </data>
+  <data name="VerbosePptLog" xml:space="preserve">
+    <value>PPT 联动详细日志</value>
+  </data>
+  <data name="VerbosePptLogDesc" xml:space="preserve">
+    <value>记录 PowerPoint 联动每一步的取数细节（页码、总页数、放映窗口、COM 调用结果）。查「翻页栏消失」「页码不动」这类问题时必须打开；平时关着，否则日志会很大。</value>
+  </data>
   <data name="NibModeBoundsWidthHeader" xml:space="preserve">
     <value>笔尖模式 BoundsWidth</value>
   </data>

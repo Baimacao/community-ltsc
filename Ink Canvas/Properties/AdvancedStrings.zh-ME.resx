@@ -104,6 +104,12 @@
   <data name="LogRotateHint" xml:space="preserve">
     <value>日志文件超过 512 KB 自动清理。开启日期保存后日志放 Logs 文件夹，文件夹超过 5MB 就全部清空，绝不留痕！</value>
   </data>
+  <data name="VerbosePptLog" xml:space="preserve">
+    <value>PPT 联动详细日志（抓现场）</value>
+  </data>
+  <data name="VerbosePptLogDesc" xml:space="preserve">
+    <value>翻页栏为什么消失、页码为什么不动，开着这个才查得到。爆问题时开，平时关——不然日志能撑爆。</value>
+  </data>
   <data name="NibModeBoundsWidthHeader" xml:space="preserve">
     <value>笔尖模式 BoundsWidth</value>
   </data>

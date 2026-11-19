@@ -79,6 +79,7 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
             ToggleSwitchIsQuadIR.IsOn = settings.Advanced.IsQuadIR;
             ToggleSwitchIsLogEnabled.IsOn = settings.Advanced.IsLogEnabled;
             ToggleSwitchIsSaveLogByDate.IsOn = settings.Advanced.IsSaveLogByDate;
+            ToggleSwitchIsVerbosePptLogEnabled.IsOn = settings.Advanced.IsVerbosePptLogEnabled;
             ToggleSwitchIsSecondConfimeWhenShutdownApp.IsOn = settings.Advanced.IsSecondConfirmWhenShutdownApp;
 
             CardTouchMultiplier.IsExpanded = settings.Advanced.IsSpecialScreen;
@@ -389,6 +390,24 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
         {
             if (!_isLoaded) return;
             SettingsManager.Settings.Advanced.IsSaveLogByDate = ToggleSwitchIsSaveLogByDate.IsOn;
+            SettingsManager.SaveSettingsToFile();
+        }
+
+        /// <summary>
+        /// PPT 联动详细日志开关。
+        ///
+        /// LTSC（2026-11-19）：这个设置在代码里存在很久了（Settings.Advanced.IsVerbosePptLogEnabled），
+        /// 但界面从来没有入口，默认又是 false。PptBridge.VerboseLog 的前置条件就是它，
+        /// 于是班测反馈「PPT 翻页栏消失」时，日志里一条 PPT 取数细节都没有，
+        /// 只能靠读源码倒推。
+        ///
+        /// 现在放到 高级 → 日志 分组里。不开的时候日志不膨胀，
+        /// 出问题时用户自己能打开，下次的日志就有内容可查。
+        /// </summary>
+        private void ToggleSwitchIsVerbosePptLogEnabled_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            SettingsManager.Settings.Advanced.IsVerbosePptLogEnabled = ToggleSwitchIsVerbosePptLogEnabled.IsOn;
             SettingsManager.SaveSettingsToFile();
         }
 

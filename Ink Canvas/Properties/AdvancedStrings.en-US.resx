@@ -96,6 +96,12 @@
   <data name="LogRotateHint" xml:space="preserve">
     <value>When enabled, logs are saved to the Logs folder and the folder is automatically cleared when it exceeds 5 MB. Otherwise, log files exceeding 512 KB are automatically deleted.</value>
   </data>
+  <data name="VerbosePptLog" xml:space="preserve">
+    <value>Verbose PPT link log</value>
+  </data>
+  <data name="VerbosePptLogDesc" xml:space="preserve">
+    <value>Records every step of the PowerPoint link (slide number, slide count, slideshow window, COM results). Turn this on when diagnosing "page-flip bar disappears" or "page number stops updating"; leave it off otherwise, or the log grows large.</value>
+  </data>
   <data name="NibModeBoundsWidthHeader" xml:space="preserve">
     <value>Pen-only Mode BoundsWidth</value>
   </data>

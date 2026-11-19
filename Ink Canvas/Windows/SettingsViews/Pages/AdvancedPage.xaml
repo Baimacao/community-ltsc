@@ -216,6 +216,18 @@
                         IsOn="True"
                         Toggled="ToggleSwitchIsSaveLogByDate_Toggled"/>
 
+                    <!-- LTSC（2026-11-19）：PPT 联动详细日志的界面入口。
+                         这个开关（IsVerbosePptLogEnabled）以前只存在于代码里，
+                         界面从头到尾没有入口，而它默认是关的。
+                         结果：班测反馈「翻页栏消失」，日志里查不到任何 PPT 取数细节，
+                         只能靠猜。它必须放在这里，而不是塞进预设——
+                         这是排查用的临时开关，不是教师配置的一部分。 -->
+                    <controls:LabeledSettingsCard x:Name="ToggleSwitchIsVerbosePptLogEnabled"
+                        Header="{x:Static props:AdvancedStrings.VerbosePptLog}"
+                        Description="{x:Static props:AdvancedStrings.VerbosePptLogDesc}"
+                        IsOn="False"
+                        Toggled="ToggleSwitchIsVerbosePptLogEnabled_Toggled"/>
+
                     <controls:LabeledSettingsCard x:Name="ToggleSwitchIsSecondConfimeWhenShutdownApp"
                         Header="{x:Static props:AdvancedStrings.ConfirmExit}"
                         Icon="{x:Static ui:SegoeFluentIcons.SignOut}"

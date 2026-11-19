@@ -1947,6 +1947,119 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("SLIDECOUNT", false, Trim(ex.Message)); }
 
+            // --- 9c. PPT 详细日志开关真的管用（2026-11-19）---
+            //
+            // 用户指出：这个开关应该在「高级设置」里，而不是塞进预设。
+            // 原来它只存在于代码里（Settings.Advanced.IsVerbosePptLogEnabled），
+            // 界面没有任何入口，默认 false，导致班测出问题时日志里一条 PPT
+            // 取数细节都没有。
+            //
+            // 这里测三件事：界面入口存在、读写绑定通了、开关真的控制日志。
+            try
+            {
+                var advPageType = typeof(Ink_Canvas.Windows.SettingsViews.SettingsWindow)
+                    .Assembly.GetType("Ink_Canvas.Windows.SettingsViews.Pages.AdvancedPage");
+
+                R("VLOG-1 高级设置页存在", advPageType != null,
+                    advPageType == null ? "找不到 AdvancedPage" : "OK");
+
+                if (advPageType != null)
+                {
+                    // 界面入口：XAML 里必须真的有个叫这个的控件
+                    var cardField = advPageType.GetField("ToggleSwitchIsVerbosePptLogEnabled",
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Public);
+
+                    R("VLOG-2 高级设置里有这个开关的控件（XAML 入口存在）",
+                        cardField != null,
+                        cardField == null ? "找不到 ToggleSwitchIsVerbosePptLogEnabled 字段"
+                                          : "类型=" + cardField.FieldType.Name);
+
+                    // 写回处理函数必须在（否则拨了不保存）
+                    var handler = advPageType.GetMethod("ToggleSwitchIsVerbosePptLogEnabled_Toggled",
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic);
+
+                    R("VLOG-3 开关有写回处理函数（拨动能存盘）",
+                        handler != null,
+                        handler == null ? "找不到 Toggled 处理函数" : "OK");
+                }
+
+                // 开关真的控制日志：直接调 PptBridge.VerboseLog，看两种状态下的行为。
+                // 这是真调用，不是抄公式——反向对照能证明它可证伪。
+                var bridgeType2 = typeof(Ink_Canvas.Helpers.PptBridge);
+                var verboseLog = bridgeType2.GetMethod("VerboseLog",
+                    System.Reflection.BindingFlags.Static |
+                    System.Reflection.BindingFlags.NonPublic);
+
+                var adv = MainWindow.Settings?.Advanced;
+                R("VLOG-4 能找到 VerboseLog 与 Advanced 设置",
+                    verboseLog != null && adv != null,
+                    "方法=" + (verboseLog != null) + " 设置=" + (adv != null));
+
+                if (verboseLog != null && adv != null)
+                {
+                    bool original = adv.IsVerbosePptLogEnabled;
+                    try
+                    {
+                        // 关：不应抛出、不应写日志（写不写看日志内容判断）
+                        adv.IsVerbosePptLogEnabled = false;
+                        verboseLog.Invoke(null, new object[] { "VLOG-SHOULD-NOT-APPEAR" });
+
+                        // 开：应写出一条带标记的日志
+                        adv.IsVerbosePptLogEnabled = true;
+                        verboseLog.Invoke(null, new object[] { "VLOG-SHOULD-APPEAR" });
+                    }
+                    finally
+                    {
+                        adv.IsVerbosePptLogEnabled = original;
+                    }
+
+                    // 立刻落盘并检查。LogHelper 是同步写的，这里再转一圈确保刷出去。
+                    LogHelper.WriteLogToFile("VLOG-CHECK-MARK", LogHelper.LogType.Event);
+                    YieldUi();
+
+                    // 日志文件名是 Logs/Log_{启动时间}.txt，LogHelper.LogFile 只是
+                    // 不按日期保存时的兜底名（"Log.txt"），拿它当路径读不到。
+                    // 直接找最近写入的那个，比自己拼路径可靠。
+                    string content = null;
+                    try
+                    {
+                        var logsDir = System.IO.Path.Combine(App.RootPath, "Logs");
+                        if (System.IO.Directory.Exists(logsDir))
+                        {
+                            var newest = System.IO.Directory.GetFiles(logsDir, "*.txt")
+                                .Select(f => new System.IO.FileInfo(f))
+                                .OrderByDescending(fi => fi.LastWriteTimeUtc)
+                                .FirstOrDefault();
+                            if (newest != null) content = System.IO.File.ReadAllText(newest.FullName);
+                        }
+                        else
+                        {
+                            var fallback = System.IO.Path.Combine(App.RootPath, "Log.txt");
+                            if (System.IO.File.Exists(fallback)) content = System.IO.File.ReadAllText(fallback);
+                        }
+                    }
+                    catch { }
+
+                    if (content == null)
+                    {
+                        Log("  [信息] VLOG：拿不到当前日志文件内容，跳过内容核验（不影响其它断言）");
+                    }
+                    else
+                    {
+                        bool shouldNot = content.Contains("VLOG-SHOULD-NOT-APPEAR");
+                        bool should = content.Contains("VLOG-SHOULD-APPEAR");
+                        R("VLOG-5 开关关闭时不写 PPT 详细日志", !shouldNot,
+                            shouldNot ? "!! 关着还是写了" : "正确静默");
+                        R("VLOG-6 开关打开时写 PPT 详细日志", should,
+                            should ? "正确写入" : "!! 开着没写");
+                    }
+                }
+            }
+            catch (Exception ex) { R("VLOG", false, Trim(ex.Message)); }
+
             // --- 10. 白板模式下的双指手势闸门（2026-11-18）---
             //
             // 班测：「PPT 联动模式下（PPT 处于放映状态）打开白板，双指手势完全不能用」。

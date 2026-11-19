@@ -191,17 +191,27 @@ catch (Exception ex)
 }
 ```
 
-### 修 2：`VerboseLog` 不该挡住「状态被破坏」这类日志
+### 修 2：状态被破坏的日志不许静默，详细开关也要有界面入口
 
-**现状问题**：`IsVerbosePptLogEnabled` 默认 false，教师预设里也没有，
-所以 `SlidesCount 取失败`、`View 取不到`、`SlideShowWindows.Count=0`
-这些关键诊断**全部静默**。
+**现状问题（两个，分开说）：**
+
+一、\`IsVerbosePptLogEnabled\` 默认 false，**而且界面里根本没有开关能改它**。
+所以 \`SlidesCount 取失败\`、\`View 取不到\`、\`SlideShowWindows.Count=0\`
+这些关键诊断全部静默，出问题时谁也开不了。
+
+二、即使打开了详细日志，把「状态被破坏」和「每 500ms 的追踪」混在同一档，
+也是不对的——前者必须始终可见。
 
 **判据**：区分两类日志——
-- 「每 500ms 的详细追踪」→ 归详细开关管（该关就关）
-- 「状态被破坏 / 转换失败 / 判据不成立」→ **必须记**，用 `Warning`
+
+- 「每 500ms 的详细追踪」→ 归详细开关管（该关就关，避免日志膨胀）
+- 「状态被破坏 / 转换失败 / 判据不成立」→ **必须记**，用 \`Warning\`，
+  不受详细开关约束
 
 这是「不许写静默错误」的直接要求：错误发生时得有人能知道。
+
+**已修**：\`SlidesCount\` 读失败改成 \`LogHelper.LogType.Warning\`（已经不受开关管），
+另外在高级设置里补上了详细日志的界面开关（见 5.2）。
 
 ### 修 3：隐藏翻页栏之后要有恢复路径
 
@@ -249,10 +259,47 @@ if (wasInvalid && newCount > 0)
 看 `SlidesCount` 是否被写成 0、翻页栏是否隐藏。
 **这是修 1 的反向对照：修复前必红，修复后必绿。**
 
-### 5.2 教师预设要带详细日志
+### 5.2 详细日志的入口在「高级设置」，不在预设
 
-给教师预设加 `IsVerbosePptLogEnabled = true`，
-或者按修 2 把关键日志脱出开关。**否则下一份班级日志还是查不出来。**
+**上一版这里写错了**，写的是「给教师预设加 \`IsVerbosePptLogEnabled = true\`」。
+ta 直接指出：这个开关应该在高级设置里，而不是预设。
+
+错在哪：
+
+- 教师预设（\`Resources/DefaultConfigs/Settings.json\`）里本来就有
+  \`"isVerbosePptLogEnabled": false\`——**它一直是关的，而且是故意的**。
+  这是排查用的临时开关，会让日志量暴增，不该作为教师配置的一部分。
+- 真正的问题是**它根本没有界面入口**。代码里读它（\`PptBridge.VerboseLog\`）、
+  预设有它的值，但设置页面从头到尾没有一个控件能改它。
+  结果是：出问题时用户没有任何办法打开它，日志里永远是空的。
+
+**已修**：高级设置 → 日志 分组里加了「PPT 联动详细日志」开关，
+位置在「记录日志」「日志以日期保存」下面。
+
+\`\`\`
+AdvancedPage.xaml        新增 LabeledSettingsCard x:Name="ToggleSwitchIsVerbosePptLogEnabled"
+AdvancedPage.xaml.cs     加载时读 settings.Advanced.IsVerbosePptLogEnabled
+                         Toggled 时写回 + SaveSettingsToFile
+AdvancedStrings.*.resx   四语新增 VerbosePptLog / VerbosePptLogDesc
+AdvancedStrings.Designer.cs  对应属性
+\`\`\`
+
+**验证**（\`--smoke-test\` 里的 VLOG-1..6）：
+
+\`\`\`
+VLOG-1 高级设置页存在                            PASS
+VLOG-2 XAML 里有这个控件                         PASS  类型=LabeledSettingsCard
+VLOG-3 有写回处理函数（拨动能存盘）              PASS
+VLOG-4 能找到 VerboseLog 与 Advanced 设置        PASS
+VLOG-5 开关关闭时不写 PPT 详细日志               PASS  正确静默
+VLOG-6 开关打开时写 PPT 详细日志                 PASS  正确写入
+\`\`\`
+
+VLOG-5/6 是真调用：反射取 \`PptBridge.VerboseLog\`，分别关/开开关各调一次，
+再读日志文件内容看那两条标记有没有出现。
+
+**反向对照**：把 \`VerboseLog\` 里的开关判断去掉（等于开关失效、永远写），
+VLOG-5 立刻变红（\`!! 关着还是写了\`），PASS=66 FAIL=1。**这条断言能证伪。**
 
 ### 5.3 真机验收
 

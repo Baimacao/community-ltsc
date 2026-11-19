@@ -76,6 +76,18 @@ namespace Ink_Canvas.Properties
 
         public static string LogRotateHint => ResourceManager.GetString(nameof(LogRotateHint), _resourceCulture);
 
+        /// <summary>
+        /// PPT 联动详细日志的开关标题。
+        /// 对应 Settings.Advanced.IsVerbosePptLogEnabled；以前这个开关只存在于代码里，
+        /// 界面没有任何入口，所以班测出问题时根本没人能打开它。
+        /// </summary>
+        public static string VerbosePptLog => ResourceManager.GetString(nameof(VerbosePptLog), _resourceCulture);
+
+        /// <summary>
+        /// PPT 联动详细日志的说明文字（讲清楚什么时候该开、平时为什么该关）。
+        /// </summary>
+        public static string VerbosePptLogDesc => ResourceManager.GetString(nameof(VerbosePptLogDesc), _resourceCulture);
+
         public static string NibModeBoundsWidthHeader => ResourceManager.GetString(nameof(NibModeBoundsWidthHeader), _resourceCulture);
 
         public static string QuadIRMode => ResourceManager.GetString(nameof(QuadIRMode), _resourceCulture);
