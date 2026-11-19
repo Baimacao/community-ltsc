@@ -691,6 +691,16 @@ namespace Ink_Canvas
                 // LTSC D-07：这次切页若是「点页码进 PPT 原生网格选页」引发的，
                 // 自动回到批注态。挂在这里是因为 PowerPoint 的网格选页只发 COM 翻页事件，
                 // 不经过 ICC 自己的 PPTNavBar（SlideSelected 不会触发）。
+                // LTSC（2026-11-19 班测）：把「这次切页有没有带恢复标记」也记下来。
+                // 用户报「笔状态通过预览快翻翻页后进入写不了字的批注模式」，
+                // 关键就在这条链上：如果标记没置上，TryRestoreAnnotationAfterPptNavigation
+                // 第一句就 return，界面停在一个半切状态，而且以前完全没有痕迹。
+                LogHelper.WriteLogToFile(
+                    $"[PPT导航] 检测到切页 currentSlide={currentSlide} "
+                    + $"待恢复={_pptNavPendingRestoreAnnotation} "
+                    + $"当前批注={IsAnnotating} 工具模式={_currentToolMode}",
+                    LogHelper.LogType.Event);
+
                 if (_pptNavPendingRestoreAnnotation)
                 {
                     int targetPage = currentSlide;

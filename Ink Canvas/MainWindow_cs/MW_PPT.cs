@@ -1560,10 +1560,19 @@ namespace Ink_Canvas
 
         private async Task OnPPTNavBarPageClickAsync(Controls.PPTNavBar bar)
         {
-            if (!Settings.PowerPointSettings.EnablePPTButtonPageClickable) return;
+            if (!Settings.PowerPointSettings.EnablePPTButtonPageClickable)
+            {
+                // LTSC（2026-11-19 班测）：原来这里是静默 return。
+                // 用户点页码没反应时，日志里一个字都没有，只有"没反应"这个现象。
+                LogHelper.WriteLogToFile("[PPT导航] 页码点击被忽略：设置里关闭了「页码可点击」",
+                    LogHelper.LogType.Warning);
+                return;
+            }
             if (_pptManager?.IsConnected != true || _pptManager?.IsInSlideShow != true)
             {
-                LogHelper.WriteLogToFile("PPT未连接或未在放映状态，无法执行页码点击操作", LogHelper.LogType.Warning);
+                LogHelper.WriteLogToFile("[PPT导航] 页码点击被忽略：PPT未连接或未在放映状态"
+                    + $"（IsConnected={_pptManager?.IsConnected} IsInSlideShow={_pptManager?.IsInSlideShow}）",
+                    LogHelper.LogType.Warning);
                 return;
             }
 
@@ -1582,6 +1591,19 @@ namespace Ink_Canvas
                 //
                 // 现在改成：状态切换只在批注态时做；导航任何状态都执行。
                 bool wasAnnotating = IsAnnotating;
+
+                // LTSC（2026-11-19 班测）：把进入时的完整状态打出来。
+                // 用户报的两个症状都指向「批注/穿透状态没按预期切换」，
+                // 而这几项以前一条都不记，出事时只能猜。
+                LogHelper.WriteLogToFile(
+                    "[PPT导航] 点页码：进入时状态 "
+                    + $"批注={wasAnnotating} 工具模式={_currentToolMode} "
+                    + $"笔迹数={inkCanvas?.Strokes?.Count} "
+                    + $"笔迹可见={(inkCanvas?.Visibility)} "
+                    + $"待恢复标记={_pptNavPendingRestoreAnnotation} "
+                    + $"穿透豁免={_pptNavSkipHideStrokeOnce} "
+                    + $"浮动栏折叠={isFloatingBarFolded}",
+                    LogHelper.LogType.Event);
 
                 if (wasAnnotating)
                 {
