@@ -88,16 +88,19 @@ namespace Ink_Canvas.Helpers
                     _mainWindow.inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 }
 
-                int animationDuration;
-                if (strokeDurationMs > 0)
-                {
-                    if (FadeSpeedMultiplier <= 0) FadeSpeedMultiplier = 1.0;
-                    animationDuration = Math.Max(20, (int)(strokeDurationMs / FadeSpeedMultiplier));
-                }
-                else
-                {
-                    animationDuration = GetEffectiveAnimationDuration();
-                }
+                // 淡出时长只看用户设置，不看「这一笔写了多久」。
+                //
+                // 2026-11-19 反馈：「激光笔的渐隐动画不完整」。
+                // 原因就在这里：原来当 strokeDurationMs > 0 时用这一笔的书写时长
+                // 当作淡出动画的长度。激光笔写一笔通常只要 100~300ms，
+                // 于是淡出动画只有 20~300ms —— 快到看不出来，用户感受到的是
+                // 「笔迹突然消失」，而不是「渐隐」。
+                //
+                // 书写时长决定淡出快慢本来就不成立：写得快不代表想让痕迹消失得快。
+                // 参数 strokeDurationMs 保留在签名里，是因为调用方还在传，
+                // 但这里不再使用它。
+                _ = strokeDurationMs;
+                int animationDuration = GetEffectiveAnimationDuration();
 
                 // LTSC L-10：原来先把 _strokeStartPoints / _strokeEndPoints /
                 // _strokeAnimationDurations 三个字典都写了，再去判 CreateStrokeVisual 是否为 null，

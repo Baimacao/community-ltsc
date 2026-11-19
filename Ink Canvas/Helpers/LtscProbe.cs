@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using Ink_Canvas.Windows.SettingsViews.Helpers;
 
@@ -314,6 +316,81 @@ namespace Ink_Canvas.Helpers
                 if (ok) { pass++; Log("  [PASS] " + name + (detail == "" ? "" : " | " + detail)); }
                 else { fail++; Log("  [FAIL] " + name + (detail == "" ? "" : " | " + detail)); }
             }
+
+            // --- 0. 激光笔渐隐：淡出时长必须来自用户设置，不能来自书写时长 ---
+            //
+            // 2026-11-19 反馈：「激光笔的渐隐动画不完整」。
+            // 根因：AddFadingStroke 里当 strokeDurationMs > 0 时，
+            // 拿「这一笔写了多久」当淡出动画的长度。激光笔写一笔 100~300ms，
+            // 淡出就变成 20~300ms —— 快到看不见，用户感知是「突然消失」。
+            //
+            // 这条断言的形式：直接调用真实的 AddFadingStroke，传入一个极短的
+            // strokeDurationMs，然后读它记下来的动画时长。
+            // 如果实现又退回「用书写时长」，这里会读到 20ms 而不是配置值，必须红。
+            try
+            {
+                var fadeType = typeof(Ink_Canvas.Helpers.InkFadeManager);
+                var mwFade = Application.Current?.MainWindow as MainWindow;
+                // _inkFadeManager 是私有字段，没有公开访问器，走反射取。
+                var mgr = mwFade == null
+                    ? null
+                    : typeof(MainWindow)
+                        .GetField("_inkFadeManager", BindingFlags.NonPublic | BindingFlags.Instance)
+                        ?.GetValue(mwFade) as Ink_Canvas.Helpers.InkFadeManager;
+
+                if (mgr == null)
+                {
+                    R("FADE-DUR-1 渐隐管理器可用", false, "拿不到 InkFadeManager 实例");
+                }
+                else
+                {
+                    // 配置一个明确的动画时长，看它是否被尊重。
+                    int configured = 2000;
+                    mgr.AnimationDuration = configured;
+                    mgr.FadeSpeedMultiplier = 1.0;
+
+                    // AddFadingStroke 第一条就是 if (!IsEnabled) return;
+                    // 探针跑的时候用户多半没开渐隐，不打开就什么都测不到。
+                    // 记住原值，测完必须还原 —— 这是改用户运行状态，不能留污染。
+                    bool wasEnabled = mgr.IsEnabled;
+                    mgr.IsEnabled = true;
+
+                    // 造一笔真实的 Stroke
+                    var pts = new StylusPointCollection();
+                    pts.Add(new StylusPoint(100, 100));
+                    pts.Add(new StylusPoint(200, 200));
+                    var testStroke = new Stroke(pts);
+
+                    // 关键：传一个极短的「书写时长」，模拟激光笔快速一划。
+                    // 修复前的实现会把这个值当淡出时长。
+                    mgr.AddFadingStroke(testStroke, new Point(100, 100), new Point(200, 200), 150);
+
+                    // 读回它实际登记下来的动画时长
+                    var durField = fadeType.GetField("_strokeAnimationDurations",
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    int actual = -1;
+                    if (durField?.GetValue(mgr) is System.Collections.IDictionary dict)
+                    {
+                        foreach (System.Collections.DictionaryEntry de in dict)
+                        {
+                            if (ReferenceEquals(de.Key, testStroke)) { actual = (int)de.Value; break; }
+                        }
+                    }
+
+                    // 反向对照：如果实现仍用 strokeDurationMs（150），actual 会是 20 左右。
+                    // 正确实现应该接近 configured（2000，可能被 FadeSpeedMultiplier 微调）。
+                    R("FADE-DUR-1 淡出时长来自配置而不是书写时长",
+                        actual >= configured / 2,
+                        "配置=" + configured + "ms 实际登记=" + actual + "ms"
+                        + (actual < configured / 2 ? "  !! 又用书写时长当淡出时长了" : ""));
+
+                    // 清掉这一笔，别污染现场
+                    try { mgr.RemoveStroke(testStroke); } catch { }
+                    // 恢复用户原来的渐隐开关状态
+                    mgr.IsEnabled = wasEnabled;
+                }
+            }
+            catch (Exception ex) { R("FADE-DUR", false, Trim(ex.Message)); }
 
             // --- 1. InkFadeManager：CreateStrokeVisual 失败时不登记字典（L-10）---
             try

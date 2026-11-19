@@ -2550,6 +2550,17 @@ namespace Ink_Canvas
                 _inkFadeManager.IsEnabled = penType == 2 && Settings.Canvas.EnableInkFade;
                 _inkFadeManager.UpdateFadeTime(Settings.Canvas.InkFadeTime);
 
+                // 淡出动画的时长也跟着用户设置走。
+                //
+                // 原来 AnimationDuration 写死 2000ms，从来没读过配置。
+                // 结果是：用户把「渐隐时间」调成 10 秒，笔迹在 10 秒后开始淡，
+                // 但淡出过程本身永远是 2 秒 —— 调这个设置只影响等待，不影响淡出观感。
+                //
+                // 现在取 InkFadeTime 的一半当动画时长（下限 200ms，上限 5 秒）：
+                // 等待和淡出成比例，调大整体更从容，调小整体更利落。
+                int fadeTime = Math.Max(200, Settings.Canvas.InkFadeTime);
+                _inkFadeManager.AnimationDuration = Math.Max(200, Math.Min(5000, fadeTime / 2));
+
                 LogHelper.WriteLogToFile("墨迹渐隐管理器已初始化", LogHelper.LogType.Event);
             }
             catch (Exception ex)
