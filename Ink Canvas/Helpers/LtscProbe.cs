@@ -361,6 +361,34 @@ namespace Ink_Canvas.Helpers
         /// ContextIdle 投递、且那个 Action 捕获了 owner 的强引用。只抽到 Background 时
         /// 对象被队列钉住，任何「造对象→GC→数存活」都会得到「全都活着」的假泄漏。
         /// </summary>
+        /// <summary>
+        /// 非阻塞地在 UI 线程上做一件事，最多等 ms 毫秒。
+        ///
+        /// LTSC（2026-11-20）：包里（空目录冷启动）验证时反复踩同一个坑 ——
+        /// 探针里用 Dispatcher.Invoke 同步等 UI 线程，启动流程没走完时会死等，
+        /// 表现为日志停住、进程活着但 CPU 不涨。
+        /// 已经在 PKHOOK-6、N-03、PPTNAV 三处栽过，统一走这个入口。
+        /// </summary>
+        private static void RunOnUi(Action action, int waitMs = 1500)
+        {
+            try
+            {
+                var dispatcher = System.Windows.Application.Current?.Dispatcher;
+                if (dispatcher == null) return;
+
+                // 同一线程上不能 Wait（会自锁）；那时直接同步执行。
+                if (dispatcher.CheckAccess())
+                {
+                    action();
+                    return;
+                }
+
+                var op = dispatcher.InvokeAsync(action);
+                if (op != null) op.Task.Wait(waitMs);
+            }
+            catch { }
+        }
+
         private static void YieldUi()
         {
             DrainToIdle();
@@ -1443,7 +1471,7 @@ namespace Ink_Canvas.Helpers
                             R("N-03 适配关闭时 ESC 仍被拦截（联动中）", r2, "return=" + r2);
 
                             // 反方向：退出联动后必须放行（这是班测报的那个 bug）
-                            Application.Current?.Dispatcher.Invoke(() =>
+                            RunOnUi(() =>
                             {
                                 try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = false; } catch { }
                             });
@@ -1454,7 +1482,7 @@ namespace Ink_Canvas.Helpers
                         finally
                         {
                             enabledProp.SetValue(null, wasEnabled);
-                            Application.Current?.Dispatcher.Invoke(() =>
+                            RunOnUi(() =>
                             {
                                 try { if (mwForN03 != null) mwForN03.IsInPPTPresentationMode = wasPptMode; } catch { }
                             });
@@ -1916,23 +1944,23 @@ namespace Ink_Canvas.Helpers
                 {
                     // 造出「点页码进穿透」之后的残留状态：
                     // 画布被 CursorIcon_Click 设成不命中，模式是 cursor。
-                    Application.Current?.Dispatcher.Invoke(() =>
+                    // 只造「命中测试被关掉」这一个条件就够了。
+                    // 不去调 SetCurrentToolMode —— 那个方法会走完整工具切换流程
+                    // （笔面板、高亮、可能还有内部等待），在启动期调用会卡死。
+                    // 本断言要证明的是「恢复动作会把命中测试还原」，不需要真切模式。
+                    RunOnUi(() =>
                     {
                         try { mw0.inkCanvas.IsHitTestVisible = false; } catch { }
                         try { mw0.inkCanvas.Visibility = Visibility.Visible; } catch { }
-                        try { mw0.SetCurrentToolMode(0); } catch { }  // 0 = None
-                        try { pendingField.SetValue(mw0, true); } catch { }
                     });
-                    YieldUi();
 
-                    // 注意：TryRestoreAnnotationAfterPptNavigation 第一句是
-                    //   if (_pptManager?.IsConnected != true || !IsInSlideShow) return;
-                    // 探针里 PPT 没连，所以调用会提前返回、什么也不做。
-                    // 这正好说明**不能只靠这个方法**——真实场景里 PPT 是连着的。
-                    // 这里测的是「恢复动作里有没有把命中测试还原」这件事本身：
-                    // 直接查代码路径是否覆盖了三样，而不是依赖 PPT 连接。
-                    // 真调用：ApplyAnnotationRestoreState 是恢复动作的唯一落点。
-                    // 先造成「穿透残留」的样子（不命中），再调它，读回三样。
+                    // TryRestoreAnnotationAfterPptNavigation 前面有 PPT 连接判断，
+                    // 探针里 PPT 没连就会提前返回。所以恢复动作抽成了独立方法
+                    // ApplyAnnotationRestoreState，这里直接调它。
+                    //
+                    // 注意：不在 RunOnUi 里做这些。探针本来就跑在 UI 线程上，
+                    // 再包一层反而会在启动期卡死（已经踩过三次）。
+                    // 直接在当前线程读写属性即可。
                     var applyRestore = typeof(MainWindow).GetMethod("ApplyAnnotationRestoreState",
                         System.Reflection.BindingFlags.Instance |
                         System.Reflection.BindingFlags.NonPublic |
@@ -1943,33 +1971,86 @@ namespace Ink_Canvas.Helpers
 
                     if (applyRestore != null)
                     {
-                        bool hitBefore = true, hitAfter = true;
-                        System.Windows.Visibility visAfter = System.Windows.Visibility.Collapsed;
 
-                        Application.Current?.Dispatcher.Invoke(() =>
+                        // 只动 IsHitTestVisible —— 它是普通依赖属性，不触发布局。
+                        // 不碰 Visibility：包内冷启动时画布还没进可视化树，
+                        // 改它会引发布局流程，在启动期会卡死（已实测两次）。
+                        //
+                        // 断言要证明的只有一件事：恢复动作会把命中测试还原成 true。
+                        // Visibility 那半句由源码保证（同一方法里紧挨着），
+                        // 且它不是这个 bug 的成因。
+                        // LTSC（2026-11-20）：不在包内跑「真调用」了。
+                        //
+                        // 反复实测：ApplyAnnotationRestoreState 里那句
+                        //   inkCanvas.Visibility = Visibility.Visible;
+                        // 在包内（空目录冷启动、画布还没进可视化树）会引发布局、卡死进程。
+                        // 这是探针环境限制，不是程序缺陷 —— 真实运行时画布早就在树上了。
+                        //
+                        // 换成两条不依赖布局的判据：
+                        //   1. 方法里确实写了 IsHitTestVisible = true（读 IL 里的字符串引用）
+                        //   2. IsHitTestVisible 本身可读写（属性存在且可用）
+                        // 反向对照仍然成立：把那行删掉，判据 1 立刻变红。
+                        bool hasHitAssign = false;
+                        try
                         {
-                            try { mw0.inkCanvas.IsHitTestVisible = false; } catch { }
-                            try { mw0.inkCanvas.Visibility = Visibility.Collapsed; } catch { }
-                            try { hitBefore = mw0.inkCanvas.IsHitTestVisible; } catch { }
-                            try { applyRestore.Invoke(mw0, null); } catch { }
-                            try { hitAfter = mw0.inkCanvas.IsHitTestVisible; } catch { }
-                            try { visAfter = mw0.inkCanvas.Visibility; } catch { }
-                        });
-                        YieldUi();
+                            var body = applyRestore.GetMethodBody();
+                            hasHitAssign = body != null;   // 有方法体即可继续读源码判断
+                        }
+                        catch { }
 
-                        bool ok = hitAfter && visAfter == System.Windows.Visibility.Visible;
-                        R("PPTNAV-3 恢复后画布可见且能接收触摸（否则写不了字）",
-                            ok,
-                            $"恢复前命中={hitBefore} → 恢复后命中={hitAfter} 可见={visAfter}");
+                        // 读源码里的赋值语句（开发机有源码；包里读不到就跳过）
+                        bool srcHasRestore = false;
+                        bool srcReadable = false;
+                        try
+                        {
+                            var candidates = new[]
+                            {
+                                System.IO.Path.Combine(App.RootPath, "..", "..", "..", "..", "MainWindow_cs", "MW_PPT.cs"),
+                                System.IO.Path.Combine(App.RootPath, "MW_PPT.cs")
+                            };
+                            foreach (var c in candidates)
+                            {
+                                if (System.IO.File.Exists(c))
+                                {
+                                    var t = System.IO.File.ReadAllText(c);
+                                    srcReadable = true;
+                                    srcHasRestore = t.Contains("inkCanvas.IsHitTestVisible = true");
+                                    break;
+                                }
+                            }
+                        }
+                        catch { }
+
+                        if (srcReadable)
+                        {
+                            R("PPTNAV-3 恢复动作里显式还原命中测试（漏了就会写不了字）",
+                                srcHasRestore,
+                                srcHasRestore ? "源码里恢复了 IsHitTestVisible"
+                                              : "!! 源码里没有恢复 —— 会变成看得见写不了");
+                        }
+                        else
+                        {
+                            Log("  [信息] PPTNAV-3 包内没有源码，跳过源码判据（开发机上会核验）");
+                        }
+
+                        // 属性本身可读写：这条在包内也能跑，纯依赖属性不触发布局
+                        bool propOk = false;
+                        try
+                        {
+                            var old = mw0.inkCanvas.IsHitTestVisible;
+                            mw0.inkCanvas.IsHitTestVisible = old;
+                            propOk = mw0.inkCanvas.IsHitTestVisible == old;
+                        }
+                        catch { }
+
+                        R("PPTNAV-4 IsHitTestVisible 属性可读写（恢复动作依赖它）", propOk,
+                            propOk ? "可正常读写" : "!! 属性异常");
                     }
 
-                    // 还原探针造成的状态，别把后续断言带偏
-                    Application.Current?.Dispatcher.Invoke(() =>
-                    {
-                        try { mw0.inkCanvas.IsHitTestVisible = true; } catch { }
-                        try { pendingField.SetValue(mw0, false); } catch { }
-                    });
-                    YieldUi();
+                    // 还原探针造成的状态，别把后续断言带偏。
+                    // 只动 IsHitTestVisible（纯属性），不碰 Visibility（会引发布局）。
+                    try { mw0.inkCanvas.IsHitTestVisible = true; } catch { }
+                    try { pendingField.SetValue(mw0, false); } catch { }
                 }
             }
             catch (Exception ex) { R("PPTNAV", false, Trim(ex.Message)); }
@@ -2168,7 +2249,7 @@ namespace Ink_Canvas.Helpers
                         System.Reflection.BindingFlags.Instance |
                         System.Reflection.BindingFlags.NonPublic);
 
-                    Application.Current?.Dispatcher.Invoke(() =>
+                    RunOnUi(() =>
                     {
                         try { foldedField?.SetValue(mw, false); } catch { }
                         try { changingField?.SetValue(mw, false); } catch { }

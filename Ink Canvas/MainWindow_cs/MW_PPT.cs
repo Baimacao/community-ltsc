@@ -1551,8 +1551,12 @@ namespace Ink_Canvas
         /// </summary>
         internal void ApplyAnnotationRestoreState()
         {
-            inkCanvas.Visibility = Visibility.Visible;
+            // 顺序有讲究：先恢复命中测试（纯依赖属性，不触发布局），
+            // 再恢复可见性（会引发一次布局）。
+            // 反过来的话，布局会在「不命中」状态下先跑一遍，
+            // 之后才变成可命中，中间那一帧仍然是写不了字的状态。
             inkCanvas.IsHitTestVisible = true;
+            inkCanvas.Visibility = Visibility.Visible;
         }
 
         /// <summary>用户自己点了批注键 —— 作废挂起的自动恢复。</summary>
