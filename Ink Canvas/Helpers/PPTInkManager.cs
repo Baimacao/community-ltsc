@@ -117,7 +117,35 @@ namespace Ink_Canvas.Helpers
                     _lastSwitchSlideIndex = -1;
                     _lastSwitchTime = DateTime.MinValue;
 
+                    // LTSC（2026-11-20）：先算出新文件夹，再把老格式的笔迹迁过来。
+                    // 老的两种格式（{名字}_{页数} 和 {名字}_{页数}_{哈希}）都还在磁盘上，
+                    // 不迁移的话那些笔迹永远读不出来。
                     _currentPresentationId = GeneratePresentationId(presentation);
+
+                    try
+                    {
+                        string newFolder = GetPresentationFolderPath();
+                        string legacyFolder = PptInkPresentationId.FindLegacyFolder(
+                            AutoSaveLocation, presentation?.Name, SafeFullNameOf(presentation), slideCount);
+
+                        if (!string.IsNullOrEmpty(legacyFolder)
+                            && !string.Equals(legacyFolder, newFolder, StringComparison.OrdinalIgnoreCase))
+                        {
+                            PptInkPresentationId.MigrateLegacyStrokes(legacyFolder, newFolder, StrokeFileExtension);
+                        }
+
+                        // 页数标记：第一次见这份文件时写下来，以后用它检测页数变化。
+                        // 已经存在就不动 —— 那个值是上一次的页数，正是要拿来比对的。
+                        string slideCountFile = Path.Combine(newFolder, PptInkPresentationId.SlideCountFileName);
+                        if (!File.Exists(slideCountFile))
+                        {
+                            PptInkPresentationId.WriteSlideCount(newFolder, slideCount);
+                        }
+                    }
+                    catch (Exception mex)
+                    {
+                        LogHelper.WriteLogToFile("[PPT笔迹] 迁移/页数标记失败: " + mex.Message, LogHelper.LogType.Warning);
+                    }
 
                     // LTSC（2026-11-20）：班测报「退出重启后调不出上次的笔迹」。
                     // 这条链上每一步都可能是断点，而且原来全静默 ——
@@ -289,76 +317,6 @@ namespace Ink_Canvas.Helpers
             }
         }
 
-        /// <summary>
-        /// 保存所有墨迹到文件
-        /// </summary>
-        /// <remarks>
-        /// 将内存中当前演示文稿的每页墨迹保存到磁盘，并根据情况写入当前播放位置文件。
-        /// 仅在 IsAutoSaveEnabled 为真且 AutoSaveLocation 已设置时执行。会在演示文稿专属文件夹中写入按页编号的墨迹文件（带 `.icstk` 扩展名）和可选的 Position 文件。遇到特定 COM 错误（HRESULT 0x80048010）时会中止保存当前幻灯片计数读取而不抛出异常；单页保存失败会记录错误并继续处理其他页。
-        /// </remarks>
-        /// <param name="presentation">要保存墨迹的 PowerPoint 演示文稿对象。</param>
-        /// <param name="currentSlideIndex">当前播放的页码；如果大于 0 则以此值写入 Position 文件，否则使用当前被锁定的页码或最后切换的页码作为保存位置。</param>
-        public void SaveAllStrokesToFile(Presentation presentation, int currentSlideIndex = -1)
-        {
-            ThrowIfDisposed();
-            if (!IsAutoSaveEnabled || string.IsNullOrEmpty(AutoSaveLocation) || presentation == null) return;
-
-            lock (_lockObject)
-            {
-                try
-                {
-                    string folderPath = GetPresentationFolderPath();
-                    if (!Directory.Exists(folderPath))
-                        Directory.CreateDirectory(folderPath);
-
-                    int positionToSave = currentSlideIndex > 0 ? currentSlideIndex : (_lockedSlideIndex > 0 ? _lockedSlideIndex : _lastSwitchSlideIndex);
-                    if (positionToSave > 0)
-                    {
-                        try { File.WriteAllText(Path.Combine(folderPath, "Position"), positionToSave.ToString()); }
-                        catch (Exception ex) { LogHelper.WriteLogToFile($"保存 Position 失败: {ex}", LogHelper.LogType.Warning); }
-                    }
-
-                    int slideCount = 0;
-                    try { slideCount = presentation.Slides.Count; }
-                    catch (COMException comEx)
-                    {
-                        if ((uint)comEx.HResult == 0x80048010) return;
-                        throw;
-                    }
-
-                    for (int i = 1; i <= slideCount && i < _memoryStreams.Length; i++)
-                    {
-                        if (_memoryStreams[i] == null) continue;
-                        try
-                        {
-                            if (_memoryStreams[i].Length > 8)
-                            {
-                                _memoryStreams[i].Position = 0;
-                                byte[] buf = new byte[_memoryStreams[i].Length];
-                                int read = _memoryStreams[i].Read(buf, 0, buf.Length);
-                                if (read > 0)
-                                {
-                                    string basePath = Path.Combine(folderPath, i.ToString("0000"));
-                                    File.WriteAllBytes(basePath + StrokeFileExtension, buf);
-                                }
-                            }
-                            else
-                            {
-                                TryDeleteStrokeFile(folderPath, i);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"保存第{i}页墨迹到文件失败: {ex}", LogHelper.LogType.Error);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.WriteLogToFile($"保存墨迹到文件失败: {ex}", LogHelper.LogType.Error);
-                }
-            }
-        }
 
         /// <summary>
         /// 从文件加载已保存的墨迹
@@ -619,13 +577,20 @@ namespace Ink_Canvas.Helpers
         /// 生成基于演示文稿名称、幻灯片数量和路径哈希的标识符字符串。
         /// </summary>
         /// <returns>由 `名称_幻灯片数_路径哈希` 组成的标识符；若生成失败则返回形如 `unknown_{ticks}` 的回退标识符。</returns>
+        /// <summary>
+        /// 生成演示文稿标识 —— 走 <see cref="PptInkPresentationId"/>，
+        /// 和写侧（MW_PPT.EventHandlers）用同一套，不再各算各的。
+        ///
+        /// LTSC（2026-11-20）：这里原来是 {名字}_{页数}_{路径哈希} 三段，
+        /// 而写侧拿不到 FullName 时退化成两段 {名字}_{页数}，格式对不上，
+        /// 存进去的笔迹重启后读不出来。现在统一成 {名字}_{路径哈希}，
+        /// 页数不进 ID（页数会变，一改全废），单独存进 SlideCount 文件做变化检测。
+        /// </summary>
         private string GeneratePresentationId(Presentation presentation)
         {
             try
             {
-                string path = presentation.FullName;
-                string hash = HashHelper.GetFileHash(path);
-                return $"{presentation.Name}_{presentation.Slides.Count}_{hash}";
+                return PptInkPresentationId.Create(presentation);
             }
             catch (Exception ex)
             {
@@ -636,7 +601,17 @@ namespace Ink_Canvas.Helpers
 
         private string GetPresentationFolderPath()
         {
-            return Path.Combine(AutoSaveLocation, "Auto Saved - Presentations", _currentPresentationId);
+            return PptInkPresentationId.GetFolderPath(AutoSaveLocation, _currentPresentationId);
+        }
+
+        /// <summary>
+        /// 安全读 FullName —— COM 对象可能在任意时刻失效，读它必须各自 try。
+        /// 单独抽出来是因为 PptInkPresentationId.Create 内部也这么读，
+        /// 外部调用点（找旧文件夹、写页数标记）要保持一致，不能用两套。
+        /// </summary>
+        private static string SafeFullNameOf(Presentation presentation)
+        {
+            try { return presentation?.FullName ?? string.Empty; } catch { return string.Empty; }
         }
 
         #endregion

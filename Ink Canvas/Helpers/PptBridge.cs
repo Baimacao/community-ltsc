@@ -1000,7 +1000,33 @@ namespace Ink_Canvas.Helpers
                 VerboseLog($"轮询检测到放映结束 comSlide={comSlide}");
                 try
                 {
-                    SlideShowEnd?.Invoke(null);
+                            // LTSC（2026-11-20）：原来这里传 null，导致订阅方（退出放映的保存逻辑）
+                    // 拿不到 presentation，也就拿不到 FullName。
+                    //
+                    // 后果很隐蔽：GetPresentationStrokeFolderPath 在 FullName 为空时
+                    // 退化成「用演示文稿名算哈希」，得到一个和路径哈希不同的文件夹名 ——
+                    // 写盘写进 A 文件夹，读的时候按路径哈希去 B 文件夹找，永远读不到。
+                    // 班测表现就是「退出放映后新笔迹没保存」。
+                    //
+                    // 这里把还活着的 presentation 传出去。拿不到才退回 null。
+                    // 传当前演示文稿的完整路径字符串（不是 COM 对象）。
+                    //
+                    // 不传对象的原因：COM 对象在事件回调返回后随时可能被释放，
+                    // 订阅方（保存逻辑）要等到后面 async 才用，那时可能已经失效。
+                    // 而保存逻辑真正需要的只是「算哈希用的那个路径」，
+                    // 所以传字符串最稳 —— 它是托管对象，不受 COM 生命周期影响。
+                    string endFullName = null;
+                    try
+                    {
+                        endFullName = GetPresentationFullNameSafe();
+                    }
+                    catch (Exception payloadEx)
+                    {
+                        VerboseLog("取放映结束时的演示文稿路径失败: " + payloadEx.Message);
+                    }
+
+                    VerboseLog($"放映结束，演示文稿路径={(string.IsNullOrEmpty(endFullName) ? "(空)" : endFullName)}");
+                    SlideShowEnd?.Invoke(endFullName);
                 }
                 catch (Exception evtEx)
                 {
@@ -1371,6 +1397,26 @@ namespace Ink_Canvas.Helpers
         /// 每调一次造一个 RCW 且从不归还——和 L-8 修的是同一类泄漏。
         /// 改成走 GetCurrentActivePresentation()（调用方持有）+ 显式 SafeRelease。
         /// </remarks>
+        /// <summary>
+        /// 取当前演示文稿的完整路径。失败返回 null。
+        ///
+        /// LTSC（2026-11-20）：抽出来给「放映结束」事件用。
+        /// 保存笔迹要用这个路径算文件夹哈希 —— 拿不到就只能用名字算，
+        /// 算出来的文件夹名和读侧对不上，笔迹就存进了一个没人读的地方。
+        /// </summary>
+        public string GetPresentationFullNameSafe()
+        {
+            object pres = GetCurrentActivePresentation();
+            if (pres == null) return null;
+            try
+            {
+                return (string)pres.GetType().InvokeMember("FullName",
+                    System.Reflection.BindingFlags.GetProperty, null, pres, null);
+            }
+            catch { return null; }
+            finally { SafeRelease(pres); }
+        }
+
         public string GetPresentationName()
         {
             object pres = GetCurrentActivePresentation();

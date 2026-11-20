@@ -205,20 +205,100 @@ namespace Ink_Canvas
             }
         }
 
+        /// <summary>
+        /// 拼出笔迹文件夹路径 —— 走 <see cref="PptInkPresentationId"/>，和读侧同一套。
+        ///
+        /// LTSC（2026-11-20）：这里原来自己算一份，格式和读侧不一样：
+        ///   拿到 FullName 时 {名字}_{页数}_{哈希}（三段）
+        ///   拿不到时退化成 {名字}_{页数}（两段）
+        /// 而读侧永远三段。一旦走了退化分支，存进去的笔迹就读不回来。
+        ///
+        /// 现在统一成 {名字}_{路径哈希}，页数不进文件夹名（页数会变），
+        /// 改由文件夹里的 SlideCount 文件记录，用于检测「页数变了没有」。
+        /// </summary>
+        /// <summary>
+        /// 页数变了就问老师要不要沿用上次的笔迹。
+        ///
+        /// LTSC（2026-11-20）：只在两个条件同时成立时问：
+        ///   1. 文件夹里记下的页数和当前页数不一样
+        ///   2. 那个文件夹里真的有笔迹（没笔迹就没什么可丢的）
+        /// 问了以后：
+        ///   沿用 → 把记录的页数更新成当前值，下次不再问
+        ///   重新开始 → 删掉那个文件夹里的笔迹文件
+        ///   先不改 → 什么都不动，下次还会问
+        /// </summary>
+        private async Task PromptForSlideCountChangeIfNeeded(string strokePath, string presentationName, int currentSlideCount)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(strokePath) || currentSlideCount <= 0) return;
+
+                int savedCount = PptInkPresentationId.ReadSlideCount(strokePath);
+                if (savedCount <= 0) return;               // 没记录过，第一次见，不用问
+                if (savedCount == currentSlideCount) return; // 页数没变，不用问
+
+                // 没笔迹就没什么可丢的，直接更新记录
+                if (!PptInkPresentationId.HasAnyStrokes(strokePath, ".icstk"))
+                {
+                    PptInkPresentationId.WriteSlideCount(strokePath, currentSlideCount);
+                    return;
+                }
+
+                bool keepOld = await PptInkSlideCountPrompt.AskAsync(
+                    this, presentationName, savedCount, currentSlideCount);
+
+                if (keepOld)
+                {
+                    // 沿用：把记录更新成当前页数，下次打开不再问同一个问题
+                    PptInkPresentationId.WriteSlideCount(strokePath, currentSlideCount);
+                }
+                else
+                {
+                    // 重新开始：删掉旧笔迹，再记下新页数
+                    try
+                    {
+                        foreach (string file in Directory.GetFiles(strokePath, "*.icstk"))
+                        {
+                            try { File.Delete(file); } catch { }
+                        }
+                        PptInkPresentationId.WriteSlideCount(strokePath, currentSlideCount);
+                        LogHelper.WriteLogToFile("[PPT笔迹] 已按用户选择清空上次笔迹", LogHelper.LogType.Event);
+                    }
+                    catch (Exception dex)
+                    {
+                        LogHelper.WriteLogToFile("[PPT笔迹] 清空旧笔迹失败: " + dex.Message, LogHelper.LogType.Warning);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile("[PPT笔迹] 页数变化处理失败: " + ex.Message, LogHelper.LogType.Warning);
+            }
+        }
+
         private string GetPresentationStrokeFolderPath(Presentation presentation, string presentationName, int totalSlides, string presentationFullName = null)
         {
-            string basePath = Path.Combine(Settings.Automation.AutoSavedStrokesLocation, "Auto Saved - Presentations");
             string fullName = presentationFullName;
             string name = presentationName;
-            int slidesTotal = totalSlides;
 
             if (presentation != null)
             {
+                // LTSC（2026-11-20）：漏了 pres 这一层兜底，导致**写盘和读取用了不同的文件夹**。
+                //
+                // 班测现象：退出放映时画了笔，日志显示「写盘 → test1.pptx_C236620F」，
+                // 但再进放映读的是「test1.pptx_39041F03」，永远读不到。
+                //
+                // 根因：presentationFullName 参数来自 agentState?.PresentationFullName，
+                // 而 agentState 恒为 null（D-02 之后 Agent 架构已移除），
+                // 所以这个参数**永远是空**。空路径时 PptInkPresentationId
+                // 退化成「用名字算哈希」，得到一个和路径哈希不同的值。
+                //
+                // 而 presentation 对象本身是好的，它的 FullName 一直都在。
+                // 所以这里要在参数为空时补取。
                 try
                 {
                     if (string.IsNullOrEmpty(fullName)) fullName = presentation.FullName;
                     if (string.IsNullOrEmpty(name)) name = presentation.Name;
-                    if (slidesTotal <= 0) slidesTotal = presentation.Slides.Count;
                 }
                 catch (Exception ex)
                 {
@@ -226,13 +306,18 @@ namespace Ink_Canvas
                 }
             }
 
-            if (!string.IsNullOrEmpty(fullName))
-            {
-                string hash = HashHelper.GetFileHash(fullName);
-                return Path.Combine(basePath, $"{name ?? ""}_{slidesTotal}_{hash}");
-            }
+            string id = PptInkPresentationId.Create(name, fullName);
 
-            return Path.Combine(basePath, $"{name ?? ""}_{slidesTotal}");
+            // LTSC（2026-11-20）：这条日志是为了查「写盘和读取用了不同文件夹」。
+            // 班测现象：退出放映时写进 test1.pptx_C236620F，
+            // 再进放映却读 test1.pptx_39041F03 —— 哈希不一样，永远读不到。
+            // 差别的来源就是这里的 fullName 有没有值：有值是路径哈希，没值是名字哈希。
+            LogHelper.WriteLogToFile(
+                $"[PPT笔迹] 拼路径：name={name ?? "(空)"} " +
+                $"fullName={(string.IsNullOrEmpty(fullName) ? "(空→用名字算哈希)" : fullName)} id={id}",
+                LogHelper.LogType.Event);
+
+            return PptInkPresentationId.GetFolderPath(Settings.Automation.AutoSavedStrokesLocation, id);
         }
 
         private void OnPPTPresentationClose(object payload)
@@ -416,6 +501,19 @@ namespace Ink_Canvas
                 if (Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint && !string.IsNullOrEmpty(presentationName))
                 {
                     string strokePath = GetPresentationStrokeFolderPath(activePresentation, presentationName, totalSlides, presentationFullName);
+
+                    // LTSC（2026-11-20）：页数变了就问一句再决定要不要沿用。
+                    //
+                    // 为什么要问：文件夹名只按「名字 + 路径哈希」认，页数已经不进名字了，
+                    // 所以改过页数的 PPT 也能找到上次的笔迹。但页数一变，
+                    // 第 8 页的墨迹可能已经不是原来那页了 ——
+                    // 自动沿用会让老师上错页的墨迹，自动丢弃会让他白画一遍。
+                    // 这个判断只有他知道。
+                    //
+                    // 只在「记下的页数」和「当前页数」不一致时问，
+                    // 而且文件夹里得真的有笔迹，否则没什么可问的。
+                    await PromptForSlideCountChangeIfNeeded(strokePath, presentationName, totalSlides);
+
                     if (Directory.Exists(strokePath))
                     {
                         await Task.Run(() =>
@@ -451,6 +549,68 @@ namespace Ink_Canvas
                             catch (Exception ex)
                             {
                                 LogHelper.WriteLogToFile($"加载PPT墨迹文件失败: {ex}", LogHelper.LogType.Error);
+                            }
+                        });
+
+                        // 诊断：进放映时到底停在第几页、内存里有哪些页的笔迹。
+                        // 加这条是因为上一版「进放映时已恢复第 N 页」一条日志都没有，
+                        // 分不清是「当前页没笔迹」还是「代码没跑到」。
+                        try
+                        {
+                            var diagKeys = new List<int>();
+                            lock (_memoryStreams)
+                            {
+                                foreach (var kv in _memoryStreams)
+                                {
+                                    if (kv.Value != null) diagKeys.Add(kv.Key);
+                                }
+                            }
+                            diagKeys.Sort();
+                            LogHelper.WriteLogToFile(
+                                $"[PPT笔迹] 进放映：当前页={currentSlide} 总页数={totalSlides} " +
+                                $"内存中有笔迹的页=[{(diagKeys.Count == 0 ? "无" : string.Join(",", diagKeys))}]",
+                                LogHelper.LogType.Event);
+                        }
+                        catch { }
+
+                        // LTSC（2026-11-20）：读完必须把**当前这一页**画上去。
+                        //
+                        // 原来只读进 _memoryStreams 就结束了，真正往画布上添加笔迹的
+                        // 代码在 OnPPTSlideShowNextSlide 里（翻页时触发）。
+                        // 所以：打开 PPT 直接进放映、不翻页的话，
+                        // 笔迹一直躺在内存里，画布上空空如也 ——
+                        // 用户看到的就是「识别到 PPT 了，但上次的笔迹没出来」。
+                        Application.Current?.Dispatcher.InvokeAsync(() =>
+                        {
+                            try
+                            {
+                                byte[] firstPageBytes = null;
+                                lock (_memoryStreams)
+                                {
+                                    if (currentSlide > 0
+                                        && _memoryStreams.TryGetValue(currentSlide, out var firstStream)
+                                        && firstStream != null)
+                                    {
+                                        firstPageBytes = firstStream.ToArray();
+                                    }
+                                }
+
+                                if (firstPageBytes != null && firstPageBytes.Length > 8)
+                                {
+                                    var strokes = new StrokeCollection(new MemoryStream(firstPageBytes));
+                                    if (strokes.Count > 0)
+                                    {
+                                        inkCanvas.Strokes.Add(strokes);
+                                        LogHelper.WriteLogToFile(
+                                            $"[PPT笔迹] 进放映时已恢复第 {currentSlide} 页的 {strokes.Count} 条笔迹",
+                                            LogHelper.LogType.Event);
+                                    }
+                                }
+                            }
+                            catch (Exception drawEx)
+                            {
+                                LogHelper.WriteLogToFile("[PPT笔迹] 恢复当前页笔迹失败: " + drawEx.Message,
+                                    LogHelper.LogType.Warning);
                             }
                         });
                     }
@@ -751,8 +911,15 @@ namespace Ink_Canvas
         /// <param name="pres">触发结束事件的 PowerPoint 演示文稿（Presentation）实例，用于保存墨迹并尝试读取放映时的当前页码。</param>
         private async void OnPPTSlideShowEnd(object payload)
         {
+            // LTSC（2026-11-20）：payload 现在可能是两种东西：
+            //   · string —— 演示文稿的完整路径（PptBridge 轮询路径传的，现在走这条）
+            //   · Presentation —— 兼容老调用方
+            // 原来写死成 Presentation，而 PptBridge 一直传 null，
+            // 于是 pres 永远 null、FullName 永远空，保存时用名字算哈希，
+            // 文件夹名和读侧对不上，笔迹存进去就再也读不出来。
             var pres = payload as Presentation;
-            var agentState = (PPTState)null; // LTSC D-02: payload 恒为 Presentation
+            string payloadFullName = payload as string;
+            var agentState = (PPTState)null; // LTSC D-02: Agent 架构已移除
             try
             {
                 // ── LTSC P5 / C4（2026-11-11）────────────────────────────────
@@ -828,7 +995,20 @@ namespace Ink_Canvas
                 });
 
                 string presentationNameForSave = agentState?.PresentationName ?? _pptManager?.GetPresentationName() ?? (pres != null ? pres.Name : null);
-                string presentationFullNameForSave = agentState?.PresentationFullName;
+                // 优先用 payload 传进来的路径（PptBridge 从活的 COM 对象取到的），
+                // 拿不到再从 pres 对象取。两个都空就会退化成名字哈希 —— 那正是之前的 bug。
+                string presentationFullNameForSave = payloadFullName;
+                if (string.IsNullOrEmpty(presentationFullNameForSave) && pres != null)
+                {
+                    try { presentationFullNameForSave = pres.FullName; } catch { }
+                }
+                if (string.IsNullOrEmpty(presentationFullNameForSave))
+                {
+                    LogHelper.WriteLogToFile(
+                        "[PPT笔迹] 警告：退出放映时拿不到演示文稿路径，将退化成名字哈希，" +
+                        "可能和读取时用的文件夹不一致",
+                        LogHelper.LogType.Warning);
+                }
                 int totalSlidesForSave = agentState?.TotalSlides ?? _pptManager?.SlidesCount ?? 0;
                 if (totalSlidesForSave <= 0 && pres != null)
                 {
@@ -866,6 +1046,16 @@ namespace Ink_Canvas
                 if (Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint && !string.IsNullOrEmpty(presentationNameForSave) && totalSlidesForSave > 0)
                 {
                     string folderPathForSave = GetPresentationStrokeFolderPath(pres, presentationNameForSave, totalSlidesForSave, presentationFullNameForSave);
+
+                    // LTSC（2026-11-20）：我上一版在这里又加了一段「收下当前页笔迹」，
+                    // 是重复劳动 —— 上面第 943 行的 Dispatcher.InvokeAsync 已经做过了。
+                    // 而且那段跑在非 UI 线程，读 inkCanvas.Strokes 会抛
+                    // 「调用线程无法访问此对象」，日志里能看到，纯噪声。已删。
+                    LogHelper.WriteLogToFile(
+                        $"[PPT笔迹] 准备写盘：当前页={currentPage} 总页数={totalSlidesForSave} " +
+                        $"文件夹={folderPathForSave} 内存页数={_memoryStreams.Count}",
+                        LogHelper.LogType.Event);
+
                     await Task.Run(() =>
                     {
                         try
@@ -873,6 +1063,7 @@ namespace Ink_Canvas
                             if (!Directory.Exists(folderPathForSave))
                                 Directory.CreateDirectory(folderPathForSave);
 
+                            int diagWritten = 0, diagSkipped = 0;
                             lock (_memoryStreams)
                             {
                                 for (int i = 1; i <= totalSlidesForSave; i++)
@@ -884,9 +1075,19 @@ namespace Ink_Canvas
                                             byte[] allBytes = value.ToArray();
                                             string filePath = Path.Combine(folderPathForSave, i.ToString("0000") + ".icstk");
                                             if (allBytes.Length > 8)
+                                            {
                                                 File.WriteAllBytes(filePath, allBytes);
+                                                diagWritten++;
+                                            }
                                             else if (File.Exists(filePath))
+                                            {
                                                 File.Delete(filePath);
+                                                diagSkipped++;
+                                            }
+                                            else
+                                            {
+                                                diagSkipped++;
+                                            }
                                         }
                                         catch (Exception ex)
                                         {

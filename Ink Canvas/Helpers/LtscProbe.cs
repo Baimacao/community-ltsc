@@ -2055,6 +2055,85 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PPTNAV", false, Trim(ex.Message)); }
 
+            // --- 8z. PPT 笔迹文件夹标识（2026-11-20）---
+            //
+            // 班测报「退出重启后调不出上次的笔迹」。根因是读写两侧各算一套 ID，
+            // 格式还不一样：读侧永远三段 {名字}_{页数}_{哈希}，
+            // 写侧拿不到 FullName 时退化成两段 {名字}_{页数}。名字对不上就读不到。
+            //
+            // 这几条断言把它锁死：ID 不带页数、同输入同输出、读写两侧算出来必须一样。
+            try
+            {
+                const string testName = "test1.pptx";
+                const string testPath = @"C:\Temp\test1.pptx";
+
+                string id1 = Ink_Canvas.Helpers.PptInkPresentationId.Create(testName, testPath);
+                string id2 = Ink_Canvas.Helpers.PptInkPresentationId.Create(testName, testPath);
+
+                R("PPTINK-1 同一份演示文稿算出的 ID 稳定", id1 == id2 && !string.IsNullOrEmpty(id1),
+                    $"id={id1}");
+
+                // 页数不进 ID —— 这是修的核心。ID 里不该出现纯数字段。
+                bool hasPageSegment = false;
+                var segs = id1.Split('_');
+                foreach (var seg in segs)
+                {
+                    if (seg.Length > 0 && int.TryParse(seg, out _)) { hasPageSegment = true; break; }
+                }
+                R("PPTINK-2 ID 里不含页数（页数变了不会换文件夹）", !hasPageSegment,
+                    hasPageSegment ? $"!! ID={id1} 含数字段" : $"id={id1}");
+
+                // 缺 FullName 时不能算出空串，也不能每次不一样
+                string idNoPath1 = Ink_Canvas.Helpers.PptInkPresentationId.Create(testName, null);
+                string idNoPath2 = Ink_Canvas.Helpers.PptInkPresentationId.Create(testName, null);
+                R("PPTINK-3 缺 FullName 时 ID 仍稳定且非空",
+                    !string.IsNullOrEmpty(idNoPath1) && idNoPath1 == idNoPath2,
+                    $"id={idNoPath1}");
+
+                // 名字和路径都空时也不能返回空串（空串会让 Path.Combine 指到根目录）
+                string idEmpty = Ink_Canvas.Helpers.PptInkPresentationId.Create(null, null);
+                R("PPTINK-4 名字和路径都空时 ID 不为空串", !string.IsNullOrEmpty(idEmpty),
+                    $"id={idEmpty}");
+
+                // 路径拼装：三段都不为空才拼
+                string folder1 = Ink_Canvas.Helpers.PptInkPresentationId.GetFolderPath(@"C:\Saves", "abc");
+                string folder2 = Ink_Canvas.Helpers.PptInkPresentationId.GetFolderPath(null, "abc");
+                R("PPTINK-5 路径拼装：根目录为空时返回空串",
+                    !string.IsNullOrEmpty(folder1) && string.IsNullOrEmpty(folder2),
+                    $"正常={folder1} 空={folder2 ?? "(null)"}");
+
+                // 文件名非法字符要清掉，否则建目录会抛异常
+                string idBad = Ink_Canvas.Helpers.PptInkPresentationId.Create("a:b*c?.pptx", @"C:\x.ppt");
+                bool hasInvalid = false;
+                foreach (char c in idBad)
+                {
+                    if (Array.IndexOf(System.IO.Path.GetInvalidFileNameChars(), c) >= 0) { hasInvalid = true; break; }
+                }
+                R("PPTINK-6 演示文稿名里的非法字符会被清掉", !hasInvalid,
+                    hasInvalid ? $"!! id={idBad}" : $"id={idBad}");
+
+                // 页数标记读写（用临时目录，不碰用户数据）
+                string tmp = System.IO.Path.Combine(System.IO.Path.GetTempPath(),
+                    "icc_probe_pptink_" + Guid.NewGuid().ToString("N").Substring(0, 8));
+                try
+                {
+                    System.IO.Directory.CreateDirectory(tmp);
+                    Ink_Canvas.Helpers.PptInkPresentationId.WriteSlideCount(tmp, 53);
+                    int readBack = Ink_Canvas.Helpers.PptInkPresentationId.ReadSlideCount(tmp);
+                    R("PPTINK-7 页数标记可读写", readBack == 53, $"写入 53 读回 {readBack}");
+
+                    // 没标记文件时返回 0（未知），不抛异常
+                    int none = Ink_Canvas.Helpers.PptInkPresentationId.ReadSlideCount(
+                        System.IO.Path.Combine(tmp, "不存在"));
+                    R("PPTINK-8 没有标记文件时返回 0", none == 0, $"返回 {none}");
+                }
+                finally
+                {
+                    try { System.IO.Directory.Delete(tmp, true); } catch { }
+                }
+            }
+            catch (Exception ex) { R("PPTINK", false, Trim(ex.Message)); }
+
             // --- 8y. 翻页笔钩子只在适配启用时才挂（2026-11-19 班测）---
             //
             // 用户反馈：「它一直显示按下了 esc 触发拦截」。
