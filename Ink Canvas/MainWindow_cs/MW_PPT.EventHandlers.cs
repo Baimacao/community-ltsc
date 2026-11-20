@@ -276,6 +276,62 @@ namespace Ink_Canvas
             }
         }
 
+        /// <summary>
+        /// 进放映后补跳上次播放页 —— 带轮询重试。
+        ///
+        /// LTSC（2026-11-20）：为什么需要重试：
+        ///   上游原版用 YesOrNoNotificationWindow(...).ShowDialog()，是模态阻塞窗口，
+        ///   用户点按钮时 PPT 的打开-放映状态早已稳定，TryNavigateToSlide 一次就成。
+        ///   现在换成内联非阻塞弹窗，点「是」的那一刻放映可能还没真正开始，
+        ///   TryNavigateToSlide 内部的 TryGetView() 拿不到 SlideShowWindows 就失败。
+        ///
+        /// 所以这里每 250ms 试一次，最多 10 次（2.5 秒）。成功就停。
+        /// </summary>
+        private void TryJumpToPageWithRetry(int targetPage, int maxAttempts, int intervalMs)
+        {
+            if (targetPage <= 0 || maxAttempts <= 0) return;
+
+            int attempt = 0;
+            Action tryOnce = null;
+            tryOnce = () =>
+            {
+                attempt++;
+                try
+                {
+                    bool ok = _pptManager?.TryNavigateToSlide(targetPage) == true;
+                    if (ok)
+                    {
+                        LogHelper.WriteLogToFile(
+                            $"[PPT跳转] 进放映后补跳第 {targetPage} 页：成功（第 {attempt} 次尝试）",
+                            LogHelper.LogType.Event);
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile($"[PPT跳转] 补跳第 {attempt} 次异常: {ex.Message}",
+                        LogHelper.LogType.Warning);
+                }
+
+                if (attempt < maxAttempts)
+                {
+                    System.Threading.Tasks.Task.Delay(intervalMs).ContinueWith(_ =>
+                    {
+                        Application.Current?.Dispatcher.BeginInvoke(tryOnce);
+                    });
+                }
+                else
+                {
+                    LogHelper.WriteLogToFile(
+                        $"[PPT跳转] 进放映后补跳第 {targetPage} 页：{maxAttempts} 次都没成功" +
+                        $"（放映中={_pptManager?.IsInSlideShow} 已连接={_pptManager?.IsConnected}）",
+                        LogHelper.LogType.Warning);
+                }
+            };
+
+            Application.Current?.Dispatcher.BeginInvoke(tryOnce);
+        }
+
         private string GetPresentationStrokeFolderPath(Presentation presentation, string presentationName, int totalSlides, string presentationFullName = null)
         {
             string fullName = presentationFullName;
@@ -490,6 +546,28 @@ namespace Ink_Canvas
                 _previousSlideID = currentSlide;
                 ApplyPPTNavBarAppearanceFromSettings();
                 NotifyPluginSlideShowStateChanged(true);
+
+                // LTSC（2026-11-20）：补跳「上次播放页」。
+                //
+                // 提示框是在「打开演示文稿」时弹的，那时还没进放映，
+                // TryNavigateToSlide 内部的 TryGetView() 拿不到 SlideShowWindows，
+                // 必然失败 —— 班测表现就是「点了是但不跳」。
+                //
+                // 这里在真正进放映之后补一次。用 BeginInvoke 排到当前事件之后，
+                // 让放映窗口先完成初始化。
+                if (_pendingJumpToPage > 0)
+                {
+                    int targetPage = _pendingJumpToPage;
+                    _pendingJumpToPage = 0;
+                    Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        // 轮询重试：放映窗口不是一瞬间就绪的。
+                        // 上游用的是 ShowDialog()（模态阻塞），用户点按钮时状态早已稳定；
+                        // 现在改成内联非阻塞弹窗后，点「是」的那一刻放映可能还没真正开始，
+                        // 所以这里多试几次，成功就停。
+                        TryJumpToPageWithRetry(targetPage, 10, 250);
+                    }));
+                }
 
                 lock (_memoryStreams)
                 {

@@ -156,7 +156,7 @@
     <value>縮放</value>
   </data>
   <data name="PPT_RememberLastPage_Prompt" xml:space="preserve">
-    <value>上次播放到了第 {0} 頁，是否立即跳轉</value>
+    <value>上次播放到了第 {0} 頁，進入放映後自動跳轉</value>
   </data>
   <data name="PPT_HiddenSlides_Detected" xml:space="preserve">
     <value>檢測到此演示文檔中包含隱藏的幻燈片，是否取消隱藏？</value>

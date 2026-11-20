@@ -821,6 +821,12 @@ namespace Ink_Canvas
             _inlineDialogTcs?.TrySetResult(false);
         }
 
+        /// <summary>
+        /// 待跳转的页码。用户点了「是」但当时还跳不了（没进放映）时记在这里，
+        /// 等进放映时补跳一次。0 表示没有待跳。
+        /// </summary>
+        private int _pendingJumpToPage;
+
         private async void ShowPreviousPageNotification(Presentation pres, PPTState agentState = null)
         {
             try
@@ -845,9 +851,33 @@ namespace Ink_Canvas
                     {
                         try
                         {
-                            if (_pptManager?.TryNavigateToSlide(page) == true)
+                            // LTSC（2026-11-20）：班测报「点了是但不跳转」。
+                            //
+                            // TryNavigateToSlide 内部走 TryGetView()，而 TryGetView 依赖
+                            // SlideShowWindows —— 只有**放映中**才有。
+                            // 而这个提示是在「打开演示文稿」时弹的，那时通常还没进放映，
+                            // 所以必然返回 false，而且原来这里 false 是静默的。
+                            //
+                            // 先试一次：如果此时已经在放映中（用户是放映里重新打开 PPT），
+                            // 直接跳就行。
+                            bool navigated = _pptManager?.TryNavigateToSlide(page) == true;
+                            LogHelper.WriteLogToFile(
+                                $"[PPT跳转] 尝试跳到第 {page} 页：结果={navigated} " +
+                                $"放映中={_pptManager?.IsInSlideShow} 已连接={_pptManager?.IsConnected}",
+                                navigated ? LogHelper.LogType.Event : LogHelper.LogType.Warning);
+
+                            if (navigated)
                             {
                                 if (Settings.PowerPointSettings.SkipAnimationsWhenGoNext) ExceptionHandler.TryExecute(() => this.Activate(), "激活主窗口失败（PPT 翻页时）");
+                            }
+                            else
+                            {
+                                // 现在跳不了（多半是还没进放映）。记下目标页，
+                                // 等真进放映时再补跳一次。
+                                _pendingJumpToPage = page;
+                                LogHelper.WriteLogToFile(
+                                    $"[PPT跳转] 当前跳不了，已记为待跳页 {page}，进放映后再补",
+                                    LogHelper.LogType.Event);
                             }
                         }
                         catch (Exception ex)

@@ -124,6 +124,28 @@ namespace Ink_Canvas.Helpers
 
         // ---------- 状态 ----------
         object _comApplication;
+
+        /// <summary>
+        /// 当前演示文稿的完整路径 —— 打开时缓存，之后不再问 COM。
+        ///
+        /// LTSC（2026-11-20）：原来保存笔迹时要在「退出放映」那一刻去问 COM 要路径，
+        /// 而那时 PPT 正在拆放映窗口，这一问会拖住 COM 引用，PowerPoint 退不掉。
+        /// 改成打开时记下来，保存时直接用字符串 —— 没有 COM 参与。
+        /// </summary>
+        string _cachedPresentationFullName;
+
+        /// <summary>
+        /// 释放 COM 之后的冷却期。在这之前轮询不重连。
+        ///
+        /// LTSC（2026-11-20）：用户关演示文稿时我们会解绑钩子并释放引用，
+        /// 否则 PowerPoint 会认为还有外部程序连着它，关窗口后进程退不掉。
+        /// 但释放完立刻重连，等于白解绑 —— 实测 0.3 秒就挂回去了，
+        /// PPT 只能等 21 秒超时才退出。
+        /// </summary>
+        DateTime _comReleaseCooldownUntil = DateTime.MinValue;
+
+        /// <summary>释放 COM 后进入多久的冷却期。</summary>
+        static readonly TimeSpan ComReleaseCooldown = TimeSpan.FromSeconds(8);
         object _comSlideShowWindow;
         int _currentSlide = -1;
         bool _inSlideShow;
@@ -362,8 +384,19 @@ namespace Ink_Canvas.Helpers
                 }
 
                 // 连接：只在需要时检查
+                //
+                // LTSC（2026-11-20，用户报「PowerPoint 被劫持」）：
+                // 加了一层冷却。原因：用户关掉演示文稿时我们在 OnComPresentationClose
+                // 里解绑了 COM 钩子（不解绑 PPT 就退不掉），但解绑后 _comApplication
+                // 变成 null，这一轮轮询立刻又重连、又挂上钩子 —— 0.3 秒就挂回去了，
+                // 日志实测：16:16:21 解绑 → 16:16:22 又注册事件。
+                //
+                // 结果 PPT 要等 21 秒超时才退（用户已经以为「没释放」）。
+                //
+                // 冷却期内不重连，让 PPT 能真正退出。
                 if (_comApplication == null &&
-                    (now - _lastConnectCheck) >= ConnectCheckInterval)
+                    (now - _lastConnectCheck) >= ConnectCheckInterval &&
+                    (now - _comReleaseCooldownUntil) >= TimeSpan.Zero)
                 {
                     _lastConnectCheck = now;
                     TryConnect();
@@ -451,6 +484,43 @@ namespace Ink_Canvas.Helpers
 
         #region 连接
 
+        /// <summary>
+        /// 这个 PowerPoint 实例当前有没有打开的演示文稿。
+        ///
+        /// LTSC（2026-11-20）：用来决定「该不该连」。
+        /// 用户关掉最后一个演示文稿后，PPT 进程往往还活着（在等外部连接），
+        /// 这时候连上去挂 COM 钩子，会让它永远退不掉。
+        ///
+        /// 宁可多花一次 COM 调用，也不要留一个退不掉的 PowerPoint 进程。
+        /// </summary>
+        static bool HasOpenPresentation(object app)
+        {
+            if (app == null) return false;
+            try
+            {
+                object presentations = app.GetType().InvokeMember("Presentations",
+                    System.Reflection.BindingFlags.GetProperty, null, app, null);
+                if (presentations == null) return false;
+                try
+                {
+                    object countObj = presentations.GetType().InvokeMember("Count",
+                        System.Reflection.BindingFlags.GetProperty, null, presentations, null);
+                    int count = countObj == null ? 0 : Convert.ToInt32(countObj);
+                    // 诊断：把真实数量记下来。
+                    // 用户报「PPT 退不掉」时，这行能直接看出判断依据对不对。
+                    LogHelper.WriteLogToFile($"[PPT] 检测到 Presentations.Count={count}",
+                        LogHelper.LogType.Trace);
+                    return count > 0;
+                }
+                finally { SafeRelease(presentations); }
+            }
+            catch
+            {
+                // 读不到就当没有 —— 不连最坏是不联动，连上最坏是 PPT 退不掉。
+                return false;
+            }
+        }
+
         void TryConnect()
         {
             // 进程都不在就别碰 COM：枚举 ROT 是 20+ 次跨进程调用
@@ -463,6 +533,29 @@ namespace Ink_Canvas.Helpers
 
             object app = TryAcquireFromRot();
             if (app == null) app = TryAcquireFromActiveObject();
+
+            // LTSC（2026-11-20，用户报「PowerPoint 被劫持了，pptcom 都没被释放」）：
+            //
+            // 关键判断：**有打开的演示文稿才连**。
+            //
+            // 为什么：ICC 连上 PowerPoint.Application 会挂 5 个 COM 事件钩子，
+            // 只要有钩子在，PPT 就认为「还有外部程序连接我」，用户关窗口后进程退不掉。
+            //
+            // 而原来的判断只有「进程活着」（IsPptProcessAlive）。
+            // 用户关掉演示文稿后进程是活的（等外部连接），于是：
+            //   活着 → 重连 → 挂钩子 → 退不掉 → 一直活着 → 又重连 —— 死循环。
+            // 日志实测：16:21:39 解绑释放 → 16:21:47 又注册，8 秒冷却一到就挂回去。
+            //
+            // 改成看「有没有 Presentation」。关掉演示文稿后没有 Presentation，
+            // 就不连、不挂钩子，PPT 才能真正退出。
+            if (app != null && !HasOpenPresentation(app))
+            {
+                SafeRelease(app);
+                app = null;
+                LastFailureReason = "PowerPoint 运行中但没有打开的演示文稿";
+                if (_comApplication != null) Disconnect("没有打开的演示文稿");
+                return;
+            }
 
             if (app == null)
             {
@@ -963,6 +1056,44 @@ namespace Ink_Canvas.Helpers
             if (_pendingInShowTicks >= StableTicksRequired)
                 nowInShow = _pendingInShow;
 
+            // LTSC（2026-11-20）：在这里缓存演示文稿路径。
+            //
+            // 为什么不在放映结束时缓存：那一刻 PPT 正在拆放映窗口，
+            // 去问 COM 会拖住引用，PowerPoint 就退不掉（用户报「被劫持」）。
+            //
+            // 为什么不在 OnComPresentationOpen 里缓存：那条 COM 事件不一定会触发
+            // （注册时遇到过 RPC_E_SERVERCALL_RETRYLATER，实际走的是轮询兜底），
+            // 班测日志里「拼路径：fullName=(空→用名字算哈希)」就是证据。
+            //
+            // 轮询里最合适的时机是「还没进放映」——那时 PPT 空闲，
+            // 取一次路径很安全，而且此后整个放映过程都有缓存可用。
+            if (!nowInShow && string.IsNullOrEmpty(_cachedPresentationFullName) && IsConnected)
+            {
+                try
+                {
+                    object cachedPres = GetCurrentActivePresentation();
+                    if (cachedPres != null)
+                    {
+                        try
+                        {
+                            string fn = (string)cachedPres.GetType().InvokeMember("FullName",
+                                System.Reflection.BindingFlags.GetProperty, null, cachedPres, null);
+                            if (!string.IsNullOrEmpty(fn))
+                            {
+                                _cachedPresentationFullName = fn;
+                                LogHelper.WriteLogToFile($"[PPT笔迹] 已缓存演示文稿路径：{fn}",
+                                    LogHelper.LogType.Event);
+                            }
+                        }
+                        finally { SafeRelease(cachedPres); }
+                    }
+                }
+                catch (Exception cacheEx)
+                {
+                    VerboseLog("缓存演示文稿路径失败: " + cacheEx.Message);
+                }
+            }
+
             if (nowInShow && !_inSlideShow)
             {
                 SetInSlideShow(true);
@@ -1015,17 +1146,19 @@ namespace Ink_Canvas.Helpers
                     // 订阅方（保存逻辑）要等到后面 async 才用，那时可能已经失效。
                     // 而保存逻辑真正需要的只是「算哈希用的那个路径」，
                     // 所以传字符串最稳 —— 它是托管对象，不受 COM 生命周期影响。
-                    string endFullName = null;
-                    try
-                    {
-                        endFullName = GetPresentationFullNameSafe();
-                    }
-                    catch (Exception payloadEx)
-                    {
-                        VerboseLog("取放映结束时的演示文稿路径失败: " + payloadEx.Message);
-                    }
+                    // 用打开时缓存下来的路径，**不要**在这时候问 COM。
+                    //
+                    // LTSC（2026-11-20，用户反馈「PowerPoint 被劫持了，pptcom 都没被释放」）：
+                    // 我上一版在这里调 GetPresentationFullNameSafe()，
+                    // 走的是 app.ActivePresentation —— 而此刻 PPT 正在拆放映窗口。
+                    // 这一问会给 ActivePresentation 造一个新的 RCW 并拖住它，
+                    // 后果是关掉 PPT 后进程退不掉。
+                    //
+                    // 路径在打开演示文稿时就该记下来（见 OnComPresentationOpen），
+                    // 它是纯字符串，不受 COM 生命周期影响。
+                    string endFullName = _cachedPresentationFullName;
 
-                    VerboseLog($"放映结束，演示文稿路径={(string.IsNullOrEmpty(endFullName) ? "(空)" : endFullName)}");
+                    VerboseLog($"放映结束，演示文稿路径={(string.IsNullOrEmpty(endFullName) ? "(空，用缓存也没有)" : endFullName)}");
                     SlideShowEnd?.Invoke(endFullName);
                 }
                 catch (Exception evtEx)
@@ -1645,16 +1778,53 @@ namespace Ink_Canvas.Helpers
 
         #region COM 事件
 
+        // LTSC（2026-11-20，用户报「PowerPoint 被劫持了，pptcom 都没被释放」）：
+        //
+        // 这五个委托必须**存成字段**，不能每次 new。
+        //
+        // 原来的写法：
+        //     d.PresentationOpen += new Action<object>(OnComPresentationOpen);
+        //     d.PresentationOpen -= new Action<object>(OnComPresentationOpen);
+        //
+        // 对 dynamic COM 事件来说，-= 会走 IDispatch 的 remove_XXX，
+        // 传进去的是**另一个新建的委托实例**，COM 那边认不出来，
+        // 于是根本解不掉。
+        //
+        // 后果：每次重连都在原有钩子上再叠一层，钩子越积越多。
+        // PowerPoint 认为一直有外部程序连着，关窗口后进程退不掉，
+        // 也就打不开新的 PPT（用户看到的「被劫持」）。
+        //
+        // 用固定实例加减，才是同一个引用。
+        Action<object> _onSlideShowBeginAction;
+        Action<object> _onNextSlideAction;
+        Action<object> _onSlideShowEndAction;
+        Action<object> _onPresentationOpenAction;
+        Action<object> _onPresentationCloseAction;
+
+        /// <summary>
+        /// 初始化那五个事件委托。只做一次，之后加/减都用同一个实例。
+        /// </summary>
+        void EnsureEventActions()
+        {
+            if (_onSlideShowBeginAction != null) return;
+            _onSlideShowBeginAction = new Action<object>(OnComSlideShowBegin);
+            _onNextSlideAction = new Action<object>(OnComNextSlide);
+            _onSlideShowEndAction = new Action<object>(OnComSlideShowEnd);
+            _onPresentationOpenAction = new Action<object>(OnComPresentationOpen);
+            _onPresentationCloseAction = new Action<object>(OnComPresentationClose);
+        }
+
         void HookComEvents(object app)
         {
             try
             {
+                EnsureEventActions();
                 dynamic d = app;
-                d.SlideShowBegin += new Action<object>(OnComSlideShowBegin);
-                d.SlideShowNextSlide += new Action<object>(OnComNextSlide);
-                d.SlideShowEnd += new Action<object>(OnComSlideShowEnd);
-                d.PresentationOpen += new Action<object>(OnComPresentationOpen);
-                d.PresentationClose += new Action<object>(OnComPresentationClose);
+                d.SlideShowBegin += _onSlideShowBeginAction;
+                d.SlideShowNextSlide += _onNextSlideAction;
+                d.SlideShowEnd += _onSlideShowEndAction;
+                d.PresentationOpen += _onPresentationOpenAction;
+                d.PresentationClose += _onPresentationCloseAction;
                 _comEventsHooked = true;
                 LogHelper.WriteLogToFile("PptBridge COM 事件已注册", LogHelper.LogType.Trace);
             }
@@ -1672,11 +1842,11 @@ namespace Ink_Canvas.Helpers
             try
             {
                 dynamic d = _comApplication;
-                d.SlideShowBegin -= new Action<object>(OnComSlideShowBegin);
-                d.SlideShowNextSlide -= new Action<object>(OnComNextSlide);
-                d.SlideShowEnd -= new Action<object>(OnComSlideShowEnd);
-                d.PresentationOpen -= new Action<object>(OnComPresentationOpen);
-                d.PresentationClose -= new Action<object>(OnComPresentationClose);
+                d.SlideShowBegin -= _onSlideShowBeginAction;
+                d.SlideShowNextSlide -= _onNextSlideAction;
+                d.SlideShowEnd -= _onSlideShowEndAction;
+                d.PresentationOpen -= _onPresentationOpenAction;
+                d.PresentationClose -= _onPresentationCloseAction;
             }
             catch (Exception ex)
             {
@@ -1759,6 +1929,32 @@ namespace Ink_Canvas.Helpers
         void OnComPresentationOpen(object pres)
         {
             RefreshSlidesCount();
+
+            // LTSC（2026-11-20）：打开时就把路径记下来，以后一律用缓存。
+            //
+            // 为什么：保存笔迹要用路径算文件夹哈希，而保存发生在「退出放映」时。
+            // 那时候 PPT 正在拆放映窗口，再去问 COM 要 ActivePresentation
+            // 是不安全的 —— 会拖住一个 COM 引用，PowerPoint 就退不掉（被劫持）。
+            //
+            // 打开演示文稿时 PPT 是空闲的，这一刻取路径最稳。
+            try
+            {
+                if (pres != null)
+                {
+                    string fn = (string)pres.GetType().InvokeMember("FullName",
+                        System.Reflection.BindingFlags.GetProperty, null, pres, null);
+                    if (!string.IsNullOrEmpty(fn))
+                    {
+                        _cachedPresentationFullName = fn;
+                        VerboseLog($"记住演示文稿路径：{fn}");
+                    }
+                }
+            }
+            catch (Exception cacheEx)
+            {
+                VerboseLog("记路径失败: " + cacheEx.Message);
+            }
+
             if (!_hasPresentation)
             {
                 _hasPresentation = true;
@@ -1770,7 +1966,45 @@ namespace Ink_Canvas.Helpers
 
         void OnComPresentationClose(object pres)
         {
-            RefreshSlidesCount();
+            // LTSC（2026-11-20，用户报「PowerPoint 被劫持了，pptcom 都没被释放」）：
+            //
+            // 这里**先解绑钩子再干别的**。原因：
+            //   我们在 PowerPoint.Application 上挂了 5 个 COM 事件，
+            //   只要还有一个事件订阅在，PPT 就认为「还有外部程序连着它」，
+            //   用户关窗口时会退不掉，进程留在后台（就是用户看到的「被劫持」）。
+            //
+            //   正常情况下 UnhookComEvents 只在 Disconnect 里调，
+            //   而 Disconnect 的条件是「PPT 进程已经死了」—— 死循环：
+            //   PPT 活着 → 不解绑 → PPT 退不掉 → 进程一直活着 → 永远不解绑。
+            //
+            //   演示文稿关闭是用户要退出 PPT 的明确信号，在这里解绑正好。
+            try
+            {
+                UnhookComEvents();
+                ReleaseCom();
+                _inSlideShow = false;
+                _pendingInShow = false;
+                _pendingInShowTicks = 0;
+                _currentSlide = -1;
+                SlideShowBounds = System.Drawing.Rectangle.Empty;
+                LogHelper.WriteLogToFile("[PPT] 演示文稿已关闭，已解绑 COM 钩子并释放引用（否则 PowerPoint 退不掉）",
+                    LogHelper.LogType.Event);
+            }
+            catch (Exception releaseEx)
+            {
+                LogHelper.WriteLogToFile("[PPT] 演示文稿关闭时释放 COM 失败: " + releaseEx.Message,
+                    LogHelper.LogType.Warning);
+            }
+
+            // 演示文稿关闭了，缓存的路径就没意义了。不清的话，
+            // 下次打开另一份 PPT 却还没触发 PresentationOpen 时，
+            // 会拿旧路径去算哈希，又写错文件夹。
+            _cachedPresentationFullName = null;
+
+            // RefreshSlidesCount 会访问 COM，而上面已经释放了，
+            // 所以这里不能再调 —— 挪到解绑之前也不合适（那时 ppt 正在关）。
+            // 页数由下一次连接时的 RefreshSlidesCount 负责。
+
             if (_hasPresentation)
             {
                 _hasPresentation = false;
@@ -1800,6 +2034,11 @@ namespace Ink_Canvas.Helpers
             _comSlideShowWindow = null;
             SafeRelease(_comApplication);
             _comApplication = null;
+
+            // 释放后进冷却期，轮询不要在下一个 tick 就把钩子重新挂上。
+            // 不设这个的话，用户关演示文稿后我们解绑了，0.3 秒后又连上，
+            // PowerPoint 仍然退不掉（实测要等 21 秒超时）。
+            _comReleaseCooldownUntil = DateTime.UtcNow + ComReleaseCooldown;
         }
 
         static bool LooksLikePresentation(string displayName)

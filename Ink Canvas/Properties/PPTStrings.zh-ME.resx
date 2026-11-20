@@ -156,7 +156,7 @@
     <value>放大缩小</value>
   </data>
   <data name="PPT_RememberLastPage_Prompt" xml:space="preserve">
-    <value>上次看到第 {0} 页了，要不要一键飞过去？</value>
+    <value>上次看到第 {0} 页了，进放映后自动飞过去</value>
   </data>
   <data name="PPT_HiddenSlides_Detected" xml:space="preserve">
     <value>发现藏起来的幻灯片了，要不要把它们拉出来示众？</value>

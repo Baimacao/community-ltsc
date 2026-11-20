@@ -148,7 +148,7 @@
     <value>Zoom</value>
   </data>
   <data name="PPT_RememberLastPage_Prompt" xml:space="preserve">
-    <value>Last played at page {0}, jump to it now?</value>
+    <value>Last played at page {0}. It will jump there once the slideshow starts.</value>
   </data>
   <data name="PPT_HiddenSlides_Detected" xml:space="preserve">
     <value>Hidden slides detected in this presentation. Unhide them?</value>
