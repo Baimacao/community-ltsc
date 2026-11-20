@@ -827,6 +827,80 @@ namespace Ink_Canvas
         /// </summary>
         private int _pendingJumpToPage;
 
+        /// <summary>
+        /// 点了「跳转」但当下降不了（还没进放映）时给的提示。
+        ///
+        /// LTSC（2026-11-20）：原来点了确认之后没有任何反馈 ——
+        /// 老师看到的就是「按了没反应」，会反复点，或者以为功能坏了。
+        /// 实际上我们记住了页码，进放映就会跳，只是那一刻还不能跳。
+        ///
+        /// 复用内联弹窗的样式，但只有一个按钮：让老师知道「等着就行」。
+        /// </summary>
+        private async Task ShowJumpPendingHint(int page)
+        {
+            try
+            {
+                _inlineDialogTcs = new TaskCompletionSource<bool>();
+
+                InlineDialogTitle.Content = "Ink Canvas For Class CE";
+                InlineDialogContent.Text = string.Format(
+                    "已记住第 {0} 页。开始放映后会自动跳过去。", page);
+
+                InlineDialogRoot.Opacity = 0;
+                InlineDialogRoot.Visibility = Visibility.Visible;
+                InlineDialogScaleTransform.ScaleX = 1.05;
+                InlineDialogScaleTransform.ScaleY = 1.05;
+
+                var anim = new System.Windows.Media.Animation.Storyboard();
+
+                var fade = new System.Windows.Media.Animation.DoubleAnimation(0, 1,
+                    TimeSpan.FromMilliseconds(150));
+                fade.FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd;
+                System.Windows.Media.Animation.Storyboard.SetTarget(fade, InlineDialogRoot);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(fade,
+                    new PropertyPath(Grid.OpacityProperty));
+                anim.Children.Add(fade);
+
+                var sx = new System.Windows.Media.Animation.DoubleAnimation(1.05, 1.0,
+                    TimeSpan.FromMilliseconds(220));
+                sx.FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd;
+                var ease = new System.Windows.Media.Animation.CubicEase {
+                    EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
+                sx.EasingFunction = ease;
+                System.Windows.Media.Animation.Storyboard.SetTarget(sx, InlineDialogCard);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(sx,
+                    new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
+                anim.Children.Add(sx);
+
+                var sy = new System.Windows.Media.Animation.DoubleAnimation(1.05, 1.0,
+                    TimeSpan.FromMilliseconds(220));
+                sy.FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd;
+                sy.EasingFunction = ease;
+                System.Windows.Media.Animation.Storyboard.SetTarget(sy, InlineDialogCard);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(sy,
+                    new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
+                anim.Children.Add(sy);
+
+                anim.Begin(this);
+
+                // 3 秒后自动收掉，不用老师去点。
+                // 等老师点也行，但这是纯告知，没有需要他决定的东西。
+                var timer = new System.Windows.Threading.DispatcherTimer {
+                    Interval = TimeSpan.FromSeconds(3) };
+                timer.Tick += (s, e) =>
+                {
+                    timer.Stop();
+                    HideInlineDialog();
+                };
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile("[PPT跳转] 显示待跳提示失败: " + ex.Message,
+                    LogHelper.LogType.Warning);
+            }
+        }
+
         private async void ShowPreviousPageNotification(Presentation pres, PPTState agentState = null)
         {
             try
@@ -878,6 +952,10 @@ namespace Ink_Canvas
                                 LogHelper.WriteLogToFile(
                                     $"[PPT跳转] 当前跳不了，已记为待跳页 {page}，进放映后再补",
                                     LogHelper.LogType.Event);
+
+                                // 告诉老师「不是没反应，是还没进放映」。
+                                // 原来点了确认之后什么反馈都没有，看起来像按钮坏了。
+                                await ShowJumpPendingHint(page);
                             }
                         }
                         catch (Exception ex)
