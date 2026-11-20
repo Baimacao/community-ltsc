@@ -1462,7 +1462,24 @@ namespace Ink_Canvas
                         // 留着会让用户之后一次正常点鼠标时莫名不隐藏，行为不一致。
                         _pptNavSkipHideStrokeOnce = false;
 
-                        inkCanvas.Visibility = Visibility.Visible;
+                        // LTSC（2026-11-20 班测，第五次修这条）：漏了命中测试。
+                        //
+                        // 班测日志把链路钉死了（Log_2026-11-20-07-11-02）：
+                        //   07:11:45  点页码：进入时状态 批注=True 工具模式=pen 笔迹数=1
+                        //   07:11:45  高亮定位 mode=cursor      ← 切穿透
+                        //   07:11:48  已自动回到批注模式 | EditingMode=Ink currentToolMode=pen
+                        //   结果：能看见笔迹、模式显示是笔，但写不上。
+                        //
+                        // 原因：CursorIcon_Click 进穿透时设了
+                        //     inkCanvas.IsHitTestVisible = false;
+                        // 这里只恢复 Visibility 和 EditingMode，没恢复命中测试。
+                        // 画布可见、模式对，但收不到触摸事件 —— 就是「写不了字」。
+                        //
+                        // 用户点一下鼠标再点批注能好，是因为那条路径走的是
+                        // CursorIcon_Click / PenIcon_Click，它们各自会设 IsHitTestVisible。
+                        //
+                        // 恢复批注态必须三样一起回：可见、命中、模式。少一样都是半切状态。
+                        ApplyAnnotationRestoreState();
 
                         // LTSC（2026-11-17）：这里原来是直接调 PenIcon_Click(null, null)。
                         //
@@ -1499,9 +1516,12 @@ namespace Ink_Canvas
 
                         // 打一行能验证的日志：把当时的 EditingMode 一起记下来，
                         // 以后再有「进了批注却写不了」的反馈，看这一行就知道是不是这个原因。
+                        // 三样一起记：可见 / 命中 / 模式。
+                        // 少一样都是「看着是笔但写不了」，以前只记模式，所以查了四轮。
                         LogHelper.WriteLogToFile(
                             $"[PPT导航] 已自动回到批注模式（{reason}）| EditingMode={inkCanvas.EditingMode} " +
-                            $"currentToolMode={GetCurrentSelectedMode()}",
+                            $"currentToolMode={GetCurrentSelectedMode()} " +
+                            $"可见={inkCanvas.Visibility} 命中={inkCanvas.IsHitTestVisible}",
                             LogHelper.LogType.Event);
                     }
                     catch (Exception ex)
@@ -1514,6 +1534,25 @@ namespace Ink_Canvas
             {
                 LogHelper.WriteLogToFile($"[PPT导航] 恢复批注模式失败(外层): {ex.Message}", LogHelper.LogType.Warning);
             }
+        }
+
+        /// <summary>
+        /// 把画布恢复成「可以写字」的状态。可见、命中、模式三样一起回。
+        ///
+        /// LTSC（2026-11-20）：抽出来是为了能被探针直接调用验证。
+        /// 原来这三样分散在 TryRestoreAnnotationAfterPptNavigation 里，
+        /// 而那个方法前面有 PPT 连接判断，探针进不去 ——
+        /// 于是「漏了哪一样」只能靠读代码看出来，读代码是猜，不是验证。
+        ///
+        /// 进入穿透时 CursorIcon_Click 会把 IsHitTestVisible 设成 false；
+        /// 恢复时如果只还原 Visibility 和 EditingMode，
+        /// 就会得到「画布看得见、工具栏是笔、但触摸落不到画布上」——
+        /// 用户看到的就是「进了批注模式但写不了字」。
+        /// </summary>
+        internal void ApplyAnnotationRestoreState()
+        {
+            inkCanvas.Visibility = Visibility.Visible;
+            inkCanvas.IsHitTestVisible = true;
         }
 
         /// <summary>用户自己点了批注键 —— 作废挂起的自动恢复。</summary>

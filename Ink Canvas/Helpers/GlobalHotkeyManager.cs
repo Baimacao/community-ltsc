@@ -325,10 +325,26 @@ namespace Ink_Canvas.Helpers
                     }
                     else
                     {
-                        // 注册失败要看得见 —— 否则老师会以为 ESC 能用
+                        // 注册失败要看得见 —— 否则老师会以为 ESC 能用。
+                        //
+                        // LTSC（2026-11-20）：日志里原来只写「可能被其他程序占用」，
+                        // 但班测日志显示最常见的原因不是别的程序，是**我们自己的键盘钩子**：
+                        //   PresenterKeyAdapter 在进放映时会挂低级键盘钩子来拦翻页笔误触，
+                        //   它先吃掉 ESC，RegisterHotKey 就注册不上。
+                        // 两者功能不冲突（钩子那条路会自己处理 ESC），但那句误导性的话
+                        // 让人以为是外部冲突，白白花时间排查。
+                        bool ownHookLikely = false;
+                        try
+                        {
+                            ownHookLikely = PresenterKeyAdapter.IsHooked;
+                        }
+                        catch { }
+
                         LogHelper.WriteLogToFile(
-                            $"退出放映热键注册失败（{_exitHotkeyKey}），可能被其他程序占用",
-                            LogHelper.LogType.Warning);
+                            ownHookLikely
+                                ? $"退出放映热键注册失败（{_exitHotkeyKey}）：翻页笔拦截钩子已经接管了这些键，不再重复注册（这是正常的）"
+                                : $"退出放映热键注册失败（{_exitHotkeyKey}），可能被其他程序占用",
+                            ownHookLikely ? LogHelper.LogType.Event : LogHelper.LogType.Warning);
                     }
                 }
                 else if (!shouldRegister && _exitHotkeyRegistered)

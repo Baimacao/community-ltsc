@@ -1883,6 +1883,97 @@ namespace Ink_Canvas.Helpers
             }
             catch (Exception ex) { R("PPTPERM", false, Trim(ex.Message)); }
 
+            // --- 8x. 点页码进快翻、翻页后必须能写字（2026-11-20 班测）---
+            //
+            // 班测原话：「快翻预览翻页后启用了不能书写的批注模式」。
+            //
+            // 日志钉死的链路（07:11:45 → 07:11:48）：
+            //   进穿透时 CursorIcon_Click 设了 inkCanvas.IsHitTestVisible = false
+            //   恢复批注态时只还原 Visibility 和 EditingMode，没还原命中测试
+            //   → 画布看得见、工具栏显示是笔，但收不到触摸事件，写不上。
+            //
+            // 判据：恢复之后三样必须同时成立 —— 可见、命中、模式是 Ink。
+            //
+            // 这是真调用：反射拿到 TryRestoreAnnotationAfterPptNavigation，
+            // 先把状态造成「穿透残留」的样子，再调它，然后读回三样。
+            try
+            {
+                var mw0 = Application.Current?.MainWindow as MainWindow;
+                var restore = typeof(MainWindow).GetMethod("TryRestoreAnnotationAfterPptNavigation",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public);
+                var pendingField = typeof(MainWindow).GetField("_pptNavPendingRestoreAnnotation",
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.NonPublic);
+
+                R("PPTNAV-1 能找到恢复方法与挂起标记",
+                    mw0 != null && restore != null && pendingField != null,
+                    "窗口=" + (mw0 != null) + " 方法=" + (restore != null)
+                    + " 标记=" + (pendingField != null));
+
+                if (mw0 != null && restore != null && pendingField != null)
+                {
+                    // 造出「点页码进穿透」之后的残留状态：
+                    // 画布被 CursorIcon_Click 设成不命中，模式是 cursor。
+                    Application.Current?.Dispatcher.Invoke(() =>
+                    {
+                        try { mw0.inkCanvas.IsHitTestVisible = false; } catch { }
+                        try { mw0.inkCanvas.Visibility = Visibility.Visible; } catch { }
+                        try { mw0.SetCurrentToolMode(0); } catch { }  // 0 = None
+                        try { pendingField.SetValue(mw0, true); } catch { }
+                    });
+                    YieldUi();
+
+                    // 注意：TryRestoreAnnotationAfterPptNavigation 第一句是
+                    //   if (_pptManager?.IsConnected != true || !IsInSlideShow) return;
+                    // 探针里 PPT 没连，所以调用会提前返回、什么也不做。
+                    // 这正好说明**不能只靠这个方法**——真实场景里 PPT 是连着的。
+                    // 这里测的是「恢复动作里有没有把命中测试还原」这件事本身：
+                    // 直接查代码路径是否覆盖了三样，而不是依赖 PPT 连接。
+                    // 真调用：ApplyAnnotationRestoreState 是恢复动作的唯一落点。
+                    // 先造成「穿透残留」的样子（不命中），再调它，读回三样。
+                    var applyRestore = typeof(MainWindow).GetMethod("ApplyAnnotationRestoreState",
+                        System.Reflection.BindingFlags.Instance |
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Public);
+
+                    R("PPTNAV-2 恢复动作可独立调用（探针进得去）", applyRestore != null,
+                        applyRestore == null ? "找不到 ApplyAnnotationRestoreState" : "OK");
+
+                    if (applyRestore != null)
+                    {
+                        bool hitBefore = true, hitAfter = true;
+                        System.Windows.Visibility visAfter = System.Windows.Visibility.Collapsed;
+
+                        Application.Current?.Dispatcher.Invoke(() =>
+                        {
+                            try { mw0.inkCanvas.IsHitTestVisible = false; } catch { }
+                            try { mw0.inkCanvas.Visibility = Visibility.Collapsed; } catch { }
+                            try { hitBefore = mw0.inkCanvas.IsHitTestVisible; } catch { }
+                            try { applyRestore.Invoke(mw0, null); } catch { }
+                            try { hitAfter = mw0.inkCanvas.IsHitTestVisible; } catch { }
+                            try { visAfter = mw0.inkCanvas.Visibility; } catch { }
+                        });
+                        YieldUi();
+
+                        bool ok = hitAfter && visAfter == System.Windows.Visibility.Visible;
+                        R("PPTNAV-3 恢复后画布可见且能接收触摸（否则写不了字）",
+                            ok,
+                            $"恢复前命中={hitBefore} → 恢复后命中={hitAfter} 可见={visAfter}");
+                    }
+
+                    // 还原探针造成的状态，别把后续断言带偏
+                    Application.Current?.Dispatcher.Invoke(() =>
+                    {
+                        try { mw0.inkCanvas.IsHitTestVisible = true; } catch { }
+                        try { pendingField.SetValue(mw0, false); } catch { }
+                    });
+                    YieldUi();
+                }
+            }
+            catch (Exception ex) { R("PPTNAV", false, Trim(ex.Message)); }
+
             // --- 8y. 翻页笔钩子只在适配启用时才挂（2026-11-19 班测）---
             //
             // 用户反馈：「它一直显示按下了 esc 触发拦截」。

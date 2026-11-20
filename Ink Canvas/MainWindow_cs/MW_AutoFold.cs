@@ -125,7 +125,10 @@ namespace Ink_Canvas
         public async Task FoldFloatingBar(object sender, bool isAutoFoldCommand = false)
         {
             _foldSw = System.Diagnostics.Stopwatch.StartNew();
-            LogHelper.WriteLogToFile("[折叠] 开始", LogHelper.LogType.Event);
+            // LTSC（2026-11-20）：这行原来在最前面，于是每次进方法都打一条。
+            // 自动收纳定时器每 1 秒叫一次，折叠期间会连着进来 5 次，
+            // 日志上看着像「折叠了 5 次」，实际只有第一次生效、后 4 次被下面的
+            // alreadyFolded 挡掉。挪到判断之后，只记真正执行的折叠。
 
             // LTSC（2026-11-19 班测崩溃）：整个方法必须跑在 UI 线程上。
             //
@@ -184,6 +187,9 @@ namespace Ink_Canvas
             {
                 return;
             }
+
+            // 走到这里才是真正要折叠。日志放在这，一次折叠只留一条。
+            LogHelper.WriteLogToFile("[折叠] 开始（真正执行）", LogHelper.LogType.Event);
 
             await Dispatcher.InvokeAsync(() =>
             {
