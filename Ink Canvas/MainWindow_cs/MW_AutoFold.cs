@@ -836,6 +836,38 @@ namespace Ink_Canvas
         /// </summary>
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            // LTSC（2026-11-20 第十一轮）：这是窗口级最外层入口。
+            // 前几轮在 inkCanvas 的两个入口加日志，一条都不出 ——
+            // 事件要么没进 ICC，要么在半路被吃了。
+            // 这里无条件记，先确认鼠标到底有没有进进程。
+            try
+            {
+                // LTSC（2026-11-20 十六轮）：源=Grid 说明命中的不是 inkCanvas。
+                // 直接在这条路径上问 WPF「这个点命中谁」，比读代码可靠。
+                var pt = e.GetPosition(Main_Grid);
+                var hit = Main_Grid.InputHitTest(pt) as System.Windows.DependencyObject;
+                string hitChain = "";
+                var node = hit;
+                for (int i = 0; i < 5 && node != null; i++)
+                {
+                    var fe = node as System.Windows.FrameworkElement;
+                    hitChain += (fe?.Name ?? node.GetType().Name) + " < ";
+                    node = System.Windows.Media.VisualTreeHelper.GetParent(node);
+                }
+
+                // 同时记坐标和画布范围，才能判断「是不是划在画布上」。
+                // 前面几轮一直假设用户划在画布中央，但日志从没验证过这一点。
+                var inInk = pt.X >= 0 && pt.Y >= 0
+                            && pt.X <= inkCanvas.ActualWidth && pt.Y <= inkCanvas.ActualHeight;
+                LogHelper.WriteLogToFile(
+                    $"[窗口输入] 点=({pt.X:F0},{pt.Y:F0}) 画布={inkCanvas.ActualWidth:F0}x{inkCanvas.ActualHeight:F0} " +
+                    $"在画布内={inInk} EditingMode={inkCanvas.EditingMode} " +
+                    $"currentToolMode={_currentToolMode} 命中={inkCanvas.IsHitTestVisible} " +
+                    $"源={e.OriginalSource?.GetType().Name} || 命中链={hitChain}",
+                    LogHelper.LogType.Event);
+            }
+            catch { }
+
             HandleAutoCollapseOnMouseDown(e);
         }
 

@@ -179,6 +179,24 @@ namespace Ink_Canvas
             // 恢复流程内部会先清零再调本方法，所以不会误伤自己。
             CancelPendingPptNavigationRestore();
 
+            // LTSC（2026-11-20 第十七轮，用户定的新规则）：
+            // 点页码时一律隐藏笔迹（为了看清缩略图）。老师要写字时会点「批注」，
+            // 那一刻必须把笔迹显示回来 —— 否则画布是空的，看着像墨迹丢了。
+            //
+            // 这里显式还原，不依赖下面的分支：
+            // 从穿透态点批注走的是 else 分支（弹笔面板），那条路不设 Visibility。
+            try
+            {
+                if (inkCanvas != null && inkCanvas.Visibility != Visibility.Visible)
+                {
+                    inkCanvas.Visibility = Visibility.Visible;
+                    LogHelper.WriteLogToFile(
+                        "[PPT导航] 点批注：恢复笔迹显示",
+                        LogHelper.LogType.Event);
+                }
+            }
+            catch { }
+
             if (lastBorderMouseDownObject is Panel panel)
                 panel.Background = new SolidColorBrush(Colors.Transparent);
 

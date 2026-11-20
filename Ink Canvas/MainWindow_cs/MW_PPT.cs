@@ -1514,14 +1514,84 @@ namespace Ink_Canvas
                         // 否则这块半透明层继续挡着底部浮动栏。
                         ResetPptTransparencyOverlay($"回到批注模式（{reason}）");
 
+                        // LTSC（2026-11-20 第十三轮）：窗口级日志显示「恢复之后 12 秒内
+                        // 一条 [窗口输入] 都没有」，说明鼠标根本进不了 ICC 进程。
+                        // 那不是 WPF 内部的事，先确认窗口自身状态。
+                        // LTSC（2026-11-20 第十四轮，日志抓到）：
+                        //
+                        //   [窗口状态] 恢复后：Topmost=True 激活=False 可见=Visible
+                        //
+                        // 窗口置顶但没激活。WPF 窗口在未激活状态下，
+                        // 鼠标第一下只用来激活窗口，不派发给内部控件 ——
+                        // 所以光标还是箭头，inkCanvas 一个事件都收不到，
+                        // 那一划直接落到下面的 PPT 上。
+                        //
+                        // 点页码进导航时焦点被 PPT 拿走了，恢复批注态时没人把它要回来。
+                        // 这里显式激活。Topmost 已经保证不被 PPT 盖住，激活只是为了收输入。
+                        try
+                        {
+                            var wasActive = IsActive;
+                            if (!wasActive)
+                            {
+                                Activate();
+                            }
+
+                            var helper = new System.Windows.Interop.WindowInteropHelper(this);
+
+                            // 父容器状态也要看：inkCanvas 自己能命中，但如果父容器
+                            // 被 Hidden / 不可命中，子元素照样收不到事件。
+                            LogHelper.WriteLogToFile(
+                                $"[窗口状态] 恢复后：Topmost={Topmost} 激活={IsActive}（原本={wasActive}）" +
+                                $" 可见={Visibility} 状态={WindowState} 句柄=0x{helper.Handle.ToInt64():X} || " +
+                                $"父Grid 可见={InkCanvasGridForInkReplay.Visibility} " +
+                                $"父Grid命中={InkCanvasGridForInkReplay.IsHitTestVisible} " +
+                                $"重播中={isStopInkReplay} " +
+                                $"Main_Grid命中={Main_Grid.IsHitTestVisible} " +
+                                $"窗口命中={IsHitTestVisible} || " +
+                                $"exStyle={GetWindowExStyleForDiag(helper.Handle)}",
+                                LogHelper.LogType.Event);
+                        }
+                        catch (Exception wex)
+                        {
+                            LogHelper.WriteLogToFile("[窗口状态] 记录失败: " + wex.Message, LogHelper.LogType.Warning);
+                        }
+
                         // 打一行能验证的日志：把当时的 EditingMode 一起记下来，
                         // 以后再有「进了批注却写不了」的反馈，看这一行就知道是不是这个原因。
-                        // 三样一起记：可见 / 命中 / 模式。
+                        // LTSC（2026-11-20 第六轮）：班测反馈「设了命中=True 还是写不了」。
                         // 少一样都是「看着是笔但写不了」，以前只记模式，所以查了四轮。
+                        // LTSC（2026-11-20 第六轮）：前三项（模式/可见/命中）全对，
+                        // 班测反馈还是写不了字 —— 说明这三项不够。
+                        //
+                        // 这轮把真正决定「触摸能不能落到画布」的状态全打出来：
+                        //   可用    IsEnabled=false 时虽然有命中，但不收输入
+                        //   尺寸    为 0 时输入落不进来
+                        //   笔迹数  Strokes 为 null 时也算写不了
+                        //   触摸栈  App 启动时显式禁用了 EnablePointerSupport，
+                        //           而 UpdateCurrentToolMode 运行时在反复 SetSwitch。
+                        //           这是进程级静态开关，动态切对已初始化的输入栈基本无效。
+                        bool ptrSwitch = false;
+                        try
+                        {
+                            if (AppContext.TryGetSwitch(
+                                "Switch.System.Windows.Input.Stylus.EnablePointerSupport", out bool pv))
+                                ptrSwitch = pv;
+                        }
+                        catch { }
+
+                        // LTSC（2026-11-20 第七轮）：EditingMode 和 _currentToolMode 要分开打。
+                        // 前六轮我盯着 GetCurrentSelectedMode()（那是 _currentToolMode），
+                        // 它一直是 pen，所以我一直以为模式是对的。
+                        // 而真正决定「触摸画不画」的是 inkCanvas.EditingMode，
+                        // 那个变量被触摸输入改成了 None 且无人还原。
                         LogHelper.WriteLogToFile(
-                            $"[PPT导航] 已自动回到批注模式（{reason}）| EditingMode={inkCanvas.EditingMode} " +
-                            $"currentToolMode={GetCurrentSelectedMode()} " +
-                            $"可见={inkCanvas.Visibility} 命中={inkCanvas.IsHitTestVisible}",
+                            $"[PPT导航] 已自动回到批注模式（{reason}）| " +
+                            $"EditingMode={inkCanvas.EditingMode}（决定触摸画不画） " +
+                            $"currentToolMode={GetCurrentSelectedMode()}（决定图标显示） " +
+                            $"可见={inkCanvas.Visibility} 命中={inkCanvas.IsHitTestVisible} " +
+                            $"可用={inkCanvas.IsEnabled} " +
+                            $"尺寸={inkCanvas.ActualWidth:F0}x{inkCanvas.ActualHeight:F0} " +
+                            $"触摸栈={ptrSwitch}",
                             LogHelper.LogType.Event);
                     }
                     catch (Exception ex)
@@ -1549,6 +1619,28 @@ namespace Ink_Canvas
         /// 就会得到「画布看得见、工具栏是笔、但触摸落不到画布上」——
         /// 用户看到的就是「进了批注模式但写不了字」。
         /// </summary>
+        /// <summary>
+        /// 诊断用：读窗口扩展样式。
+        /// WS_EX_TRANSPARENT(0x20) 会让整个窗口点击穿透 —— 鼠标事件根本进不来，
+        /// 就是「光标是箭头、一划落到 PPT 上」那个现象。
+        /// WS_EX_NOACTIVATE(0x8000000) 会让窗口不抢焦点。
+        /// 这两项都属于「WPF 内部全对但事件进不来」的典型原因，
+        /// 之前十几轮都没查过，因为它们不在 WPF 属性里。
+        /// </summary>
+        private static string GetWindowExStyleForDiag(IntPtr hwnd)
+        {
+            try
+            {
+                if (hwnd == IntPtr.Zero) return "句柄为0";
+                int ex = NativeWindowHelper.GetWindowLong(hwnd, NativeWindowHelper.GWL_EXSTYLE);
+                bool transparent = (ex & 0x00000020) != 0;   // WS_EX_TRANSPARENT
+                bool noActivate = (ex & 0x08000000) != 0;    // WS_EX_NOACTIVATE
+                bool layered = (ex & 0x00080000) != 0;       // WS_EX_LAYERED
+                return $"0x{ex:X8}[穿透={transparent} 不激活={noActivate} 分层={layered}]";
+            }
+            catch (Exception ex2) { return "读取失败:" + ex2.Message; }
+        }
+
         internal void ApplyAnnotationRestoreState()
         {
             // 顺序有讲究：先恢复命中测试（纯依赖属性，不触发布局），
@@ -1557,6 +1649,47 @@ namespace Ink_Canvas
             // 之后才变成可命中，中间那一帧仍然是写不了字的状态。
             inkCanvas.IsHitTestVisible = true;
             inkCanvas.Visibility = Visibility.Visible;
+
+            // LTSC（2026-11-20 第十二轮，日志抓到的真凶）：
+            //
+            // 窗口级日志显示，你划的那一下 源=InkCanvasSelectionAdorner：
+            //   [窗口输入] PreviewMouseDown：EditingMode=Ink 命中=True 源=InkCanvasSelectionAdorner
+            //
+            // 这是 WPF InkCanvas 内置的选择框装饰层。它在 inkCanvas 之上，
+            // 有它盖着，鼠标事件全被它吃掉，永远到不了 inkCanvas_MouseDown
+            // —— 所以前面在 inkCanvas 两个入口加的日志一条都不出。
+            //
+            // 它本来只应该在「选择工具」或「有选中对象」时出现。
+            // 但 CursorIcon_Click 进穿透时调过 inkCanvas.Select(new StrokeCollection())，
+            // 恢复路径从来没做过对应的清理，装饰层就留在了上面。
+            //
+            // 清选中是安全的：批注模式下不需要选中集合。
+            try
+            {
+                inkCanvas.Select(new StrokeCollection());
+                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+            }
+            catch { }
+
+            // LTSC（2026-11-20 第七轮，用户点破）：
+            // 「显示是批注模式，实际是鼠标模式，一滑直接翻页」。
+            //
+            // 这是真的。代码里有两个独立的「当前是什么工具」：
+            //   _currentToolMode        → 工具栏图标/高亮，决定「显示成什么」
+            //   inkCanvas.EditingMode   → 真正决定触摸落下去画不画
+            //
+            // InkCanvas_PreviewTouchDown 里有多条分支会把 EditingMode 设成 None
+            // （实时笔刷路径、多指路径），而 TouchUp 里没有任何一处把它还原。
+            // 于是进过一次触摸之后：
+            //   _currentToolMode = "pen"（界面显示笔）
+            //   EditingMode      = None（实际不收笔，触摸被 ppt 翻页吃掉）
+            //
+            // 这也解释了为什么我前六轮查的「可见/命中/可用/尺寸/触摸栈」全对 ——
+            // 那几项确实都对，问题在另一个变量上。
+            //
+            // 恢复批注态必须把 EditingMode 显式设回 Ink。
+            // SetCurrentToolMode 会同时更新热键状态和工具栏可见性，走它更稳。
+            SetCurrentToolMode(InkCanvasEditingMode.Ink);
         }
 
         /// <summary>用户自己点了批注键 —— 作废挂起的自动恢复。</summary>
@@ -1648,32 +1781,42 @@ namespace Ink_Canvas
                     + $"浮动栏折叠={isFloatingBarFolded}",
                     LogHelper.LogType.Event);
 
-                if (wasAnnotating)
-                {
-                    // 只有从批注态进来才需要走切换流程：
-                    // 记下待恢复状态 → 切穿透 → 隐藏笔迹 → 记「下次点鼠标别藏笔迹」。
-                    _pptNavPendingRestoreAnnotation = true;
+                // LTSC（2026-11-20 第十七轮，用户定的新规则）：
+                //
+                // 前面十六轮一直在纠结「翻页之后怎么自动回到批注态」，
+                // 那条自动化路径本身就不稳（要不要恢复、什么时候恢复、
+                // 恢复时窗口激活/命中/选中框一堆条件）。用户直接改规则：
+                //
+                //   点页码 = 一律临时隐藏笔迹 + 切鼠标穿透（不管当前什么模式）
+                //   没翻页 → 点「批注」恢复笔迹显示
+                //   翻页了 → 恢复笔迹显示，但**仍然保持鼠标穿透**
+                //
+                // 这样就没有「自动回批注态」这条链了：
+                // 翻完页仍是穿透态，老师要写字就自己点批注，
+                // 和平时进批注的路径完全一样 —— 那条路是久经考验的，
+                // 不会出现「显示批注但实际穿透」这种半切状态。
+                //
+                // 两个标记的含义也随之简化：
+                //   _pptNavPendingRestoreAnnotation  不再需要（不自动恢复）
+                //   _pptNavSkipHideStrokeOnce        不再需要（穿透下本就该藏笔迹）
+                _pptNavPendingRestoreAnnotation = false;
+                _pptNavSkipHideStrokeOnce = false;
 
-                    GridTransparencyFakeBackground.Opacity = 1;
-                    GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
-                    SetTransparentNotHitThrough();
-                    CursorIcon_Click(null, null);
+                // 一律切穿透。CursorIcon_Click 会顺带把 IsHitTestVisible 设 false，
+                // 所以顺序是：先切模式，再显式藏笔迹。
+                GridTransparencyFakeBackground.Opacity = 1;
+                GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
+                SetTransparentNotHitThrough();
+                CursorIcon_Click(null, null);
 
-                    // 点页码进导航时必须隐藏笔迹（这是与「点鼠标」不同的行为：
-                    // 点鼠标要保留笔迹，点页码要临时藏起来，方便看清缩略图）。
-                    inkCanvas.Visibility = Visibility.Collapsed;
+                // 点页码进导航时隐藏笔迹，方便看清缩略图。
+                // 以前只在「从批注态进来」时藏，现在一律藏 —— 因为在穿透态下
+                // 留着笔迹也只是挡住缩略图，没有别的作用。
+                inkCanvas.Visibility = Visibility.Collapsed;
 
-                    // 记一笔：用户下次点鼠标退出穿透时，跳过隐藏笔迹，把笔迹还给他。
-                    // 只生效一次 —— 见 _pptNavSkipHideStrokeOnce 的注释。
-                    _pptNavSkipHideStrokeOnce = true;
-                }
-                else
-                {
-                    // 已经是鼠标穿透态：状态保持不动，不重置挂起的恢复标记，
-                    // 直接去调导航就行。
-                    LogHelper.WriteLogToFile("[PPT导航] 鼠标穿透态下点页码，保持状态并执行导航",
-                        LogHelper.LogType.Event);
-                }
+                LogHelper.WriteLogToFile(
+                    $"[PPT导航] 已切穿透并隐藏笔迹（进入时批注={wasAnnotating}）",
+                    LogHelper.LogType.Event);
 
                 // LTSC P1c：增强预览已整体移除（用户裁决）。
                 // 点页码 = 调 PowerPoint 原版导航，不再画 ICC 自己的缩略图面板。

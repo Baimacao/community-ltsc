@@ -693,6 +693,18 @@ namespace Ink_Canvas
         /// </remarks>
         private void inkCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // LTSC（2026-11-20 第十轮）：班测机是远程控制（注入鼠标事件），
+            // 不走 Touch 那条路。所以两个入口都要留痕，才能知道实际命中哪条。
+            try
+            {
+                LogHelper.WriteLogToFile(
+                    $"[鼠标入口] inkCanvas_MouseDown：EditingMode={inkCanvas.EditingMode} " +
+                    $"currentToolMode={_currentToolMode} 命中={inkCanvas.IsHitTestVisible} " +
+                    $"可见={inkCanvas.Visibility} 实时笔刷={ShouldUseRealtimeVelocityBrushTipForMouse()}",
+                    LogHelper.LogType.Event);
+            }
+            catch { }
+
             if (TryBlockInkInputOverFloatingBar(e.GetPosition(this), e))
                 return;
 

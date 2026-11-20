@@ -974,6 +974,25 @@ namespace Ink_Canvas
         private void UpdateCurrentToolMode(string mode)
         {
             var oldMode = _currentToolMode;
+
+            // LTSC（2026-11-20）：班测「快翻预览后写不了字」查了六轮。
+            // 恢复动作里三项（模式/可见/命中）都对，但用户手上的实际状态又变回 cursor。
+            // 说明有别的代码在恢复之后又切了一次。
+            //
+            // 这里记下「谁切的」——只记调用方方法名，不记完整栈（开销太大，
+            // 而且这个日志在切换频繁时会很吵）。只在模式真的变化时记。
+            if (!string.Equals(oldMode, mode, StringComparison.Ordinal))
+            {
+                try
+                {
+                    var frame = new StackTrace(2, false).GetFrame(0);
+                    var caller = frame?.GetMethod();
+                    LogHelper.WriteLogToFile(
+                        $"[工具模式] {oldMode} → {mode}（调用方 {caller?.DeclaringType?.Name}.{caller?.Name}）",
+                        LogHelper.LogType.Trace);
+                }
+                catch { }
+            }
             _currentToolMode = NormalizeToolModeForFreeze(mode);
 
             // 模式变了就刷新工具栏可见性。

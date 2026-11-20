@@ -61,6 +61,28 @@ namespace Ink_Canvas
             SetCursorBasedOnEditingMode(inkCanvas);
             inkCanvas.CaptureTouch(e.TouchDevice);
 
+            // LTSC（2026-11-20 第八轮）：班测「显示批注、实际穿透、一滑翻页」。
+            // 前面查了七轮，每次都是看我设进去的值，没看触摸真正落下时的值。
+            // 这里在真正处理触摸时把三个决定因素打出来：
+            //   EditingMode   ← 真正决定画不画
+            //   _currentToolMode ← 决定图标显示
+            //   IsHitTestVisible ← 决定能不能收到触摸
+            // 只在这个组合异常时才记，避免刷屏。
+            try
+            {
+                bool abnormal = inkCanvas.EditingMode != InkCanvasEditingMode.Ink
+                                && string.Equals(_currentToolMode, "pen", StringComparison.OrdinalIgnoreCase);
+                if (abnormal)
+                {
+                    LogHelper.WriteLogToFile(
+                        $"[触摸判定] 界面显示笔但编辑模式不是 Ink：EditingMode={inkCanvas.EditingMode} " +
+                        $"currentToolMode={_currentToolMode} 命中={inkCanvas.IsHitTestVisible} " +
+                        $"可见={inkCanvas.Visibility} 放映中={IsInPPTPresentationMode}",
+                        LogHelper.LogType.Warning);
+                }
+            }
+            catch { }
+
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
             {
                 return;
@@ -134,6 +156,22 @@ namespace Ink_Canvas
         /// </remarks>
         private void InkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
         {
+            // LTSC（2026-11-20 第十轮）：上一版加了「异常组合才记」的条件，结果一条都没有。
+            // 有两种可能：①触摸真没到 ②到了但条件不成立（比如 EditingMode 本来就是 Ink）。
+            // 分不出来是因为我加了过滤条件 —— 这次无条件记，每次触摸入口都留痕。
+            //
+            // 另外重要：班测机是远程控制（GameViewer/网易），注入的是鼠标事件不是触摸。
+            // 两条入口都要记，才能知道实际走的是哪条。
+            try
+            {
+                LogHelper.WriteLogToFile(
+                    $"[触摸入口] PreviewTouchDown：EditingMode={inkCanvas.EditingMode} " +
+                    $"currentToolMode={_currentToolMode} 命中={inkCanvas.IsHitTestVisible} " +
+                    $"可见={inkCanvas.Visibility} 放映中={IsInPPTPresentationMode}",
+                    LogHelper.LogType.Event);
+            }
+            catch { }
+
             var touchPointForBar = e.GetTouchPoint(this);
             if (TryBlockInkInputOverFloatingBar(touchPointForBar.Position, e))
                 return;

@@ -695,29 +695,44 @@ namespace Ink_Canvas
                 // 用户报「笔状态通过预览快翻翻页后进入写不了字的批注模式」，
                 // 关键就在这条链上：如果标记没置上，TryRestoreAnnotationAfterPptNavigation
                 // 第一句就 return，界面停在一个半切状态，而且以前完全没有痕迹。
+                // LTSC（2026-11-20 第十七轮）：这里原来会自动调
+                // TryRestoreAnnotationAfterPptNavigation 把模式切回批注。
+                // 按用户新定的规则，翻页后**保持鼠标穿透**，不自动回批注。
+                //
+                // 那条自动恢复链是前面十六轮所有麻烦的来源：
+                // 它要在切页后 500ms 异步把窗口激活/命中/选中框/EditingMode
+                // 一起调对，任何一个没调对就出现「显示批注但实际穿透」的半切状态。
+                // 现在直接不做了 —— 老师要写字就自己点批注，走那条成熟路径。
+                //
+                // 笔迹显示还需要恢复：点页码时藏了笔迹（为了看清缩略图），
+                // 翻完页应该让它重新显示出来，否则老师以为墨迹丢了。
                 LogHelper.WriteLogToFile(
                     $"[PPT导航] 检测到切页 currentSlide={currentSlide} "
-                    + $"待恢复={_pptNavPendingRestoreAnnotation} "
-                    + $"当前批注={IsAnnotating} 工具模式={_currentToolMode}",
+                    + $"当前批注={IsAnnotating} 工具模式={_currentToolMode}"
+                    + "（保持穿透，不自动回批注）",
                     LogHelper.LogType.Event);
 
-                if (_pptNavPendingRestoreAnnotation)
+                // 恢复笔迹显示（保持穿透，不切模式）。
+                // 用 BeginInvoke 排到墨迹切页之后再执行，避免和上面的保存/恢复打架。
+                Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    int targetPage = currentSlide;
-                    Application.Current?.Dispatcher.InvokeAsync(async () =>
+                    try
                     {
-                        try
+                        if (inkCanvas != null && inkCanvas.Visibility != Visibility.Visible)
                         {
-                            // 等墨迹切到新页（上面那段 Dispatcher 里的保存/恢复）跑完。
-                            await Task.Delay(500);
-                            TryRestoreAnnotationAfterPptNavigation($"切到第 {targetPage} 页");
+                            inkCanvas.Visibility = Visibility.Visible;
+                            LogHelper.WriteLogToFile(
+                                "[PPT导航] 翻页后恢复笔迹显示（仍保持鼠标穿透）",
+                                LogHelper.LogType.Event);
                         }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile($"[PPT导航] 延迟恢复异常: {ex.Message}", LogHelper.LogType.Warning);
-                        }
-                    });
-                }
+                    }
+                    catch (Exception bex)
+                    {
+                        LogHelper.WriteLogToFile("[PPT导航] 恢复笔迹显示失败: " + bex.Message,
+                            LogHelper.LogType.Warning);
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
+
 
                 // 转发PPT翻页事件到小白板（如果已打开且启用了联动）
                 _miniWhiteboardWindow?.OnPPTSlideChangedExternal(currentSlide - 1);
