@@ -119,6 +119,35 @@ namespace Ink_Canvas.Helpers
 
                     _currentPresentationId = GeneratePresentationId(presentation);
 
+                    // LTSC（2026-11-20）：班测报「退出重启后调不出上次的笔迹」。
+                    // 这条链上每一步都可能是断点，而且原来全静默 ——
+                    // 出问题时日志里什么都看不到。这里把关键节点打出来。
+                    try
+                    {
+                        var diagFolder = GetPresentationFolderPath();
+                        int diagFiles = 0;
+                        if (Directory.Exists(diagFolder))
+                        {
+                            try { diagFiles = Directory.GetFiles(diagFolder, "*" + StrokeFileExtension).Length; }
+                            catch { }
+                        }
+                        LogHelper.WriteLogToFile(
+                            $"[PPT笔迹] 初始化：演示文稿={presentation.Name} 页数={slideCount} " +
+                            $"ID={_currentPresentationId}",
+                            LogHelper.LogType.Event);
+                        string diagFullName = "";
+                        try { diagFullName = presentation.FullName; } catch { }
+                        LogHelper.WriteLogToFile(
+                            $"[PPT笔迹] 文件夹={diagFolder} 存在={Directory.Exists(diagFolder)} " +
+                            $"已存页数={diagFiles} 自动保存={IsAutoSaveEnabled} " +
+                            $"FullName={(string.IsNullOrEmpty(diagFullName) ? "(空)" : diagFullName)}",
+                            LogHelper.LogType.Event);
+                    }
+                    catch (Exception dex)
+                    {
+                        LogHelper.WriteLogToFile("[PPT笔迹] 诊断失败: " + dex.Message, LogHelper.LogType.Warning);
+                    }
+
                     int capacity = slideCount + 2;
                     _maxSlides = Math.Max(_maxSlides, slideCount);
                     _memoryStreams = new MemoryStream[capacity];
