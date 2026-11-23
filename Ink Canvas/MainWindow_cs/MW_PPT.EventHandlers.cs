@@ -547,6 +547,25 @@ namespace Ink_Canvas
                 ApplyPPTNavBarAppearanceFromSettings();
                 NotifyPluginSlideShowStateChanged(true);
 
+                // LTSC（2026-11-23 班测）：进放映时必须把页码推给翻页栏。
+                // 原来这里只设了 _previousSlideID，**从来没调 UpdateCurrentSlideNumber**，
+                // 所以进放映停在哪一页，翻页栏就显示「?」——直到用户翻下一页才更新。
+                // 这次打开 PPT 停在第 82 页，翻页栏一直是「?」直到翻到 83 才正常。
+                LogHelper.WriteLogToFile(
+                    $"[PPT页码] 进放映：currentSlide={currentSlide} totalSlides={totalSlides}" +
+                    $"（推给翻页栏）",
+                    LogHelper.LogType.Event);
+
+                // 页码显示自检：万一还是显示「?」，5 秒后告诉老师怎么办。
+                // 班测出现过「重启后才好」的案例，没有复现方法，先做兜底。
+                _pageBrokenHintShown = false;
+                _pageBrokenZeroTicks = 0;
+                SchedulePageBrokenSelfCheck();
+                if (currentSlide > 0 && totalSlides > 0)
+                {
+                    _pptUIManager?.UpdateCurrentSlideNumber(currentSlide, totalSlides);
+                }
+
                 // LTSC（2026-11-20）：补跳「上次播放页」。
                 //
                 // 提示框是在「打开演示文稿」时弹的，那时还没进放映，
@@ -856,6 +875,14 @@ namespace Ink_Canvas
                 }
 
                 totalSlides = agentState?.TotalSlides ?? _pptManager?.SlidesCount ?? 0;
+
+                // LTSC（2026-11-23 班测）：翻页组件显示「?」—— 说明 CurrentSlide 或 TotalSlides 有一个是 0。
+                // 这里把真实值打出来，不用再猜是哪一边。
+                LogHelper.WriteLogToFile(
+                    $"[PPT页码] 切页处理：currentSlide={currentSlide} totalSlides={totalSlides} " +
+                    $"previousSlideID={_previousSlideID} " +
+                    $"桥页数={_pptManager?.SlidesCount} 桥当前页={_pptManager?.GetCurrentSlideNumber()}",
+                    LogHelper.LogType.Event);
 
                 if (currentSlide == _previousSlideID) return;
 

@@ -712,6 +712,168 @@ namespace Ink_Canvas
         }
 
         /// <summary>
+        /// 翻页栏显示「?」时的自检提示。
+        ///
+        /// LTSC（2026-11-23 班测）：上课时翻页组件显示「?」，重启后就好了，
+        /// 但那一刻没有复现方法，所以先做一个「出现同样问题时告诉老师怎么办」的兜底。
+        ///
+        /// 触发条件（三个同时成立才算）：
+        ///   1. 翻页栏可见（说明放映状态和页数条件都过了）
+        ///   2. 页码读出来是 0（CurrentSlide 或 TotalSlides 为 0）
+        ///   3. 这个状态持续 ≥ 5 秒（避开刚进放映那一瞬间的正常空窗）
+        ///
+        /// 为什么不立刻弹：进放映的头一两秒页码本来就是 0，立刻弹会误伤。
+        /// 为什么不重复弹：每次放映只弹一次，弹多了老师更慌。
+        /// </summary>
+        private void SchedulePageBrokenSelfCheck()
+        {
+            if (_pageBrokenCheckTimer != null) return;
+
+            _pageBrokenCheckTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
+            _pageBrokenCheckTimer.Tick += async (s, e) =>
+            {
+                try
+                {
+                    // 只在放映中检查
+                    if (!IsInPPTPresentationMode)
+                    {
+                        _pageBrokenZeroTicks = 0;
+                        return;
+                    }
+
+                    var bars = new[]
+                    {
+                        LeftBottomPanelForPPTNavigation,
+                        RightBottomPanelForPPTNavigation,
+                        LeftSidePanelForPPTNavigation,
+                        RightSidePanelForPPTNavigation,
+                    };
+
+                    bool anyVisible = false;
+                    bool anyInvalid = false;
+
+                    foreach (var bar in bars)
+                    {
+                        if (bar == null) continue;
+                        if (bar.Visibility != Visibility.Visible) continue;
+                        anyVisible = true;
+                        if (bar.CurrentSlide <= 0 || bar.TotalSlides <= 0)
+                        {
+                            anyInvalid = true;
+                        }
+                    }
+
+                    // 翻页栏没显示就不管（老师可能关掉了）
+                    if (!anyVisible)
+                    {
+                        _pageBrokenZeroTicks = 0;
+                        return;
+                    }
+
+                    if (!anyInvalid)
+                    {
+                        _pageBrokenZeroTicks = 0;
+                        return;
+                    }
+
+                    _pageBrokenZeroTicks++;
+                    if (_pageBrokenZeroTicks < 5) return;   // 等 5 秒确认不是瞬态
+                    if (_pageBrokenHintShown) return;       // 每次放映只弹一次
+
+                    _pageBrokenHintShown = true;
+                    _pageBrokenZeroTicks = 0;
+
+                    LogHelper.WriteLogToFile(
+                        "[PPT页码] 翻页栏显示异常（页码为 0）持续 5 秒，弹出自检提示。" +
+                        $" 桥页数={_pptManager?.SlidesCount} " +
+                        $"桥当前页={_pptManager?.GetCurrentSlideNumber()} " +
+                        $"桥放映中={_pptManager?.IsInSlideShow}",
+                        LogHelper.LogType.Warning);
+
+                    await ShowPageBrokenHint();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLogToFile("[PPT页码] 自检异常: " + ex.Message,
+                        LogHelper.LogType.Warning);
+                }
+            };
+
+            _pageBrokenCheckTimer.Start();
+        }
+
+        /// <summary>
+        /// 翻页栏页码异常的提示。告诉老师怎么办，不要求他懂技术。
+        /// </summary>
+        private async Task ShowPageBrokenHint()
+        {
+            try
+            {
+                _inlineDialogTcs = new TaskCompletionSource<bool>();
+
+                InlineDialogTitle.Content = "翻页栏页码显示不出来";
+                InlineDialogContent.Text =
+                    "页码显示成了「?」。这不影响放映，但翻页按钮可能不听话。\n\n" +
+                    "先试着退出放映再重新进入一次；还是不行的话，重启 Ink Canvas For Class CE 就能恢复。";
+
+                InlineDialogRoot.Opacity = 0;
+                InlineDialogRoot.Visibility = Visibility.Visible;
+                InlineDialogScaleTransform.ScaleX = 1.05;
+                InlineDialogScaleTransform.ScaleY = 1.05;
+
+                var anim = new System.Windows.Media.Animation.Storyboard();
+
+                var fade = new System.Windows.Media.Animation.DoubleAnimation(0, 1,
+                    TimeSpan.FromMilliseconds(150));
+                fade.FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd;
+                System.Windows.Media.Animation.Storyboard.SetTarget(fade, InlineDialogRoot);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(fade,
+                    new PropertyPath(Grid.OpacityProperty));
+                anim.Children.Add(fade);
+
+                var ease = new System.Windows.Media.Animation.CubicEase {
+                    EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut };
+
+                var sx = new System.Windows.Media.Animation.DoubleAnimation(1.05, 1.0,
+                    TimeSpan.FromMilliseconds(220)) { FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd, EasingFunction = ease };
+                System.Windows.Media.Animation.Storyboard.SetTarget(sx, InlineDialogCard);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(sx,
+                    new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
+                anim.Children.Add(sx);
+
+                var sy = new System.Windows.Media.Animation.DoubleAnimation(1.05, 1.0,
+                    TimeSpan.FromMilliseconds(220)) { FillBehavior = System.Windows.Media.Animation.FillBehavior.HoldEnd, EasingFunction = ease };
+                System.Windows.Media.Animation.Storyboard.SetTarget(sy, InlineDialogCard);
+                System.Windows.Media.Animation.Storyboard.SetTargetProperty(sy,
+                    new System.Windows.PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
+                anim.Children.Add(sy);
+
+                anim.Begin(this);
+
+                // 8 秒后自动收掉。老师正在上课，不该被一个提示框挡住。
+                var timer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(8)
+                };
+                timer.Tick += (s, e) =>
+                {
+                    timer.Stop();
+                    HideInlineDialog();
+                };
+                timer.Start();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile("[PPT页码] 显示自检提示失败: " + ex.Message,
+                    LogHelper.LogType.Warning);
+            }
+        }
+
+        /// <summary>
         /// 显示上次播放页通知：检查演示文稿的上次播放位置并显示跳转提示。
         /// </summary>
         /// <param name="pres">当前打开的 PowerPoint 演示文稿（Presentation）实例。</param>
@@ -826,6 +988,15 @@ namespace Ink_Canvas
         /// 等进放映时补跳一次。0 表示没有待跳。
         /// </summary>
         private int _pendingJumpToPage;
+
+        /// <summary>翻页栏页码自检的定时器。一次放映只建一个。</summary>
+        private System.Windows.Threading.DispatcherTimer _pageBrokenCheckTimer;
+
+        /// <summary>页码为 0 连续持续的秒数。用来避开刚进放映的正常空窗。</summary>
+        private int _pageBrokenZeroTicks;
+
+        /// <summary>本次放映是否已经弹过自检提示。防重复打扰老师。</summary>
+        private bool _pageBrokenHintShown;
 
         /// <summary>
         /// 点了「跳转」但当下降不了（还没进放映）时给的提示。
